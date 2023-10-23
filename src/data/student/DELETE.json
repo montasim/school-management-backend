@@ -1,0 +1,12 @@
+{
+  "status": 200,
+  "message": "Data deleted successfully",
+  "length": 1,
+  "data": [
+    {
+      "name": "মো: আব্দুল হামিদ",
+      "class": "৬ষ্ঠ শ্রেণী",
+      "image": "/image/student/student1.gif"
+    }
+  ]
+}

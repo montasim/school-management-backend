@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "message": "Data retrieved successfully",
+  "length": 11,
+  "data": [
+    {
+      "name": "৯ম শ্রেণী"
+    },
+    {
+      "name": "৮ম শ্রেণ"
+    },
+    {
+      "name": "৭ম শ্রেণী"
+    },
+    {
+      "name": "৬ষ্ঠ শ্রেণী"
+    }
+  ]
+}

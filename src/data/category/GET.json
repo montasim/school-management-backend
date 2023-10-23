@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "message": "Data retrieved successfully",
+  "length": 11,
+  "data": [
+    {
+      "name": "শিক্ষকবৃন্দ"
+    },
+    {
+      "name": "পরিচালনা পরিষদ"
+    }
+  ]
+}

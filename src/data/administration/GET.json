@@ -1,0 +1,85 @@
+{
+  "status": 200,
+  "message": "Data retrieved successfully",
+  "length": 11,
+  "data": [
+    {
+      "name": "কাইয়ুম আহমেদ",
+      "category": ["শিক্ষকবৃন্দ", "পরিচালনা পরিষদ"],
+      "designation": "শিক্ষক",
+      "image": "/image/teacher/teacher1.gif"
+    },
+    {
+      "name": "মো: আব্দুল হামিদ",
+      "category": ["শিক্ষকবৃন্দ", "পরিচালনা পরিষদ"],
+      "designation": "শিক্ষক",
+      "image": "/image/teacher/teacher1.gif"
+    },
+    {
+      "name": "রফিকুল আমিন",
+      "category": ["শিক্ষকবৃন্দ", "পরিচালনা পরিষদ"],
+      "designation": "সহকারী শিক্ষক",
+      "image": "/image/teacher/teacher1.gif"
+    },
+    {
+      "name": "জান্নাতুন নাঈম",
+      "category": ["শিক্ষকবৃন্দ", "পরিচালনা পরিষদ"],
+      "designation": "সহকারী শিক্ষক",
+      "image": "/image/teacher/teacher2.gif"
+    },
+    {
+      "name": "রহিমা আফরোজ",
+      "category": ["শিক্ষকবৃন্দ", "পরিচালনা পরিষদ"],
+      "designation": "সহকারী শিক্ষক",
+      "image": "/image/teacher/teacher2.gif"
+    },
+    {
+      "name": "রবিন আহমেদ",
+      "category": ["শিক্ষকবৃন্দ", "প্রাক্তন প্রধান শিক্ষক"],
+      "designation": "সহকারী শিক্ষক",
+      "image": "/image/teacher/teacher1.gif"
+    },
+    {
+      "name": "মো: সানাউল্লাহ",
+      "category": ["শিক্ষকবৃন্দ", "প্রাক্তন প্রধান শিক্ষক"],
+      "designation": "সহকারী শিক্ষক",
+      "image": "/image/teacher/teacher1.gif"
+    },
+    {
+      "name": "কাইয়ুম আহমেদ",
+      "category": ["শিক্ষকবৃন্দ", "প্রাক্তন প্রধান শিক্ষক"],
+      "designation": "সহকারী শিক্ষক",
+      "image": "/image/teacher/teacher1.gif"
+    },
+    {
+      "name": "রামচরন দাস",
+      "category": ["কর্মকর্তা কর্মচারী"],
+      "designation": "সহকারী শিক্ষক",
+      "image": "/image/teacher/teacher1.gif"
+    },
+    {
+      "name": "জান্নাতুন নাঈম",
+      "category": ["কর্মকর্তা কর্মচারী"],
+      "designation": "সহকারী শিক্ষক",
+      "image": "/image/teacher/teacher2.gif"
+    },
+    {
+      "name": "মো: আব্দুল হামিদ",
+      "category": ["কৃতি শিক্ষার্থী"],
+      "designation": "কৃতি শিক্ষার্থী",
+      "image": "/image/student/student1.gif"
+    },
+    {
+      "name": "রাজিয়া খাতুন",
+      "category": ["কৃতি শিক্ষার্থী"],
+      "designation": "কৃতি শিক্ষার্থী",
+      "image": "/image/student/student3.gif"
+    },
+    {
+      "name": "জান্নাতুন নাঈম",
+      "category": ["কৃতি শিক্ষার্থী"],
+      "designation": "কৃতি শিক্ষার্থী",
+      "image": "/image/student/student6.gif"
+    }
+  ]
+}

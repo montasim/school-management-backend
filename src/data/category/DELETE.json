@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "message": "Data deleted successfully",
+  "length": 1,
+  "data": [
+    {
+      "name": "শিক্ষকবৃন্দ"
+    }
+  ]
+}
