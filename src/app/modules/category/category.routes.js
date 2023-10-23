@@ -13,7 +13,7 @@ const router = express.Router();
  * @returns {Object} 200 - An object with a success message.
  * @returns {Error}  500 - Internal server error.
  */
-router.post("/", CategoryController?.createCategoryController);
+router.post("/", CategoryController.createCategoryController);
 
 /**
  * GET endpoint for retrieving all categories.
@@ -25,7 +25,7 @@ router.post("/", CategoryController?.createCategoryController);
  * @returns {Array.<Object>} 200 - An array of category objects.
  * @returns {Error}  500 - Internal server error.
  */
-router.get("/", CategoryController?.getCategoryController);
+router.get("/", CategoryController.getCategoryController);
 
 /**
  * PUT endpoint for updating a category by its ID.
@@ -38,7 +38,7 @@ router.get("/", CategoryController?.getCategoryController);
  * @returns {Object} 200 - An object with a success message.
  * @returns {Error}  500 - Internal server error.
  */
-router.put("/:_id", CategoryController?.updateCategoryController);
+router.put("/:_id", CategoryController.updateCategoryController);
 
 /**
  * DELETE endpoint for deleting a category by its ID.
@@ -51,6 +51,6 @@ router.put("/:_id", CategoryController?.updateCategoryController);
  * @returns {Object} 200 - An object with a success message.
  * @returns {Error}  500 - Internal server error.
  */
-router.delete("/:_id", CategoryController?.deleteCategoryController);
+router.delete("/:_id", CategoryController.deleteCategoryController);
 
 export default router;

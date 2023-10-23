@@ -10,7 +10,7 @@ import { CategoryService } from "./category.service.js";
  */
 const createCategoryController = async (req, res) => {
     try {
-        const createCategoryServiceResponse = await CategoryService?.createCategoryService(req.db, res, "create category controller");
+        const createCategoryServiceResponse = await CategoryService.createCategoryService(req.db, res, "create category controller");
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
@@ -26,7 +26,7 @@ const createCategoryController = async (req, res) => {
  */
 const getCategoryController = async (req, res) => {
     try {
-        const getACategoryServiceResponse = await CategoryService?.getACategoryService(req.db, res, "get a category controller");
+        const getACategoryServiceResponse = await CategoryService.getACategoryService(req.db, res, "get a category controller");
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
@@ -42,7 +42,7 @@ const getCategoryController = async (req, res) => {
  */
 const updateCategoryController = async (req, res) => {
     try {
-        const updateACategoryServiceResponse = await CategoryService?.updateACategoryService(req.db, res, "update a category controller");
+        const updateACategoryServiceResponse = await CategoryService.updateACategoryService(req.db, res, "update a category controller");
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
@@ -58,7 +58,7 @@ const updateCategoryController = async (req, res) => {
  */
 const deleteCategoryController = async (req, res) => {
     try {
-        const deleteACategoryServiceResponse = await CategoryService?.deleteACategoryService(req.db, res, "delete a category controller");
+        const deleteACategoryServiceResponse = await CategoryService.deleteACategoryService(req.db, res, "delete a category controller");
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
