@@ -1,15 +1,35 @@
 import dotenv from "dotenv";
 
+// Initialize dotenv configuration
 dotenv.config();
 
-if ( process.env.NODE_ENV === "production" ) {
+/**
+ * Depending on the NODE_ENV, load the appropriate environment variables.
+ * - If NODE_ENV is 'production', load variables from '.env.production'.
+ * - If NODE_ENV is 'staging', load variables from '.env.staging'.
+ * - Otherwise, load variables from '.env.development'.
+ */
+if (process.env.NODE_ENV === "production") {
     dotenv.config({ path: ".env.production" });
-} else if ( process.env.NODE_ENV === "staging" ) {
+} else if (process.env.NODE_ENV === "staging") {
     dotenv.config({ path: ".env.staging" });
 } else {
     dotenv.config({ path: ".env.development" });
 }
 
+/**
+ * @typedef {Object} Config
+ * @property {string} PORT - The port number for the application server.
+ * @property {string} MONGODB_URI - The connection URI for the MongoDB database.
+ * @property {string} DATABASE_NAME - The name of the MongoDB database.
+ * @property {string} API_VERSION - The version of the API.
+ * @property {string} SECRET_TOKEN - The secret token for authentication.
+ * @property {string} CATEGORY_COLLECTION_NAME - The name of the category collection in MongoDB.
+ */
+
+/**
+ * @type {Config}
+ */
 export const {
     PORT,
     MONGODB_URI,
