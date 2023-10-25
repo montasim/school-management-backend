@@ -36,5 +36,6 @@ export const {
     DATABASE_NAME,
     API_VERSION,
     SECRET_TOKEN,
+    ADMIN_COLLECTION_NAME,
     CATEGORY_COLLECTION_NAME
 } = process.env;

@@ -21,8 +21,6 @@ const connectToDatabase = async (req, res, next) => {
   try {
     // Create a new MongoClient instance with connection options
     const client = new MongoClient(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverApi: ServerApiVersion.v1,
     });
 

@@ -1,4 +1,5 @@
 import express from "express";
+import { CategoryValidators } from "./category.validator.js";
 import { CategoryController } from "./category.controller.js";
 
 const router = express.Router();
@@ -13,7 +14,11 @@ const router = express.Router();
  * @returns {Object} 200 - An object with a success message.
  * @returns {Error}  500 - Internal server error.
  */
-router.post("/", CategoryController.createCategoryController);
+router.post(
+    "/",
+    CategoryValidators.createCategoryValidator,
+    CategoryController.createCategoryController
+);
 
 /**
  * GET endpoint for retrieving all categories.

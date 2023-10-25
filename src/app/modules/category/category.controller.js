@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import { CategoryService } from "./category.service.js";
 
 /**
@@ -10,9 +11,25 @@ import { CategoryService } from "./category.service.js";
  */
 const createCategoryController = async (req, res) => {
     try {
-        const createCategoryServiceResponse = await CategoryService.createCategoryService(req.db, res, "create category controller");
+        const {
+            name,
+            requestedBy
+        } = req?.body;
+        const newCategoryDetails = {
+            name,
+            requestedBy
+        };
+        const createCategoryServiceResponse = await CategoryService.createCategoryService(req.db, newCategoryDetails);
+        const returnData = {
+            data: createCategoryServiceResponse?.data,
+            success: createCategoryServiceResponse?.success,
+            status: createCategoryServiceResponse?.status,
+            message: createCategoryServiceResponse?.message,
+        };
+
+        return res.status(createCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
     }
 };
 

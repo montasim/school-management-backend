@@ -1,68 +1,84 @@
-/**
- * Creates a category.
- *
- * @async
- * @param {Object} db - The database connection object.
- * @param {Object} res - The Express response object.
- * @param {Object} newSuperAdminData - The data of the new super admin.
- * @returns {Object} - The Express response object.
- */
-const createCategoryService = async (db, res, newSuperAdminData) => {
+import { StatusCodes } from "http-status-codes";
+import { CATEGORY_COLLECTION_NAME } from "../../../constants/index.js";
+import isRequesterValid from "../../../shared/isRequesterValid.js";
+
+const createCategoryService = async (db,  newCategoryDetails) => {
     try {
-        res.status(200).json(newSuperAdminData);
+        const { name, requestedBy} = newCategoryDetails;
+        const isCategoryAlreadyExists = false;
+        const isValidRequester = await isRequesterValid(db, requestedBy);
+
+        if (isCategoryAlreadyExists) {
+            return {
+                data: {},
+                success: true,
+                status: StatusCodes.UNPROCESSABLE_ENTITY,
+                message: `${name} already exists`
+            };
+        } else {
+            if (isValidRequester) {
+                const prepareNewCategoryDetails = {
+                    name: name,
+                    createdBy: requestedBy,
+                    createdAt: new Date(),
+                };
+
+                const createNewCategoryResult = await db
+                    .collection(CATEGORY_COLLECTION_NAME)
+                    .insertOne(prepareNewCategoryDetails);
+
+                if (createNewCategoryResult?.acknowledged) {
+                    delete prepareNewCategoryDetails?._id;
+
+                    return {
+                        data: prepareNewCategoryDetails,
+                        success: true,
+                        status: StatusCodes.OK,
+                        message: `${prepareNewCategoryDetails?.name} created successfully`
+                    };
+                } else {
+                    return {
+                        data: {},
+                        success: false,
+                        status: StatusCodes.INTERNAL_SERVER_ERROR,
+                        message: 'Failed to create'
+                    };
+                }
+            } else {
+                return {
+                    data: {},
+                    success: false,
+                    status: StatusCodes.UNAUTHORIZED,
+                    message: 'You do not have necessary permission'
+                };
+            }
+        }
     } catch (error) {
-        return res.status(500).json(newSuperAdminData);
+        throw error;
     }
 };
 
-/**
- * Retrieves a category.
- *
- * @async
- * @param {Object} db - The database connection object.
- * @param {Object} res - The Express response object.
- * @param {Object} newSuperAdminData - The data of the super admin.
- * @returns {Object} - The Express response object.
- */
-const getACategoryService = async (db, res, newSuperAdminData) => {
+const getACategoryService = async (db, res, categoryDetails) => {
     try {
-        res.status(200).json(newSuperAdminData);
+        res.status(200).json(categoryDetails);
     } catch (error) {
-        return res.status(500).json(newSuperAdminData);
+        return res.status(500).json(categoryDetails);
     }
 };
 
-/**
- * Updates a category.
- *
- * @async
- * @param {Object} db - The database connection object.
- * @param {Object} res - The Express response object.
- * @param {Object} newSuperAdminData - The updated data of the super admin.
- * @returns {Object} - The Express response object.
- */
-const updateACategoryService = async (db, res, newSuperAdminData) => {
+const updateACategoryService = async (db, res, newCategoryDetails) => {
     try {
-        res.status(200).json(newSuperAdminData);
+        res.status(200).json(newCategoryDetails);
     } catch (error) {
-        return res.status(500).json(newSuperAdminData);
+        return res.status(500).json(newCategoryDetails);
     }
 };
 
-/**
- * Deletes a category.
- *
- * @async
- * @param {Object} db - The database connection object.
- * @param {Object} res - The Express response object.
- * @param {Object} newSuperAdminData - The data of the super admin to be deleted.
- * @returns {Object} - The Express response object.
- */
-const deleteACategoryService = async (db, res, newSuperAdminData) => {
+const deleteACategoryService = async (db, res, categoryDetails) => {
     try {
-        res.status(200).json(newSuperAdminData);
+        res.status(200).json(categoryDetails);
     } catch (error) {
-        return res.status(500).json(newSuperAdminData);
+        return res.status(500).json(categoryDetails);
     }
 };
 
