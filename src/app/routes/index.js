@@ -3,6 +3,7 @@ import statusRoutes from "../modules/status/status.routes.js";
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
 import classRoutes from "../modules/class/class.routes.js";
+import downloadRoutes from "../modules/download/download.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 
@@ -60,7 +61,7 @@ router.use(`/api/v1/class`, classRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use(`/api/v1/download`, downloadRoutes);
+router.use(`/api/v1/download`, downloadRoutes);
 
 /**
  * Sets up versioned routing for the notice module.
