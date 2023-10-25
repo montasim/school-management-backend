@@ -4,10 +4,20 @@ import { CategoryService } from "./category.service.js";
 /**
  * Creates a category.
  *
+ * The function processes the incoming request data to create a new category.
+ * It interacts with the service layer to perform the actual creation of the category.
+ * After creation, the service's response is sent back to the client.
+ *
  * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @function createCategoryController
+ * @param {Object} req - Express request object. Contains details about the client's request, such as URL parameters, headers, and body data.
+ * @param {Object} req.body - The body of the request.
+ * @param {string} req.body.name - Name of the category.
+ * @param {string} req.body.requestedBy - User or entity requesting the category creation.
+ * @param {Object} res - Express response object. Allows you to craft an HTTP response.
+ * @returns {Object} Express response object with a status and JSON body.
+ *
+ * @throws Will throw an error if the service encounters an issue during category creation.
  */
 const createCategoryController = async (req, res) => {
     try {
@@ -32,6 +42,7 @@ const createCategoryController = async (req, res) => {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
     }
 };
+
 
 /**
  * Retrieves a category.
