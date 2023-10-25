@@ -11,8 +11,15 @@ import { DownloadService } from "./download.service.js";
  */
 const createDownloadController = async (req, res) => {
     try {
-        const { requestedBy } = req?.body;
-        const createDownloadServiceResponse = await DownloadService.createDownloadService(req.db, requestedBy, req.file);
+        const {
+            title,
+            requestedBy
+        } = req?.body;
+        const newDownloadDetails = {
+            title,
+            requestedBy
+        };
+        const createDownloadServiceResponse = await DownloadService.createDownloadService(req.db, newDownloadDetails, req.file);
 
         const returnData = {
             data: createDownloadServiceResponse?.data,

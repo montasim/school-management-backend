@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import {DOWNLOAD_COLLECTION_NAME} from "../../../constants/index.js";
+import {v4 as uuidv4} from "uuid";
 
 
 /**
@@ -8,17 +9,31 @@ import {DOWNLOAD_COLLECTION_NAME} from "../../../constants/index.js";
  *
  * @async
  * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - The requester's identifier.
+ * @param {string} newDownloadDetails - The requester's identifier.
  * @param {object} file - The file uploaded via multer middleware.
  * @returns {object} A response object with details of the operation.
  * @throws {error} Throws an error if an error occurs.
  */
-const createDownloadService = async (db,  requestedBy, file) => {
+const createDownloadService = async (db,  newDownloadDetails, file) => {
     try {
-        const isValidRequester = await isRequesterValid(db, requestedBy);;
+        const {
+            title,
+            requestedBy
+        } = newDownloadDetails;
+        const isValidRequester = await isRequesterValid(db, requestedBy);
 
         if (isValidRequester) {
-            const result = await db.collection(DOWNLOAD_COLLECTION_NAME).insertOne({ filename: file.originalname + Date.now(), path: file.path });
+            const prepareNewDownloadDetails = {
+                id: `download-${uuidv4().substr(0, 6)}`,
+                title: title,
+                filename: file.originalname + Date.now(),
+                path: file.path,
+                createdBy: requestedBy,
+                createdAt: new Date(),
+            };
+            const result = await db
+                .collection(DOWNLOAD_COLLECTION_NAME)
+                .insertOne(prepareNewDownloadDetails);
 
             if (result?.acknowledged) {
                 return {
