@@ -135,7 +135,7 @@ const getACategoryController = async (req, res) => {
  *
  * @throws {Error} Throws an error if there's an issue updating the category.
  */
-const updateCategoryController = async (req, res) => {
+const updateACategoryController = async (req, res) => {
     try {
         const { categoryId } = req?.params;
         const {
@@ -161,18 +161,35 @@ const updateCategoryController = async (req, res) => {
 };
 
 /**
- * Deletes a category.
+ * Deletes a category based on the provided category ID.
  *
  * @async
  * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req - The Express request object.
+ * @param {Object} req.params - The parameters from the URL.
+ * @param {string} req.params.categoryId - The ID of the category to be deleted.
+ * @param {Object} req.query - The query parameters from the request.
+ * @param {string} req.query.requestedBy - The entity requesting the deletion.
+ * @param {Object} res - The Express response object.
+ * @returns {Object} - The response object containing status, data, success flag, and a message.
+ *
+ * @throws {Error} - Throws an error if there's an issue during deletion.
  */
-const deleteCategoryController = async (req, res) => {
+const deleteACategoryController = async (req, res) => {
     try {
-        const deleteACategoryServiceResponse = await CategoryService.deleteACategoryService(req.db, res, "delete a category controller");
+        const { categoryId } = req?.params;
+        const { requestedBy } = req?.query;
+        const deletedCategoryServiceResponse = await CategoryService.deleteACategoryService(req.db, requestedBy, categoryId);
+        const returnData = {
+            data: deletedCategoryServiceResponse?.data,
+            success: deletedCategoryServiceResponse?.success,
+            status: deletedCategoryServiceResponse?.status,
+            message: deletedCategoryServiceResponse?.message,
+        };
+
+        return res.status(deletedCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
     }
 };
 
@@ -183,6 +200,6 @@ export const CategoryController = {
     createCategoryController,
     getCategoryListController,
     getACategoryController,
-    updateCategoryController,
-    deleteCategoryController
+    updateACategoryController,
+    deleteACategoryController
 };

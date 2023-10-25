@@ -68,7 +68,7 @@ router.put(
     "/:categoryId",
     CategoryValidators.categoryParamsValidator,
     CategoryValidators.categoryBodyValidator,
-    CategoryController.updateCategoryController
+    CategoryController.updateACategoryController
 );
 
 /**
@@ -86,7 +86,8 @@ router.put(
 router.delete(
     "/:categoryId",
     CategoryValidators.categoryParamsValidator,
-    CategoryController.deleteCategoryController
+    CategoryValidators.deleteCategoryQueryValidator,
+    CategoryController.deleteACategoryController
 );
 
 /**

@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { CATEGORY_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import isCategoryAlreadyExists from "../../../shared/isCategoryAlreadyExists.js";
+import isCategoryValid from "../../../shared/isCategoryValid.js";
 
 /**
  * Creates a new category in the database after performing necessary checks.
@@ -233,11 +234,68 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
     }
 };
 
-const deleteACategoryService = async (db, res, categoryDetails) => {
+/**
+ * Service for deleting a category.
+ *
+ * @async
+ * @function
+ * @param {object} db - The database connection object.
+ * @param {string} requestedBy - The requester's identifier.
+ * @param {string} categoryId - The ID of the category to delete.
+ * @returns {Promise<Object>} An object containing the result of the delete operation.
+ * @throws {Error} Throws an error if an issue arises during the delete process.
+ *
+ * @example
+ *
+ * const response = await deleteACategoryService(dbInstance, 'userId123', 'categoryId456');
+ * console.log(response.message); // Outputs: 'categoryId456 deleted successfully'
+ */
+const deleteACategoryService = async (db, requestedBy, categoryId) => {
     try {
-        res.status(200).json(categoryDetails);
+        const isValidRequester = await isRequesterValid(db, requestedBy);
+
+        if (isValidRequester) {
+            const isCategoryExists = await isCategoryValid(db, categoryId);
+
+            if (isCategoryExists) {
+                console.log(isCategoryExists)
+                const deleteResult = await db
+                    .collection(CATEGORY_COLLECTION_NAME)
+                    .deleteOne({ id: categoryId });
+
+                if (deleteResult?.deletedCount === 1) {
+                    return {
+                        data: {},
+                        success: true,
+                        status: StatusCodes.OK,
+                        message: `${categoryId} deleted successfully`,
+                    };
+                } else {
+                    return {
+                        data: {},
+                        success: false,
+                        status: StatusCodes.UNPROCESSABLE_ENTITY,
+                        message: `${categoryId} could not be deleted`,
+                    };
+                }
+            } else {
+                return {
+                    data: {},
+                    success: false,
+                    status: StatusCodes.NOT_FOUND,
+                    message: `${categoryId} not found`,
+                };
+            }
+        } else {
+            return {
+                data: {},
+                success: false,
+                status: StatusCodes.UNAUTHORIZED,
+                message: 'You do not have necessary permission'
+            };
+        }
     } catch (error) {
-        return res.status(500).json(categoryDetails);
+        throw error;
     }
 };
 
