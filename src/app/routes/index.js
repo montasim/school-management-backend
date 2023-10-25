@@ -2,6 +2,7 @@ import express from "express";
 import statusRoutes from "../modules/status/status.routes.js";
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
+import classRoutes from "../modules/class/class.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 
 const router = express.Router();
@@ -49,7 +50,7 @@ router.use(`/api/v1/category`, categoryRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use(`/api/v1/class`, classRoutes);
+router.use(`/api/v1/class`, classRoutes);
 
 /**
  * Sets up versioned routing for the download module.
