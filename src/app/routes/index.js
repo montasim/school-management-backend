@@ -3,6 +3,7 @@ import statusRoutes from "../modules/status/status.routes.js";
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
 import classRoutes from "../modules/class/class.routes.js";
+import studentRoutes from "../modules/student/student.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 
 const router = express.Router();
@@ -95,7 +96,7 @@ router.use(`/api/v1/class`, classRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use(`/api/v1/student`, studentRoutes);
+router.use(`/api/v1/student`, studentRoutes);
 
 /**
  * Default catch-all route for undefined routes.
