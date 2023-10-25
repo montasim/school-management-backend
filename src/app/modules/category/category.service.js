@@ -1,14 +1,15 @@
 import { StatusCodes } from "http-status-codes";
 import { CATEGORY_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
+import isCategoryAlreadyExists from "../../../shared/isCategoryAlreadyExists.js";
 
 const createCategoryService = async (db,  newCategoryDetails) => {
     try {
         const { name, requestedBy} = newCategoryDetails;
-        const isCategoryAlreadyExists = false;
+        const isDuplicateCategory = await isCategoryAlreadyExists(db, name);
         const isValidRequester = await isRequesterValid(db, requestedBy);
 
-        if (isCategoryAlreadyExists) {
+        if (isDuplicateCategory) {
             return {
                 data: {},
                 success: true,
