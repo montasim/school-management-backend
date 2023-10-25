@@ -76,6 +76,46 @@ const createCategoryService = async (db,  newCategoryDetails) => {
 };
 
 /**
+ * Fetches a list of categories from the database.
+ *
+ * @async
+ * @function
+ * @param {object} db - The database connection object.
+ * @returns {Promise<object>} - Returns an object containing the following properties:
+ *  - data {Array<object>|object} - The list of categories if found, otherwise an empty object.
+ *  - success {boolean} - Indicates if the operation was successful.
+ *  - status {StatusCodes} - The HTTP status code.
+ *  - message {string} - A message describing the result.
+ * @throws {Error} - Throws an error if any issue occurs while fetching categories from the database.
+ */
+const getCategoryListService = async (db) => {
+    try {
+        const categoryList = await db
+            .collection(CATEGORY_COLLECTION_NAME)
+            .find({}, { projection: { _id: 0 } })
+            .toArray();
+
+        if (categoryList?.length > 0) {
+            return {
+                data: categoryList,
+                success: false,
+                status: StatusCodes.OK,
+                message: `${categoryList?.length} category found`
+            };
+        } else {
+            return {
+                data: {},
+                success: false,
+                status: StatusCodes.NOT_FOUND,
+                message: 'No category found'
+            };
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
  * Fetches a specific category by its ID from the database.
  *
  * @function
@@ -135,6 +175,7 @@ const deleteACategoryService = async (db, res, categoryDetails) => {
 
 export const CategoryService = {
     createCategoryService,
+    getCategoryListService,
     getACategoryService,
     updateACategoryService,
     deleteACategoryService

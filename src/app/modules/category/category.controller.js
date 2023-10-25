@@ -44,6 +44,42 @@ const createCategoryController = async (req, res) => {
 };
 
 /**
+ * Retrieves a list of categories.
+ *
+ * @async
+ * @function
+ * @param {Object} req - Express request object.
+ * @param {Object} req.params - Route parameters.
+ * @param {?string} req.params.categoryId - ID of the category (if provided in the request).
+ * @param {Object} req.db - Database connection or instance.
+ * @param {Object} res - Express response object.
+ *
+ * @returns {Object} res - Express response object.
+ * @returns {Object} res.data - The list of categories.
+ * @returns {boolean} res.success - Success flag.
+ * @returns {number} res.status - HTTP status code.
+ * @returns {string} res.message - Response message.
+ *
+ * @throws {Error} Throws an error if any occurs during execution.
+ */
+const getCategoryListController = async (req, res) => {
+    try {
+        const { categoryId } = req?.params;
+        const createCategoryServiceResponse = await CategoryService.getCategoryListService(req.db);
+        const returnData = {
+            data: createCategoryServiceResponse?.data,
+            success: createCategoryServiceResponse?.success,
+            status: createCategoryServiceResponse?.status,
+            message: createCategoryServiceResponse?.message,
+        };
+
+        return res.status(createCategoryServiceResponse?.status).json(returnData);
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+    }
+};
+
+/**
  * Retrieves a specific category based on its ID.
  *
  * @async
@@ -114,6 +150,7 @@ const deleteCategoryController = async (req, res) => {
  */
 export const CategoryController = {
     createCategoryController,
+    getCategoryListController,
     getACategoryController,
     updateCategoryController,
     deleteCategoryController

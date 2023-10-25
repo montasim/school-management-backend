@@ -43,9 +43,9 @@ const createCategoryValidator = async (req, res, next) => {
  * @param {function} next - Express next middleware function.
  * @returns {void}
  */
-const getACategoryValidator = async (req, res, next) => {
+const categoryParamsValidator = async (req, res, next) => {
     try {
-        const { error } = CategorySchema.getACategorySchema.validate(req?.params?.categoryId);
+        const { error } = CategorySchema.categoryParamsSchema.validate(req?.params?.categoryId);
         const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {
@@ -73,5 +73,5 @@ const getACategoryValidator = async (req, res, next) => {
  */
 export const CategoryValidators = {
     createCategoryValidator,
-    getACategoryValidator,
+    categoryParamsValidator,
 };

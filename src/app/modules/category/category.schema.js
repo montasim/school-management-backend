@@ -26,7 +26,7 @@ const createCategorySchema = Joi.object({
  * Joi schema for validating the retrieval of a category by its ID.
  * @constant {Object}
  */
-const getACategorySchema = idSchema.required();
+const categoryParamsSchema = idSchema.required();
 
 /**
  * Collection of category-related Joi validation schemas.
@@ -35,5 +35,5 @@ const getACategorySchema = idSchema.required();
  */
 export const CategorySchema = {
     createCategorySchema,
-    getACategorySchema
+    categoryParamsSchema
 };
