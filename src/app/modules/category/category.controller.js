@@ -43,20 +43,37 @@ const createCategoryController = async (req, res) => {
     }
 };
 
-
 /**
- * Retrieves a category.
+ * Retrieves a specific category based on its ID.
  *
  * @async
  * @function
  * @param {Object} req - Express request object.
+ * @param {Object} req.params - Parameters from the request URL.
+ * @param {string} req.params.categoryId - ID of the category to retrieve.
  * @param {Object} res - Express response object.
+ * @returns {Object} Response object containing the category details.
+ *
+ * @throws {Error} Throws an error if there's an issue fetching the category.
+ *
+ * @example
+ * // Request URL: GET /category/1234
+ * const category = await getACategoryController(req, res);
  */
-const getCategoryController = async (req, res) => {
+const getACategoryController = async (req, res) => {
     try {
-        const getACategoryServiceResponse = await CategoryService.getACategoryService(req.db, res, "get a category controller");
+        const { categoryId } = req?.params;
+        const createCategoryServiceResponse = await CategoryService.getACategoryService(req.db, categoryId);
+        const returnData = {
+            data: createCategoryServiceResponse?.data,
+            success: createCategoryServiceResponse?.success,
+            status: createCategoryServiceResponse?.status,
+            message: createCategoryServiceResponse?.message,
+        };
+
+        return res.status(createCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
     }
 };
 
@@ -97,7 +114,7 @@ const deleteCategoryController = async (req, res) => {
  */
 export const CategoryController = {
     createCategoryController,
-    getCategoryController,
+    getACategoryController,
     updateCategoryController,
     deleteCategoryController
 };

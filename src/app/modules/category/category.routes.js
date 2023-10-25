@@ -30,7 +30,11 @@ router.post(
  * @returns {Array.<Object>} 200 - An array of category objects.
  * @returns {Error}  500 - Internal server error.
  */
-router.get("/", CategoryController.getCategoryController);
+router.get(
+    "/:categoryId",
+    CategoryValidators.getACategoryValidator,
+    CategoryController.getACategoryController
+);
 
 /**
  * PUT endpoint for updating a category by its ID.
@@ -43,7 +47,7 @@ router.get("/", CategoryController.getCategoryController);
  * @returns {Object} 200 - An object with a success message.
  * @returns {Error}  500 - Internal server error.
  */
-router.put("/:_id", CategoryController.updateCategoryController);
+router.put("/:categoryId", CategoryController.updateCategoryController);
 
 /**
  * DELETE endpoint for deleting a category by its ID.
@@ -56,6 +60,6 @@ router.put("/:_id", CategoryController.updateCategoryController);
  * @returns {Object} 200 - An object with a success message.
  * @returns {Error}  500 - Internal server error.
  */
-router.delete("/:_id", CategoryController.deleteCategoryController);
+router.delete("/:categoryId", CategoryController.deleteCategoryController);
 
 export default router;

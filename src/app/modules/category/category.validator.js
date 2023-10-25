@@ -1,10 +1,20 @@
 import { StatusCodes } from "http-status-codes";
 import { CategorySchema } from "./category.schema.js";
 
+/**
+ * Middleware function to validate the creation of a new category.
+ *
+ * @async
+ * @function
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ * @param {function} next - Express next middleware function.
+ * @returns {void}
+ */
 const createCategoryValidator = async (req, res, next) => {
     try {
-        const { error } = CategorySchema.createCategorySchema.validate(req.body);
-        const messages = error?.details?.map(detail => detail.message);
+        const { error } = CategorySchema.createCategorySchema.validate(req?.body);
+        const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {
             const returnData = {
@@ -23,6 +33,45 @@ const createCategoryValidator = async (req, res, next) => {
     }
 };
 
+/**
+ * Middleware function to validate fetching a category by its ID.
+ *
+ * @async
+ * @function
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ * @param {function} next - Express next middleware function.
+ * @returns {void}
+ */
+const getACategoryValidator = async (req, res, next) => {
+    try {
+        const { error } = CategorySchema.getACategorySchema.validate(req?.params?.categoryId);
+        const messages = error?.details?.map(detail => detail?.message);
+
+        if (error) {
+            const returnData = {
+                data: {},
+                success: false,
+                status: StatusCodes.BAD_REQUEST,
+                message: messages,
+            };
+
+            res.status(StatusCodes.BAD_REQUEST).json(returnData);
+        } else {
+            next();
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+    }
+};
+
+/**
+ * Collection of validator middlewares related to category operations.
+ * @typedef {Object} CategoryValidators
+ * @property {function} createCategoryValidator - Validates creation of new category.
+ * @property {function} getACategoryValidator - Validates fetching a category by its ID.
+ */
 export const CategoryValidators = {
     createCategoryValidator,
+    getACategoryValidator,
 };

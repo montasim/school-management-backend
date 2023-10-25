@@ -75,11 +75,45 @@ const createCategoryService = async (db,  newCategoryDetails) => {
     }
 };
 
-const getACategoryService = async (db, res, categoryDetails) => {
+/**
+ * Fetches a specific category by its ID from the database.
+ *
+ * @function
+ * @async
+ * @param {Object} db - The database connection object.
+ * @param {string} categoryId - The ID of the category to be fetched.
+ *
+ * @returns {Promise<Object>} The result object.
+ * @returns {Object} result.data - The found category data or an empty object if not found.
+ * @returns {boolean} result.success - Indicates whether the operation was successful.
+ * @returns {number} result.status - The HTTP status code.
+ * @returns {string} result.message - The message indicating the result of the operation.
+ *
+ * @throws {Error} Throws an error if there is any issue with the database operation.
+ */
+const getACategoryService = async (db, categoryId) => {
     try {
-        res.status(200).json(categoryDetails);
+        const foundCategory = await db
+            .collection(CATEGORY_COLLECTION_NAME)
+            .findOne({ id: categoryId }, { projection: { _id: 0 } });
+
+        if (foundCategory) {
+            return {
+                data: foundCategory,
+                success: true,
+                status: StatusCodes.OK,
+                message: `${categoryId} found successfully`
+            };
+        } else {
+            return {
+                data: {},
+                success: true,
+                status: StatusCodes.NOT_FOUND,
+                message: `${categoryId} not found`
+            };
+        }
     } catch (error) {
-        return res.status(500).json(categoryDetails);
+        throw error;
     }
 };
 
