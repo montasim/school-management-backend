@@ -11,9 +11,9 @@ import { CategorySchema } from "./category.schema.js";
  * @param {function} next - Express next middleware function.
  * @returns {void}
  */
-const createCategoryValidator = async (req, res, next) => {
+const categoryBodyValidator = async (req, res, next) => {
     try {
-        const { error } = CategorySchema.createCategorySchema.validate(req?.body);
+        const { error } = CategorySchema.categoryBodySchema.validate(req?.body);
         const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {
@@ -68,10 +68,10 @@ const categoryParamsValidator = async (req, res, next) => {
 /**
  * Collection of validator middlewares related to category operations.
  * @typedef {Object} CategoryValidators
- * @property {function} createCategoryValidator - Validates creation of new category.
- * @property {function} getACategoryValidator - Validates fetching a category by its ID.
+ * @property {function} categoryBodyValidator - Validates creation of new category.
+ * @property {function} categoryParamsValidator - Validates fetching a category by its ID.
  */
 export const CategoryValidators = {
-    createCategoryValidator,
+    categoryBodyValidator,
     categoryParamsValidator,
 };

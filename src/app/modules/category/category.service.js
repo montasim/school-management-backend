@@ -157,11 +157,79 @@ const getACategoryService = async (db, categoryId) => {
     }
 };
 
-const updateACategoryService = async (db, res, newCategoryDetails) => {
+/**
+ * Service to update a category in the database.
+ *
+ * @async
+ * @function
+ * @param {Object} db - The database connection object.
+ * @param {string} categoryId - The ID of the category to be updated.
+ * @param {Object} newCategoryDetails - The new details for the category.
+ * @param {string} [newCategoryDetails.name] - The new name for the category (optional).
+ * @param {string} newCategoryDetails.requestedBy - The ID of the user making the request.
+ *
+ * @returns {Promise<Object>} The result object containing:
+ * - `data`: The updated category details (if updated successfully).
+ * - `success`: A boolean indicating if the update operation was successful.
+ * - `status`: The HTTP status code for the operation.
+ * - `message`: A message indicating the result of the operation.
+ *
+ * @throws {Error} If there's any error during the update operation.
+ */
+const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
     try {
-        res.status(200).json(newCategoryDetails);
+        const foundCategory = await db
+            .collection(CATEGORY_COLLECTION_NAME)
+            .findOne({ id: categoryId }, { projection: { _id: 0 } });
+
+        if (foundCategory) {
+            const { name, requestedBy} = newCategoryDetails;
+            const updatedCategoryDetails = {
+                id: foundCategory?.id,
+                ...(name && { name }),
+                createdBy: foundCategory?.createdBy,
+                createdAt: foundCategory?.createdAt,
+                modifiedBy: requestedBy,
+                modifiedAt: new Date(),
+            };
+            const updateSuperAdminDataResult = await db
+                .collection(CATEGORY_COLLECTION_NAME)
+                .updateOne(
+                    { id: categoryId },
+                    { $set: updatedCategoryDetails },
+                );
+
+            if (updateSuperAdminDataResult?.modifiedCount > 0) {
+                const updatedData = await db
+                    .collection(CATEGORY_COLLECTION_NAME)
+                    .findOne({ id: categoryId });
+
+                delete updatedData._id;
+
+                return {
+                    data: updatedData,
+                    success: true,
+                    status: StatusCodes.OK,
+                    message: `${categoryId} updated successfully`
+                };
+            } else {
+                return {
+                    data: {},
+                    success: true,
+                    status: StatusCodes.UNPROCESSABLE_ENTITY,
+                    message: `${categoryId} not updated`
+                };
+            }
+        } else {
+            return {
+                data: {},
+                success: true,
+                status: StatusCodes.NOT_FOUND,
+                message: `${categoryId} not found`
+            };
+        }
     } catch (error) {
-        return res.status(500).json(newCategoryDetails);
+        throw error;
     }
 };
 

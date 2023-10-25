@@ -17,7 +17,7 @@ const router = express.Router();
  */
 router.post(
     "/",
-    CategoryValidators.createCategoryValidator,
+    CategoryValidators.categoryBodyValidator,
     CategoryController.createCategoryController
 );
 
@@ -64,7 +64,12 @@ router.get(
  * @inner
  * @returns {express.Response} res - Express response object.
  */
-router.put("/:categoryId", CategoryController.updateCategoryController);
+router.put(
+    "/:categoryId",
+    CategoryValidators.categoryParamsValidator,
+    CategoryValidators.categoryBodyValidator,
+    CategoryController.updateCategoryController
+);
 
 /**
  * Handle DELETE request to delete a category by its ID.
@@ -78,7 +83,11 @@ router.put("/:categoryId", CategoryController.updateCategoryController);
  * @inner
  * @returns {express.Response} res - Express response object.
  */
-router.delete("/:categoryId", CategoryController.deleteCategoryController);
+router.delete(
+    "/:categoryId",
+    CategoryValidators.categoryParamsValidator,
+    CategoryController.deleteCategoryController
+);
 
 /**
  * Exports the router that contains category-related routes.

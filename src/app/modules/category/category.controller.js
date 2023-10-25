@@ -114,18 +114,49 @@ const getACategoryController = async (req, res) => {
 };
 
 /**
- * Updates a category.
+ * Update a category based on the provided category ID and details.
  *
- * @async
  * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @async
+ * @param {express.Request} req - Express request object.
+ * @param {express.Response} res - Express response object.
+ *
+ * @property {string} req.params.categoryId - The ID of the category to be updated.
+ * @property {Object} req.body - The body of the request containing the details to update.
+ * @property {string} req.body.name - The name of the category.
+ * @property {string} req.body.requestedBy - The name of the person requesting the update.
+ *
+ * @returns {express.Response} res - The response object.
+ * @returns {Object} res.body - The response body.
+ * @returns {Object} res.body.data - The updated category details.
+ * @returns {boolean} res.body.success - Indicates the success of the operation.
+ * @returns {number} res.body.status - The HTTP status code.
+ * @returns {string} res.body.message - A message describing the outcome of the operation.
+ *
+ * @throws {Error} Throws an error if there's an issue updating the category.
  */
 const updateCategoryController = async (req, res) => {
     try {
-        const updateACategoryServiceResponse = await CategoryService.updateACategoryService(req.db, res, "update a category controller");
+        const { categoryId } = req?.params;
+        const {
+            name,
+            requestedBy
+        } = req?.body;
+        const newCategoryDetails = {
+            name,
+            requestedBy
+        };
+        const updatedCategoryServiceResponse = await CategoryService.updateACategoryService(req.db, categoryId, newCategoryDetails);
+        const returnData = {
+            data: updatedCategoryServiceResponse?.data,
+            success: updatedCategoryServiceResponse?.success,
+            status: updatedCategoryServiceResponse?.status,
+            message: updatedCategoryServiceResponse?.message,
+        };
+
+        return res.status(updatedCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
     }
 };
 

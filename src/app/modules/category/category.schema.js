@@ -17,7 +17,7 @@ const idSchema = Joi.string().pattern(idPattern).min(9).max(20);
  * It expects a 'name' and 'requestedBy' properties in the request body.
  * @constant {Object}
  */
-const createCategorySchema = Joi.object({
+const categoryBodySchema = Joi.object({
     name: Joi.string().min(3).max(20).required(),
     requestedBy: Joi.string().min(3).max(20).required(),
 });
@@ -34,6 +34,6 @@ const categoryParamsSchema = idSchema.required();
  * @type {Object}
  */
 export const CategorySchema = {
-    createCategorySchema,
-    categoryParamsSchema
+    categoryBodySchema,
+    categoryParamsSchema,
 };
