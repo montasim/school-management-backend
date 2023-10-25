@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+import { v4 as uuidv4 } from 'uuid';
 import { CATEGORY_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import isCategoryAlreadyExists from "../../../shared/isCategoryAlreadyExists.js";
@@ -36,6 +37,7 @@ const createCategoryService = async (db,  newCategoryDetails) => {
         } else {
             if (isValidRequester) {
                 const prepareNewCategoryDetails = {
+                    id: `category-${uuidv4().substr(0, 6)}`,
                     name: name,
                     createdBy: requestedBy,
                     createdAt: new Date(),
