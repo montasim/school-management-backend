@@ -18,7 +18,7 @@ const allowedOrigins = [
 
 // Use the cors middleware to allow requests from a specific domain
 app.use(cors({
-  origin: "*",
+  origin: allowedOrigins,
   methods: "GET,PUT,POST,DELETE",
   credentials: true, // If you need to support cookies or authentication
 }));
@@ -37,7 +37,7 @@ app.use(cors({
  * @param {function} next - The next middleware function in the pipeline.
 
  */
-// app.use(isBrowserRequest);
+app.use(isBrowserRequest);
 
 // Connect to the database
 app.use(Database.connectToDatabase);
