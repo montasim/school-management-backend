@@ -37,7 +37,7 @@ app.use(cors({
  * @param {function} next - The next middleware function in the pipeline.
 
  */
-app.use(isBrowserRequest);
+// app.use(isBrowserRequest);
 
 // Connect to the database
 app.use(Database.connectToDatabase);
