@@ -18,7 +18,7 @@ const allowedOrigins = [
 
 // Use the cors middleware to allow requests from a specific domain
 app.use(cors({
-  origin: allowedOrigins,
+  origin: "*",
   methods: "GET,PUT,POST,DELETE",
   credentials: true, // If you need to support cookies or authentication
 }));
