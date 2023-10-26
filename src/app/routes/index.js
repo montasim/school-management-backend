@@ -6,6 +6,7 @@ import classRoutes from "../modules/class/class.routes.js";
 import downloadRoutes from "../modules/download/download.routes.js";
 import noticeRoutes from "../modules/notice/notice.routes.js";
 import resultRoutes from "../modules/result/result.routes.js";
+import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 
@@ -90,7 +91,7 @@ router.use(`/api/v1/result`, resultRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use(`/api/v1/routine`, routineRoutes);
+router.use(`/api/v1/routine`, routineRoutes);
 
 /**
  * Sets up versioned routing for the student module.
