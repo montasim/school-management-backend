@@ -1,5 +1,5 @@
 import express from "express";
-import { API_VERSION, PORT } from "./constants/index.js";
+import { PORT } from "./constants/index.js";
 import isBrowserRequest from "./app/middlewares/isBrowserRequest.js";
 import { Database } from "./app/middlewares/database.js";
 import appRoutes from "./app/routes/index.js";
