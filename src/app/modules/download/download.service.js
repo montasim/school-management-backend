@@ -26,8 +26,8 @@ const createDownloadService = async (db,  newDownloadDetails, file) => {
             const prepareNewDownloadDetails = {
                 id: `download-${uuidv4().substr(0, 6)}`,
                 title: title,
-                filename: file.originalname + Date.now(),
-                path: file.path,
+                filename: file?.originalname,
+                path: file?.path,
                 createdBy: requestedBy,
                 createdAt: new Date(),
             };
@@ -36,11 +36,15 @@ const createDownloadService = async (db,  newDownloadDetails, file) => {
                 .insertOne(prepareNewDownloadDetails);
 
             if (result?.acknowledged) {
+                const fileDetails = await db
+                    .collection(DOWNLOAD_COLLECTION_NAME)
+                    .findOne({ filename: prepareNewDownloadDetails?.filename }, { projection: { _id: 0 } });
+
                 return {
-                    data: result,
+                    data: fileDetails,
                     success: true,
                     status: StatusCodes.OK,
-                    message: 'File uploaded successfully'
+                    message: `${fileDetails?.filename} uploaded successfully`
                 };
             } else {
                 return {
@@ -81,7 +85,7 @@ const getDownloadListService = async (db) => {
         if (classList?.length > 0) {
             return {
                 data: classList,
-                success: false,
+                success: true,
                 status: StatusCodes.OK,
                 message: `${classList?.length} file found`
             };
@@ -109,7 +113,9 @@ const getDownloadListService = async (db) => {
  */
 const getADownloadService = async (db, fileName) => {
     try {
-        const file = await db.collection(DOWNLOAD_COLLECTION_NAME).findOne({ filename: fileName }, { projection: { _id: 0 } });
+        const file = await db
+            .collection(DOWNLOAD_COLLECTION_NAME)
+            .findOne({ filename: fileName }, { projection: { _id: 0 } });
 
         if (file) {
             return {
@@ -146,16 +152,26 @@ const deleteADownloadService = async (db, requestedBy, fileName) => {
         const isValidRequester = await isRequesterValid(db, requestedBy);
 
         if (isValidRequester) {
-            const result = await db.collection(DOWNLOAD_COLLECTION_NAME).deleteOne({ filename: fileName });
+            const fileDetails = await db
+                .collection(DOWNLOAD_COLLECTION_NAME)
+                .findOne({ filename: fileName }, { projection: { _id: 0 } });
+            const result = await db
+                .collection(DOWNLOAD_COLLECTION_NAME)
+                .deleteOne({ filename: fileName });
 
-            if (result.deletedCount === 1) {
+            if (result?.acknowledged) {
                 // Also remove the file from the disk (using Node's fs module)
                 const fs = require('fs');
-                const path = require('path');
-                fs.unlinkSync(path.join('uploads/', fileName));
+                fs.unlink(fileDetails?.path, (error) => {
+                    if (error) {
+                        console.error("Error deleting the file:", error);
+                    } else {
+                        console.log("File deleted successfully");
+                    }
+                });
 
                 return {
-                    data: {},
+                    data: result,
                     success: true,
                     status: StatusCodes.OK,
                     message: 'File deleted successfully'

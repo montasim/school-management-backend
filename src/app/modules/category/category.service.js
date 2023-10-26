@@ -260,7 +260,6 @@ const deleteACategoryService = async (db, requestedBy, categoryId) => {
             const isCategoryExists = await isCategoryValid(db, categoryId);
 
             if (isCategoryExists) {
-                console.log(isCategoryExists)
                 const deleteResult = await db
                     .collection(CATEGORY_COLLECTION_NAME)
                     .deleteOne({ id: categoryId });

@@ -1,6 +1,7 @@
 import express from "express";
 import { DownloadController } from "./download.controller.js";
 import multerConfig from "../../../helpers/multerConfig.js";
+import {DownloadValidators} from "./download.validator.js";
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ const router = express.Router();
 router.post(
     "/",
     multerConfig.single('file'),
+    DownloadValidators.downloadBodyValidator,
     DownloadController.createDownloadController
 );
 
@@ -45,6 +47,7 @@ router.get(
  */
 router.get(
     "/:fileName",
+    DownloadValidators.downloadParamsValidator,
     DownloadController.getADownloadController
 );
 
@@ -59,6 +62,8 @@ router.get(
  */
 router.delete(
     "/:fileName",
+    DownloadValidators.downloadParamsValidator,
+    DownloadValidators.deleteDownloadQueryValidator,
     DownloadController.deleteADownloadController
 );
 

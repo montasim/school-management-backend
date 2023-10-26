@@ -278,7 +278,6 @@ const deleteAAdministrationService = async (db, requestedBy, administrationId) =
             const isAdministrationExists = await isAdministrationValid(db, administrationId);
 
             if (isAdministrationExists) {
-                console.log(isAdministrationExists)
                 const deleteResult = await db
                     .collection(ADMINISTRATION_COLLECTION_NAME)
                     .deleteOne({ id: administrationId });

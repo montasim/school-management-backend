@@ -260,7 +260,6 @@ const deleteAClassService = async (db, requestedBy, classId) => {
             const isClassExists = await isClassValid(db, classId);
 
             if (isClassExists) {
-                console.log(isClassExists)
                 const deleteResult = await db
                     .collection(CLASS_COLLECTION_NAME)
                     .deleteOne({ id: classId });

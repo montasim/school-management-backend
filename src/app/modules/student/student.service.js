@@ -278,7 +278,6 @@ const deleteAStudentService = async (db, requestedBy, studentId) => {
             const isStudentExists = await isStudentValid(db, studentId);
 
             if (isStudentExists) {
-                console.log(isStudentExists)
                 const deleteResult = await db
                     .collection(STUDENT_COLLECTION_NAME)
                     .deleteOne({ id: studentId });
