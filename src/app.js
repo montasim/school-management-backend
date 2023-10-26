@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { PORT } from "./constants/index.js";
 import isBrowserRequest from "./app/middlewares/isBrowserRequest.js";
 import { Database } from "./app/middlewares/database.js";
@@ -9,13 +10,26 @@ const app = express();
 // Middleware to parse JSON requests
 app.use(express.json());
 
+// Use the cors middleware to allow requests from a specific domain
+app.use(cors({
+  origin: "https://school-abid.vercel.app",
+  methods: "GET,PUT,POST,DELETE",
+  credentials: true, // If you need to support cookies or authentication
+}));
+
 /**
- * Middleware to handle browser requests.
+* Middleware to handle browser requests.
+app.use(cors({
  * It checks if the request is made from a browser and prevents access to API endpoints from browsers.
+  origin: "https://school-abid.vercel.app",
  *
+  methods: "GET,PUT,POST,DELETE",
  * @param {object} req - The Express request object.
+  credentials: true, // If you need to support cookies or authentication
  * @param {object} res - The Express response object.
+}));
  * @param {function} next - The next middleware function in the pipeline.
+
  */
 app.use(isBrowserRequest);
 
@@ -23,6 +37,7 @@ app.use(isBrowserRequest);
 app.use(Database.connectToDatabase);
 
 /**
+// Main route that attaches all application routes
  * Main route that attaches all application routes.
  * For example, if there is a "/status" route in `appRoutes`,
  * you can access it directly via "http://localhost:<PORT>/status".
