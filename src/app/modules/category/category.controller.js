@@ -29,7 +29,7 @@ const createCategoryController = async (req, res) => {
             name,
             requestedBy
         };
-        const createCategoryServiceResponse = CategoryService.createCategoryService(req.db, newCategoryDetails);
+        const createCategoryServiceResponse = CategoryService.createCategoryService(req?.db, newCategoryDetails);
         const returnData = {
             data: createCategoryServiceResponse?.data,
             success: createCategoryServiceResponse?.success,
@@ -64,7 +64,7 @@ const createCategoryController = async (req, res) => {
  */
 const getCategoryListController = async (req, res) => {
     try {
-        const createCategoryServiceResponse = await CategoryService.getCategoryListService(req.db);
+        const createCategoryServiceResponse = await CategoryService.getCategoryListService(req?.db);
         const returnData = {
             data: createCategoryServiceResponse?.data,
             success: createCategoryServiceResponse?.success,
@@ -98,7 +98,7 @@ const getCategoryListController = async (req, res) => {
 const getACategoryController = async (req, res) => {
     try {
         const { categoryId } = req?.params;
-        const createCategoryServiceResponse = CategoryService.getACategoryService(req.db, categoryId);
+        const createCategoryServiceResponse = CategoryService.getACategoryService(req?.db, categoryId);
         const returnData = {
             data: createCategoryServiceResponse?.data,
             success: createCategoryServiceResponse?.success,
@@ -145,7 +145,7 @@ const updateACategoryController = async (req, res) => {
             name,
             requestedBy
         };
-        const updatedCategoryServiceResponse = await CategoryService.updateACategoryService(req.db, categoryId, newCategoryDetails);
+        const updatedCategoryServiceResponse = await CategoryService.updateACategoryService(req?.db, categoryId, newCategoryDetails);
         const returnData = {
             data: updatedCategoryServiceResponse?.data,
             success: updatedCategoryServiceResponse?.success,
@@ -178,7 +178,7 @@ const deleteACategoryController = async (req, res) => {
     try {
         const { categoryId } = req?.params;
         const { requestedBy } = req?.query;
-        const deletedCategoryServiceResponse = await CategoryService.deleteACategoryService(req.db, requestedBy, categoryId);
+        const deletedCategoryServiceResponse = await CategoryService.deleteACategoryService(req?.db, requestedBy, categoryId);
         const returnData = {
             data: deletedCategoryServiceResponse?.data,
             success: deletedCategoryServiceResponse?.success,

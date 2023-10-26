@@ -19,7 +19,7 @@ const createResultController = async (req, res) => {
             title,
             requestedBy
         };
-        const createResultServiceResponse = await ResultService.createResultService(req.db, newResultDetails, req.file);
+        const createResultServiceResponse = await ResultService.createResultService(req?.db, newResultDetails, req.file);
 
         const returnData = {
             data: createResultServiceResponse?.data,
@@ -44,7 +44,7 @@ const createResultController = async (req, res) => {
  */
 const getResultListController = async (req, res) => {
     try {
-        const getResultServiceListResponse = await ResultService.getResultListService(req.db);
+        const getResultServiceListResponse = await ResultService.getResultListService(req?.db);
 
         const returnData = {
             data: getResultServiceListResponse?.data,
@@ -70,7 +70,7 @@ const getResultListController = async (req, res) => {
 const getAResultController = async (req, res) => {
     try {
         const { fileName } = req?.params;
-        const getAResultServiceResponse = await ResultService.getAResultService(req.db, fileName);
+        const getAResultServiceResponse = await ResultService.getAResultService(req?.db, fileName);
 
         const returnData = {
             data: getAResultServiceResponse?.data,
@@ -98,7 +98,7 @@ const deleteAResultController = async (req, res) => {
         const { fileName } = req?.params;
         const { requestedBy } = req?.query;
 
-        const deletedResultServiceResponse = await ResultService.deleteAResultService(req.db, requestedBy, fileName);
+        const deletedResultServiceResponse = await ResultService.deleteAResultService(req?.db, requestedBy, fileName);
 
         const returnData = {
             data: deletedResultServiceResponse?.data,

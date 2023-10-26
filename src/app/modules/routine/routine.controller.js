@@ -19,7 +19,7 @@ const createRoutineController = async (req, res) => {
             title,
             requestedBy
         };
-        const createRoutineServiceResponse = await RoutineService.createRoutineService(req.db, newRoutineDetails, req.file);
+        const createRoutineServiceResponse = await RoutineService.createRoutineService(req?.db, newRoutineDetails, req.file);
 
         const returnData = {
             data: createRoutineServiceResponse?.data,
@@ -44,7 +44,7 @@ const createRoutineController = async (req, res) => {
  */
 const getRoutineListController = async (req, res) => {
     try {
-        const getRoutineServiceListResponse = await RoutineService.getRoutineListService(req.db);
+        const getRoutineServiceListResponse = await RoutineService.getRoutineListService(req?.db);
 
         const returnData = {
             data: getRoutineServiceListResponse?.data,
@@ -70,7 +70,7 @@ const getRoutineListController = async (req, res) => {
 const getARoutineController = async (req, res) => {
     try {
         const { fileName } = req?.params;
-        const getARoutineServiceResponse = await RoutineService.getARoutineService(req.db, fileName);
+        const getARoutineServiceResponse = await RoutineService.getARoutineService(req?.db, fileName);
 
         const returnData = {
             data: getARoutineServiceResponse?.data,
@@ -98,7 +98,7 @@ const deleteARoutineController = async (req, res) => {
         const { fileName } = req?.params;
         const { requestedBy } = req?.query;
 
-        const deletedRoutineServiceResponse = await RoutineService.deleteARoutineService(req.db, requestedBy, fileName);
+        const deletedRoutineServiceResponse = await RoutineService.deleteARoutineService(req?.db, requestedBy, fileName);
 
         const returnData = {
             data: deletedRoutineServiceResponse?.data,

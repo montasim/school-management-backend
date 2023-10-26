@@ -29,7 +29,7 @@ const createClassController = async (req, res) => {
             name,
             requestedBy
         };
-        const createClassServiceResponse = ClassService.createClassService(req.db, newClassDetails);
+        const createClassServiceResponse = ClassService.createClassService(req?.db, newClassDetails);
         const returnData = {
             data: createClassServiceResponse?.data,
             success: createClassServiceResponse?.success,
@@ -64,7 +64,7 @@ const createClassController = async (req, res) => {
  */
 const getClassListController = async (req, res) => {
     try {
-        const createClassServiceResponse = await ClassService.getClassListService(req.db);
+        const createClassServiceResponse = await ClassService.getClassListService(req?.db);
         const returnData = {
             data: createClassServiceResponse?.data,
             success: createClassServiceResponse?.success,
@@ -98,7 +98,7 @@ const getClassListController = async (req, res) => {
 const getAClassController = async (req, res) => {
     try {
         const { classId } = req?.params;
-        const createClassServiceResponse = ClassService.getAClassService(req.db, classId);
+        const createClassServiceResponse = ClassService.getAClassService(req?.db, classId);
         const returnData = {
             data: createClassServiceResponse?.data,
             success: createClassServiceResponse?.success,
@@ -145,7 +145,7 @@ const updateAClassController = async (req, res) => {
             name,
             requestedBy
         };
-        const updatedClassServiceResponse = await ClassService.updateAClassService(req.db, classId, newClassDetails);
+        const updatedClassServiceResponse = await ClassService.updateAClassService(req?.db, classId, newClassDetails);
         const returnData = {
             data: updatedClassServiceResponse?.data,
             success: updatedClassServiceResponse?.success,
@@ -178,7 +178,7 @@ const deleteAClassController = async (req, res) => {
     try {
         const { classId } = req?.params;
         const { requestedBy } = req?.query;
-        const deletedClassServiceResponse = await ClassService.deleteAClassService(req.db, requestedBy, classId);
+        const deletedClassServiceResponse = await ClassService.deleteAClassService(req?.db, requestedBy, classId);
         const returnData = {
             data: deletedClassServiceResponse?.data,
             success: deletedClassServiceResponse?.success,

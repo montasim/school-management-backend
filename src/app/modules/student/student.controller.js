@@ -35,7 +35,7 @@ const createStudentController = async (req, res) => {
             image,
             requestedBy
         };
-        const createStudentServiceResponse = StudentService.createStudentService(req.db, newStudentDetails);
+        const createStudentServiceResponse = StudentService.createStudentService(req?.db, newStudentDetails);
         const returnData = {
             data: createStudentServiceResponse?.data,
             success: createStudentServiceResponse?.success,
@@ -70,7 +70,7 @@ const createStudentController = async (req, res) => {
  */
 const getStudentListController = async (req, res) => {
     try {
-        const createStudentServiceResponse = await StudentService.getStudentListService(req.db);
+        const createStudentServiceResponse = await StudentService.getStudentListService(req?.db);
         const returnData = {
             data: createStudentServiceResponse?.data,
             success: createStudentServiceResponse?.success,
@@ -104,7 +104,7 @@ const getStudentListController = async (req, res) => {
 const getAStudentController = async (req, res) => {
     try {
         const { studentId } = req?.params;
-        const createStudentServiceResponse = StudentService.getAStudentService(req.db, studentId);
+        const createStudentServiceResponse = StudentService.getAStudentService(req?.db, studentId);
         const returnData = {
             data: createStudentServiceResponse?.data,
             success: createStudentServiceResponse?.success,
@@ -157,7 +157,7 @@ const updateAStudentController = async (req, res) => {
             image,
             requestedBy
         };
-        const updatedStudentServiceResponse = await StudentService.updateAStudentService(req.db, studentId, newStudentDetails);
+        const updatedStudentServiceResponse = await StudentService.updateAStudentService(req?.db, studentId, newStudentDetails);
         const returnData = {
             data: updatedStudentServiceResponse?.data,
             success: updatedStudentServiceResponse?.success,
@@ -190,7 +190,7 @@ const deleteAStudentController = async (req, res) => {
     try {
         const { studentId } = req?.params;
         const { requestedBy } = req?.query;
-        const deletedStudentServiceResponse = await StudentService.deleteAStudentService(req.db, requestedBy, studentId);
+        const deletedStudentServiceResponse = await StudentService.deleteAStudentService(req?.db, requestedBy, studentId);
         const returnData = {
             data: deletedStudentServiceResponse?.data,
             success: deletedStudentServiceResponse?.success,

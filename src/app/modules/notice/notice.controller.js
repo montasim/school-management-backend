@@ -19,7 +19,7 @@ const createNoticeController = async (req, res) => {
             title,
             requestedBy
         };
-        const createNoticeServiceResponse = await NoticeService.createNoticeService(req.db, newNoticeDetails, req.file);
+        const createNoticeServiceResponse = await NoticeService.createNoticeService(req?.db, newNoticeDetails, req.file);
 
         const returnData = {
             data: createNoticeServiceResponse?.data,
@@ -44,7 +44,7 @@ const createNoticeController = async (req, res) => {
  */
 const getNoticeListController = async (req, res) => {
     try {
-        const getNoticeServiceListResponse = await NoticeService.getNoticeListService(req.db);
+        const getNoticeServiceListResponse = await NoticeService.getNoticeListService(req?.db);
 
         const returnData = {
             data: getNoticeServiceListResponse?.data,
@@ -70,7 +70,7 @@ const getNoticeListController = async (req, res) => {
 const getANoticeController = async (req, res) => {
     try {
         const { fileName } = req?.params;
-        const getANoticeServiceResponse = await NoticeService.getANoticeService(req.db, fileName);
+        const getANoticeServiceResponse = await NoticeService.getANoticeService(req?.db, fileName);
 
         const returnData = {
             data: getANoticeServiceResponse?.data,
@@ -98,7 +98,7 @@ const deleteANoticeController = async (req, res) => {
         const { fileName } = req?.params;
         const { requestedBy } = req?.query;
 
-        const deletedNoticeServiceResponse = await NoticeService.deleteANoticeService(req.db, requestedBy, fileName);
+        const deletedNoticeServiceResponse = await NoticeService.deleteANoticeService(req?.db, requestedBy, fileName);
 
         const returnData = {
             data: deletedNoticeServiceResponse?.data,

@@ -35,7 +35,7 @@ const createAdministrationController = async (req, res) => {
             image,
             requestedBy
         };
-        const createAdministrationServiceResponse = AdministrationService.createAdministrationService(req.db, newAdministrationDetails);
+        const createAdministrationServiceResponse = AdministrationService.createAdministrationService(req?.db, newAdministrationDetails);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
             success: createAdministrationServiceResponse?.success,
@@ -70,7 +70,7 @@ const createAdministrationController = async (req, res) => {
  */
 const getAdministrationListController = async (req, res) => {
     try {
-        const createAdministrationServiceResponse = await AdministrationService.getAdministrationListService(req.db);
+        const createAdministrationServiceResponse = await AdministrationService.getAdministrationListService(req?.db);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
             success: createAdministrationServiceResponse?.success,
@@ -104,7 +104,7 @@ const getAdministrationListController = async (req, res) => {
 const getAAdministrationController = async (req, res) => {
     try {
         const { administrationId } = req?.params;
-        const createAdministrationServiceResponse = AdministrationService.getAAdministrationService(req.db, administrationId);
+        const createAdministrationServiceResponse = AdministrationService.getAAdministrationService(req?.db, administrationId);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
             success: createAdministrationServiceResponse?.success,
@@ -157,7 +157,7 @@ const updateAAdministrationController = async (req, res) => {
             image,
             requestedBy
         };
-        const updatedAdministrationServiceResponse = await AdministrationService.updateAAdministrationService(req.db, administrationId, newAdministrationDetails);
+        const updatedAdministrationServiceResponse = await AdministrationService.updateAAdministrationService(req?.db, administrationId, newAdministrationDetails);
         const returnData = {
             data: updatedAdministrationServiceResponse?.data,
             success: updatedAdministrationServiceResponse?.success,
@@ -190,7 +190,7 @@ const deleteAAdministrationController = async (req, res) => {
     try {
         const { administrationId } = req?.params;
         const { requestedBy } = req?.query;
-        const deletedAdministrationServiceResponse = await AdministrationService.deleteAAdministrationService(req.db, requestedBy, administrationId);
+        const deletedAdministrationServiceResponse = await AdministrationService.deleteAAdministrationService(req?.db, requestedBy, administrationId);
         const returnData = {
             data: deletedAdministrationServiceResponse?.data,
             success: deletedAdministrationServiceResponse?.success,

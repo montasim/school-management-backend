@@ -19,7 +19,7 @@ const createDownloadController = async (req, res) => {
             title,
             requestedBy
         };
-        const createDownloadServiceResponse = await DownloadService.createDownloadService(req.db, newDownloadDetails, req.file);
+        const createDownloadServiceResponse = await DownloadService.createDownloadService(req?.db, newDownloadDetails, req.file);
 
         const returnData = {
             data: createDownloadServiceResponse?.data,
@@ -44,7 +44,7 @@ const createDownloadController = async (req, res) => {
  */
 const getDownloadListController = async (req, res) => {
     try {
-        const getDownloadServiceListResponse = await DownloadService.getDownloadListService(req.db);
+        const getDownloadServiceListResponse = await DownloadService.getDownloadListService(req?.db);
 
         const returnData = {
             data: getDownloadServiceListResponse?.data,
@@ -70,7 +70,7 @@ const getDownloadListController = async (req, res) => {
 const getADownloadController = async (req, res) => {
     try {
         const { fileName } = req?.params;
-        const getADownloadServiceResponse = await DownloadService.getADownloadService(req.db, fileName);
+        const getADownloadServiceResponse = await DownloadService.getADownloadService(req?.db, fileName);
 
         const returnData = {
             data: getADownloadServiceResponse?.data,
@@ -98,7 +98,7 @@ const deleteADownloadController = async (req, res) => {
         const { fileName } = req?.params;
         const { requestedBy } = req?.query;
 
-        const deletedDownloadServiceResponse = await DownloadService.deleteADownloadService(req.db, requestedBy, fileName);
+        const deletedDownloadServiceResponse = await DownloadService.deleteADownloadService(req?.db, requestedBy, fileName);
 
         const returnData = {
             data: deletedDownloadServiceResponse?.data,
