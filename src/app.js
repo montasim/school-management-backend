@@ -10,9 +10,15 @@ const app = express();
 // Middleware to parse JSON requests
 app.use(express.json());
 
+// Define an array of allowed origins
+const allowedOrigins = [
+  "https://school-abid.vercel.app",
+  "http://localhost:3000", // Allow requests from localhost
+];
+
 // Use the cors middleware to allow requests from a specific domain
 app.use(cors({
-  origin: "https://school-abid.vercel.app",
+  origin: allowedOrigins,
   methods: "GET,PUT,POST,DELETE",
   credentials: true, // If you need to support cookies or authentication
 }));
