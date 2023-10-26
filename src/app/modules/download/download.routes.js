@@ -1,7 +1,7 @@
 import express from "express";
-import { DownloadController } from "./download.controller.js";
-import multerConfig from "../../../helpers/multerConfig.js";
 import {DownloadValidators} from "./download.validator.js";
+import multerConfig from "../../../helpers/multerConfig.js";
+import { DownloadController } from "./download.controller.js";
 
 const router = express.Router();
 

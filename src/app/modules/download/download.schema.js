@@ -8,7 +8,7 @@ import Joi from "joi";
  * @constant
  */
 const downloadBodySchema = Joi.object({
-    title: Joi.string().min(3).max(40).required(),
+    title: Joi.string().min(3).max(100).required(),
     file: Joi.object({
         fieldname: Joi.string().valid('file').required(),
         originalname: Joi.string().min(3).max(100).required(),
