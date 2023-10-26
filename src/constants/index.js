@@ -9,12 +9,12 @@ dotenv.config();
  * - If NODE_ENV is 'staging', load variables from '.env.staging'.
  * - Otherwise, load variables from '.env.development'.
  */
-if (process.env.NODE_ENV === "production") {
-    dotenv.config({ path: ".env.production" });
+if (process.env.NODE_ENV === "development") {
+    dotenv.config({ path: ".env.development" });
 } else if (process.env.NODE_ENV === "staging") {
     dotenv.config({ path: ".env.staging" });
 } else {
-    dotenv.config({ path: ".env.development" });
+    dotenv.config({ path: ".env.production" });
 }
 
 /**
