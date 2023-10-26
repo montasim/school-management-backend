@@ -5,6 +5,7 @@ import categoryRoutes from "../modules/category/category.routes.js";
 import classRoutes from "../modules/class/class.routes.js";
 import downloadRoutes from "../modules/download/download.routes.js";
 import noticeRoutes from "../modules/notice/notice.routes.js";
+import resultRoutes from "../modules/result/result.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 
@@ -80,7 +81,7 @@ router.use(`/api/v1/notice`, noticeRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use(`/api/v1/result`, resultRoutes);
+router.use(`/api/v1/result`, resultRoutes);
 
 /**
  * Sets up versioned routing for the routine module.

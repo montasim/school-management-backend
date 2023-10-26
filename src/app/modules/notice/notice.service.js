@@ -7,7 +7,7 @@ import { StatusCodes } from "http-status-codes";
 import {v4 as uuidv4} from "uuid";
 import fs from "fs";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
-import {DOWNLOAD_COLLECTION_NAME} from "../../../constants/index.js";
+import {NOTICE_COLLECTION_NAME} from "../../../constants/index.js";
 
 /**
  * Creates a new notice entry in the database.
@@ -38,12 +38,12 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
                 createdAt: new Date(),
             };
             const result = await db
-                .collection(DOWNLOAD_COLLECTION_NAME)
+                .collection(NOTICE_COLLECTION_NAME)
                 .insertOne(prepareNewNoticeDetails);
 
             if (result?.acknowledged) {
                 const fileDetails = await db
-                    .collection(DOWNLOAD_COLLECTION_NAME)
+                    .collection(NOTICE_COLLECTION_NAME)
                     .findOne({ filename: prepareNewNoticeDetails?.filename }, { projection: { _id: 0 } });
 
                 return {
@@ -85,7 +85,7 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
 const getNoticeListService = async (db) => {
     try {
         const classList = await db
-            .collection(DOWNLOAD_COLLECTION_NAME)
+            .collection(NOTICE_COLLECTION_NAME)
             .find({}, { projection: { _id: 0 } })
             .toArray();
 
@@ -122,7 +122,7 @@ const getNoticeListService = async (db) => {
 const getANoticeService = async (db, fileName) => {
     try {
         const file = await db
-            .collection(DOWNLOAD_COLLECTION_NAME)
+            .collection(NOTICE_COLLECTION_NAME)
             .findOne({ filename: fileName }, { projection: { _id: 0 } });
 
         if (file) {
@@ -162,10 +162,10 @@ const deleteANoticeService = async (db, requestedBy, fileName) => {
 
         if (isValidRequester) {
             const fileDetails = await db
-                .collection(DOWNLOAD_COLLECTION_NAME)
+                .collection(NOTICE_COLLECTION_NAME)
                 .findOne({ filename: fileName }, { projection: { _id: 0 } });
             const result = await db
-                .collection(DOWNLOAD_COLLECTION_NAME)
+                .collection(NOTICE_COLLECTION_NAME)
                 .deleteOne({ filename: fileName });
 
             if (result?.acknowledged) {
