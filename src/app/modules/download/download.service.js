@@ -1,18 +1,24 @@
+/**
+ * @module DownloadService
+ * @description This module provides services related to downloads such as creating, listing, retrieving, and deleting download entries in the database.
+ */
+
 import { StatusCodes } from "http-status-codes";
+import {v4 as uuidv4} from "uuid";
+import fs from "fs";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import {DOWNLOAD_COLLECTION_NAME} from "../../../constants/index.js";
-import {v4 as uuidv4} from "uuid";
-
 
 /**
- * Create and store a new download entry in the database.
+ * Creates a new download entry in the database.
  *
  * @async
+ * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} newDownloadDetails - The requester's identifier.
- * @param {object} file - The file uploaded via multer middleware.
- * @returns {object} A response object with details of the operation.
- * @throws {error} Throws an error if an error occurs.
+ * @param {object} newDownloadDetails - Details of the download.
+ * @param {object} file - File uploaded via multer middleware.
+ * @returns {Promise<object>} A promise that resolves to an object representing the operation's result.
+ * @throws Will throw an error if an error occurs.
  */
 const createDownloadService = async (db,  newDownloadDetails, file) => {
     try {
@@ -68,12 +74,13 @@ const createDownloadService = async (db,  newDownloadDetails, file) => {
 };
 
 /**
- * Retrieve a list of all download entries from the database.
+ * Retrieves a list of all download entries from the database.
  *
  * @async
+ * @function
  * @param {object} db - MongoDB database instance.
- * @returns {object} A response object with a list of files or error message.
- * @throws {error} Throws an error if an error occurs.
+ * @returns {Promise<object>} A promise that resolves to an object containing a list of files or an error message.
+ * @throws Will throw an error if an error occurs.
  */
 const getDownloadListService = async (db) => {
     try {
@@ -103,13 +110,14 @@ const getDownloadListService = async (db) => {
 };
 
 /**
- * Retrieve a specific download entry based on its filename.
+ * Fetches a specific download entry from the database based on its filename.
  *
  * @async
+ * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} fileName - The name of the file to be retrieved.
- * @returns {object} A response object with file details or error message.
- * @throws {error} Throws an error if an error occurs.
+ * @param {string} fileName - The name of the file to retrieve.
+ * @returns {Promise<object>} A promise that resolves to an object with file details or an error message.
+ * @throws Will throw an error if an error occurs.
  */
 const getADownloadService = async (db, fileName) => {
     try {
@@ -138,14 +146,15 @@ const getADownloadService = async (db, fileName) => {
 };
 
 /**
- * Delete a specific download entry based on its filename.
+ * Deletes a specific download entry from the database based on its filename.
  *
  * @async
+ * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - The requester's identifier.
- * @param {string} fileName - The name of the file to be deleted.
- * @returns {object} A response object with details of the deletion operation.
- * @throws {error} Throws an error if an error occurs.
+ * @param {string} requestedBy - Identifier of the requester.
+ * @param {string} fileName - The name of the file to delete.
+ * @returns {Promise<object>} A promise that resolves to an object representing the deletion operation's result.
+ * @throws Will throw an error if an error occurs.
  */
 const deleteADownloadService = async (db, requestedBy, fileName) => {
     try {
@@ -160,22 +169,34 @@ const deleteADownloadService = async (db, requestedBy, fileName) => {
                 .deleteOne({ filename: fileName });
 
             if (result?.acknowledged) {
-                // Also remove the file from the disk (using Node's fs module)
-                const fs = require('fs');
-                fs.unlink(fileDetails?.path, (error) => {
-                    if (error) {
-                        console.error("Error deleting the file:", error);
-                    } else {
-                        console.log("File deleted successfully");
-                    }
-                });
-
-                return {
-                    data: result,
-                    success: true,
-                    status: StatusCodes.OK,
-                    message: 'File deleted successfully'
-                };
+                // Check if file exists
+                if (fs.existsSync(fileDetails?.path)) {
+                    // Delete the file
+                    fs.unlink(fileDetails?.path, (error) => {
+                        if (error) {
+                            return {
+                                data: {},
+                                success: false,
+                                status: StatusCodes.INTERNAL_SERVER_ERROR,
+                                message: 'Internal server error'
+                            };
+                        } else {
+                            return {
+                                data: result,
+                                success: true,
+                                status: StatusCodes.OK,
+                                message: `${fileName} deleted successfully`
+                            };
+                        }
+                    });
+                } else {
+                    return {
+                        data: {},
+                        success: false,
+                        status: StatusCodes.NOT_FOUND,
+                        message: 'File not found'
+                    };
+                }
             } else {
                 return {
                     data: {},
@@ -197,6 +218,15 @@ const deleteADownloadService = async (db, requestedBy, fileName) => {
     }
 };
 
+/**
+ * @typedef {Object} DownloadService
+ * @property {function} createDownloadService - Function to create a download entry.
+ * @property {function} getDownloadListService - Function to retrieve a list of downloads.
+ * @property {function} getADownloadService - Function to fetch a specific download entry.
+ * @property {function} deleteADownloadService - Function to delete a specific download entry.
+ */
+
+/** @type {DownloadService} */
 export const DownloadService = {
     createDownloadService,
     getDownloadListService,

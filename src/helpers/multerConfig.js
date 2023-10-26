@@ -1,3 +1,8 @@
+/**
+ * @module upload
+ * @description Provides utilities for handling file uploads in the application.
+ */
+
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -9,7 +14,7 @@ import fs from 'fs';
  * @function
  * @param {Express.Request} req - The express request object.
  * @param {Express.Multer.File} file - The multer file object.
- * @param {Function} cb - Callback to be invoked with the final storage destination.
+ * @param {function(Error, string):void} cb - Callback to be invoked with the final storage destination.
  */
 const destination = (req, file, cb) => {
     // Map of keywords in URL to corresponding directories
@@ -19,12 +24,11 @@ const destination = (req, file, cb) => {
         'result': 'result',
         'routine': 'routine'
     };
-
     const requestedURL = req?.originalUrl;
     let matchedDestination = Object.keys(urlToDestinationMap)
         .find(keyword => requestedURL?.includes(keyword));
 
-    let finalDestination = matchedDestination
+    const finalDestination = matchedDestination
         ? path.join('./uploads', urlToDestinationMap[matchedDestination])
         : './uploads';
 
@@ -43,7 +47,7 @@ const destination = (req, file, cb) => {
  * @function
  * @param {Express.Request} req - The express request object.
  * @param {Express.Multer.File} file - The multer file object.
- * @param {Function} cb - Callback to be invoked with the final filename.
+ * @param {function(Error, string):void} cb - Callback to be invoked with the final filename.
  */
 const filename = (req, file, cb) => {
     cb(null, Date.now() + path.extname(file?.originalname));
@@ -53,7 +57,7 @@ const filename = (req, file, cb) => {
  * Configuration object for multer's disk storage.
  * Specifies the destination directory and filename for uploaded files.
  *
- * @type {multer.StorageEngine}
+ * @type {multer.diskStorage}
  */
 const storage = multer.diskStorage({
     destination,
