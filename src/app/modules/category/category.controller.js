@@ -29,7 +29,7 @@ const createCategoryController = async (req, res) => {
             name,
             requestedBy
         };
-        const createCategoryServiceResponse = await CategoryService.createCategoryService(req.db, newCategoryDetails);
+        const createCategoryServiceResponse = CategoryService.createCategoryService(req.db, newCategoryDetails);
         const returnData = {
             data: createCategoryServiceResponse?.data,
             success: createCategoryServiceResponse?.success,
@@ -64,7 +64,6 @@ const createCategoryController = async (req, res) => {
  */
 const getCategoryListController = async (req, res) => {
     try {
-        const { categoryId } = req?.params;
         const createCategoryServiceResponse = await CategoryService.getCategoryListService(req.db);
         const returnData = {
             data: createCategoryServiceResponse?.data,
@@ -99,7 +98,7 @@ const getCategoryListController = async (req, res) => {
 const getACategoryController = async (req, res) => {
     try {
         const { categoryId } = req?.params;
-        const createCategoryServiceResponse = await CategoryService.getACategoryService(req.db, categoryId);
+        const createCategoryServiceResponse = CategoryService.getACategoryService(req.db, categoryId);
         const returnData = {
             data: createCategoryServiceResponse?.data,
             success: createCategoryServiceResponse?.success,

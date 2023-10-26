@@ -11,10 +11,6 @@ import { StatusCodes } from "http-status-codes";
  * @param {express.Request} req - Express request object.
  * @param {express.Response} res - Express response object.
  * @returns {express.Response} Express response object.
- *
- * @example
- *
- * app.use('*', undefinedController);  // Handles all undefined routes
  */
 const undefinedController = async (req, res) => {
     try {

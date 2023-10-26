@@ -35,7 +35,7 @@ const createStudentController = async (req, res) => {
             image,
             requestedBy
         };
-        const createStudentServiceResponse = await StudentService.createStudentService(req.db, newStudentDetails);
+        const createStudentServiceResponse = StudentService.createStudentService(req.db, newStudentDetails);
         const returnData = {
             data: createStudentServiceResponse?.data,
             success: createStudentServiceResponse?.success,
@@ -70,7 +70,6 @@ const createStudentController = async (req, res) => {
  */
 const getStudentListController = async (req, res) => {
     try {
-        const { studentId } = req?.params;
         const createStudentServiceResponse = await StudentService.getStudentListService(req.db);
         const returnData = {
             data: createStudentServiceResponse?.data,
@@ -105,7 +104,7 @@ const getStudentListController = async (req, res) => {
 const getAStudentController = async (req, res) => {
     try {
         const { studentId } = req?.params;
-        const createStudentServiceResponse = await StudentService.getAStudentService(req.db, studentId);
+        const createStudentServiceResponse = StudentService.getAStudentService(req.db, studentId);
         const returnData = {
             data: createStudentServiceResponse?.data,
             success: createStudentServiceResponse?.success,

@@ -53,7 +53,7 @@ router.get(
 );
 
 /**
- * Handle PUT request to update a administration by its ID.
+ * Handle PUT request to update an administration by its ID.
  * @async
  * @function updateAdministration
  * @param {express.Request} req - Express request object.

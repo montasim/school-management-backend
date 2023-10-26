@@ -1,7 +1,7 @@
 import {ADMINISTRATION_COLLECTION_NAME} from "../constants/index.js";
 
 /**
- * Checks if a administration with the given name already exists in the database.
+ * Checks if an administration with the given name already exists in the database.
  *
  * @async
  * @function

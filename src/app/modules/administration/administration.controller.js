@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { AdministrationService } from "./administration.service.js";
 
 /**
- * Creates a administration.
+ * Creates an administration.
  *
  * The function processes the incoming request data to create a new administration.
  * It interacts with the service layer to perform the actual creation of the administration.
@@ -35,7 +35,7 @@ const createAdministrationController = async (req, res) => {
             image,
             requestedBy
         };
-        const createAdministrationServiceResponse = await AdministrationService.createAdministrationService(req.db, newAdministrationDetails);
+        const createAdministrationServiceResponse = AdministrationService.createAdministrationService(req.db, newAdministrationDetails);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
             success: createAdministrationServiceResponse?.success,
@@ -70,7 +70,6 @@ const createAdministrationController = async (req, res) => {
  */
 const getAdministrationListController = async (req, res) => {
     try {
-        const { administrationId } = req?.params;
         const createAdministrationServiceResponse = await AdministrationService.getAdministrationListService(req.db);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
@@ -105,7 +104,7 @@ const getAdministrationListController = async (req, res) => {
 const getAAdministrationController = async (req, res) => {
     try {
         const { administrationId } = req?.params;
-        const createAdministrationServiceResponse = await AdministrationService.getAAdministrationService(req.db, administrationId);
+        const createAdministrationServiceResponse = AdministrationService.getAAdministrationService(req.db, administrationId);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
             success: createAdministrationServiceResponse?.success,
@@ -120,7 +119,7 @@ const getAAdministrationController = async (req, res) => {
 };
 
 /**
- * Update a administration based on the provided administration ID and details.
+ * Update an administration based on the provided administration ID and details.
  *
  * @function
  * @async
@@ -173,7 +172,7 @@ const updateAAdministrationController = async (req, res) => {
 };
 
 /**
- * Deletes a administration based on the provided administration ID.
+ * Deletes an administration based on the provided administration ID.
  *
  * @async
  * @function

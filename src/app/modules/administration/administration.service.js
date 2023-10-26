@@ -170,7 +170,7 @@ const getAAdministrationService = async (db, administrationId) => {
 };
 
 /**
- * Service to update a administration in the database.
+ * Service to update an administration in the database.
  *
  * @async
  * @function
@@ -255,7 +255,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
 };
 
 /**
- * Service for deleting a administration.
+ * Service for deleting an administration.
  *
  * @async
  * @function

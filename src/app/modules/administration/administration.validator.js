@@ -34,7 +34,7 @@ const administrationBodyValidator = async (req, res, next) => {
 };
 
 /**
- * Middleware function to validate fetching a administration by its ID.
+ * Middleware function to validate fetching an administration by its ID.
  *
  * @async
  * @function
@@ -66,7 +66,7 @@ const administrationParamsValidator = async (req, res, next) => {
 };
 
 /**
- * Middleware to validate the query parameters for deleting a administration.
+ * Middleware to validate the query parameters for deleting an administration.
  *
  * @async
  * @function
@@ -102,7 +102,7 @@ const deleteAdministrationQueryValidator = async (req, res, next) => {
  * Collection of validator middlewares related to administration operations.
  * @typedef {Object} AdministrationValidators
  * @property {function} administrationBodyValidator - Validates creation of new administration.
- * @property {function} administrationParamsValidator - Validates fetching a administration by its ID.
+ * @property {function} administrationParamsValidator - Validates fetching an administration by its ID.
  */
 export const AdministrationValidators = {
     administrationBodyValidator,

@@ -26,7 +26,7 @@ const administrationBodySchema = Joi.object({
 });
 
 /**
- * Joi schema for validating the retrieval of a administration by its ID.
+ * Joi schema for validating the retrieval of an administration by its ID.
  * @constant {Object}
  */
 const administrationParamsSchema = idSchema.required();
@@ -36,7 +36,7 @@ const administrationParamsSchema = idSchema.required();
  *
  * This schema ensures that the provided query parameter is a string and
  * matches either 'admin' or 'user'. This schema is used primarily to
- * determine the role or type of user attempting to delete a administration.
+ * determine the role or type of user attempting to delete an administration.
  *
  * @type {Joi.ObjectSchema<string>}
  * @constant

@@ -36,4 +36,3 @@ const authorizationHeader = async (req, res, next) => {
 /**
  * Object containing authorizationHeader middleware functions for different user roles.
  */
-export default authorizationHeader;
