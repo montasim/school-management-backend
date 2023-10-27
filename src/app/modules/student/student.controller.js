@@ -23,13 +23,13 @@ const createStudentController = async (req, res) => {
     try {
         const {
             name,
-            class,
+            level,
             image,
             requestedBy
         } = req?.body;
         const newStudentDetails = {
             name,
-            class,
+            level,
             image,
             requestedBy
         };
@@ -143,13 +143,13 @@ const updateAStudentController = async (req, res) => {
         const { studentId } = req?.params;
         const {
             name,
-            class,
+            level,
             image,
             requestedBy
         } = req?.body;
         const newStudentDetails = {
             name,
-            class,
+            level,
             image,
             requestedBy
         };

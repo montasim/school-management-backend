@@ -25,7 +25,7 @@ const createStudentService = async (db,  newStudentDetails) => {
     try {
         const {
             name,
-            class,
+            level,
             image,
             requestedBy
         } = newStudentDetails;
@@ -44,7 +44,7 @@ const createStudentService = async (db,  newStudentDetails) => {
                 const prepareNewStudentDetails = {
                     id: `student-${uuidv4().substr(0, 6)}`,
                     name: name,
-                    class: class,
+                    level: level,
                     image: image,
                     createdBy: requestedBy,
                     createdAt: new Date(),
@@ -195,14 +195,14 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
         if (foundStudent) {
             const {
                 name,
-                class,
+                level,
                 image,
                 requestedBy
             } = newStudentDetails;
             const updatedStudentDetails = {
                 id: foundStudent?.id,
                 ...(name && { name }),
-                ...(class && { class }),
+                ...(level && { level }),
                 ...(image && { image }),
                 createdBy: foundStudent?.createdBy,
                 createdAt: foundStudent?.createdAt,

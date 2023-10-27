@@ -19,7 +19,7 @@ const idSchema = Joi.string().pattern(studentIdPattern).min(9).max(30);
  */
 const studentBodySchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
-    class: Joi.string().min(2).max(20).required(),
+    level: Joi.string().min(2).max(20).required(),
     image: Joi.string().pattern(/\/image\/student\/[a-zA-Z0-9]+\.gif$/).required(),
     requestedBy: Joi.string().min(3).max(20).required(),
 });
