@@ -118,7 +118,7 @@ Document your API endpoints with detailed descriptions, request/response example
     "success": false,
     "status": 200,
     "message": "2 student found"
-}
+  }
   ```
 
 ## Environment Variables
