@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { PORT } from "./constants/index.js";
+import logger from "./app/middlewares/logger.js";
 import isBrowserRequest from "./app/middlewares/isBrowserRequest.js";
 import { Database } from "./app/middlewares/database.js";
 import appRoutes from "./app/routes/index.js";
@@ -38,6 +39,9 @@ app.use(cors({
 
  */
 // app.use(isBrowserRequest);
+
+// Custom logging middleware
+app.use(logger);
 
 // Connect to the database
 app.use(Database.connectToDatabase);
