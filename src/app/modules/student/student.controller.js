@@ -23,15 +23,13 @@ const createStudentController = async (req, res) => {
     try {
         const {
             name,
-            category,
-            designation,
+            class,
             image,
             requestedBy
         } = req?.body;
         const newStudentDetails = {
             name,
-            category,
-            designation,
+            class,
             image,
             requestedBy
         };
