@@ -143,15 +143,13 @@ const updateAStudentController = async (req, res) => {
         const { studentId } = req?.params;
         const {
             name,
-            category,
-            designation,
+            class,
             image,
             requestedBy
         } = req?.body;
         const newStudentDetails = {
             name,
-            category,
-            designation,
+            class,
             image,
             requestedBy
         };
