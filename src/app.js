@@ -16,17 +16,9 @@ const allowedOrigins = [
   "http://localhost:3000", // Allow requests from localhost
 ];
 
-const isAllowedOriginByCors = (origin, callback) => {
-  if (allowedOrigins?.includes(origin)) {
-    callback(null, true);
-  } else {
-    callback(new Error("Not allowed by CORS"));
-  }
-};
-
 // Use the cors middleware to allow requests from a specific domain
 app.use(cors({
-  origin: isAllowedOriginByCors,
+  origin: allowedOrigins,
   methods: "GET,PUT,POST,DELETE",
   credentials: true, // If you need to support cookies or authentication
 }));
