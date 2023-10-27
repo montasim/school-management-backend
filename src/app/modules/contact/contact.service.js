@@ -2,7 +2,6 @@ import nodemailer from "nodemailer";
 import { StatusCodes } from "http-status-codes";
 
 const contactService = async (db,  contactDetails) => {
-    try {
         const {
             firstName,
             lastName,
@@ -52,10 +51,6 @@ const contactService = async (db,  contactDetails) => {
         };
     }
   });
-});
-    } catch (error) {
-        throw error;
-    }
 };
 
 export const ContactService = {
