@@ -11,6 +11,6 @@ const router = express.Router();
  * @param {string} path - A path pattern to route.
  * @param {module:express.RequestHandler} callback - The homeController function.
  */
-router.all("*", homeController);
+router.all("/", homeController);
 
 export default router;
