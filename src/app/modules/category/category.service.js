@@ -30,7 +30,7 @@ const createCategoryService = async (db,  newCategoryDetails) => {
         if (isDuplicateCategory) {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.UNPROCESSABLE_ENTITY,
                 message: `${name} already exists`
             };
@@ -101,7 +101,7 @@ const getCategoryListService = async (db) => {
         if (categoryList?.length > 0) {
             return {
                 data: categoryList,
-                success: false,
+                success: true,
                 status: StatusCodes.OK,
                 message: `${categoryList?.length} category found`
             };
@@ -150,7 +150,7 @@ const getACategoryService = async (db, categoryId) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.NOT_FOUND,
                 message: `${categoryId} not found`
             };
@@ -218,7 +218,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
             } else {
                 return {
                     data: {},
-                    success: true,
+                    success: false,
                     status: StatusCodes.UNPROCESSABLE_ENTITY,
                     message: `${categoryId} not updated`
                 };
@@ -226,7 +226,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.NOT_FOUND,
                 message: `${categoryId} not found`
             };

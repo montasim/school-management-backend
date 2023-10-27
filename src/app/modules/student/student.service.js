@@ -35,7 +35,7 @@ const createStudentService = async (db,  newStudentDetails) => {
         if (isDuplicateStudent) {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.UNPROCESSABLE_ENTITY,
                 message: `${name} already exists`
             };
@@ -108,7 +108,7 @@ const getStudentListService = async (db) => {
         if (studentList?.length > 0) {
             return {
                 data: studentList,
-                success: false,
+                success: true,
                 status: StatusCodes.OK,
                 message: `${studentList?.length} student found`
             };
@@ -157,7 +157,7 @@ const getAStudentService = async (db, studentId) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.NOT_FOUND,
                 message: `${studentId} not found`
             };
@@ -232,7 +232,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
             } else {
                 return {
                     data: {},
-                    success: true,
+                    success: false,
                     status: StatusCodes.UNPROCESSABLE_ENTITY,
                     message: `${studentId} not updated`
                 };
@@ -240,7 +240,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.NOT_FOUND,
                 message: `${studentId} not found`
             };

@@ -36,7 +36,7 @@ const createAdministrationService = async (db,  newAdministrationDetails) => {
         if (isDuplicateAdministration) {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.UNPROCESSABLE_ENTITY,
                 message: `${name} already exists`
             };
@@ -110,7 +110,7 @@ const getAdministrationListService = async (db) => {
         if (administrationList?.length > 0) {
             return {
                 data: administrationList,
-                success: false,
+                success: true,
                 status: StatusCodes.OK,
                 message: `${administrationList?.length} administration found`
             };
@@ -159,7 +159,7 @@ const getAAdministrationService = async (db, administrationId) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.NOT_FOUND,
                 message: `${administrationId} not found`
             };
@@ -236,7 +236,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
             } else {
                 return {
                     data: {},
-                    success: true,
+                    success: false,
                     status: StatusCodes.UNPROCESSABLE_ENTITY,
                     message: `${administrationId} not updated`
                 };
@@ -244,7 +244,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.NOT_FOUND,
                 message: `${administrationId} not found`
             };

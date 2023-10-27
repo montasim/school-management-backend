@@ -30,7 +30,7 @@ const createClassService = async (db,  newClassDetails) => {
         if (isDuplicateClass) {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.UNPROCESSABLE_ENTITY,
                 message: `${name} already exists`
             };
@@ -101,7 +101,7 @@ const getClassListService = async (db) => {
         if (classList?.length > 0) {
             return {
                 data: classList,
-                success: false,
+                success: true,
                 status: StatusCodes.OK,
                 message: `${classList?.length} class found`
             };
@@ -150,7 +150,7 @@ const getAClassService = async (db, classId) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.NOT_FOUND,
                 message: `${classId} not found`
             };
@@ -218,7 +218,7 @@ const updateAClassService = async (db, classId, newClassDetails) => {
             } else {
                 return {
                     data: {},
-                    success: true,
+                    success: false,
                     status: StatusCodes.UNPROCESSABLE_ENTITY,
                     message: `${classId} not updated`
                 };
@@ -226,7 +226,7 @@ const updateAClassService = async (db, classId, newClassDetails) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: StatusCodes.NOT_FOUND,
                 message: `${classId} not found`
             };
