@@ -99,8 +99,7 @@ Document your API endpoints with detailed descriptions, request/response example
         {
             "id": "student-5eb677",
             "name": "রহিমা আফরোজ",
-            "category": null,
-            "designation": null,
+            "level": "৭ম শ্রেণী",
             "image": "/image/student/student3.gif",
             "createdBy": "admin",
             "createdAt": "2023-10-26T09:24:31.523Z"
@@ -108,8 +107,7 @@ Document your API endpoints with detailed descriptions, request/response example
         {
             "id": "student-7d4607",
             "name": "মো: আব্দুল হামিদ",
-            "category": null,
-            "designation": null,
+            "level": "৯ম শ্রেণী",
             "image": "/image/student/student4.gif",
             "createdBy": "admin",
             "createdAt": "2023-10-26T09:25:08.476Z"
