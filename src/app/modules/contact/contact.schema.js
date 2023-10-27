@@ -5,7 +5,7 @@ import Joi from "joi";
  * It expects a 'name' and 'requestedBy' properties in the request body.
  * @constant {Object}
  */
-const studentBodySchema = Joi.object({
+const contactBodySchema = Joi.object({
     firstName: Joi.string().min(3).max(30).required(),
     lastName: Joi.string().min(3).max(30).required(),
     phone: Joi.required(),
