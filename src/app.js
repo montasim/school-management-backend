@@ -46,7 +46,7 @@ app.use(cors({
 // app.use(isBrowserRequest);
 
 // Custom logging middleware
-app.use(logger);
+// app.use(logger);
 
 // Connect to the database
 app.use(Database.connectToDatabase);
