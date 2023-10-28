@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import favicon from "express-favicon";
 import { PORT } from "./constants/index.js";
 import logger from "./app/middlewares/logger.js";
 import isBrowserRequest from "./app/middlewares/isBrowserRequest.js";
@@ -23,6 +24,9 @@ app.use(cors({
   methods: "GET,PUT,POST,DELETE",
   credentials: true, // If you need to support cookies or authentication
 }));
+
+// Middleware to serve the favicon
+app.use(favicon(path.join(__dirname, 'public/icons/favicon.ico')));
 
 /**
 * Middleware to handle browser requests.
