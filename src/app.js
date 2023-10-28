@@ -26,7 +26,7 @@ app.use(cors({
 }));
 
 // Middleware to serve the favicon
-app.use(favicon(path.join(__dirname, 'public/icons/favicon.ico')));
+app.use(favicon(path.join(__dirname, './public/favicon.ico')));
 
 /**
 * Middleware to handle browser requests.
