@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import favicon from "express-favicon";
+import path from "path";
 import { PORT } from "./constants/index.js";
 import logger from "./app/middlewares/logger.js";
 import isBrowserRequest from "./app/middlewares/isBrowserRequest.js";
