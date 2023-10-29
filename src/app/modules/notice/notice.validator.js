@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { NoticeSchema } from "./notice.schema.js";
 
 /**

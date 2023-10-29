@@ -5,8 +5,6 @@
  * @module Validator
  */
 
-import { StatusCodes } from "http-status-codes";
-
 /**
  * Reusable function to validate data against a schema and handle error responses.
  * @param {Schema} schema - The Joi schema to validate data against
