@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { StudentService } from "./student.service.js";
 
 /**
