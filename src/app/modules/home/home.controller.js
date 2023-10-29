@@ -1,5 +1,3 @@
-import { StatusCodes } from "http-status-codes";
-
 /**
  * Controller to handle the home endpoint.
  * @async
