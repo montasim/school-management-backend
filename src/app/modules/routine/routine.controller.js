@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { RoutineService } from "./routine.service.js";
 
 /**
@@ -30,7 +29,7 @@ const createRoutineController = async (req, res) => {
 
         return res.status(createRoutineServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -55,7 +54,7 @@ const getRoutineListController = async (req, res) => {
 
         return res.status(getRoutineServiceListResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -81,7 +80,7 @@ const getARoutineController = async (req, res) => {
 
         return res.status(getARoutineServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -109,7 +108,7 @@ const deleteARoutineController = async (req, res) => {
 
         return res.status(deletedRoutineServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

@@ -3,7 +3,6 @@
  * @description This module provides services related to routines such as creating, listing, retrieving, and deleting routine entries in the database.
  */
 
-import { StatusCodes } from "http-status-codes";
 import {v4 as uuidv4} from "uuid";
 import fs from "fs";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
@@ -49,14 +48,14 @@ const createRoutineService = async (db,  newRoutineDetails, file) => {
                 return {
                     data: fileDetails,
                     success: true,
-                    status: StatusCodes.OK,
+                    status: 200,
                     message: `${fileDetails?.filename} uploaded successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.UNPROCESSABLE_ENTITY,
+                    status: 422,
                     message: 'Error while uploading file'
                 };
             }
@@ -64,7 +63,7 @@ const createRoutineService = async (db,  newRoutineDetails, file) => {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.UNAUTHORIZED,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }
@@ -93,14 +92,14 @@ const getRoutineListService = async (db) => {
             return {
                 data: classList,
                 success: true,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${classList?.length} file found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: 'No file found'
             };
         }
@@ -129,14 +128,14 @@ const getARoutineService = async (db, fileName) => {
             return {
                 data: file,
                 success: true,
-                status: StatusCodes.OK,
+                status: 200,
                 message: 'File fetched successfully'
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: 'File not found'
             };
         }
@@ -177,14 +176,14 @@ const deleteARoutineService = async (db, requestedBy, fileName) => {
                             return {
                                 data: {},
                                 success: false,
-                                status: StatusCodes.INTERNAL_SERVER_ERROR,
+                                status: 500,
                                 message: 'Internal server error'
                             };
                         } else {
                             return {
                                 data: routine,
                                 success: true,
-                                status: StatusCodes.OK,
+                                status: 200,
                                 message: `${fileName} deleted successfully`
                             };
                         }
@@ -193,7 +192,7 @@ const deleteARoutineService = async (db, requestedBy, fileName) => {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.NOT_FOUND,
+                        status: 404,
                         message: 'File not found'
                     };
                 }
@@ -201,7 +200,7 @@ const deleteARoutineService = async (db, requestedBy, fileName) => {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.NOT_FOUND,
+                    status: 404,
                     message: 'File not found'
                 };
             }
@@ -209,7 +208,7 @@ const deleteARoutineService = async (db, requestedBy, fileName) => {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.UNAUTHORIZED,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }

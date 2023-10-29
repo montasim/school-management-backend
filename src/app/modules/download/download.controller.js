@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { DownloadService } from "./download.service.js";
 
 /**
@@ -30,7 +29,7 @@ const createDownloadController = async (req, res) => {
 
         return res.status(createDownloadServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -55,7 +54,7 @@ const getDownloadListController = async (req, res) => {
 
         return res.status(getDownloadServiceListResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -81,7 +80,7 @@ const getADownloadController = async (req, res) => {
 
         return res.status(getADownloadServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -109,7 +108,7 @@ const deleteADownloadController = async (req, res) => {
 
         return res.status(deletedDownloadServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

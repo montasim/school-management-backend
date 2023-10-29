@@ -12,12 +12,12 @@ const statusController = async (req, res) => {
     try {
         if (!res.headersSent) {
             return res
-                .status(StatusCodes.OK)
+                .status(200)
                 .send({ message: "Server is up and running" });
         }
     } catch (error) {
         res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .status(500)
             .send({ message: "Server is down" });
     }
 };

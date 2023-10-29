@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { NoticeService } from "./notice.service.js";
 
 /**
@@ -30,7 +29,7 @@ const createNoticeController = async (req, res) => {
 
         return res.status(createNoticeServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -55,7 +54,7 @@ const getNoticeListController = async (req, res) => {
 
         return res.status(getNoticeServiceListResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -81,7 +80,7 @@ const getANoticeController = async (req, res) => {
 
         return res.status(getANoticeServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -109,7 +108,7 @@ const deleteANoticeController = async (req, res) => {
 
         return res.status(deletedNoticeServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

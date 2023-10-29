@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-import { StatusCodes } from "http-status-codes";
 
 const contactService = async (db,  contactDetails) => {
         const {
@@ -39,14 +38,14 @@ const contactService = async (db,  contactDetails) => {
         return {
             data: {},
             success: false,
-            status: StatusCodes.INTERNAL_SERVER_ERROR,
+            status: 500,
             message: "Error sending email"
         };
     } else {
         return {
             data: info?.response,
             success: true,
-            status: StatusCodes.OK,
+            status: 200,
             message: "Email sent successfully"
         };
     }

@@ -16,12 +16,12 @@ const undefinedController = async (req, res) => {
     try {
         if (!res.headersSent) {
             return res
-                .status(StatusCodes.NOT_FOUND)
+                .status(404)
                 .send({ message: "Route not found!" });
         }
     } catch (error) {
         res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .status(500)
             .send({ message: "An error occurred while processing the request." });
     }
 };

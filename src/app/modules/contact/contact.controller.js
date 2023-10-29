@@ -29,7 +29,7 @@ const contactController = async (req, res) => {
 
         return res.status(contactServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

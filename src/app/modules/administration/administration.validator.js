@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { AdministrationSchema } from "./administration.schema.js";
 
 /**
@@ -20,16 +19,16 @@ const administrationBodyValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: StatusCodes.BAD_REQUEST,
+                status: 400,
                 message: messages,
             };
 
-            res.status(StatusCodes.BAD_REQUEST).json(returnData);
+            res.status(returnData?.status).json(returnData);
         } else {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -52,16 +51,16 @@ const administrationParamsValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: StatusCodes.BAD_REQUEST,
+                status: 400,
                 message: messages,
             };
 
-            res.status(StatusCodes.BAD_REQUEST).json(returnData);
+            res.status(returnData?.status).json(returnData);
         } else {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -85,16 +84,16 @@ const deleteAdministrationQueryValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: StatusCodes.BAD_REQUEST,
+                status: 400,
                 message: messages,
             };
 
-            res.status(StatusCodes.BAD_REQUEST).json(returnData);
+            res.status(returnData?.status).json(returnData);
         } else {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

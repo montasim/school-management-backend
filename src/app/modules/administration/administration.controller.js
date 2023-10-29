@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { AdministrationService } from "./administration.service.js";
 
 /**
@@ -45,7 +44,7 @@ const createAdministrationController = async (req, res) => {
 
         return res.status(createAdministrationServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -80,7 +79,7 @@ const getAdministrationListController = async (req, res) => {
 
         return res.status(createAdministrationServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -114,7 +113,7 @@ const getAAdministrationController = async (req, res) => {
 
         return res.status(createAdministrationServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -167,7 +166,7 @@ const updateAAdministrationController = async (req, res) => {
 
         return res.status(updatedAdministrationServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -200,7 +199,7 @@ const deleteAAdministrationController = async (req, res) => {
 
         return res.status(deletedAdministrationServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

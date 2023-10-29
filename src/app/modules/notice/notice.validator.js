@@ -20,16 +20,16 @@ const noticeBodyValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: StatusCodes.BAD_REQUEST,
+                status: 400,
                 message: messages,
             };
 
-            res.status(StatusCodes.BAD_REQUEST).json(returnData);
+            res.status(returnData?.status).json(returnData);
         } else {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -52,16 +52,16 @@ const noticeParamsValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: StatusCodes.BAD_REQUEST,
+                status: 400,
                 message: messages,
             };
 
-            res.status(StatusCodes.BAD_REQUEST).json(returnData);
+            res.status(returnData?.status).json(returnData);
         } else {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -85,16 +85,16 @@ const deleteNoticeQueryValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: StatusCodes.BAD_REQUEST,
+                status: 400,
                 message: messages,
             };
 
-            res.status(StatusCodes.BAD_REQUEST).json(returnData);
+            res.status(returnData?.status).json(returnData);
         } else {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
