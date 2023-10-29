@@ -43,7 +43,7 @@ const createStudentController = async (req, res) => {
 
         return res.status(createStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -78,7 +78,7 @@ const getStudentListController = async (req, res) => {
 
         return res.status(createStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -112,7 +112,7 @@ const getAStudentController = async (req, res) => {
 
         return res.status(createStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -163,7 +163,7 @@ const updateAStudentController = async (req, res) => {
 
         return res.status(updatedStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -196,7 +196,7 @@ const deleteAStudentController = async (req, res) => {
 
         return res.status(deletedStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
