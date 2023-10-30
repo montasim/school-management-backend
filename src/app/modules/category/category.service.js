@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
-import isRequesterValid from "../../../shared/isRequesterValid.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
 import isCategoryAlreadyExists from "../../../shared/isCategoryAlreadyExists.js";
 import isCategoryValid from "../../../shared/isCategoryValid.js";
 
@@ -24,7 +24,7 @@ const createCategoryService = async (db,  newCategoryDetails) => {
     try {
         const { name, requestedBy} = newCategoryDetails;
         const isDuplicateCategory = await isCategoryAlreadyExists(db, name);
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, requestedBy);
 
         if (isDuplicateCategory) {
             return {
@@ -253,7 +253,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
  */
 const deleteACategoryService = async (db, requestedBy, categoryId) => {
     try {
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, requestedBy);
 
         if (isValidRequester) {
             const isCategoryExists = await isCategoryValid(db, categoryId);

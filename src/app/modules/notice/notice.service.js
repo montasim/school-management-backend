@@ -5,7 +5,7 @@
 
 import {v4 as uuidv4} from "uuid";
 import fs from "fs";
-import isRequesterValid from "../../../shared/isRequesterValid.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
 import {NOTICE_COLLECTION_NAME} from "../../../config/config.js";
 
 /**
@@ -25,7 +25,7 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
             title,
             requestedBy
         } = newNoticeDetails;
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, requestedBy);
 
         if (isValidRequester) {
             const prepareNewNoticeDetails = {
@@ -157,7 +157,7 @@ const getANoticeService = async (db, fileName) => {
  */
 const deleteANoticeService = async (db, requestedBy, fileName) => {
     try {
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, requestedBy);
 
         if (isValidRequester) {
             const fileDetails = await db

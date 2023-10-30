@@ -9,7 +9,7 @@ import {ADMIN_COLLECTION_NAME} from "../config/config.js";
  * @param {string} requestedBy - The ID of the requester to be validated.
  * @returns {Promise<boolean>} Returns `true` if the requester is valid, otherwise `false`.
  */
-const isRequesterValid = async (db, requestedBy) => {
+const isValidRequest = async (db, requestedBy) => {
     const requesterValidity = await db
         .collection(ADMIN_COLLECTION_NAME)
         .findOne({ id: requestedBy });
@@ -17,4 +17,4 @@ const isRequesterValid = async (db, requestedBy) => {
     return !!requesterValidity;
 };
 
-export default isRequesterValid;
+export default isValidRequest;

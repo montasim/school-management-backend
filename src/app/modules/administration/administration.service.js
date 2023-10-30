@@ -1,312 +1,193 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ADMINISTRATION_COLLECTION_NAME } from "../../../config/config.js";
-import isRequesterValid from "../../../shared/isRequesterValid.js";
-import isAdministrationAlreadyExists from "../../../shared/isAdministrationAlreadyExists.js";
-import isAdministrationValid from "../../../shared/isAdministrationValid.js";
+import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import { ID_CONSTANTS } from "./administration.constants.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
+import isValidById from "../../../shared/isValidById.js";
+import logger from "../../middlewares/logger.js";
 
 /**
- * Creates a new administration in the database after performing necessary checks.
+ * Generates a standardized response object for service functions.
+ *
+ * @param {Object} data - The data to return.
+ * @param {boolean} success - Indication if the operation was successful.
+ * @param {number} status - The HTTP status code.
+ * @param {string} message - A descriptive message about the response.
+ * @returns {Object} - The standardized response object.
+ */
+const generateResponse = (data, success, status, message) => ({ data, success, status, message });
+
+const insertAdministration = async (db, administrationDetails) =>
+    db.collection(ADMINISTRATION_COLLECTION_NAME).insertOne(administrationDetails);
+
+const findAdministration = async (db, administrationId) =>
+    db.collection(ADMINISTRATION_COLLECTION_NAME).findOne({ id: administrationId }, { projection: { _id: 0 } });
+
+const findAllAdministrations = async (db) =>
+    db.collection(ADMINISTRATION_COLLECTION_NAME).find({}, { projection: { _id: 0 } }).toArray();
+
+const updateAdministration = async (db, administrationId, updatedAdministration) =>
+    db.collection(ADMINISTRATION_COLLECTION_NAME).updateOne({ id: administrationId }, { $set: updatedAdministration });
+
+const deleteAdministration = async (db, administrationId) =>
+    db.collection(ADMINISTRATION_COLLECTION_NAME).deleteOne({ id: administrationId });
+
+/**
+ * Creates a new administration entry in the database.
  *
  * @async
- * @function
- * @param {Object} db - The database connection object.
- * @param {Object} newAdministrationDetails - Details of the administration to be created.
- * @param {string} newAdministrationDetails.name - The name of the administration.
- * @param {string} newAdministrationDetails.requestedBy - The requester's identifier.
- * @returns {Promise<Object>} The result of the administration creation.
- * @returns {Object} result.data - Data associated with the operation.
- * @returns {boolean} result.success - Whether the operation was successful.
- * @returns {number} result.status - HTTP status code representing the outcome.
- * @returns {string} result.message - Message describing the outcome.
- * @throws Will throw an error if any error occurs during the execution.
+ * @param {Object} db - Database connection object.
+ * @param {Object} newAdministrationDetails - New administration's details.
+ * @returns {Object} - The response after attempting administration creation.
+ * @throws {Error} Throws an error if any.
  */
-const createAdministrationService = async (db,  newAdministrationDetails) => {
+const createAdministrationService = async (db, newAdministrationDetails) => {
     try {
-        const {
+        const { name, category, designation, image, requestedBy } = newAdministrationDetails;
+
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+
+        const administrationDetails = {
+            id: `${ID_CONSTANTS?.STUDENT_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
             category,
             designation,
             image,
-            requestedBy
-        } = newAdministrationDetails;
-        const isDuplicateAdministration = await isAdministrationAlreadyExists(db, name);
-        const isValidRequester = await isRequesterValid(db, requestedBy);
-            if (isValidRequester) {
-                const prepareNewAdministrationDetails = {
-                    id: `administration-${uuidv4().substr(0, 6)}`,
-                    name: name,
-                    category: category,
-                    designation: designation,
-                    image: image,
-                    createdBy: requestedBy,
-                    createdAt: new Date(),
-                };
+            createdBy: requestedBy,
+            createdAt: new Date(),
+        };
 
-                const createNewAdministrationResult = await db
-                    .collection(ADMINISTRATION_COLLECTION_NAME)
-                    .insertOne(prepareNewAdministrationDetails);
+        const result = await insertAdministration(db, administrationDetails);
 
-                if (createNewAdministrationResult?.acknowledged) {
-                    delete prepareNewAdministrationDetails?._id;
+        return result?.acknowledged
+            ? generateResponse(administrationDetails, true, 200, `${administrationDetails.name} created successfully`)
+            : generateResponse({}, false, 500, 'Failed to create. Please try again');
 
-                    return {
-                        data: prepareNewAdministrationDetails,
-                        success: true,
-                        status: 200,
-                        message: `${prepareNewAdministrationDetails?.name} created successfully`
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 500,
-                        message: 'Failed to create'
-                    };
-                }
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 403,
-                    message: 'You do not have necessary permission'
-                };
-            }
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
+
 /**
- * Fetches a list of categories from the database.
+ * Retrieves a list of all administrations from the database.
  *
  * @async
- * @function
- * @param {object} db - The database connection object.
- * @returns {Promise<object>} - Returns an object containing the following properties:
- *  - data {Array<object>|object} - The list of categories if found, otherwise an empty object.
- *  - success {boolean} - Indicates if the operation was successful.
- *  - status {StatusCodes} - The HTTP status code.
- *  - message {string} - A message describing the result.
- * @throws {Error} - Throws an error if any issue occurs while fetching categories from the database.
+ * @param {Object} db - Database connection object.
+ * @returns {Object} - The list of administrations or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const getAdministrationListService = async (db) => {
     try {
-        const administrationList = await db
-            .collection(ADMINISTRATION_COLLECTION_NAME)
-            .find({}, { projection: { _id: 0 } })
-            .toArray();
-
-        if (administrationList?.length > 0) {
-            return {
-                data: administrationList,
-                success: true,
-                status: 200,
-                message: `${administrationList?.length} administration found`
-            };
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: 'No administration found'
-            };
-        }
+        const administrations = await findAllAdministrations(db);
+        return administrations?.length
+            ? generateResponse(administrations, true, 200, `${administrations?.length} administration found`)
+            : generateResponse({}, false, 404, 'No administration found');
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Fetches a specific administration by its ID from the database.
+ * Retrieves a specific administration by ID from the database.
  *
- * @function
  * @async
- * @param {Object} db - The database connection object.
- * @param {string} administrationId - The ID of the administration to be fetched.
- *
- * @returns {Promise<Object>} The result object.
- * @returns {Object} result.data - The found administration data or an empty object if not found.
- * @returns {boolean} result.success - Indicates whether the operation was successful.
- * @returns {number} result.status - The HTTP status code.
- * @returns {string} result.message - The message indicating the result of the operation.
- *
- * @throws {Error} Throws an error if there is any issue with the database operation.
+ * @param {Object} db - Database connection object.
+ * @param {string} administrationId - The ID of the administration to retrieve.
+ * @returns {Object} - The administration details or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const getAAdministrationService = async (db, administrationId) => {
     try {
-        const foundAdministration = await db
-            .collection(ADMINISTRATION_COLLECTION_NAME)
-            .findOne({ id: administrationId }, { projection: { _id: 0 } });
-
-        if (foundAdministration) {
-            return {
-                data: foundAdministration,
-                success: true,
-                status: 200,
-                message: `${administrationId} found successfully`
-            };
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: `${administrationId} not found`
-            };
-        }
+        const administration = await findAdministration(db, administrationId);
+        return administration
+            ? generateResponse(administration, true, 200, `${administrationId} found successfully`)
+            : generateResponse({}, false, 404, `${administrationId} not found`);
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Service to update an administration in the database.
+ * Retrieves a specific administration by ID from the database.
  *
  * @async
- * @function
- * @param {Object} db - The database connection object.
- * @param {string} administrationId - The ID of the administration to be updated.
- * @param {Object} newAdministrationDetails - The new details for the administration.
- * @param {string} [newAdministrationDetails.name] - The new name for the administration (optional).
- * @param {string} newAdministrationDetails.requestedBy - The ID of the user making the request.
- *
- * @returns {Promise<Object>} The result object containing:
- * - `data`: The updated administration details (if updated successfully).
- * - `success`: A boolean indicating if the update operation was successful.
- * - `status`: The HTTP status code for the operation.
- * - `message`: A message indicating the result of the operation.
- *
- * @throws {Error} If there's any error during the update operation.
+ * @param {Object} db - Database connection object.
+ * @param {string} administrationId - The ID of the administration to retrieve.
+ * @param newAdministrationDetails
+ * @returns {Object} - The administration details or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const updateAAdministrationService = async (db, administrationId, newAdministrationDetails) => {
     try {
-        const foundAdministration = await db
-            .collection(ADMINISTRATION_COLLECTION_NAME)
-            .findOne({ id: administrationId }, { projection: { _id: 0 } });
+        const { name, level, image, requestedBy } = newAdministrationDetails;
 
-        if (foundAdministration) {
-            const {
-                name,
-                category,
-                designation,
-                image,
-                requestedBy
-            } = newAdministrationDetails;
-            const updatedAdministrationDetails = {
-                id: foundAdministration?.id,
-                ...(name && { name }),
-                ...(category && { category }),
-                ...(designation && { designation }),
-                ...(image && { image }),
-                createdBy: foundAdministration?.createdBy,
-                createdAt: foundAdministration?.createdAt,
-                modifiedBy: requestedBy,
-                modifiedAt: new Date(),
-            };
-            const updateSuperAdminDataResult = await db
-                .collection(ADMINISTRATION_COLLECTION_NAME)
-                .updateOne(
-                    { id: administrationId },
-                    { $set: updatedAdministrationDetails },
-                );
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-            if (updateSuperAdminDataResult?.modifiedCount > 0) {
-                const updatedData = await db
-                    .collection(ADMINISTRATION_COLLECTION_NAME)
-                    .findOne({ id: administrationId });
+        const updatedAdministration = {
+            ...(name && { name }),
+            ...(level && { level }),
+            ...(image && { image }),
+            modifiedBy: requestedBy,
+            modifiedAt: new Date(),
+        };
 
-                delete updatedData._id;
+        const result = await updateAdministration(db, administrationId, updatedAdministration);
+        const updatedData = await findAdministration(db, administrationId);
 
-                return {
-                    data: updatedData,
-                    success: true,
-                    status: 200,
-                    message: `${administrationId} updated successfully`
-                };
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 422,
-                    message: `${administrationId} not updated`
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: `${administrationId} not found`
-            };
-        }
+        return result?.modifiedCount
+            ? generateResponse(updatedData, true, 200, `${administrationId} updated successfully`)
+            : generateResponse({}, false, 422, `${administrationId} not updated`);
+
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Service for deleting an administration.
+ * Deletes a specific administration by ID from the database.
  *
  * @async
- * @function
- * @param {object} db - The database connection object.
- * @param {string} requestedBy - The requester's identifier.
+ * @param {Object} db - Database connection object.
+ * @param {string} requestedBy - The user ID making the request.
  * @param {string} administrationId - The ID of the administration to delete.
- * @returns {Promise<Object>} An object containing the result of the delete operation.
- * @throws {Error} Throws an error if an issue arises during the delete process.
- *
- * @example
- *
- * const response = await deleteAAdministrationService(dbInstance, 'userId123', 'administrationId456');
- * console.log(response.message); // Outputs: 'administrationId456 deleted successfully'
+ * @returns {Object} - A confirmation message or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const deleteAAdministrationService = async (db, requestedBy, administrationId) => {
     try {
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-        if (isValidRequester) {
-            const isAdministrationExists = await isAdministrationValid(db, administrationId);
+        if (!await isValidById(db, ADMINISTRATION_COLLECTION_NAME, administrationId))
+            return generateResponse({}, false, 404, `${administrationId} not found`);
 
-            if (isAdministrationExists) {
-                const deleteResult = await db
-                    .collection(ADMINISTRATION_COLLECTION_NAME)
-                    .deleteOne({ id: administrationId });
+        const result = await deleteAdministration(db, administrationId);
 
-                if (deleteResult?.deletedCount === 1) {
-                    return {
-                        data: {},
-                        success: true,
-                        status: 200,
-                        message: `${administrationId} deleted successfully`,
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 422,
-                        message: `${administrationId} could not be deleted`,
-                    };
-                }
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 404,
-                    message: `${administrationId} not found`,
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 403,
-                message: 'You do not have necessary permission'
-            };
-        }
+        return result?.deletedCount === 1
+            ? generateResponse({}, true, 200, `${administrationId} deleted successfully`)
+            : generateResponse({}, false, 422, `${administrationId} could not be deleted`);
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
+/**
+ * @namespace AdministrationService
+ * @description Group of services related to administration operations.
+ */
 export const AdministrationService = {
     createAdministrationService,
     getAdministrationListService,

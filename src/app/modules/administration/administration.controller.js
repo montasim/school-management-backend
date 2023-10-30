@@ -1,210 +1,80 @@
 import { AdministrationService } from "./administration.service.js";
+import extractFromRequest from "../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 
 /**
- * Creates an administration.
- *
- * The function processes the incoming request data to create a new administration.
- * It interacts with the service layer to perform the actual creation of the administration.
- * After creation, the service's response is sent back to the client.
- *
  * @async
  * @function createAdministrationController
- * @param {Object} req - Express request object. Contains details about the client's request, such as URL parameters, headers, and body data.
- * @param {Object} req.body - The body of the request.
- * @param {string} req.body.name - Name of the administration.
- * @param {string} req.body.requestedBy - User or entity requesting the administration creation.
- * @param {Object} res - Express response object. Allows you to craft an HTTP response.
- * @returns {Object} Express response object with a status and JSON body.
+ * @description Controller for creating a new administration.
  *
- * @throws Will throw an error if the service encounters an issue during administration creation.
+ * @param {express.Request} req - Express request object containing administration details.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const createAdministrationController = async (req, res) => {
-    try {
-        const {
-            name,
-            category,
-            designation,
-            image,
-            requestedBy
-        } = req?.body;
-        const newAdministrationDetails = {
-            name,
-            category,
-            designation,
-            image,
-            requestedBy
-        };
-        const createAdministrationServiceResponse = await AdministrationService.createAdministrationService(req?.db, newAdministrationDetails);
-        const returnData = {
-            data: createAdministrationServiceResponse?.data,
-            success: createAdministrationServiceResponse?.success,
-            status: createAdministrationServiceResponse?.status,
-            message: createAdministrationServiceResponse?.message,
-        };
+    const { name, category, designation, image, requestedBy, db } = extractFromRequest(req, ['name', 'category', 'designation', 'image']);
+    const newAdministration = { name, category, designation, image, requestedBy };
 
-        return res.status(createAdministrationServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AdministrationService.createAdministrationService, db, newAdministration);
 };
 
 /**
- * Retrieves a list of categories.
- *
  * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} req.params - Route parameters.
- * @param {?string} req.params.administrationId - ID of the administration (if provided in the request).
- * @param {Object} req.db - Database connection or instance.
- * @param {Object} res - Express response object.
+ * @function getAdministrationListController
+ * @description Controller for fetching all administrations.
  *
- * @returns {Object} res - Express response object.
- * @returns {Object} res.data - The list of categories.
- * @returns {boolean} res.success - Success flag.
- * @returns {number} res.status - HTTP status code.
- * @returns {string} res.message - Response message.
- *
- * @throws {Error} Throws an error if any occurs during execution.
+ * @param {express.Request} req - Express request object.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const getAdministrationListController = async (req, res) => {
-    try {
-        const createAdministrationServiceResponse = await AdministrationService.getAdministrationListService(req?.db);
-        const returnData = {
-            data: createAdministrationServiceResponse?.data,
-            success: createAdministrationServiceResponse?.success,
-            status: createAdministrationServiceResponse?.status,
-            message: createAdministrationServiceResponse?.message,
-        };
-
-        return res.status(createAdministrationServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AdministrationService.getAdministrationListService, req?.db);
 };
 
 /**
- * Retrieves a specific administration based on its ID.
- *
  * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} req.params - Parameters from the request URL.
- * @param {string} req.params.administrationId - ID of the administration to retrieve.
- * @param {Object} res - Express response object.
- * @returns {Object} Response object containing the administration details.
+ * @function getAAdministrationController
+ * @description Controller for fetching a specific administration by ID.
  *
- * @throws {Error} Throws an error if there's an issue fetching the administration.
- *
- * @example
- * // Request URL: GET /administration/1234
- * const administration = await getAAdministrationController(req, res);
+ * @param {express.Request} req - Express request object containing administration ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const getAAdministrationController = async (req, res) => {
-    try {
-        const { administrationId } = req?.params;
-        const createAdministrationServiceResponse = await AdministrationService.getAAdministrationService(req?.db, administrationId);
-        const returnData = {
-            data: createAdministrationServiceResponse?.data,
-            success: createAdministrationServiceResponse?.success,
-            status: createAdministrationServiceResponse?.status,
-            message: createAdministrationServiceResponse?.message,
-        };
+    const { administrationId, db } = extractFromRequest(req, [], ['administrationId']);
 
-        return res.status(createAdministrationServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AdministrationService.getAAdministrationService, db, administrationId);
 };
 
 /**
- * Update an administration based on the provided administration ID and details.
- *
- * @function
  * @async
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
+ * @function getAAdministrationController
+ * @description Controller for fetching a specific administration by ID.
  *
- * @property {string} req.params.administrationId - The ID of the administration to be updated.
- * @property {Object} req.body - The body of the request containing the details to update.
- * @property {string} req.body.name - The name of the administration.
- * @property {string} req.body.requestedBy - The name of the person requesting the update.
- *
- * @returns {express.Response} res - The response object.
- * @returns {Object} res.body - The response body.
- * @returns {Object} res.body.data - The updated administration details.
- * @returns {boolean} res.body.success - Indicates the success of the operation.
- * @returns {number} res.body.status - The HTTP status code.
- * @returns {string} res.body.message - A message describing the outcome of the operation.
- *
- * @throws {Error} Throws an error if there's an issue updating the administration.
+ * @param {express.Request} req - Express request object containing administration ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAAdministrationController = async (req, res) => {
-    try {
-        const { administrationId } = req?.params;
-        const {
-            name,
-            category,
-            designation,
-            image,
-            requestedBy
-        } = req?.body;
-        const newAdministrationDetails = {
-            name,
-            category,
-            designation,
-            image,
-            requestedBy
-        };
-        const updatedAdministrationServiceResponse = await AdministrationService.updateAAdministrationService(req?.db, administrationId, newAdministrationDetails);
-        const returnData = {
-            data: updatedAdministrationServiceResponse?.data,
-            success: updatedAdministrationServiceResponse?.success,
-            status: updatedAdministrationServiceResponse?.status,
-            message: updatedAdministrationServiceResponse?.message,
-        };
+    const { administrationId, name, category, designation, image, requestedBy, db } = extractFromRequest(req, ['name', 'category', 'designation', 'image'], ['administrationId']);
+    const updatedAdministrationDetails = { name, category, designation, image, requestedBy };
 
-        return res.status(updatedAdministrationServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AdministrationService.updateAAdministrationService, db, administrationId, updatedAdministrationDetails);
 };
 
 /**
- * Deletes an administration based on the provided administration ID.
- *
  * @async
- * @function
- * @param {Object} req - The Express request object.
- * @param {Object} req.params - The parameters from the URL.
- * @param {string} req.params.administrationId - The ID of the administration to be deleted.
- * @param {Object} req.query - The query parameters from the request.
- * @param {string} req.query.requestedBy - The entity requesting the deletion.
- * @param {Object} res - The Express response object.
- * @returns {Object} - The response object containing status, data, success flag, and a message.
+ * @function deleteAAdministrationController
+ * @description Controller for deleting a administration by ID.
  *
- * @throws {Error} - Throws an error if there's an issue during deletion.
+ * @param {express.Request} req - Express request object containing administration ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAAdministrationController = async (req, res) => {
-    try {
-        const { administrationId } = req?.params;
-        const { requestedBy } = req?.query;
-        const deletedAdministrationServiceResponse = await AdministrationService.deleteAAdministrationService(req?.db, requestedBy, administrationId);
-        const returnData = {
-            data: deletedAdministrationServiceResponse?.data,
-            success: deletedAdministrationServiceResponse?.success,
-            status: deletedAdministrationServiceResponse?.status,
-            message: deletedAdministrationServiceResponse?.message,
-        };
+    const { administrationId, requestedBy, db } = extractFromRequest(req, [], ['administrationId']);
 
-        return res.status(deletedAdministrationServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AdministrationService.deleteAAdministrationService, db, requestedBy, administrationId);
 };
 
 /**
- * @module AdministrationController - Controller for administration-related operations.
+ * @namespace AdministrationController
+ * @description Group of controllers for handling administration operations.
  */
 export const AdministrationController = {
     createAdministrationController,

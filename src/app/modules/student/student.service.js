@@ -2,8 +2,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { STUDENT_COLLECTION_NAME } from "../../../config/config.js";
 import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
-import isRequesterValid from "../../../shared/isRequesterValid.js";
-import isStudentValid from "../../../shared/isStudentValid.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
+import isValidById from "../../../shared/isValidById.js";
 import logger from "../../middlewares/logger.js";
 
 /**
@@ -45,7 +45,7 @@ const createStudentService = async (db, newStudentDetails) => {
     try {
         const { name, level, image, requestedBy } = newStudentDetails;
 
-        if (!await isRequesterValid(db, requestedBy))
+        if (!await isValidRequest(db, requestedBy))
             return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
         const studentDetails = {
@@ -83,7 +83,7 @@ const getStudentListService = async (db) => {
     try {
         const students = await findAllStudents(db);
         return students?.length
-            ? generateResponse(students, true, 200, `${students.length} student found`)
+            ? generateResponse(students, true, 200, `${students?.length} student found`)
             : generateResponse({}, false, 404, 'No student found');
     } catch (error) {
         logger.error(error);
@@ -128,7 +128,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
     try {
         const { name, level, image, requestedBy } = newStudentDetails;
 
-        if (!await isRequesterValid(db, requestedBy))
+        if (!await isValidRequest(db, requestedBy))
             return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
         const updatedStudent = {
@@ -165,10 +165,10 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
  */
 const deleteAStudentService = async (db, requestedBy, studentId) => {
     try {
-        if (!await isRequesterValid(db, requestedBy))
+        if (!await isValidRequest(db, requestedBy))
             return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-        if (!await isStudentValid(db, studentId))
+        if (!await isValidById(db, STUDENT_COLLECTION_NAME, studentId))
             return generateResponse({}, false, 404, `${studentId} not found`);
 
         const result = await deleteStudent(db, studentId);

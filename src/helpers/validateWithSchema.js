@@ -1,6 +1,4 @@
 import handleValidationError from "./handleValidationError.js";
-import {SERVER_LOG_MESSAGE} from "../constants/constants.js";
-import {PORT} from "../config/config.js";
 import logger from "../app/middlewares/logger.js";
 
 /**

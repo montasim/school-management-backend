@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CLASS_COLLECTION_NAME } from "../../../config/config.js";
-import isRequesterValid from "../../../shared/isRequesterValid.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
 import isClassAlreadyExists from "../../../shared/isClassAlreadyExists.js";
 import isClassValid from "../../../shared/isClassValid.js";
 
@@ -24,7 +24,7 @@ const createClassService = async (db,  newClassDetails) => {
     try {
         const { name, requestedBy} = newClassDetails;
         const isDuplicateClass = await isClassAlreadyExists(db, name);
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, requestedBy);
 
         if (isDuplicateClass) {
             return {
@@ -253,7 +253,7 @@ const updateAClassService = async (db, classId, newClassDetails) => {
  */
 const deleteAClassService = async (db, requestedBy, classId) => {
     try {
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, requestedBy);
 
         if (isValidRequester) {
             const isClassExists = await isClassValid(db, classId);

@@ -1,110 +1,45 @@
 import { AdministrationSchema } from "./administration.schema.js";
+import validateWithSchema from "../../../helpers/validateWithSchema.js";
 
 /**
- * Middleware function to validate the creation of a new administration.
- *
- * @async
  * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * @async
+ * @description Middleware validator for administration's body data.
+ *
+ * Uses the administrationBodySchema from the AdministrationSchema to validate
+ * the body of the incoming request. This ensures that the administration's
+ * information is in the correct format before processing.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
  * @returns {void}
  */
-const administrationBodyValidator = async (req, res, next) => {
-    try {
-        const { error } = AdministrationSchema.administrationBodySchema.validate(req?.body);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const administrationBodyValidator = validateWithSchema(AdministrationSchema.administrationBodySchema, 'body');
 
 /**
- * Middleware function to validate fetching an administration by its ID.
- *
- * @async
  * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * @async
+ * @description Middleware validator for administration's ID in request parameters.
+ *
+ * Uses the administrationParamsSchema from the AdministrationSchema to validate
+ * the administration ID provided in the request parameters. This ensures that
+ * the administration ID is in the correct format for further processing.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
  * @returns {void}
  */
-const administrationParamsValidator = async (req, res, next) => {
-    try {
-        const { error } = AdministrationSchema.administrationParamsSchema.validate(req?.params?.administrationId);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const administrationParamsValidator = await validateWithSchema(AdministrationSchema.administrationParamsSchema, 'params');
 
 /**
- * Middleware to validate the query parameters for deleting an administration.
- *
- * @async
- * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Callback to the next middleware or route.
- * @throws Will return a 400 BAD_REQUEST if the validation fails.
- * @throws Will return a 500 INTERNAL_SERVER_ERROR if any error occurs during validation.
- */
-const deleteAdministrationQueryValidator = async (req, res, next) => {
-    try {
-        const { error } = AdministrationSchema.deleteAdministrationQuerySchema.validate(req?.query?.requestedBy);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
-
-/**
- * Collection of validator middlewares related to administration operations.
- * @typedef {Object} AdministrationValidators
- * @property {function} administrationBodyValidator - Validates creation of new administration.
- * @property {function} administrationParamsValidator - Validates fetching an administration by its ID.
+ * @namespace AdministrationValidators
+ * @description Exported administration validators to be used in routes.
  */
 export const AdministrationValidators = {
     administrationBodyValidator,
     administrationParamsValidator,
-    deleteAdministrationQueryValidator
 };

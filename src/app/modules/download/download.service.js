@@ -5,7 +5,7 @@
 
 import {v4 as uuidv4} from "uuid";
 import fs from "fs";
-import isRequesterValid from "../../../shared/isRequesterValid.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
 import {DOWNLOAD_COLLECTION_NAME} from "../../../config/config.js";
 
 /**
@@ -25,7 +25,7 @@ const createDownloadService = async (db,  newDownloadDetails, file) => {
             title,
             requestedBy
         } = newDownloadDetails;
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, requestedBy);
 
         if (isValidRequester) {
             const prepareNewDownloadDetails = {
@@ -157,7 +157,7 @@ const getADownloadService = async (db, fileName) => {
  */
 const deleteADownloadService = async (db, requestedBy, fileName) => {
     try {
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, requestedBy);
 
         if (isValidRequester) {
             const fileDetails = await db

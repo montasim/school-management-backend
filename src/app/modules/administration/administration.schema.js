@@ -1,55 +1,35 @@
 import Joi from "joi";
+import { ID_CONSTANTS, IMAGE_PATTERN } from './administration.constants.js';
+import createIdSchema from "../../../helpers/createIdSchema.js";
 
-/**
- * Regular expression pattern for different administration ID prefixes.
- * @constant {RegExp}
- */
-const administrationIdPattern = /^(administration)-\w+$/;
-
-/**
- * Joi schema for validating administration IDs based on a specific pattern and length.
- * @constant {Object}
- */
-const idSchema = Joi.string().pattern(administrationIdPattern).min(9).max(30);
-
-/**
- * Joi schema for validating the creation of a new administration.
- * It expects a 'name' and 'requestedBy' properties in the request body.
- * @constant {Object}
- */
-const administrationBodySchema = Joi.object({
-    name: Joi.string().min(3).max(20).required(),
-    category: Joi.array().items(Joi.string().valid('শিক্ষকবৃন্দ', 'পরিচালনা পরিষদ')).required(),
-    designation: Joi.string().min(1).required(),
-    image: Joi.string().pattern(/[a-zA-Z0-9]/).required(),
-    requestedBy: Joi.string().min(3).max(20).required(),
+const administrationParamsSchema = Joi.object({
+    administrationId: createIdSchema(ID_CONSTANTS?.STUDENT_PREFIX, ID_CONSTANTS).required()
 });
 
 /**
- * Joi schema for validating the retrieval of an administration by its ID.
- * @constant {Object}
+ * @description Joi validation schema for administration's body data.
+ * Validates the name, level, and image fields.
+ *
+ * - `name`: Should be a string with a minimum length of 3 and a maximum length of 30.
+ * - `level`: Should be a string with a minimum length of 2 and a maximum length of 20.
+ * - `image`: Should be a string that matches the IMAGE_PATTERN.
  */
-const administrationParamsSchema = idSchema.required();
+const administrationBodySchema = Joi.object({
+    name: Joi.string().min(3).max(30).required(),
+    category: Joi.array().items(Joi.string()).required(),
+    designation: Joi.string().min(2).max(20).required(),
+    image: Joi.string().pattern(IMAGE_PATTERN).required(),
+});
 
 /**
- * Joi schema to validate the delete administration query parameter.
- *
- * This schema ensures that the provided query parameter is a string and
- * matches either 'admin' or 'user'. This schema is used primarily to
- * determine the role or type of user attempting to delete an administration.
- *
- * @type {Joi.ObjectSchema<string>}
- * @constant
- */
-const deleteAdministrationQuerySchema = Joi.string().valid('admin', 'user').required();
-
-/**
- * Collection of administration-related Joi validation schemas.
  * @namespace AdministrationSchema
- * @type {Object}
+ * @description Exported Joi validation schemas for administration data.
+ *
+ * - `administrationBodySchema`: Validates the body data of an administration.
+ * - `administrationParamsSchema`: Validates the administration ID in request parameters.
+ * - `deleteAdministrationQuerySchema`: Validates the admin ID in the query.
  */
 export const AdministrationSchema = {
     administrationBodySchema,
     administrationParamsSchema,
-    deleteAdministrationQuerySchema,
 };
