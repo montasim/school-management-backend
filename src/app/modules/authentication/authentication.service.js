@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import {ADMIN_COLLECTION_NAME, SECRET_TOKEN} from "../../../constants/index.js";
 
@@ -21,9 +22,15 @@ const loginService = async (db,  loginDetails) => {
 
         if (foundUserDetails) {
             if (foundUserDetails?.password === password) {
+                const token = jwt.sign({
+                    id: foundUserDetails?.id,
+                    userName: foundUserDetails?.userName
+                }, SECRET_TOKEN, {
+                    expiresIn: '1d' // token will expire in 1 day
+                });
                 const returnData = {
                     id: foundUserDetails?.id,
-                    token: SECRET_TOKEN,
+                    token: token,
                 }
                 return {
                     data: returnData,
