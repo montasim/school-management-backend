@@ -29,7 +29,7 @@ const createCategoryService = async (db,  newCategoryDetails) => {
         if (isDuplicateCategory) {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 422,
                 message: `${name} already exists`
             };
@@ -67,7 +67,7 @@ const createCategoryService = async (db,  newCategoryDetails) => {
                 return {
                     data: {},
                     success: false,
-                    status: 401,
+                    status: 403,
                     message: 'You do not have necessary permission'
                 };
             }
@@ -100,7 +100,7 @@ const getCategoryListService = async (db) => {
         if (categoryList?.length > 0) {
             return {
                 data: categoryList,
-                success: false,
+                success: true,
                 status: 200,
                 message: `${categoryList?.length} category found`
             };
@@ -149,7 +149,7 @@ const getACategoryService = async (db, categoryId) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 404,
                 message: `${categoryId} not found`
             };
@@ -217,7 +217,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
             } else {
                 return {
                     data: {},
-                    success: true,
+                    success: false,
                     status: 422,
                     message: `${categoryId} not updated`
                 };
@@ -225,7 +225,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 404,
                 message: `${categoryId} not found`
             };
@@ -290,7 +290,7 @@ const deleteACategoryService = async (db, requestedBy, categoryId) => {
             return {
                 data: {},
                 success: false,
-                status: 401,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }

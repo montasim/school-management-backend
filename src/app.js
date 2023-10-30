@@ -1,7 +1,10 @@
 import express from "express";
 import cors from "cors";
+import favicon from "express-favicon";
+import path from "path";
 import corsOptions from "./app/middlewares/corsConfig.js";
 import { PORT } from "./constants/index.js";
+import logger from "./app/middlewares/logger.js";
 import isBrowserRequest from "./app/middlewares/isBrowserRequest.js";
 import { Database } from "./app/middlewares/database.js";
 import appRoutes from "./app/routes/index.js";
@@ -12,6 +15,9 @@ const app = express();
 app.use(express.json());
 
 app.use(cors(corsOptions));
+
+// Middleware to serve the favicon
+// app.use(favicon(path.join(__dirname, './public/favicon.ico')));
 
 /**
 * Middleware to handle browser requests.
@@ -28,6 +34,9 @@ app.use(cors({
 
  */
 // app.use(isBrowserRequest);
+
+// Custom logging middleware
+// app.use(logger);
 
 // Connect to the database
 app.use(Database.connectToDatabase);

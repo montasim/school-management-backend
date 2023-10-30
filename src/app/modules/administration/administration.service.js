@@ -31,15 +31,6 @@ const createAdministrationService = async (db,  newAdministrationDetails) => {
         } = newAdministrationDetails;
         const isDuplicateAdministration = await isAdministrationAlreadyExists(db, name);
         const isValidRequester = await isRequesterValid(db, requestedBy);
-
-        if (isDuplicateAdministration) {
-            return {
-                data: {},
-                success: true,
-                status: 422,
-                message: `${name} already exists`
-            };
-        } else {
             if (isValidRequester) {
                 const prepareNewAdministrationDetails = {
                     id: `administration-${uuidv4().substr(0, 6)}`,
@@ -76,11 +67,10 @@ const createAdministrationService = async (db,  newAdministrationDetails) => {
                 return {
                     data: {},
                     success: false,
-                    status: 401,
+                    status: 403,
                     message: 'You do not have necessary permission'
                 };
             }
-        }
     } catch (error) {
         throw error;
     }
@@ -109,7 +99,7 @@ const getAdministrationListService = async (db) => {
         if (administrationList?.length > 0) {
             return {
                 data: administrationList,
-                success: false,
+                success: true,
                 status: 200,
                 message: `${administrationList?.length} administration found`
             };
@@ -158,7 +148,7 @@ const getAAdministrationService = async (db, administrationId) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 404,
                 message: `${administrationId} not found`
             };
@@ -235,7 +225,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
             } else {
                 return {
                     data: {},
-                    success: true,
+                    success: false,
                     status: 422,
                     message: `${administrationId} not updated`
                 };
@@ -243,7 +233,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 404,
                 message: `${administrationId} not found`
             };
@@ -308,7 +298,7 @@ const deleteAAdministrationService = async (db, requestedBy, administrationId) =
             return {
                 data: {},
                 success: false,
-                status: 401,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }

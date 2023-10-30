@@ -3,6 +3,7 @@ import authenticationRoutes from "../modules/authentication/authentication.route
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
 import classRoutes from "../modules/class/class.routes.js";
+import contactRoutes from "../modules/contact/contact.routes.js";
 import downloadRoutes from "../modules/download/download.routes.js";
 import noticeRoutes from "../modules/notice/notice.routes.js";
 import resultRoutes from "../modules/result/result.routes.js";
@@ -55,6 +56,15 @@ router.use("/category", categoryRoutes);
  * @memberof module:routes
  */
 router.use("/class", classRoutes);
+
+/**
+ * Sets up versioned routing for the contact module.
+ * @name /contact
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use("/contact", contactRoutes);
 
 /**
  * Sets up versioned routing for the download module.

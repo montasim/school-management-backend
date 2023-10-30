@@ -5,57 +5,57 @@
   "data": [
     {
       "name": "মো: আব্দুল হামিদ",
-      "class": "৬ষ্ঠ শ্রেণী",
+      "level": "৬ষ্ঠ শ্রেণী",
       "image": "/image/student/student1.gif"
     },
     {
       "name": "জান্নাতুন নাঈম",
-      "class": "৬ষ্ঠ শ্রেণী",
+      "level": "৬ষ্ঠ শ্রেণী",
       "image": "/image/student/student2.gif"
     },
     {
       "name": "রহিমা আফরোজ",
-      "class": "৭ম শ্রেণী",
+      "level": "৭ম শ্রেণী",
       "image": "/image/student/student3.gif"
     },
     {
       "name": "মো: আব্দুল হামিদ",
-      "class": "৮ম শ্রেণী",
+      "level": "৮ম শ্রেণী",
       "image": "/image/student/student4.gif"
     },
     {
       "name": "রফিকুল আমিন",
-      "class": "৮ম শ্রেণী",
+      "level": "৮ম শ্রেণী",
       "image": "/image/student/student5.gif"
     },
     {
       "name": "জান্নাতুন",
-      "class": "৮ম শ্রেণী",
+      "level": "৮ম শ্রেণী",
       "image": "/image/student/student6.gif"
     },
     {
       "name": "হামিদ",
-      "class": "৯ম শ্রেণী",
+      "level": "৯ম শ্রেণী",
       "image": "/image/student/student7.gif"
     },
     {
       "name": "রফিকুল",
-      "class": "৯ম শ্রেণী",
+      "level": "৯ম শ্রেণী",
       "image": "/image/student/student8.gif"
     },
     {
       "name": "মো: আব্দুল হামিদ",
-      "class": "৯ম শ্রেণী",
+      "level": "৯ম শ্রেণী",
       "image": "/image/student/student1.gif"
     },
     {
       "name": "রাজিয়া খাতুন",
-      "class": "১০ম শ্রেণী",
+      "level": "১০ম শ্রেণী",
       "image": "/image/student/student2.gif"
     },
     {
       "name": "মো: রফিকুল আমিন",
-      "class": "১০ম শ্রেণী",
+      "level": "১০ম শ্রেণী",
       "image": "/image/student/student3.gif"
     }
   ]

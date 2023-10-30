@@ -21,7 +21,7 @@ const administrationBodySchema = Joi.object({
     name: Joi.string().min(3).max(20).required(),
     category: Joi.array().items(Joi.string().valid('শিক্ষকবৃন্দ', 'পরিচালনা পরিষদ')).required(),
     designation: Joi.string().min(1).required(),
-    image: Joi.string().pattern(/\/image\/teacher\/[a-zA-Z0-9]+\.gif$/).required(),
+    image: Joi.string().pattern(/[a-zA-Z0-9]/).required(),
     requestedBy: Joi.string().min(3).max(20).required(),
 });
 

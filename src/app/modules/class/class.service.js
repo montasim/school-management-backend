@@ -29,7 +29,7 @@ const createClassService = async (db,  newClassDetails) => {
         if (isDuplicateClass) {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 422,
                 message: `${name} already exists`
             };
@@ -67,7 +67,7 @@ const createClassService = async (db,  newClassDetails) => {
                 return {
                     data: {},
                     success: false,
-                    status: 401,
+                    status: 403,
                     message: 'You do not have necessary permission'
                 };
             }
@@ -100,7 +100,7 @@ const getClassListService = async (db) => {
         if (classList?.length > 0) {
             return {
                 data: classList,
-                success: false,
+                success: true,
                 status: 200,
                 message: `${classList?.length} class found`
             };
@@ -149,7 +149,7 @@ const getAClassService = async (db, classId) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 404,
                 message: `${classId} not found`
             };
@@ -217,7 +217,7 @@ const updateAClassService = async (db, classId, newClassDetails) => {
             } else {
                 return {
                     data: {},
-                    success: true,
+                    success: false,
                     status: 422,
                     message: `${classId} not updated`
                 };
@@ -225,7 +225,7 @@ const updateAClassService = async (db, classId, newClassDetails) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 404,
                 message: `${classId} not found`
             };
@@ -290,7 +290,7 @@ const deleteAClassService = async (db, requestedBy, classId) => {
             return {
                 data: {},
                 success: false,
-                status: 401,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }

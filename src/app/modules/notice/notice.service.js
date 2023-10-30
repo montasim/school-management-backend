@@ -63,7 +63,7 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
             return {
                 data: {},
                 success: false,
-                status: 401,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }
@@ -208,7 +208,7 @@ const deleteANoticeService = async (db, requestedBy, fileName) => {
             return {
                 data: {},
                 success: false,
-                status: 401,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }

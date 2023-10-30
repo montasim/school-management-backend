@@ -63,7 +63,7 @@ const createResultService = async (db,  newResultDetails, file) => {
             return {
                 data: {},
                 success: false,
-                status: 401,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }
@@ -208,7 +208,7 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
             return {
                 data: {},
                 success: false,
-                status: 401,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }

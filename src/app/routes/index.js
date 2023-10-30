@@ -1,10 +1,20 @@
 import express from "express";
+import homeRoutes from "../modules/home/home.routes.js";
 import statusRoutes from "../modules/status/status.routes.js";
 import {API_VERSION} from "../../constants/index.js";
 import apiRoutes from "./api.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 
 const router = express.Router();
+
+/**
+ * Sets up routing for the home module.
+ * @name /
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use(`/`, homeRoutes);
 
 /**
  * Sets up routing for the status module.
