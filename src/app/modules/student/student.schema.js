@@ -4,13 +4,15 @@ import Joi from "joi";
  * Regular expression pattern for different student ID prefixes.
  * @constant {RegExp}
  */
+const adminIdPattern = /^(admin)-\w+$/;
 const studentIdPattern = /^(student)-\w+$/;
 
 /**
  * Joi schema for validating student IDs based on a specific pattern and length.
  * @constant {Object}
  */
-const idSchema = Joi.string().pattern(studentIdPattern).min(9).max(30);
+const adminIdSchema = Joi.string().pattern(adminIdPattern).min(9).max(30);
+const studentIdSchema = Joi.string().pattern(studentIdPattern).min(9).max(30);
 
 /**
  * Joi schema for validating the creation of a new student.
@@ -19,16 +21,16 @@ const idSchema = Joi.string().pattern(studentIdPattern).min(9).max(30);
  */
 const studentBodySchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
-    class: Joi.string().min(2).max(20).required(),
-    image: Joi.string().pattern(/\/image\/student\/[a-zA-Z0-9]+\.gif$/).required(),
-    requestedBy: Joi.string().min(3).max(20).required(),
+    level: Joi.string().min(2).max(20).required(),
+    image: Joi.string().pattern(/[a-zA-Z0-9]+\.(jpg|png|jpeg|gif)$/).required(),
+    requestedBy: Joi.string().pattern(/^admin-\w+$/).required(),
 });
 
 /**
  * Joi schema for validating the retrieval of a student by its ID.
  * @constant {Object}
  */
-const studentParamsSchema = idSchema.required();
+const studentParamsSchema = studentIdSchema.required();
 
 /**
  * Joi schema to validate the delete student query parameter.
@@ -40,7 +42,7 @@ const studentParamsSchema = idSchema.required();
  * @type {Joi.ObjectSchema<string>}
  * @constant
  */
-const deleteStudentQuerySchema = Joi.string().valid('admin', 'user').required();
+const deleteStudentQuerySchema = adminIdSchema.required();
 
 /**
  * Collection of student-related Joi validation schemas.

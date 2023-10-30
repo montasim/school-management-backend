@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {SECRET_KEY} from "../../constants/index.js"; // Preferably store this in an environment variable or some secure configuration
+import {SECRET_KEY} from "../../constants/index.js";
 
 const verifyJwt = (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1];
@@ -20,7 +20,7 @@ const verifyJwt = (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: StatusCodes.FORBIDDEN,
+                status: 403,
                 message: "Unauthorized",
             };
 

@@ -21,8 +21,12 @@ const loginService = async (db,  loginDetails) => {
 
         if (foundUserDetails) {
             if (foundUserDetails?.password === password) {
+                const returnData = {
+                    id: foundUserDetails?.id,
+                    token: SECRET_TOKEN,
+                }
                 return {
-                    data: SECRET_TOKEN,
+                    data: returnData,
                     success: true,
                     status: 200,
                     message: 'Authorized'

@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { STUDENT_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
-import isStudentAlreadyExists from "../../../shared/isStudentAlreadyExists.js";
 import isStudentValid from "../../../shared/isStudentValid.js";
 
 /**
@@ -24,62 +23,50 @@ const createStudentService = async (db,  newStudentDetails) => {
     try {
         const {
             name,
-            category,
-            designation,
+            level,
             image,
             requestedBy
         } = newStudentDetails;
-        const isDuplicateStudent = await isStudentAlreadyExists(db, name);
         const isValidRequester = await isRequesterValid(db, requestedBy);
 
-        if (isDuplicateStudent) {
-            return {
-                data: {},
-                success: true,
-                status: 422,
-                message: `${name} already exists`
+        if (isValidRequester) {
+            const prepareNewStudentDetails = {
+                id: `student-${uuidv4().substr(0, 6)}`,
+                name: name,
+                level: level,
+                image: image,
+                createdBy: requestedBy,
+                createdAt: new Date(),
             };
-        } else {
-            if (isValidRequester) {
-                const prepareNewStudentDetails = {
-                    id: `student-${uuidv4().substr(0, 6)}`,
-                    name: name,
-                    category: category,
-                    designation: designation,
-                    image: image,
-                    createdBy: requestedBy,
-                    createdAt: new Date(),
+
+            const createNewStudentResult = await db
+                .collection(STUDENT_COLLECTION_NAME)
+                .insertOne(prepareNewStudentDetails);
+
+            if (createNewStudentResult?.acknowledged) {
+                delete prepareNewStudentDetails?._id;
+
+                return {
+                    data: prepareNewStudentDetails,
+                    success: true,
+                    status: 200,
+                    message: `${prepareNewStudentDetails?.name} created successfully`
                 };
-
-                const createNewStudentResult = await db
-                    .collection(STUDENT_COLLECTION_NAME)
-                    .insertOne(prepareNewStudentDetails);
-
-                if (createNewStudentResult?.acknowledged) {
-                    delete prepareNewStudentDetails?._id;
-
-                    return {
-                        data: prepareNewStudentDetails,
-                        success: true,
-                        status: 200,
-                        message: `${prepareNewStudentDetails?.name} created successfully`
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 500,
-                        message: 'Failed to create'
-                    };
-                }
             } else {
                 return {
                     data: {},
                     success: false,
-                    status: 401,
-                    message: 'You do not have necessary permission'
+                    status: 500,
+                    message: 'Failed to create'
                 };
             }
+        } else {
+            return {
+                data: {},
+                success: false,
+                status: 403,
+                message: 'You do not have necessary permission'
+            };
         }
     } catch (error) {
         throw error;
@@ -109,7 +96,7 @@ const getStudentListService = async (db) => {
         if (studentList?.length > 0) {
             return {
                 data: studentList,
-                success: false,
+                success: true,
                 status: 200,
                 message: `${studentList?.length} student found`
             };
@@ -158,7 +145,7 @@ const getAStudentService = async (db, studentId) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 404,
                 message: `${studentId} not found`
             };
@@ -196,16 +183,14 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
         if (foundStudent) {
             const {
                 name,
-                category,
-                designation,
+                level,
                 image,
                 requestedBy
             } = newStudentDetails;
             const updatedStudentDetails = {
                 id: foundStudent?.id,
                 ...(name && { name }),
-                ...(category && { category }),
-                ...(designation && { designation }),
+                ...(level && { level }),
                 ...(image && { image }),
                 createdBy: foundStudent?.createdBy,
                 createdAt: foundStudent?.createdAt,
@@ -235,7 +220,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
             } else {
                 return {
                     data: {},
-                    success: true,
+                    success: false,
                     status: 422,
                     message: `${studentId} not updated`
                 };
@@ -243,7 +228,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
         } else {
             return {
                 data: {},
-                success: true,
+                success: false,
                 status: 404,
                 message: `${studentId} not found`
             };
@@ -308,7 +293,7 @@ const deleteAStudentService = async (db, requestedBy, studentId) => {
             return {
                 data: {},
                 success: false,
-                status: 401,
+                status: 403,
                 message: 'You do not have necessary permission'
             };
         }
