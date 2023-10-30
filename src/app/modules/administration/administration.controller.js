@@ -45,8 +45,8 @@ const getAAdministrationController = async (req, res) => {
 
 /**
  * @async
- * @function getAAdministrationController
- * @description Controller for fetching a specific administration by ID.
+ * @function updateAAdministrationController
+ * @description Controller for updating a specific administration by ID.
  *
  * @param {express.Request} req - Express request object containing administration ID in parameters.
  * @param {express.Response} res - Express response object to send data back to client.

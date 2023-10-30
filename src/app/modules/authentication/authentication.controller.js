@@ -1,132 +1,65 @@
 import { AuthenticationService } from "./authentication.service.js";
+import extractFromRequest from "../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 
 /**
- * Controller for handling login requests.
  * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {Object} Express response object.
+ * @function loginController
+ * @description Controller for login an admin.
+ *
+ * @param {express.Request} req - Express request object containing login details.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const loginController = async (req, res) => {
-    try {
-        const {
-            userName,
-            password,
-        } = req?.body;
-        const loginDetails = {
-            userName,
-            password
-        };
-        const loginServiceResponse = await AuthenticationService.loginService(req?.db, loginDetails);
-        const returnData = {
-            data: loginServiceResponse?.data,
-            success: loginServiceResponse?.success,
-            status: loginServiceResponse?.status,
-            message: loginServiceResponse?.message,
-        };
+    const { username, password, db } = extractFromRequest(req, ['username', 'password']);
+    const loginDetails = { username, password };
 
-        return res.status(loginServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AuthenticationService.loginService, db, loginDetails);
 };
 
 /**
- * Controller for handling signup requests.
  * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {Object} Express response object.
+ * @function signupController
+ * @description Controller for signup an admin.
+ *
+ * @param {express.Request} req - Express request object containing signup details.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const signupController = async (req, res) => {
-    try {
-        const {
-            name,
-            userName,
-            password,
-            confirmPassword,
-        } = req?.body;
-        const signupDetails = {
-            name,
-            userName,
-            password,
-            confirmPassword,
-        };
-        const signupServiceResponse = await AuthenticationService.signupService(req?.db, signupDetails);
-        const returnData = {
-            data: signupServiceResponse?.data,
-            success: signupServiceResponse?.success,
-            status: signupServiceResponse?.status,
-            message: signupServiceResponse?.message,
-        };
+    const { name, userName, password, confirmPassword, db } = extractFromRequest(req, ['name', 'username', 'password', 'confirmPassword']);
+    const signupDetails = { name, userName, password, confirmPassword };
 
-        return res.status(signupServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AuthenticationService.signupService, db, signupDetails);
 };
 
 /**
- * Controller for handling signup requests.
  * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {Object} Express response object.
+ * @function resetPasswordController
+ * @description Controller for reset an admin password.
+ *
+ * @param {express.Request} req - Express request object containing signup details.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const resetPasswordController = async (req, res) => {
-    try {
-        const { adminId } = req?.params;
-        const {
-            password,
-            confirmPassword,
-            requestedBy
-        } = req?.body;
-        const resetPasswordDetails = {
-            password,
-            confirmPassword,
-            requestedBy
-        };
-        const resetPasswordServiceResponse = await AuthenticationService.resetPasswordService(req?.db, adminId, resetPasswordDetails);
-        const returnData = {
-            data: resetPasswordServiceResponse?.data,
-            success: resetPasswordServiceResponse?.success,
-            status: resetPasswordServiceResponse?.status,
-            message: resetPasswordServiceResponse?.message,
-        };
+    const { oldPassword, newPassword, confirmNewPassword, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
+    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword };
 
-        return res.status(resetPasswordServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AuthenticationService.resetPasswordService, db, resetPasswordDetails);
 };
 
 /**
- * Controller for handling admin deletion requests.
  * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {Object} Express response object.
+ * @function deleteAnAdmin
+ * @description Controller for deleting an admin.
+ *
+ * @param {express.Request} req - Express request object containing administration ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteUserController = async (req, res) => {
-    try {
-        const { adminId } = req?.params;
-        const { requestedBy } = req?.query;
-        const deleteAdminServiceResponse = await AuthenticationService.deleteUserService(req?.db, requestedBy, adminId);
-        const returnData = {
-            data: deleteAdminServiceResponse?.data,
-            success: deleteAdminServiceResponse?.success,
-            status: deleteAdminServiceResponse?.status,
-            message: deleteAdminServiceResponse?.message,
-        };
+    const { password, confirmPassword, db } = extractFromRequest(req, ['password', 'confirmPassword']);
+    const resetPasswordDetails = { password, confirmPassword };
 
-        return res.status(deleteAdminServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, AuthenticationService.deleteUserService, db, resetPasswordDetails);
 };
 
 /**

@@ -8,7 +8,7 @@
  * @property {number} MAX_LENGTH - Maximum allowed length for IDs.
  */
 export const ID_CONSTANTS = {
-    STUDENT_PREFIX: "administration",
+    ADMINISTRATION_PREFIX: "administration",
     MIN_LENGTH: 9,
     MAX_LENGTH: 30
 };

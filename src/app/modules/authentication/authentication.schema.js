@@ -1,76 +1,56 @@
 import Joi from "joi";
+import { ID_CONSTANTS } from './authentication.constants.js';
 
 /**
- * @module AuthenticationSchema
- * @description This module provides schemas for validating authentication related data.
- */
-
-/**
- * Pattern for admin ID.
- * @constant {RegExp}
- */
-const adminIdPattern = /^(admin)-\w+$/;
-
-/**
- * Schema for validating admin IDs.
- * @constant {Object}
- */
-const idSchema = Joi.string().pattern(adminIdPattern).min(9).max(30);
-
-/**
- * Schema for validating login requests.
- * @constant {Object}
+ * @description Joi validation schema for signup body data.
+ * Validates the name and password fields.
+ *
+ * - `name`: Should be a string with a minimum length of 3 and a maximum length of 30.
+ * - `password`: Should be a string with a minimum length of 8 and a maximum length of 20.
  */
 const loginSchema = Joi.object({
-    userName: Joi.string().min(3).max(20).required(),
-    password: Joi.string().min(3).max(20).required(),
+    userName: Joi.string().min(3).max(ID_CONSTANTS?.MAX_LENGTH).required(),
+    password: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
 });
 
 /**
- * Schema for validating signup requests.
- * @constant {Object}
+ * @description Joi validation schema for signup body data.
+ * Validates the name, userName, password, and confirmPassword fields.
+ *
+ * - `name`: Should be a string with a minimum length of 3 and a maximum length of 30.
+ * - `userName`: Should be a string with a minimum length of 3 and a maximum length of 20.
+ * - `password`: Should be a string with a minimum length of 8 and a maximum length of 20.
+ * - `confirmPassword`: Should be a string with a minimum length of 8 and a maximum length of 20.
  */
 const signupSchema = Joi.object({
-    name: Joi.string().min(3).max(20).required(),
-    userName: Joi.string().min(3).max(20).required(),
-    password: Joi.string().min(3).max(20).required(),
-    confirmPassword: Joi.string().min(3).max(20).required(),
+    name: Joi.string().min(3).max(30).required(),
+    userName: Joi.string().min(3).max(ID_CONSTANTS?.MAX_LENGTH).required(),
+    password: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
+    confirmPassword: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
 });
 
 /**
- * Schema for validating authentication parameters (admin ID).
- * @constant {Object}
- */
-const authenticationParamsSchema = idSchema.required();
-
-/**
- * Schema for validating password reset requests.
- * @constant {Object}
+ * @description Joi validation schema for reset password body data.
+ * Validates the userName, password, and confirmPassword fields.
+ *
+ * - `userName`: Should be a string with a minimum length of 3 and a maximum length of 20.
+ * - `password`: Should be a string with a minimum length of 8 and a maximum length of 20.
+ * - `confirmPassword`: Should be a string with a minimum length of 8 and a maximum length of 20.
  */
 const resetPasswordSchema = Joi.object({
-    userName: Joi.string().min(3).max(20).required(),
-    password: Joi.string().min(3).max(20).required(),
-    confirmPassword: Joi.string().min(3).max(20).required(),
+    userName: Joi.string().min(3).max(ID_CONSTANTS?.MAX_LENGTH).required(),
+    password: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
+    confirmPassword: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
 });
-
-/**
- * Schema for validating deletion queries for admin.
- * @constant {Object}
- */
-const deleteAdminQuerySchema = Joi.string().required();
 
 /**
  * @typedef {Object} AuthenticationSchemas
  * @property {Object} loginSchema - Schema for login validation.
  * @property {Object} signupSchema - Schema for signup validation.
- * @property {Object} authenticationParamsSchema - Schema for admin ID validation.
  * @property {Object} resetPasswordSchema - Schema for password reset validation.
- * @property {Object} deleteAdminQuerySchema - Schema for validating delete admin queries.
  */
 export const AuthenticationSchema = {
     loginSchema,
     signupSchema,
-    authenticationParamsSchema,
     resetPasswordSchema,
-    deleteAdminQuerySchema,
 };

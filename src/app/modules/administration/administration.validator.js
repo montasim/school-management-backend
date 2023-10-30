@@ -1,5 +1,5 @@
-import { AdministrationSchema } from "./administration.schema.js";
 import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import { AdministrationSchema } from "./administration.schema.js";
 
 /**
  * @function

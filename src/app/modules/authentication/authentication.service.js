@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import {ADMIN_COLLECTION_NAME, SECRET_TOKEN} from "../../../config/config.js";
+import findByUserName from "../../../shared/findByUserName.js";
 
 /**
  * Service to authenticate a user using their login details.
@@ -16,20 +17,19 @@ const loginService = async (db,  loginDetails) => {
             password,
         } = loginDetails;
 
-        const foundUserDetails = await db
-            .collection(ADMIN_COLLECTION_NAME)
-            .findOne({ userName: userName }, { projection: { _id: 0 } });
+        const foundUserDetails = findByUserName(db, ADMIN_COLLECTION_NAME, userName)
 
         if (foundUserDetails) {
             if (foundUserDetails?.password === password) {
                 const token = jwt.sign({
-                    id: foundUserDetails?.id,
+                    name: foundUserDetails?.name,
                     userName: foundUserDetails?.userName
                 }, SECRET_TOKEN, {
                     expiresIn: '1d' // token will expire in 1 day
                 });
                 const returnData = {
-                    id: foundUserDetails?.id,
+                    name: foundUserDetails?.name,
+                    userName: foundUserDetails?.userName,
                     token: token,
                 }
                 return {

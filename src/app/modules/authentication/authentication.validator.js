@@ -1,167 +1,65 @@
+import validateWithSchema from "../../../helpers/validateWithSchema.js";
 import { AuthenticationSchema } from "./authentication.schema.js";
 
 /**
- * Middleware to validate login request data.
- * @async
  * @function
+ * @async
+ * @description Middleware validator for login body data.
+ *
+ * Uses the loginSchema from the LoginSchema to validate
+ * the body of the incoming request. This ensures that the login
+ * information is in the correct format before processing.
+ *
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
+ *
+ * @returns {void}
  */
-const loginValidator = async (req, res, next) => {
-    try {
-        const { error } = AuthenticationSchema.loginSchema.validate(req?.body);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const loginValidator = validateWithSchema(AuthenticationSchema.loginSchema, 'body');
 
 /**
- * Middleware to validate signup request data.
- * @async
  * @function
+ * @async
+ * @description Middleware validator for signup body data.
+ *
+ * Uses the signupSchema from the SignupSchema to validate
+ * the body of the incoming request. This ensures that the signup
+ * information is in the correct format before processing.
+ *
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
+ *
+ * @returns {void}
  */
-const signupValidator = async (req, res, next) => {
-    try {
-        const { error } = AuthenticationSchema.signupSchema.validate(req?.body);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const signupValidator = validateWithSchema(AuthenticationSchema.signupSchema, 'body');
 
 /**
- * Middleware to validate adminId in request parameters.
- * @async
  * @function
+ * @async
+ * @description Middleware validator for reset password body data.
+ *
+ * Uses the resetPasswordSchema from the ResetPasswordSchema to validate
+ * the body of the incoming request. This ensures that the reset password
+ * information is in the correct format before processing.
+ *
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
+ *
+ * @returns {void}
  */
-const authenticationParamsValidator = async (req, res, next) => {
-    try {
-        const { error } = AuthenticationSchema.authenticationParamsSchema.validate(req?.params?.adminId);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
-
-/**
- * Middleware to validate query for deleting an admin.
- * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-const deleteAdminQueryValidator = async (req, res, next) => {
-    try {
-        const { error } = AuthenticationSchema.deleteAdminQuerySchema.validate(req?.query?.requestedBy);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
-
-/**
- * Middleware to validate query for resetting password.
- * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-const resetPasswordValidator = async (req, res, next) => {
-    try {
-        const { error } = AuthenticationSchema.resetPasswordSchema.validate(req?.query?.requestedBy);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const resetPasswordValidator = validateWithSchema(AuthenticationSchema.resetPasswordSchema, 'body');
 
 /**
  * @typedef {Object} AuthenticationValidators
  * @property {Function} loginValidator - Validates login request.
  * @property {Function} signupValidator - Validates signup request.
- * @property {Function} authenticationParamsValidator - Validates adminId in request params.
- * @property {Function} deleteAdminQueryValidator - Validates delete admin request.
  * @property {Function} resetPasswordValidator - Validates reset password request.
  */
 export const AuthenticationValidators = {
     loginValidator,
     signupValidator,
-    authenticationParamsValidator,
     resetPasswordValidator,
-    deleteAdminQueryValidator,
 };

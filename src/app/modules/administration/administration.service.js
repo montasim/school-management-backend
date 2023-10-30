@@ -49,7 +49,7 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
             return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
         const administrationDetails = {
-            id: `${ID_CONSTANTS?.STUDENT_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: `${ID_CONSTANTS?.ADMINISTRATION_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
             category,
             designation,
