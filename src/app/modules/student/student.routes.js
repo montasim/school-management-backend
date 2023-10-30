@@ -1,97 +1,118 @@
 import express from "express";
+import verifyJwt from "../../middlewares/jwtMiddleware.js";
 import { StudentValidators } from "./student.validator.js";
 import { StudentController } from "./student.controller.js";
 
 const router = express.Router();
 
 /**
- * Handle POST request to create a new student.
- * @async
- * @function createStudent
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @param {express.NextFunction} next - Express next middleware function.
- * @memberof module:studentRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /:
+ *   post:
+ *     summary: Create a student.
+ *     description: Endpoint to add a new student to the system.
+ *     parameters:
+ *       - in: body
+ *         name: student
+ *         description: The student to create.
+ *         schema:
+ *           $ref: '#/definitions/Student'
+ *     responses:
+ *       200:
+ *         description: Student successfully created.
  */
-router.post(
-    "/",
+router.post("/", [
+    verifyJwt,
     StudentValidators.studentBodyValidator,
     StudentController.createStudentController
-);
+]);
 
 /**
- * Handle GET request to retrieve all categories.
- * @async
- * @function getStudentList
- * @memberof module:studentRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Retrieve all students.
+ *     description: Endpoint to retrieve a list of all students.
+ *     responses:
+ *       200:
+ *         description: A list of students.
  */
-router.get(
-    "/",
+router.get("/", [
     StudentController.getStudentListController
-);
+]);
 
 /**
- * Handle GET request to retrieve a specific student by its ID.
- * @async
- * @function getAStudent
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @param {express.NextFunction} next - Express next middleware function.
- * @param {string} req.params.studentId - ID of the student to retrieve.
- * @memberof module:studentRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /{studentId}:
+ *   get:
+ *     summary: Retrieve a specific student by ID.
+ *     description: Endpoint to get details of a student by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         description: ID of the student to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Student details.
  */
-router.get(
-    "/:studentId",
+router.get("/:studentId", [
     StudentValidators.studentParamsValidator,
     StudentController.getAStudentController
-);
+]);
 
 /**
- * Handle PUT request to update a student by its ID.
- * @async
- * @function updateStudent
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @param {express.NextFunction} next - Express next middleware function.
- * @param {string} req.params.studentId - ID of the student to update.
- * @memberof module:studentRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /{studentId}:
+ *   put:
+ *     summary: Update a student by ID.
+ *     description: Endpoint to update the details of a student by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         description: ID of the student to update.
+ *         schema:
+ *           type: string
+ *       - in: body
+ *         name: student
+ *         description: Updated details of the student.
+ *         schema:
+ *           $ref: '#/definitions/Student'
+ *     responses:
+ *       200:
+ *         description: Student successfully updated.
  */
-router.put(
-    "/:studentId",
+router.put("/:studentId", [
+    verifyJwt,
     StudentValidators.studentParamsValidator,
     StudentValidators.studentBodyValidator,
     StudentController.updateAStudentController
-);
+]);
 
 /**
- * Handle DELETE request to delete a student by its ID.
- * @async
- * @function deleteStudent
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @param {express.NextFunction} next - Express next middleware function.
- * @param {string} req.params.studentId - ID of the student to delete.
- * @memberof module:studentRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /{studentId}:
+ *   delete:
+ *     summary: Delete a student by ID.
+ *     description: Endpoint to delete a student by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         description: ID of the student to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Student successfully deleted.
  */
-router.delete(
-    "/:studentId",
+router.delete("/:studentId", [
+    verifyJwt,
     StudentValidators.studentParamsValidator,
-    StudentValidators.deleteStudentQueryValidator,
     StudentController.deleteAStudentController
-);
+]);
 
-/**
- * Exports the router that contains student-related routes.
- * @exports studentRoutes
- */
 export default router;

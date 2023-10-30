@@ -1,35 +1,35 @@
 import jwt from 'jsonwebtoken';
-import {SECRET_KEY} from "../../constants/index.js";
+import {SECRET_TOKEN} from "../../constants/index.js";
 
 const verifyJwt = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
+    try {
+        const token = req.headers['authorization']?.split(' ')[1];
 
-    if (!token) {
-        const returnData = {
-            data: {},
-            success: false,
-            status: 401,
-            message: "Unauthorized",
-        };
+        if (token) {
+            const verified = jwt.verify(token, SECRET_TOKEN);
+            req.requestedBy = verified?.id;
 
-        return res.status(returnData?.status).json(returnData);
-    }
-
-    jwt.verify(token, SECRET_KEY, (err, decoded) => {
-        if (err) {
+            next();
+        } else {
             const returnData = {
                 data: {},
                 success: false,
-                status: 403,
+                status: 401,
                 message: "Unauthorized",
             };
 
             return res.status(returnData?.status).json(returnData);
         }
+    } catch (error) {
+        const returnData = {
+            data: {},
+            success: false,
+            status: 400,
+            message: "Invalid token",
+        };
 
-        req.userId = decoded.id;
-        next();
-    });
+        res.status(returnData?.status).json(returnData);
+    }
 };
 
 export default verifyJwt;

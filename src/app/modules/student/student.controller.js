@@ -1,112 +1,81 @@
 import { StudentService } from "./student.service.js";
+import extractFromRequest from "../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+
+/**
+ * @async
+ * @function createStudentController
+ * @description Controller for creating a new student.
+ *
+ * @param {express.Request} req - Express request object containing student details.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
 const createStudentController = async (req, res) => {
-    try {
-        const {
-            name,
-            level,
-            image,
-            requestedBy
-        } = req?.body;
-        const newStudentDetails = {
-            name,
-            level,
-            image,
-            requestedBy
-        };
-        const createStudentServiceResponse = await StudentService.createStudentService(req?.db, newStudentDetails);
-        const returnData = {
-            data: createStudentServiceResponse?.data,
-            success: createStudentServiceResponse?.success,
-            status: createStudentServiceResponse?.status,
-            message: createStudentServiceResponse?.message,
-        };
+    const { name, level, image, requestedBy, db } = extractFromRequest(req, ['name', 'level', 'image']);
+    const newStudent = { name, level, image, requestedBy };
 
-        return res.status(createStudentServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, StudentService.createStudentService, db, newStudent);
 };
 
+/**
+ * @async
+ * @function getStudentListController
+ * @description Controller for fetching all students.
+ *
+ * @param {express.Request} req - Express request object.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
 const getStudentListController = async (req, res) => {
-    try {
-        const createStudentServiceResponse = await StudentService.getStudentListService(req?.db);
-        const returnData = {
-            data: createStudentServiceResponse?.data,
-            success: createStudentServiceResponse?.success,
-            status: createStudentServiceResponse?.status,
-            message: createStudentServiceResponse?.message,
-        };
-
-        return res.status(createStudentServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, StudentService.getStudentListService, req.db);
 };
 
+/**
+ * @async
+ * @function getAStudentController
+ * @description Controller for fetching a specific student by ID.
+ *
+ * @param {express.Request} req - Express request object containing student ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
 const getAStudentController = async (req, res) => {
-    try {
-        const { studentId } = req?.params;
-        const createStudentServiceResponse = await StudentService.getAStudentService(req?.db, studentId);
-        const returnData = {
-            data: createStudentServiceResponse?.data,
-            success: createStudentServiceResponse?.success,
-            status: createStudentServiceResponse?.status,
-            message: createStudentServiceResponse?.message,
-        };
+    const { studentId, db } = extractFromRequest(req, [], ['studentId']);
 
-        return res.status(createStudentServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, StudentService.getAStudentService, db, studentId);
 };
 
+/**
+ * @async
+ * @function getAStudentController
+ * @description Controller for fetching a specific student by ID.
+ *
+ * @param {express.Request} req - Express request object containing student ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
 const updateAStudentController = async (req, res) => {
-    try {
-        const { studentId } = req?.params;
-        const {
-            name,
-            level,
-            image,
-            requestedBy
-        } = req?.body;
-        const newStudentDetails = {
-            name,
-            level,
-            image,
-            requestedBy
-        };
-        const updatedStudentServiceResponse = await StudentService.updateAStudentService(req?.db, studentId, newStudentDetails);
-        const returnData = {
-            data: updatedStudentServiceResponse?.data,
-            success: updatedStudentServiceResponse?.success,
-            status: updatedStudentServiceResponse?.status,
-            message: updatedStudentServiceResponse?.message,
-        };
+    const { studentId, name, level, image, requestedBy, db } = extractFromRequest(req, ['name', 'level', 'image'], ['studentId']);
+    const updatedStudentDetails = { name, level, image, requestedBy };
 
-        return res.status(updatedStudentServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, StudentService.updateAStudentService, db, studentId, updatedStudentDetails);
 };
 
+/**
+ * @async
+ * @function deleteAStudentController
+ * @description Controller for deleting a student by ID.
+ *
+ * @param {express.Request} req - Express request object containing student ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
 const deleteAStudentController = async (req, res) => {
-    try {
-        const { studentId } = req?.params;
-        const { requestedBy } = req?.query;
-        const deletedStudentServiceResponse = await StudentService.deleteAStudentService(req?.db, requestedBy, studentId);
-        const returnData = {
-            data: deletedStudentServiceResponse?.data,
-            success: deletedStudentServiceResponse?.success,
-            status: deletedStudentServiceResponse?.status,
-            message: deletedStudentServiceResponse?.message,
-        };
+    const { studentId, requestedBy, db } = extractFromRequest(req, [], ['studentId']);
 
-        return res.status(deletedStudentServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, StudentService.deleteAStudentService, db, requestedBy, studentId);
 };
 
+/**
+ * @namespace StudentController
+ * @description Group of controllers for handling student operations.
+ */
 export const StudentController = {
     createStudentController,
     getStudentListController,

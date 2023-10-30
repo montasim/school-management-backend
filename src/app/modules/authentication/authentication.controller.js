@@ -79,7 +79,6 @@ const signupController = async (req, res) => {
 const resetPasswordController = async (req, res) => {
     try {
         const { adminId } = req?.params;
-        console.log(adminId)
         const {
             password,
             confirmPassword,

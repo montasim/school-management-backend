@@ -86,7 +86,6 @@ const signupService = async (db, signupDetails) => {
                 message: `${userName} already exists`
             };
         } else {
-            console.log(signupDetails)
             if (password === confirmPassword) {
                 const prepareNewUserDetails = {
                     id: `admin-${uuidv4().substr(0, 6)}`,
@@ -95,8 +94,6 @@ const signupService = async (db, signupDetails) => {
                     password: password,
                     createdAt: new Date(),
                 };
-
-                console.log(prepareNewUserDetails)
     
                 const createNewUserResult = await db
                     .collection(ADMIN_COLLECTION_NAME)

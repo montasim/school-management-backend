@@ -4,304 +4,175 @@ import isRequesterValid from "../../../shared/isRequesterValid.js";
 import isStudentValid from "../../../shared/isStudentValid.js";
 
 /**
- * Creates a new student in the database after performing necessary checks.
+ * Generates a standardized response object for service functions.
+ *
+ * @param {Object} data - The data to return.
+ * @param {boolean} success - Indication if the operation was successful.
+ * @param {number} status - The HTTP status code.
+ * @param {string} message - A descriptive message about the response.
+ * @returns {Object} - The standardized response object.
+ */
+const generateResponse = (data, success, status, message) => ({ data, success, status, message });
+
+const insertStudent = async (db, studentDetails) =>
+    db.collection(STUDENT_COLLECTION_NAME).insertOne(studentDetails);
+
+const findStudent = async (db, studentId) =>
+    db.collection(STUDENT_COLLECTION_NAME).findOne({ id: studentId }, { projection: { _id: 0 } });
+
+const findAllStudents = async (db) =>
+    db.collection(STUDENT_COLLECTION_NAME).find({}, { projection: { _id: 0 } }).toArray();
+
+const updateStudent = async (db, studentId, updatedStudent) =>
+    db.collection(STUDENT_COLLECTION_NAME).updateOne({ id: studentId }, { $set: updatedStudent });
+
+const deleteStudent = async (db, studentId) =>
+    db.collection(STUDENT_COLLECTION_NAME).deleteOne({ id: studentId });
+
+/**
+ * Creates a new student entry in the database.
  *
  * @async
- * @function
- * @param {Object} db - The database connection object.
- * @param {Object} newStudentDetails - Details of the student to be created.
- * @param {string} newStudentDetails.name - The name of the student.
- * @param {string} newStudentDetails.requestedBy - The requester's identifier.
- * @returns {Promise<Object>} The result of the student creation.
- * @returns {Object} result.data - Data associated with the operation.
- * @returns {boolean} result.success - Whether the operation was successful.
- * @returns {number} result.status - HTTP status code representing the outcome.
- * @returns {string} result.message - Message describing the outcome.
- * @throws Will throw an error if any error occurs during the execution.
+ * @param {Object} db - Database connection object.
+ * @param {Object} newStudentDetails - New student's details.
+ * @returns {Object} - The response after attempting student creation.
+ * @throws {Error} Throws an error if any.
  */
-const createStudentService = async (db,  newStudentDetails) => {
+const createStudentService = async (db, newStudentDetails) => {
     try {
-        const {
+        const { name, level, image, requestedBy } = newStudentDetails;
+
+        if (!await isRequesterValid(db, requestedBy))
+            return generateResponse({}, false, 403, 'You do not have necessary permission');
+
+        const studentDetails = {
+            id: `student-${uuidv4().substr(0, 6)}`,
             name,
             level,
             image,
-            requestedBy
-        } = newStudentDetails;
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+            createdBy: requestedBy,
+            createdAt: new Date(),
+        };
 
-        if (isValidRequester) {
-            const prepareNewStudentDetails = {
-                id: `student-${uuidv4().substr(0, 6)}`,
-                name: name,
-                level: level,
-                image: image,
-                createdBy: requestedBy,
-                createdAt: new Date(),
-            };
+        const result = await insertStudent(db, studentDetails);
 
-            const createNewStudentResult = await db
-                .collection(STUDENT_COLLECTION_NAME)
-                .insertOne(prepareNewStudentDetails);
+        return result?.acknowledged
+            ? generateResponse(studentDetails, true, 200, `${studentDetails.name} created successfully`)
+            : generateResponse({}, false, 500, 'Failed to create');
 
-            if (createNewStudentResult?.acknowledged) {
-                delete prepareNewStudentDetails?._id;
-
-                return {
-                    data: prepareNewStudentDetails,
-                    success: true,
-                    status: 200,
-                    message: `${prepareNewStudentDetails?.name} created successfully`
-                };
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 500,
-                    message: 'Failed to create'
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 403,
-                message: 'You do not have necessary permission'
-            };
-        }
     } catch (error) {
         throw error;
     }
 };
 
+
 /**
- * Fetches a list of categories from the database.
+ * Retrieves a list of all students from the database.
  *
  * @async
- * @function
- * @param {object} db - The database connection object.
- * @returns {Promise<object>} - Returns an object containing the following properties:
- *  - data {Array<object>|object} - The list of categories if found, otherwise an empty object.
- *  - success {boolean} - Indicates if the operation was successful.
- *  - status {StatusCodes} - The HTTP status code.
- *  - message {string} - A message describing the result.
- * @throws {Error} - Throws an error if any issue occurs while fetching categories from the database.
+ * @param {Object} db - Database connection object.
+ * @returns {Object} - The list of students or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const getStudentListService = async (db) => {
     try {
-        const studentList = await db
-            .collection(STUDENT_COLLECTION_NAME)
-            .find({}, { projection: { _id: 0 } })
-            .toArray();
-
-        if (studentList?.length > 0) {
-            return {
-                data: studentList,
-                success: true,
-                status: 200,
-                message: `${studentList?.length} student found`
-            };
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: 'No student found'
-            };
-        }
+        const students = await findAllStudents(db);
+        return students?.length
+            ? generateResponse(students, true, 200, `${students.length} student found`)
+            : generateResponse({}, false, 404, 'No student found');
     } catch (error) {
         throw error;
     }
 };
 
 /**
- * Fetches a specific student by its ID from the database.
+ * Retrieves a specific student by ID from the database.
  *
- * @function
  * @async
- * @param {Object} db - The database connection object.
- * @param {string} studentId - The ID of the student to be fetched.
- *
- * @returns {Promise<Object>} The result object.
- * @returns {Object} result.data - The found student data or an empty object if not found.
- * @returns {boolean} result.success - Indicates whether the operation was successful.
- * @returns {number} result.status - The HTTP status code.
- * @returns {string} result.message - The message indicating the result of the operation.
- *
- * @throws {Error} Throws an error if there is any issue with the database operation.
+ * @param {Object} db - Database connection object.
+ * @param {string} studentId - The ID of the student to retrieve.
+ * @returns {Object} - The student details or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const getAStudentService = async (db, studentId) => {
     try {
-        const foundStudent = await db
-            .collection(STUDENT_COLLECTION_NAME)
-            .findOne({ id: studentId }, { projection: { _id: 0 } });
-
-        if (foundStudent) {
-            return {
-                data: foundStudent,
-                success: true,
-                status: 200,
-                message: `${studentId} found successfully`
-            };
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: `${studentId} not found`
-            };
-        }
+        const student = await findStudent(db, studentId);
+        return student
+            ? generateResponse(student, true, 200, `${studentId} found successfully`)
+            : generateResponse({}, false, 404, `${studentId} not found`);
     } catch (error) {
         throw error;
     }
 };
 
 /**
- * Service to update a student in the database.
+ * Retrieves a specific student by ID from the database.
  *
  * @async
- * @function
- * @param {Object} db - The database connection object.
- * @param {string} studentId - The ID of the student to be updated.
- * @param {Object} newStudentDetails - The new details for the student.
- * @param {string} [newStudentDetails.name] - The new name for the student (optional).
- * @param {string} newStudentDetails.requestedBy - The ID of the user making the request.
- *
- * @returns {Promise<Object>} The result object containing:
- * - `data`: The updated student details (if updated successfully).
- * - `success`: A boolean indicating if the update operation was successful.
- * - `status`: The HTTP status code for the operation.
- * - `message`: A message indicating the result of the operation.
- *
- * @throws {Error} If there's any error during the update operation.
+ * @param {Object} db - Database connection object.
+ * @param {string} studentId - The ID of the student to retrieve.
+ * @returns {Object} - The student details or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const updateAStudentService = async (db, studentId, newStudentDetails) => {
     try {
-        const foundStudent = await db
-            .collection(STUDENT_COLLECTION_NAME)
-            .findOne({ id: studentId }, { projection: { _id: 0 } });
+        const { name, level, image, requestedBy } = newStudentDetails;
 
-        if (foundStudent) {
-            const {
-                name,
-                level,
-                image,
-                requestedBy
-            } = newStudentDetails;
-            const updatedStudentDetails = {
-                id: foundStudent?.id,
-                ...(name && { name }),
-                ...(level && { level }),
-                ...(image && { image }),
-                createdBy: foundStudent?.createdBy,
-                createdAt: foundStudent?.createdAt,
-                modifiedBy: requestedBy,
-                modifiedAt: new Date(),
-            };
-            const updateSuperAdminDataResult = await db
-                .collection(STUDENT_COLLECTION_NAME)
-                .updateOne(
-                    { id: studentId },
-                    { $set: updatedStudentDetails },
-                );
+        if (!await isRequesterValid(db, requestedBy))
+            return generateResponse({}, false, 403, 'You do not have necessary permission');
 
-            if (updateSuperAdminDataResult?.modifiedCount > 0) {
-                const updatedData = await db
-                    .collection(STUDENT_COLLECTION_NAME)
-                    .findOne({ id: studentId });
+        const updatedStudent = {
+            ...(name && { name }),
+            ...(level && { level }),
+            ...(image && { image }),
+            modifiedBy: requestedBy,
+            modifiedAt: new Date(),
+        };
 
-                delete updatedData._id;
+        const result = await updateStudent(db, studentId, updatedStudent);
+        const updatedData = await findStudent(db, studentId);
 
-                return {
-                    data: updatedData,
-                    success: true,
-                    status: 200,
-                    message: `${studentId} updated successfully`
-                };
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 422,
-                    message: `${studentId} not updated`
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: `${studentId} not found`
-            };
-        }
+        return result?.modifiedCount
+            ? generateResponse(updatedData, true, 200, `${studentId} updated successfully`)
+            : generateResponse({}, false, 422, `${studentId} not updated`);
+
     } catch (error) {
         throw error;
     }
 };
 
 /**
- * Service for deleting a student.
+ * Deletes a specific student by ID from the database.
  *
  * @async
- * @function
- * @param {object} db - The database connection object.
- * @param {string} requestedBy - The requester's identifier.
+ * @param {Object} db - Database connection object.
+ * @param {string} requestedBy - The user ID making the request.
  * @param {string} studentId - The ID of the student to delete.
- * @returns {Promise<Object>} An object containing the result of the delete operation.
- * @throws {Error} Throws an error if an issue arises during the delete process.
- *
- * @example
- *
- * const response = await deleteAStudentService(dbInstance, 'userId123', 'studentId456');
- * console.log(response.message); // Outputs: 'studentId456 deleted successfully'
+ * @returns {Object} - A confirmation message or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const deleteAStudentService = async (db, requestedBy, studentId) => {
     try {
-        const isValidRequester = await isRequesterValid(db, requestedBy);
+        if (!await isRequesterValid(db, requestedBy))
+            return generateResponse({}, false, 403, 'You do not have necessary permission');
 
-        if (isValidRequester) {
-            const isStudentExists = await isStudentValid(db, studentId);
+        if (!await isStudentValid(db, studentId))
+            return generateResponse({}, false, 404, `${studentId} not found`);
 
-            if (isStudentExists) {
-                const deleteResult = await db
-                    .collection(STUDENT_COLLECTION_NAME)
-                    .deleteOne({ id: studentId });
+        const result = await deleteStudent(db, studentId);
 
-                if (deleteResult?.deletedCount === 1) {
-                    return {
-                        data: {},
-                        success: true,
-                        status: 200,
-                        message: `${studentId} deleted successfully`,
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 422,
-                        message: `${studentId} could not be deleted`,
-                    };
-                }
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 404,
-                    message: `${studentId} not found`,
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 403,
-                message: 'You do not have necessary permission'
-            };
-        }
+        return result?.deletedCount === 1
+            ? generateResponse({}, true, 200, `${studentId} deleted successfully`)
+            : generateResponse({}, false, 422, `${studentId} could not be deleted`);
     } catch (error) {
         throw error;
     }
 };
 
+/**
+ * @namespace StudentService
+ * @description Group of services related to student operations.
+ */
 export const StudentService = {
     createStudentService,
     getStudentListService,

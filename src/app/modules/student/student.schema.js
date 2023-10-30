@@ -1,56 +1,49 @@
 import Joi from "joi";
+import { ID_CONSTANTS, IMAGE_PATTERN } from './student.constants.js';
 
 /**
- * Regular expression pattern for different student ID prefixes.
- * @constant {RegExp}
+ * @function createIdSchema
+ * @description Creates a Joi validation schema for ID strings based on the given prefix.
+ *
+ * @param {string} prefix - The prefix for the ID (e.g., "admin" or "student").
+ * @returns {Joi.StringSchema} The Joi validation schema for the ID.
  */
-const adminIdPattern = /^(admin)-\w+$/;
-const studentIdPattern = /^(student)-\w+$/;
+const createIdSchema = (prefix) => {
+    const pattern = new RegExp(`^(${prefix})-\\w+$`);
+    return Joi.string()
+        .pattern(pattern)
+        .min(ID_CONSTANTS.MIN_LENGTH)
+        .max(ID_CONSTANTS.MAX_LENGTH);
+};
+
+// Admin and Student ID schemas
+const adminIdSchema = createIdSchema(ID_CONSTANTS.ADMIN_PREFIX);
+const studentIdSchema = createIdSchema(ID_CONSTANTS.STUDENT_PREFIX);
 
 /**
- * Joi schema for validating student IDs based on a specific pattern and length.
- * @constant {Object}
- */
-const adminIdSchema = Joi.string().pattern(adminIdPattern).min(9).max(30);
-const studentIdSchema = Joi.string().pattern(studentIdPattern).min(9).max(30);
-
-/**
- * Joi schema for validating the creation of a new student.
- * It expects a 'name' and 'requestedBy' properties in the request body.
- * @constant {Object}
+ * @description Joi validation schema for student's body data.
+ * Validates the name, level, and image fields.
+ *
+ * - `name`: Should be a string with a minimum length of 3 and a maximum length of 30.
+ * - `level`: Should be a string with a minimum length of 2 and a maximum length of 20.
+ * - `image`: Should be a string that matches the IMAGE_PATTERN.
  */
 const studentBodySchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
     level: Joi.string().min(2).max(20).required(),
-    image: Joi.string().pattern(/[a-zA-Z0-9]+\.(jpg|png|jpeg|gif)$/).required(),
-    requestedBy: Joi.string().pattern(/^admin-\w+$/).required(),
+    image: Joi.string().pattern(IMAGE_PATTERN).required(),
 });
 
 /**
- * Joi schema for validating the retrieval of a student by its ID.
- * @constant {Object}
- */
-const studentParamsSchema = studentIdSchema.required();
-
-/**
- * Joi schema to validate the delete student query parameter.
- *
- * This schema ensures that the provided query parameter is a string and
- * matches either 'admin' or 'user'. This schema is used primarily to
- * determine the role or type of user attempting to delete a student.
- *
- * @type {Joi.ObjectSchema<string>}
- * @constant
- */
-const deleteStudentQuerySchema = adminIdSchema.required();
-
-/**
- * Collection of student-related Joi validation schemas.
  * @namespace StudentSchema
- * @type {Object}
+ * @description Exported Joi validation schemas for student data.
+ *
+ * - `studentBodySchema`: Validates the body data of a student.
+ * - `studentParamsSchema`: Validates the student ID in request parameters.
+ * - `deleteStudentQuerySchema`: Validates the admin ID in the query.
  */
 export const StudentSchema = {
     studentBodySchema,
-    studentParamsSchema,
-    deleteStudentQuerySchema,
+    studentParamsSchema: studentIdSchema.required(),
+    deleteStudentQuerySchema: adminIdSchema.required(),
 };
