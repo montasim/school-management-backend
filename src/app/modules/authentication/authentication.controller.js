@@ -11,7 +11,6 @@ const loginController = async (req, res) => {
             password
         };
         const loginServiceResponse = await AuthenticationService.loginService(req?.db, loginDetails);
-        console.log("controller", loginServiceResponse);
         const returnData = {
             data: loginServiceResponse?.data,
             success: loginServiceResponse?.success,

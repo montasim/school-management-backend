@@ -15,8 +15,6 @@ const loginService = async (db,  loginDetails) => {
 
         if (foundUserDetails) {
             if (foundUserDetails?.password === password) {
-                console.log(loginDetails);
-                
                 return {
                     data: SECRET_TOKEN,
                     success: true,
@@ -56,8 +54,6 @@ const signupService = async (db, signupDetails) => {
             .collection(ADMIN_COLLECTION_NAME)
             .findOne({ userName: userName }, { projection: { _id: 0 } });
 
-            console.log(foundUserDetails)
-
         if (foundUserDetails) {
             return {
                 data: {},
@@ -78,8 +74,6 @@ const signupService = async (db, signupDetails) => {
                 const createNewUserResult = await db
                     .collection(ADMIN_COLLECTION_NAME)
                     .insertOne(prepareNewUserDetails);
-
-                    console.log(createNewUserResult)
     
                 if (createNewUserResult?.acknowledged) {
                     delete prepareNewUserDetails?._id;

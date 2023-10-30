@@ -16,7 +16,7 @@ const validateAgainstSchema = (schema, data, res) => {
   const { error } = schema.validate(data);
 
   if (error) {
-    console.log(res, StatusCodes.BAD_REQUEST, error.details[0].message);
+    console.log(res, 400, error.details[0].message);
   }
 };
 
