@@ -1,4 +1,5 @@
 import express from "express";
+import authenticationRoutes from "../modules/authentication/authentication.routes.js";
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
 import classRoutes from "../modules/class/class.routes.js";
@@ -9,6 +10,15 @@ import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
 
 const router = express.Router();
+
+/**
+ * Sets up routing for the authentication module.
+ * @name /login
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use(`/authentication`, authenticationRoutes);
 
 /**
  * Sets up versioned routing for the administration module.
