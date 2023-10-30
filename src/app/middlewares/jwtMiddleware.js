@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import StatusCodes from "http-status-codes";
 import {SECRET_KEY} from "../../constants/index.js"; // Preferably store this in an environment variable or some secure configuration
 
 const verifyJwt = (req, res, next) => {
@@ -9,7 +8,7 @@ const verifyJwt = (req, res, next) => {
         const returnData = {
             data: {},
             success: false,
-            status: StatusCodes.UNAUTHORIZED,
+            status: 401,
             message: "Unauthorized",
         };
 

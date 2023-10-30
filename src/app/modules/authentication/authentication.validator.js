@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { AuthenticationSchema } from "./authentication.schema.js";
 
 const loginValidator = async (req, res, next) => {
@@ -19,13 +18,13 @@ const loginValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
 const signupValidator = async (req, res, next) => {
     try {
-        const { error } = AuthenticationSchema.signupSchema.validate(req?.params?.authenticationId);
+        const { error } = AuthenticationSchema.signupSchema.validate(req?.body);
         const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {
@@ -41,7 +40,7 @@ const signupValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -63,7 +62,7 @@ const resetPasswordValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -85,7 +84,7 @@ const deleteUserValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

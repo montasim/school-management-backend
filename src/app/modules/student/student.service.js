@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { v4 as uuidv4 } from 'uuid';
 import { STUDENT_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
@@ -37,7 +36,7 @@ const createStudentService = async (db,  newStudentDetails) => {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.UNPROCESSABLE_ENTITY,
+                status: 422,
                 message: `${name} already exists`
             };
         } else {
@@ -62,14 +61,14 @@ const createStudentService = async (db,  newStudentDetails) => {
                     return {
                         data: prepareNewStudentDetails,
                         success: true,
-                        status: StatusCodes.OK,
+                        status: 200,
                         message: `${prepareNewStudentDetails?.name} created successfully`
                     };
                 } else {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.INTERNAL_SERVER_ERROR,
+                        status: 500,
                         message: 'Failed to create'
                     };
                 }
@@ -77,7 +76,7 @@ const createStudentService = async (db,  newStudentDetails) => {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.UNAUTHORIZED,
+                    status: 401,
                     message: 'You do not have necessary permission'
                 };
             }
@@ -111,14 +110,14 @@ const getStudentListService = async (db) => {
             return {
                 data: studentList,
                 success: false,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${studentList?.length} student found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: 'No student found'
             };
         }
@@ -153,14 +152,14 @@ const getAStudentService = async (db, studentId) => {
             return {
                 data: foundStudent,
                 success: true,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${studentId} found successfully`
             };
         } else {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: `${studentId} not found`
             };
         }
@@ -230,14 +229,14 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
                 return {
                     data: updatedData,
                     success: true,
-                    status: StatusCodes.OK,
+                    status: 200,
                     message: `${studentId} updated successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: true,
-                    status: StatusCodes.UNPROCESSABLE_ENTITY,
+                    status: 422,
                     message: `${studentId} not updated`
                 };
             }
@@ -245,7 +244,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: `${studentId} not found`
             };
         }
@@ -286,14 +285,14 @@ const deleteAStudentService = async (db, requestedBy, studentId) => {
                     return {
                         data: {},
                         success: true,
-                        status: StatusCodes.OK,
+                        status: 200,
                         message: `${studentId} deleted successfully`,
                     };
                 } else {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.UNPROCESSABLE_ENTITY,
+                        status: 422,
                         message: `${studentId} could not be deleted`,
                     };
                 }
@@ -301,7 +300,7 @@ const deleteAStudentService = async (db, requestedBy, studentId) => {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.NOT_FOUND,
+                    status: 404,
                     message: `${studentId} not found`,
                 };
             }
@@ -309,7 +308,7 @@ const deleteAStudentService = async (db, requestedBy, studentId) => {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.UNAUTHORIZED,
+                status: 401,
                 message: 'You do not have necessary permission'
             };
         }

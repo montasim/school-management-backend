@@ -1,17 +1,17 @@
-import { StatusCodes } from "http-status-codes";
 import { AuthenticationService } from "./authentication.service.js";
 
 const loginController = async (req, res) => {
     try {
         const {
-            username,
+            userName,
             password,
         } = req?.body;
         const loginDetails = {
-            username,
+            userName,
             password
         };
-        const loginServiceResponse = AuthenticationService.loginService(req?.db, loginDetails);
+        const loginServiceResponse = await AuthenticationService.loginService(req?.db, loginDetails);
+        console.log("controller", loginServiceResponse);
         const returnData = {
             data: loginServiceResponse?.data,
             success: loginServiceResponse?.success,
@@ -21,13 +21,25 @@ const loginController = async (req, res) => {
 
         return res.status(loginServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
 const signupController = async (req, res) => {
     try {
-        const createAdministrationServiceResponse = await AuthenticationService.getAdministrationListService(req?.db);
+        const {
+            name,
+            userName,
+            password,
+            confirmPassword,
+        } = req?.body;
+        const signupDetails = {
+            name,
+            userName,
+            password,
+            confirmPassword,
+        };
+        const createAdministrationServiceResponse = await AuthenticationService.signupService(req?.db, signupDetails);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
             success: createAdministrationServiceResponse?.success,
@@ -37,7 +49,7 @@ const signupController = async (req, res) => {
 
         return res.status(createAdministrationServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -68,7 +80,7 @@ const resetPasswordController = async (req, res) => {
 
         return res.status(updatedAdministrationServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -86,7 +98,7 @@ const deleteUserController = async (req, res) => {
 
         return res.status(deletedAdministrationServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

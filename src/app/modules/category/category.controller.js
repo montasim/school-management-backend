@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { CategoryService } from "./category.service.js";
 
 /**
@@ -29,7 +28,7 @@ const createCategoryController = async (req, res) => {
             name,
             requestedBy
         };
-        const createCategoryServiceResponse = CategoryService.createCategoryService(req?.db, newCategoryDetails);
+        const createCategoryServiceResponse = await CategoryService.createCategoryService(req?.db, newCategoryDetails);
         const returnData = {
             data: createCategoryServiceResponse?.data,
             success: createCategoryServiceResponse?.success,
@@ -39,7 +38,7 @@ const createCategoryController = async (req, res) => {
 
         return res.status(createCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -74,7 +73,7 @@ const getCategoryListController = async (req, res) => {
 
         return res.status(createCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -98,7 +97,7 @@ const getCategoryListController = async (req, res) => {
 const getACategoryController = async (req, res) => {
     try {
         const { categoryId } = req?.params;
-        const createCategoryServiceResponse = CategoryService.getACategoryService(req?.db, categoryId);
+        const createCategoryServiceResponse = await CategoryService.getACategoryService(req?.db, categoryId);
         const returnData = {
             data: createCategoryServiceResponse?.data,
             success: createCategoryServiceResponse?.success,
@@ -108,7 +107,7 @@ const getACategoryController = async (req, res) => {
 
         return res.status(createCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -155,7 +154,7 @@ const updateACategoryController = async (req, res) => {
 
         return res.status(updatedCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -188,7 +187,7 @@ const deleteACategoryController = async (req, res) => {
 
         return res.status(deletedCategoryServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

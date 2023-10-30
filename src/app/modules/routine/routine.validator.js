@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { RoutineSchema } from "./routine.schema.js";
 
 /**
@@ -29,7 +28,7 @@ const routineBodyValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -61,7 +60,7 @@ const routineParamsValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -94,7 +93,7 @@ const deleteRoutineQueryValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

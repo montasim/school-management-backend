@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { StudentSchema } from "./student.schema.js";
 
 /**
@@ -29,7 +28,7 @@ const studentBodyValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -61,7 +60,7 @@ const studentParamsValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -94,7 +93,7 @@ const deleteStudentQueryValidator = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { v4 as uuidv4 } from 'uuid';
 import { CLASS_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
@@ -31,7 +30,7 @@ const createClassService = async (db,  newClassDetails) => {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.UNPROCESSABLE_ENTITY,
+                status: 422,
                 message: `${name} already exists`
             };
         } else {
@@ -53,14 +52,14 @@ const createClassService = async (db,  newClassDetails) => {
                     return {
                         data: prepareNewClassDetails,
                         success: true,
-                        status: StatusCodes.OK,
+                        status: 200,
                         message: `${prepareNewClassDetails?.name} created successfully`
                     };
                 } else {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.INTERNAL_SERVER_ERROR,
+                        status: 500,
                         message: 'Failed to create'
                     };
                 }
@@ -68,7 +67,7 @@ const createClassService = async (db,  newClassDetails) => {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.UNAUTHORIZED,
+                    status: 401,
                     message: 'You do not have necessary permission'
                 };
             }
@@ -102,14 +101,14 @@ const getClassListService = async (db) => {
             return {
                 data: classList,
                 success: false,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${classList?.length} class found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: 'No class found'
             };
         }
@@ -144,14 +143,14 @@ const getAClassService = async (db, classId) => {
             return {
                 data: foundClass,
                 success: true,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${classId} found successfully`
             };
         } else {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: `${classId} not found`
             };
         }
@@ -212,14 +211,14 @@ const updateAClassService = async (db, classId, newClassDetails) => {
                 return {
                     data: updatedData,
                     success: true,
-                    status: StatusCodes.OK,
+                    status: 200,
                     message: `${classId} updated successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: true,
-                    status: StatusCodes.UNPROCESSABLE_ENTITY,
+                    status: 422,
                     message: `${classId} not updated`
                 };
             }
@@ -227,7 +226,7 @@ const updateAClassService = async (db, classId, newClassDetails) => {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: `${classId} not found`
             };
         }
@@ -268,14 +267,14 @@ const deleteAClassService = async (db, requestedBy, classId) => {
                     return {
                         data: {},
                         success: true,
-                        status: StatusCodes.OK,
+                        status: 200,
                         message: `${classId} deleted successfully`,
                     };
                 } else {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.UNPROCESSABLE_ENTITY,
+                        status: 422,
                         message: `${classId} could not be deleted`,
                     };
                 }
@@ -283,7 +282,7 @@ const deleteAClassService = async (db, requestedBy, classId) => {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.NOT_FOUND,
+                    status: 404,
                     message: `${classId} not found`,
                 };
             }
@@ -291,7 +290,7 @@ const deleteAClassService = async (db, requestedBy, classId) => {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.UNAUTHORIZED,
+                status: 401,
                 message: 'You do not have necessary permission'
             };
         }

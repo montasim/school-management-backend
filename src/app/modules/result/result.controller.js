@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { ResultService } from "./result.service.js";
 
 /**
@@ -30,7 +29,7 @@ const createResultController = async (req, res) => {
 
         return res.status(createResultServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -55,7 +54,7 @@ const getResultListController = async (req, res) => {
 
         return res.status(getResultServiceListResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -81,7 +80,7 @@ const getAResultController = async (req, res) => {
 
         return res.status(getAResultServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -109,7 +108,7 @@ const deleteAResultController = async (req, res) => {
 
         return res.status(deletedResultServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 

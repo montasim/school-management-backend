@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { v4 as uuidv4 } from 'uuid';
 import { CATEGORY_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
@@ -31,7 +30,7 @@ const createCategoryService = async (db,  newCategoryDetails) => {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.UNPROCESSABLE_ENTITY,
+                status: 422,
                 message: `${name} already exists`
             };
         } else {
@@ -53,14 +52,14 @@ const createCategoryService = async (db,  newCategoryDetails) => {
                     return {
                         data: prepareNewCategoryDetails,
                         success: true,
-                        status: StatusCodes.OK,
+                        status: 200,
                         message: `${prepareNewCategoryDetails?.name} created successfully`
                     };
                 } else {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.INTERNAL_SERVER_ERROR,
+                        status: 500,
                         message: 'Failed to create'
                     };
                 }
@@ -68,7 +67,7 @@ const createCategoryService = async (db,  newCategoryDetails) => {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.UNAUTHORIZED,
+                    status: 401,
                     message: 'You do not have necessary permission'
                 };
             }
@@ -102,14 +101,14 @@ const getCategoryListService = async (db) => {
             return {
                 data: categoryList,
                 success: false,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${categoryList?.length} category found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: 'No category found'
             };
         }
@@ -144,14 +143,14 @@ const getACategoryService = async (db, categoryId) => {
             return {
                 data: foundCategory,
                 success: true,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${categoryId} found successfully`
             };
         } else {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: `${categoryId} not found`
             };
         }
@@ -212,14 +211,14 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
                 return {
                     data: updatedData,
                     success: true,
-                    status: StatusCodes.OK,
+                    status: 200,
                     message: `${categoryId} updated successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: true,
-                    status: StatusCodes.UNPROCESSABLE_ENTITY,
+                    status: 422,
                     message: `${categoryId} not updated`
                 };
             }
@@ -227,7 +226,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: `${categoryId} not found`
             };
         }
@@ -268,14 +267,14 @@ const deleteACategoryService = async (db, requestedBy, categoryId) => {
                     return {
                         data: {},
                         success: true,
-                        status: StatusCodes.OK,
+                        status: 200,
                         message: `${categoryId} deleted successfully`,
                     };
                 } else {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.UNPROCESSABLE_ENTITY,
+                        status: 422,
                         message: `${categoryId} could not be deleted`,
                     };
                 }
@@ -283,7 +282,7 @@ const deleteACategoryService = async (db, requestedBy, categoryId) => {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.NOT_FOUND,
+                    status: 404,
                     message: `${categoryId} not found`,
                 };
             }
@@ -291,7 +290,7 @@ const deleteACategoryService = async (db, requestedBy, categoryId) => {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.UNAUTHORIZED,
+                status: 401,
                 message: 'You do not have necessary permission'
             };
         }

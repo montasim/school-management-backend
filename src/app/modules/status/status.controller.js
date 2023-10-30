@@ -1,5 +1,3 @@
-import { StatusCodes } from "http-status-codes";
-
 /**
  * Controller to handle the status endpoint.
  * @async
@@ -10,14 +8,12 @@ import { StatusCodes } from "http-status-codes";
  */
 const statusController = async (req, res) => {
     try {
-        if (!res.headersSent) {
-            return res
-                .status(StatusCodes.OK)
-                .send({ message: "Server is up and running" });
-        }
+        return res
+            .status(200)
+            .send({ message: "Server is up and running" });
     } catch (error) {
         res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .status(500)
             .send({ message: "Server is down" });
     }
 };

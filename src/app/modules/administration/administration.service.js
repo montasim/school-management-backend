@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { v4 as uuidv4 } from 'uuid';
 import { ADMINISTRATION_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
@@ -37,7 +36,7 @@ const createAdministrationService = async (db,  newAdministrationDetails) => {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.UNPROCESSABLE_ENTITY,
+                status: 422,
                 message: `${name} already exists`
             };
         } else {
@@ -62,14 +61,14 @@ const createAdministrationService = async (db,  newAdministrationDetails) => {
                     return {
                         data: prepareNewAdministrationDetails,
                         success: true,
-                        status: StatusCodes.OK,
+                        status: 200,
                         message: `${prepareNewAdministrationDetails?.name} created successfully`
                     };
                 } else {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.INTERNAL_SERVER_ERROR,
+                        status: 500,
                         message: 'Failed to create'
                     };
                 }
@@ -77,7 +76,7 @@ const createAdministrationService = async (db,  newAdministrationDetails) => {
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.UNAUTHORIZED,
+                    status: 401,
                     message: 'You do not have necessary permission'
                 };
             }
@@ -111,14 +110,14 @@ const getAdministrationListService = async (db) => {
             return {
                 data: administrationList,
                 success: false,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${administrationList?.length} administration found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: 'No administration found'
             };
         }
@@ -153,14 +152,14 @@ const getAAdministrationService = async (db, administrationId) => {
             return {
                 data: foundAdministration,
                 success: true,
-                status: StatusCodes.OK,
+                status: 200,
                 message: `${administrationId} found successfully`
             };
         } else {
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: `${administrationId} not found`
             };
         }
@@ -230,14 +229,14 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
                 return {
                     data: updatedData,
                     success: true,
-                    status: StatusCodes.OK,
+                    status: 200,
                     message: `${administrationId} updated successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: true,
-                    status: StatusCodes.UNPROCESSABLE_ENTITY,
+                    status: 422,
                     message: `${administrationId} not updated`
                 };
             }
@@ -245,7 +244,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
             return {
                 data: {},
                 success: true,
-                status: StatusCodes.NOT_FOUND,
+                status: 404,
                 message: `${administrationId} not found`
             };
         }
@@ -286,14 +285,14 @@ const deleteAAdministrationService = async (db, requestedBy, administrationId) =
                     return {
                         data: {},
                         success: true,
-                        status: StatusCodes.OK,
+                        status: 200,
                         message: `${administrationId} deleted successfully`,
                     };
                 } else {
                     return {
                         data: {},
                         success: false,
-                        status: StatusCodes.UNPROCESSABLE_ENTITY,
+                        status: 422,
                         message: `${administrationId} could not be deleted`,
                     };
                 }
@@ -301,7 +300,7 @@ const deleteAAdministrationService = async (db, requestedBy, administrationId) =
                 return {
                     data: {},
                     success: false,
-                    status: StatusCodes.NOT_FOUND,
+                    status: 404,
                     message: `${administrationId} not found`,
                 };
             }
@@ -309,7 +308,7 @@ const deleteAAdministrationService = async (db, requestedBy, administrationId) =
             return {
                 data: {},
                 success: false,
-                status: StatusCodes.UNAUTHORIZED,
+                status: 401,
                 message: 'You do not have necessary permission'
             };
         }

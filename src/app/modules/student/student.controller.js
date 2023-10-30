@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { StudentService } from "./student.service.js";
 
 /**
@@ -35,7 +34,7 @@ const createStudentController = async (req, res) => {
             image,
             requestedBy
         };
-        const createStudentServiceResponse = StudentService.createStudentService(req?.db, newStudentDetails);
+        const createStudentServiceResponse = await StudentService.createStudentService(req?.db, newStudentDetails);
         const returnData = {
             data: createStudentServiceResponse?.data,
             success: createStudentServiceResponse?.success,
@@ -45,7 +44,7 @@ const createStudentController = async (req, res) => {
 
         return res.status(createStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -80,7 +79,7 @@ const getStudentListController = async (req, res) => {
 
         return res.status(createStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -104,7 +103,7 @@ const getStudentListController = async (req, res) => {
 const getAStudentController = async (req, res) => {
     try {
         const { studentId } = req?.params;
-        const createStudentServiceResponse = StudentService.getAStudentService(req?.db, studentId);
+        const createStudentServiceResponse = await StudentService.getAStudentService(req?.db, studentId);
         const returnData = {
             data: createStudentServiceResponse?.data,
             success: createStudentServiceResponse?.success,
@@ -114,7 +113,7 @@ const getAStudentController = async (req, res) => {
 
         return res.status(createStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -167,7 +166,7 @@ const updateAStudentController = async (req, res) => {
 
         return res.status(updatedStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
@@ -200,7 +199,7 @@ const deleteAStudentController = async (req, res) => {
 
         return res.status(deletedStudentServiceResponse?.status).json(returnData);
     } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
+        res.status(500).json(error);
     }
 };
 
