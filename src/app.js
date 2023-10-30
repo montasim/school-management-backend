@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import corsOptions from "./app/middlewares/corsConfig.js";
 import { PORT } from "./constants/index.js";
 import isBrowserRequest from "./app/middlewares/isBrowserRequest.js";
 import { Database } from "./app/middlewares/database.js";
@@ -10,18 +11,7 @@ const app = express();
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Define an array of allowed origins
-const allowedOrigins = [
-  "https://school-abid.vercel.app",
-  "http://localhost:3000", // Allow requests from localhost
-];
-
-// Use the cors middleware to allow requests from a specific domain
-app.use(cors({
-  origin: allowedOrigins,
-  methods: "GET,PUT,POST,DELETE",
-  credentials: true, // If you need to support cookies or authentication
-}));
+app.use(cors(corsOptions));
 
 /**
 * Middleware to handle browser requests.
