@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { STUDENT_COLLECTION_NAME } from "../../../constants/index.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
-import isStudentAlreadyExists from "../../../shared/isStudentAlreadyExists.js";
 import isStudentValid from "../../../shared/isStudentValid.js";
 
 /**
@@ -31,44 +30,44 @@ const createStudentService = async (db,  newStudentDetails) => {
         const isValidRequester = await isRequesterValid(db, requestedBy);
 
         if (isValidRequester) {
-                const prepareNewStudentDetails = {
-                    id: `student-${uuidv4().substr(0, 6)}`,
-                    name: name,
-                    level: level,
-                    image: image,
-                    createdBy: requestedBy,
-                    createdAt: new Date(),
+            const prepareNewStudentDetails = {
+                id: `student-${uuidv4().substr(0, 6)}`,
+                name: name,
+                level: level,
+                image: image,
+                createdBy: requestedBy,
+                createdAt: new Date(),
+            };
+
+            const createNewStudentResult = await db
+                .collection(STUDENT_COLLECTION_NAME)
+                .insertOne(prepareNewStudentDetails);
+
+            if (createNewStudentResult?.acknowledged) {
+                delete prepareNewStudentDetails?._id;
+
+                return {
+                    data: prepareNewStudentDetails,
+                    success: true,
+                    status: 200,
+                    message: `${prepareNewStudentDetails?.name} created successfully`
                 };
-
-                const createNewStudentResult = await db
-                    .collection(STUDENT_COLLECTION_NAME)
-                    .insertOne(prepareNewStudentDetails);
-
-                if (createNewStudentResult?.acknowledged) {
-                    delete prepareNewStudentDetails?._id;
-
-                    return {
-                        data: prepareNewStudentDetails,
-                        success: true,
-                        status: 200,
-                        message: `${prepareNewStudentDetails?.name} created successfully`
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 500,
-                        message: 'Failed to create'
-                    };
-                }
             } else {
                 return {
                     data: {},
                     success: false,
-                    status: 403,
-                    message: 'You do not have necessary permission'
+                    status: 500,
+                    message: 'Failed to create'
                 };
             }
+        } else {
+            return {
+                data: {},
+                success: false,
+                status: 403,
+                message: 'You do not have necessary permission'
+            };
+        }
     } catch (error) {
         throw error;
     }
