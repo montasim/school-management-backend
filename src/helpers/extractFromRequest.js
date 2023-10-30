@@ -1,3 +1,5 @@
+import logger from "../app/middlewares/logger.js";
+
 /**
  * Extracts specified keys from the request body and parameters. Also extracts the
  * 'requestedBy' and 'db' fields directly from the request object.
@@ -29,6 +31,8 @@ const extractFromRequest = (req, keysFromBody = [], keysFromParams = []) => {
 
         return extractedData;
     } catch (error) {
+        logger.error(error);
+
         return error;
     }
 };

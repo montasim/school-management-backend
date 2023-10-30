@@ -11,6 +11,7 @@
  *     return handleValidationError(res, validationError);
  * }
  */
+import logger from "../app/middlewares/logger.js";
 
 const handleValidationError = (res, error) => {
     try {
@@ -23,6 +24,8 @@ const handleValidationError = (res, error) => {
             message: messages,
         });
     } catch (error) {
+        logger.error(error);
+
         return res.status(500).json(error);
     }
 };

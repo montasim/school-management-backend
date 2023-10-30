@@ -1,42 +1,59 @@
+import winston from 'winston';
 
-import fs from "fs";
-import useragent from "useragent";
-
-/**
-* Middleware function for logging HTTP requests and responses.
-* Captures relevant information about the incoming request and the resulting response,
-* and appends the log data to an access log file.
-* @param {object} req - Express request object
-* @param {object} res - Express response object
-* @param {function} next - Next middleware function
-* @returns {void} Proceeds to the next middleware/controller after logging
-*/
-const logger = (req, res, next) => {
-  // Parse the user-agent header to extract browser information
-  const browser = useragent.parse(req.headers["user-agent"]).toString();
-
-  // Create log data object containing relevant request and response information
-  const logData = {
-    timestamp: new Date().toISOString(),
-    protocol: req.protocol,
-    host: req.get("host"),
-    url: req.originalUrl,
-    browser: browser,
-    method: req.method,
-    status: res.statusCode,
-    data: res.body,
-  };
-
-  // Convert log data to JSON format and add a newline character
-  const log = JSON.stringify(logData) + "\n";
-
-  // Append the log data to the access log file
-  fs.appendFile("../logs/access.log", log, (error) => {
-    if (error) console.error(error);
-  });
-
-  // Proceed to the next middleware/controller
-  next();
+// Define log levels
+const logLevels = {
+    error: 0,
+    warn: 1,
+    info: 2,
+    http: 3,
+    verbose: 4,
+    debug: 5,
 };
+
+// Define log colors
+const logColors = {
+    error: 'red',
+    warn: 'yellow',
+    info: 'green',
+    http: 'cyan',
+    verbose: 'magenta',
+    debug: 'blue',
+};
+
+// Create a custom format for logs
+const logFormat = winston.format.combine(
+    winston.format.colorize({ all: true }),
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.printf(({ timestamp, level, message }) => {
+        return `${timestamp} [${level}]: ${message}`;
+    })
+);
+
+// Configure Winston
+const logger = winston.createLogger({
+    levels: logLevels,
+    format: logFormat,
+    transports: [
+        new winston.transports.Console(), // Output logs to the console
+        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'logs/warn.log', level: 'warn' }),
+        new winston.transports.File({ filename: 'logs/info.log', level: 'info' }),
+        new winston.transports.File({ filename: 'logs/http.log', level: 'http' }),
+        new winston.transports.File({ filename: 'logs/verbose.log', level: 'verbose' }),
+        new winston.transports.File({ filename: 'logs/debug.log', level: 'debug' }),
+        new winston.transports.File({ filename: 'logs/combined.log' }),
+    ],
+    level: 'http', // Minimum log level to display (change as needed)
+});
+
+//
+// If we're not in production then log to the `console` with the format:
+// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
+//
+if (process.env.NODE_ENV !== 'production') {
+    logger.add(new winston.transports.Console({
+        format: winston.format.simple(),
+    }));
+}
 
 export default logger;

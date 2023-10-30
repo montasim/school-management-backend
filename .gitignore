@@ -1,8 +1,11 @@
 node_modules
+
 .env
 .env.development
 .env.staging
 .env.production
+
 .idea
 /package-lock.json
-logs
+
+/logs

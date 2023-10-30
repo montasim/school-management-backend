@@ -1,3 +1,5 @@
+import logger from "../app/middlewares/logger.js";
+
 /**
  * Executes the provided service function, handles its response, and sends
  * the result back to the client. In case of errors, sends a 500 status code.
@@ -18,6 +20,8 @@ const handleServiceResponse = async (res, serviceFunction, ...params) => {
 
         return res.status(status).json({ data, success, status, message });
     } catch (error) {
+        logger.error(error);
+
         return res.status(500).json(error);
     }
 };

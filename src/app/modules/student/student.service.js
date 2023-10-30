@@ -4,6 +4,7 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import isStudentValid from "../../../shared/isStudentValid.js";
+import logger from "../../middlewares/logger.js";
 
 /**
  * Generates a standardized response object for service functions.
@@ -63,6 +64,8 @@ const createStudentService = async (db, newStudentDetails) => {
             : generateResponse({}, false, 500, 'Failed to create. Please try again');
 
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
@@ -83,6 +86,8 @@ const getStudentListService = async (db) => {
             ? generateResponse(students, true, 200, `${students.length} student found`)
             : generateResponse({}, false, 404, 'No student found');
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
@@ -103,6 +108,8 @@ const getAStudentService = async (db, studentId) => {
             ? generateResponse(student, true, 200, `${studentId} found successfully`)
             : generateResponse({}, false, 404, `${studentId} not found`);
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
@@ -140,6 +147,8 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
             : generateResponse({}, false, 422, `${studentId} not updated`);
 
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
@@ -168,6 +177,8 @@ const deleteAStudentService = async (db, requestedBy, studentId) => {
             ? generateResponse({}, true, 200, `${studentId} deleted successfully`)
             : generateResponse({}, false, 422, `${studentId} could not be deleted`);
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };

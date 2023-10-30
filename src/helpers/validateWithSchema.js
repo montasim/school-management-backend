@@ -1,4 +1,7 @@
 import handleValidationError from "./handleValidationError.js";
+import {SERVER_LOG_MESSAGE} from "../constants/constants.js";
+import {PORT} from "../config/config.js";
+import logger from "../app/middlewares/logger.js";
 
 /**
  * Generates a middleware to validate request data against a provided Joi schema.
@@ -22,6 +25,8 @@ const validateWithSchema = (schema, source) => async (req, res, next) => {
 
         next();
     } catch (error) {
+        logger.error(error);
+
         return res.status(500).json(error);
     }
 };
