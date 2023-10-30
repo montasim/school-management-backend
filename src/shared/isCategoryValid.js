@@ -1,4 +1,4 @@
-import {CATEGORY_COLLECTION_NAME} from "../constants/index.js";
+import {CATEGORY_COLLECTION_NAME} from "../config/config.js";
 
 /**
  * Check if the requester is valid by looking up the requester's ID in the admin collection.

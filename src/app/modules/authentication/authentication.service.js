@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
-import {ADMIN_COLLECTION_NAME, SECRET_TOKEN} from "../../../constants/index.js";
+import {ADMIN_COLLECTION_NAME, SECRET_TOKEN} from "../../../config/config.js";
 
 /**
  * Service to authenticate a user using their login details.

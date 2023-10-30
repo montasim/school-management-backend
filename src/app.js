@@ -3,7 +3,8 @@ import cors from "cors";
 import favicon from "express-favicon";
 import path from "path";
 import corsOptions from "./app/middlewares/corsConfig.js";
-import { PORT } from "./constants/index.js";
+import { PORT } from "./config/config.js";
+import { SERVER_LOG_MESSAGE } from "./constants/constants.js";
 import logger from "./app/middlewares/logger.js";
 import isBrowserRequest from "./app/middlewares/isBrowserRequest.js";
 import { Database } from "./app/middlewares/database.js";
@@ -57,7 +58,7 @@ app.use(Database.disconnectFromDatabase);
  * @listens {number} PORT - The port number from constants.
  */
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
 });
 
 export default app;

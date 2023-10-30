@@ -6,7 +6,7 @@
  */
 
 import { MongoClient, ServerApiVersion } from "mongodb";
-import { MONGODB_URI, DATABASE_NAME } from "../../constants/index.js";
+import { MONGODB_URI, DATABASE_NAME } from "../../config/config.js";
 
 /**
  * Middleware function for connecting to the MongoDB database.

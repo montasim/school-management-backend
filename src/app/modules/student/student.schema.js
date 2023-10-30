@@ -1,24 +1,10 @@
 import Joi from "joi";
 import { ID_CONSTANTS, IMAGE_PATTERN } from './student.constants.js';
+import createIdSchema from "../../../helpers/createIdSchema.js";
 
-/**
- * @function createIdSchema
- * @description Creates a Joi validation schema for ID strings based on the given prefix.
- *
- * @param {string} prefix - The prefix for the ID (e.g., "admin" or "student").
- * @returns {Joi.StringSchema} The Joi validation schema for the ID.
- */
-const createIdSchema = (prefix) => {
-    const pattern = new RegExp(`^(${prefix})-\\w+$`);
-    return Joi.string()
-        .pattern(pattern)
-        .min(ID_CONSTANTS.MIN_LENGTH)
-        .max(ID_CONSTANTS.MAX_LENGTH);
-};
-
-// Admin and Student ID schemas
-const adminIdSchema = createIdSchema(ID_CONSTANTS.ADMIN_PREFIX);
-const studentIdSchema = createIdSchema(ID_CONSTANTS.STUDENT_PREFIX);
+const studentParamsSchema = Joi.object({
+    studentId: createIdSchema(ID_CONSTANTS?.STUDENT_PREFIX, ID_CONSTANTS).required()
+});
 
 /**
  * @description Joi validation schema for student's body data.
@@ -44,6 +30,5 @@ const studentBodySchema = Joi.object({
  */
 export const StudentSchema = {
     studentBodySchema,
-    studentParamsSchema: studentIdSchema.required(),
-    deleteStudentQuerySchema: adminIdSchema.required(),
+    studentParamsSchema,
 };

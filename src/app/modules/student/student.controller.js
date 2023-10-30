@@ -26,7 +26,7 @@ const createStudentController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getStudentListController = async (req, res) => {
-    await handleServiceResponse(res, StudentService.getStudentListService, req.db);
+    await handleServiceResponse(res, StudentService.getStudentListService, req?.db);
 };
 
 /**

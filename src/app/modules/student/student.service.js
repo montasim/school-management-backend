@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { STUDENT_COLLECTION_NAME } from "../../../constants/index.js";
+import { STUDENT_COLLECTION_NAME } from "../../../config/config.js";
+import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import { ID_CONSTANTS } from "./student.constants.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import isStudentValid from "../../../shared/isStudentValid.js";
 
@@ -43,10 +45,10 @@ const createStudentService = async (db, newStudentDetails) => {
         const { name, level, image, requestedBy } = newStudentDetails;
 
         if (!await isRequesterValid(db, requestedBy))
-            return generateResponse({}, false, 403, 'You do not have necessary permission');
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
         const studentDetails = {
-            id: `student-${uuidv4().substr(0, 6)}`,
+            id: `${ID_CONSTANTS?.STUDENT_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
             level,
             image,
@@ -58,7 +60,7 @@ const createStudentService = async (db, newStudentDetails) => {
 
         return result?.acknowledged
             ? generateResponse(studentDetails, true, 200, `${studentDetails.name} created successfully`)
-            : generateResponse({}, false, 500, 'Failed to create');
+            : generateResponse({}, false, 500, 'Failed to create. Please try again');
 
     } catch (error) {
         throw error;
@@ -111,6 +113,7 @@ const getAStudentService = async (db, studentId) => {
  * @async
  * @param {Object} db - Database connection object.
  * @param {string} studentId - The ID of the student to retrieve.
+ * @param newStudentDetails
  * @returns {Object} - The student details or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -119,7 +122,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
         const { name, level, image, requestedBy } = newStudentDetails;
 
         if (!await isRequesterValid(db, requestedBy))
-            return generateResponse({}, false, 403, 'You do not have necessary permission');
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
         const updatedStudent = {
             ...(name && { name }),
@@ -154,7 +157,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
 const deleteAStudentService = async (db, requestedBy, studentId) => {
     try {
         if (!await isRequesterValid(db, requestedBy))
-            return generateResponse({}, false, 403, 'You do not have necessary permission');
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
         if (!await isStudentValid(db, studentId))
             return generateResponse({}, false, 404, `${studentId} not found`);

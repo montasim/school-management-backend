@@ -1,4 +1,4 @@
-import {STUDENT_COLLECTION_NAME} from "../constants/index.js";
+import {STUDENT_COLLECTION_NAME} from "../config/config.js";
 
 /**
  * Checks if a student with the given name already exists in the database.

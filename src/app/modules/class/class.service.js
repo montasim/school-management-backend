@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { CLASS_COLLECTION_NAME } from "../../../constants/index.js";
+import { CLASS_COLLECTION_NAME } from "../../../config/config.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import isClassAlreadyExists from "../../../shared/isClassAlreadyExists.js";
 import isClassValid from "../../../shared/isClassValid.js";

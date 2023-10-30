@@ -13,14 +13,18 @@
  */
 
 const handleValidationError = (res, error) => {
-    const messages = error.details.map(detail => detail.message);
+    try {
+        const messages = error.details.map(detail => detail.message);
 
-    return res.status(400).json({
-        data: {},
-        success: false,
-        status: 400,
-        message: messages,
-    });
+        return res.status(400).json({
+            data: {},
+            success: false,
+            status: 400,
+            message: messages,
+        });
+    } catch (error) {
+        return res.status(500).json(error);
+    }
 };
 
 export default handleValidationError;

@@ -33,7 +33,7 @@ const studentBodyValidator = validateWithSchema(StudentSchema.studentBodySchema,
  *
  * @returns {void}
  */
-const studentParamsValidator = await validateWithSchema(StudentSchema.studentParamsSchema, 'params.studentId');
+const studentParamsValidator = await validateWithSchema(StudentSchema.studentParamsSchema, 'params');
 
 /**
  * @namespace StudentValidators

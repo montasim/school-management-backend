@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ADMINISTRATION_COLLECTION_NAME } from "../../../constants/index.js";
+import { ADMINISTRATION_COLLECTION_NAME } from "../../../config/config.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import isAdministrationAlreadyExists from "../../../shared/isAdministrationAlreadyExists.js";
 import isAdministrationValid from "../../../shared/isAdministrationValid.js";

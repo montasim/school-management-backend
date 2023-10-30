@@ -1,4 +1,4 @@
-import {ADMINISTRATION_COLLECTION_NAME} from "../constants/index.js";
+import {ADMINISTRATION_COLLECTION_NAME} from "../config/config.js";
 
 /**
  * Checks if an administration with the given name already exists in the database.

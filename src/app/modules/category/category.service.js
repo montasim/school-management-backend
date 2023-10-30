@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { CATEGORY_COLLECTION_NAME } from "../../../constants/index.js";
+import { CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
 import isCategoryAlreadyExists from "../../../shared/isCategoryAlreadyExists.js";
 import isCategoryValid from "../../../shared/isCategoryValid.js";

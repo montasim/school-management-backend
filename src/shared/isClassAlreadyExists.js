@@ -1,4 +1,4 @@
-import {CLASS_COLLECTION_NAME} from "../constants/index.js";
+import {CLASS_COLLECTION_NAME} from "../config/config.js";
 
 /**
  * Checks if a class with the given name already exists in the database.

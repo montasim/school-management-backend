@@ -6,7 +6,7 @@
 import {v4 as uuidv4} from "uuid";
 import fs from "fs";
 import isRequesterValid from "../../../shared/isRequesterValid.js";
-import {DOWNLOAD_COLLECTION_NAME} from "../../../constants/index.js";
+import {DOWNLOAD_COLLECTION_NAME} from "../../../config/config.js";
 
 /**
  * Creates a new download entry in the database.

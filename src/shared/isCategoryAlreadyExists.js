@@ -1,4 +1,4 @@
-import {CATEGORY_COLLECTION_NAME} from "../constants/index.js";
+import {CATEGORY_COLLECTION_NAME} from "../config/config.js";
 
 /**
  * Checks if a category with the given name already exists in the database.
