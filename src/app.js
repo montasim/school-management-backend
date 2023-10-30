@@ -14,7 +14,17 @@ const app = express();
 // Middleware to parse JSON requests
 app.use(express.json());
 
-app.use(cors(corsOptions));
+const allowedOrigins = [
+    "https://school-abid.vercel.app",
+    "http://localhost:3000", // Allow requests from localhost
+];
+
+// Use the cors middleware to allow requests from a specific domain
+app.use(cors({
+    origin: allowedOrigins,
+    methods: "GET,PUT,POST,DELETE",
+    credentials: true, // If you need to support cookies or authentication
+}));
 
 // Middleware to serve the favicon
 // app.use(favicon(path.join(__dirname, './public/favicon.ico')));
