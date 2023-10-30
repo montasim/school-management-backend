@@ -28,7 +28,7 @@ const createClassController = async (req, res) => {
             name,
             requestedBy
         };
-        const createClassServiceResponse = ClassService.createClassService(req?.db, newClassDetails);
+        const createClassServiceResponse = await ClassService.createClassService(req?.db, newClassDetails);
         const returnData = {
             data: createClassServiceResponse?.data,
             success: createClassServiceResponse?.success,
@@ -97,7 +97,7 @@ const getClassListController = async (req, res) => {
 const getAClassController = async (req, res) => {
     try {
         const { classId } = req?.params;
-        const createClassServiceResponse = ClassService.getAClassService(req?.db, classId);
+        const createClassServiceResponse = await ClassService.getAClassService(req?.db, classId);
         const returnData = {
             data: createClassServiceResponse?.data,
             success: createClassServiceResponse?.success,

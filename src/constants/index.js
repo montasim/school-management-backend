@@ -9,12 +9,12 @@ dotenv.config();
  * - If NODE_ENV is 'staging', load variables from '.env.staging'.
  * - Otherwise, load variables from '.env.development'.
  */
-if (process.env.NODE_ENV === "development") {
-    dotenv.config({ path: ".env.development" });
+if (process.env.NODE_ENV === "production") {
+    dotenv.config({ path: ".env.production" });
 } else if (process.env.NODE_ENV === "staging") {
     dotenv.config({ path: ".env.staging" });
 } else {
-    dotenv.config({ path: ".env.production" });
+    dotenv.config({ path: ".env.development" });
 }
 
 /**
@@ -35,6 +35,7 @@ export const {
     MONGODB_URI,
     DATABASE_NAME,
     API_VERSION,
+    SECRET_KEY,
     SECRET_TOKEN,
     ADMIN_COLLECTION_NAME,
     ADMINISTRATION_COLLECTION_NAME,

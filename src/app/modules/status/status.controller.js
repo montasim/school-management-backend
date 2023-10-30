@@ -8,11 +8,9 @@
  */
 const statusController = async (req, res) => {
     try {
-        if (!res.headersSent) {
-            return res
-                .status(200)
-                .send({ message: "Server is up and running" });
-        }
+        return res
+            .status(200)
+            .send({ message: "Server is up and running" });
     } catch (error) {
         res
             .status(500)

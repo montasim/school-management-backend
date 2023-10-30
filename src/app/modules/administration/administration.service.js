@@ -31,7 +31,6 @@ const createAdministrationService = async (db,  newAdministrationDetails) => {
         } = newAdministrationDetails;
         const isDuplicateAdministration = await isAdministrationAlreadyExists(db, name);
         const isValidRequester = await isRequesterValid(db, requestedBy);
-
             if (isValidRequester) {
                 const prepareNewAdministrationDetails = {
                     id: `administration-${uuidv4().substr(0, 6)}`,

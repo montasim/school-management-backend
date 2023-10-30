@@ -34,7 +34,7 @@ const createAdministrationController = async (req, res) => {
             image,
             requestedBy
         };
-        const createAdministrationServiceResponse = AdministrationService.createAdministrationService(req?.db, newAdministrationDetails);
+        const createAdministrationServiceResponse = await AdministrationService.createAdministrationService(req?.db, newAdministrationDetails);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
             success: createAdministrationServiceResponse?.success,
@@ -103,7 +103,7 @@ const getAdministrationListController = async (req, res) => {
 const getAAdministrationController = async (req, res) => {
     try {
         const { administrationId } = req?.params;
-        const createAdministrationServiceResponse = AdministrationService.getAAdministrationService(req?.db, administrationId);
+        const createAdministrationServiceResponse = await AdministrationService.getAAdministrationService(req?.db, administrationId);
         const returnData = {
             data: createAdministrationServiceResponse?.data,
             success: createAdministrationServiceResponse?.success,

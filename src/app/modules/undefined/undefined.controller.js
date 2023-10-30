@@ -12,11 +12,9 @@
  */
 const undefinedController = async (req, res) => {
     try {
-        if (!res.headersSent) {
-            return res
-                .status(404)
-                .send({ message: "Route not found!" });
-        }
+      return res
+            .status(404)
+            .send({ message: "Route not found!" });
     } catch (error) {
         res
             .status(500)
