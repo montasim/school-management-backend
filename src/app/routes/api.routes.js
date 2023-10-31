@@ -16,7 +16,7 @@ const router = express.Router();
 
 /**
  * Sets up routing for the home module.
- * @name /dashboard
+ * @name /announcement
  * @function
  * @inner
  * @memberof module:routes

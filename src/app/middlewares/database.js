@@ -1,24 +1,31 @@
+/**
+ * @file database.js
+ * @description This module handles the establishment and termination of a connection to the MongoDB database.
+ * It imports necessary dependencies for connecting to the database and configuration settings from the "constants.js" module.
+ * The module defines middleware functions to connect to and disconnect from the database.
+ */
+
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { MONGODB_URI, DATABASE_NAME } from "../../config/config.js";
 
-// Create a new MongoClient instance outside the middleware
-const client = new MongoClient(MONGODB_URI, {
-  serverApi: ServerApiVersion.v1,
-  useNewUrlParser: true,  // These options prevent DeprecationWarnings
-  useUnifiedTopology: true
-});
-
 /**
  * Middleware function for connecting to the MongoDB database.
+ * Initializes a MongoDB client and establishes a connection to the database.
  * Adds the client and database references to the request object for subsequent use.
  * @param {object} req - Express request object
  * @param {object} res - Express response object
  * @param {function} next - Next middleware function
+ * @returns {Promise<void>} Proceeds to the next middleware/controller after establishing the connection
  */
 const connectToDatabase = async (req, res, next) => {
   try {
-    // Check if client is not connected, then connect
-    if (!client.isConnected()) await client.connect();
+    // Create a new MongoClient instance with connection options
+    const client = new MongoClient(MONGODB_URI, {
+      serverApi: ServerApiVersion.v1,
+    });
+
+    // Establish a connection to the MongoDB server
+    await client.connect();
 
     // Attach the client and database references to the request object
     req.dbClient = client;

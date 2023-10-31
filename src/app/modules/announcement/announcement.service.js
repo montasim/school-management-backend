@@ -65,7 +65,7 @@ const getAnnouncementListService = async (db) => {
     try {
         const announcement = await getAllData(db, ANNOUNCEMENT_COLLECTION_NAME);
 
-        return announcement?.length
+        return announcement?.length > 0
             ? generateResponse(announcement, true, 200, `${announcement?.length} announcement found`)
             : generateResponse({}, false, 404, 'No announcement found');
     } catch (error) {

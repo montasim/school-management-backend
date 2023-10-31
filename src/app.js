@@ -42,7 +42,7 @@ app.listen(PORT, () => {
      */
     logger.http(`${SERVER_LOG_MESSAGE} ${PORT}`);
 
-    // console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
+    console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
 });
 
 export default app;
