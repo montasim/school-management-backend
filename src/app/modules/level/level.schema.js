@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { ID_CONSTANTS, IMAGE_PATTERN } from './level.constants.js';
+import { ID_CONSTANTS } from './level.constants.js';
 import createIdSchema from "../../../helpers/createIdSchema.js";
 
 const levelParamsSchema = Joi.object({

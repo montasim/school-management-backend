@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import {ADMINISTRATION_COLLECTION_NAME, STUDENT_COLLECTION_NAME} from "../../../config/config.js";
+import { STUDENT_COLLECTION_NAME } from "../../../config/config.js";
 import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
