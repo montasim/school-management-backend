@@ -35,13 +35,13 @@ const logger = winston.createLogger({
     format: logFormat,
     transports: [
         new winston.transports.Console(), // Output logs to the console
-        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'logs/warn.log', level: 'warn' }),
-        new winston.transports.File({ filename: 'logs/info.log', level: 'info' }),
-        new winston.transports.File({ filename: 'logs/http.log', level: 'http' }),
-        new winston.transports.File({ filename: 'logs/verbose.log', level: 'verbose' }),
-        new winston.transports.File({ filename: 'logs/debug.log', level: 'debug' }),
-        new winston.transports.File({ filename: 'logs/combined.log' }),
+        new winston.transports.File({ filename: '/tmp/logs/error.log', level: 'error' }),
+        new winston.transports.File({ filename: '/tmp/logs/warn.log', level: 'warn' }),
+        new winston.transports.File({ filename: '/tmp/logs/info.log', level: 'info' }),
+        new winston.transports.File({ filename: '/tmp/logs/http.log', level: 'http' }),
+        new winston.transports.File({ filename: '/tmp/logs/verbose.log', level: 'verbose' }),
+        new winston.transports.File({ filename: '/tmp/logs/debug.log', level: 'debug' }),
+        new winston.transports.File({ filename: '/tmp/logs/combined.log' }),
     ],
     level: 'http', // Minimum log level to display (change as needed)
 });
