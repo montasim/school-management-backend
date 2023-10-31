@@ -2,7 +2,7 @@ import express from "express";
 import authenticationRoutes from "../modules/authentication/authentication.routes.js";
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
-import classRoutes from "../modules/class/class.routes.js";
+import levelRoutes from "../modules/level/level.routes.js";
 import contactRoutes from "../modules/contact/contact.routes.js";
 import downloadRoutes from "../modules/download/download.routes.js";
 import noticeRoutes from "../modules/notice/notice.routes.js";
@@ -49,13 +49,13 @@ router.use("/administration", administrationRoutes);
 router.use("/category", categoryRoutes);
 
 /**
- * Sets up versioned routing for the class module.
- * @name /class
+ * Sets up versioned routing for the level module.
+ * @name /level
  * @function
  * @inner
  * @memberof module:routes
  */
-router.use("/class", classRoutes);
+router.use("/level", levelRoutes);
 
 /**
  * Sets up versioned routing for the contact module.

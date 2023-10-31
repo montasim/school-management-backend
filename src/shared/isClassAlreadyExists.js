@@ -1,13 +1,13 @@
 import {CLASS_COLLECTION_NAME} from "../config/config.js";
 
 /**
- * Checks if a class with the given name already exists in the database.
+ * Checks if a level with the given name already exists in the database.
  *
  * @async
  * @function
  * @param {Object} db - The database connection object.
- * @param {string} name - The name of the class to check.
- * @returns {Promise<boolean>} Returns true if the class already exists, otherwise false.
+ * @param {string} name - The name of the level to check.
+ * @returns {Promise<boolean>} Returns true if the level already exists, otherwise false.
  */
 const isClassAlreadyExists = async (db, name) => {
     const isClassExists = await db

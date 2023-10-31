@@ -6,7 +6,7 @@ import {CLASS_COLLECTION_NAME} from "../config/config.js";
  * @async
  * @function
  * @param {object} db - The database connection object.
- * @param {string} classId - The ID of the class to be validated.
+ * @param {string} classId - The ID of the level to be validated.
  * @returns {Promise<boolean>} Returns `true` if the requester is valid, otherwise `false`.
  */
 const isClassValid = async (db, classId) => {
