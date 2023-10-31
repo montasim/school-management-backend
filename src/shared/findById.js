@@ -14,7 +14,7 @@ const findById = async (db, collectionName, id) => {
     try {
         return await db
             .collection(collectionName)
-            .findOne({id: id}, { projection: { _id: 0 } });
+            .findOne({id: id}, { projection: { _id: 0, createdBy: 0 } });
     } catch (error) {
         logger.error(error);
 

@@ -1,97 +1,118 @@
 import express from "express";
+import verifyJwt from "../../middlewares/verifyAuthenticationToken.js";
 import { CategoryValidators } from "./category.validator.js";
 import { CategoryController } from "./category.controller.js";
 
 const router = express.Router();
 
 /**
- * Handle POST request to create a new category.
- * @async
- * @function createCategory
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @param {express.NextFunction} next - Express next middleware function.
- * @memberof module:categoryRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /:
+ *   post:
+ *     summary: Create a category.
+ *     description: Endpoint to add a new category to the system.
+ *     parameters:
+ *       - in: body
+ *         name: category
+ *         description: The category to create.
+ *         schema:
+ *           $ref: '#/definitions/Category'
+ *     responses:
+ *       200:
+ *         description: Category successfully created.
  */
-router.post(
-    "/",
+router.post("/", [
+    verifyJwt,
     CategoryValidators.categoryBodyValidator,
     CategoryController.createCategoryController
-);
+]);
 
 /**
- * Handle GET request to retrieve all categories.
- * @async
- * @function getCategoryList
- * @memberof module:categoryRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Retrieve all category.
+ *     description: Endpoint to retrieve a list of all category.
+ *     responses:
+ *       200:
+ *         description: A list of category.
  */
-router.get(
-    "/",
+router.get("/", [
     CategoryController.getCategoryListController
-);
+]);
 
 /**
- * Handle GET request to retrieve a specific category by its ID.
- * @async
- * @function getACategory
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @param {express.NextFunction} next - Express next middleware function.
- * @param {string} req.params.categoryId - ID of the category to retrieve.
- * @memberof module:categoryRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /{categoryId}:
+ *   get:
+ *     summary: Retrieve a specific category by ID.
+ *     description: Endpoint to get details of a category by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         description: ID of the category to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Category details.
  */
-router.get(
-    "/:categoryId",
+router.get("/:categoryId", [
     CategoryValidators.categoryParamsValidator,
     CategoryController.getACategoryController
-);
+]);
 
 /**
- * Handle PUT request to update a category by its ID.
- * @async
- * @function updateCategory
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @param {express.NextFunction} next - Express next middleware function.
- * @param {string} req.params.categoryId - ID of the category to update.
- * @memberof module:categoryRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /{categoryId}:
+ *   put:
+ *     summary: Update a category by ID.
+ *     description: Endpoint to update the details of a category by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         description: ID of the category to update.
+ *         schema:
+ *           type: string
+ *       - in: body
+ *         name: category
+ *         description: Updated details of the category.
+ *         schema:
+ *           $ref: '#/definitions/Category'
+ *     responses:
+ *       200:
+ *         description: Category successfully updated.
  */
-router.put(
-    "/:categoryId",
+router.put("/:categoryId", [
+    verifyJwt,
     CategoryValidators.categoryParamsValidator,
     CategoryValidators.categoryBodyValidator,
     CategoryController.updateACategoryController
-);
+]);
 
 /**
- * Handle DELETE request to delete a category by its ID.
- * @async
- * @function deleteCategory
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @param {express.NextFunction} next - Express next middleware function.
- * @param {string} req.params.categoryId - ID of the category to delete.
- * @memberof module:categoryRoutes
- * @inner
- * @returns {express.Response} res - Express response object.
+ * @swagger
+ * /{categoryId}:
+ *   delete:
+ *     summary: Delete a category by ID.
+ *     description: Endpoint to delete a category by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         description: ID of the category to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Category successfully deleted.
  */
-router.delete(
-    "/:categoryId",
+router.delete("/:categoryId", [
+    verifyJwt,
     CategoryValidators.categoryParamsValidator,
-    CategoryValidators.deleteCategoryQueryValidator,
     CategoryController.deleteACategoryController
-);
+]);
 
-/**
- * Exports the router that contains category-related routes.
- * @exports categoryRoutes
- */
 export default router;

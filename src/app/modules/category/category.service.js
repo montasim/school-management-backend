@@ -1,304 +1,179 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
+import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import { ID_CONSTANTS } from "./category.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isCategoryAlreadyExists from "../../../shared/isCategoryAlreadyExists.js";
-import isCategoryValid from "../../../shared/isCategoryValid.js";
+import isValidById from "../../../shared/isValidById.js";
+import logger from "../../middlewares/logger.js";
+import deleteById from "../../../shared/deleteById.js";
+import generateResponse from "../../../helpers/generateResponse.js";
+import findById from "../../../shared/findById.js";
+import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import updateById from "../../../shared/updateById.js";
+import getAllData from "../../../shared/getAllData.js";
 
 /**
- * Creates a new category in the database after performing necessary checks.
+ * Creates a new category entry in the database.
  *
  * @async
- * @function
- * @param {Object} db - The database connection object.
- * @param {Object} newCategoryDetails - Details of the category to be created.
- * @param {string} newCategoryDetails.name - The name of the category.
- * @param {string} newCategoryDetails.requestedBy - The requester's identifier.
- * @returns {Promise<Object>} The result of the category creation.
- * @returns {Object} result.data - Data associated with the operation.
- * @returns {boolean} result.success - Whether the operation was successful.
- * @returns {number} result.status - HTTP status code representing the outcome.
- * @returns {string} result.message - Message describing the outcome.
- * @throws Will throw an error if any error occurs during the execution.
+ * @param {Object} db - Database connection object.
+ * @param {Object} newCategoryDetails - New category's details.
+ * @returns {Object} - The response after attempting category creation.
+ * @throws {Error} Throws an error if any.
  */
-const createCategoryService = async (db,  newCategoryDetails) => {
+const createCategoryService = async (db, newCategoryDetails) => {
     try {
-        const { name, requestedBy} = newCategoryDetails;
-        const isDuplicateCategory = await isCategoryAlreadyExists(db, name);
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const { name, requestedBy } = newCategoryDetails;
 
-        if (isDuplicateCategory) {
-            return {
-                data: {},
-                success: false,
-                status: 422,
-                message: `${name} already exists`
-            };
-        } else {
-            if (isValidRequester) {
-                const prepareNewCategoryDetails = {
-                    id: `category-${uuidv4().substr(0, 6)}`,
-                    name: name,
-                    createdBy: requestedBy,
-                    createdAt: new Date(),
-                };
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-                const createNewCategoryResult = await db
-                    .collection(CATEGORY_COLLECTION_NAME)
-                    .insertOne(prepareNewCategoryDetails);
+        const categoryDetails = {
+            id: `${ID_CONSTANTS?.CATEGORY_PREFIX}-${uuidv4().substr(0, 6)}`,
+            name,
+            createdBy: requestedBy,
+            createdAt: new Date(),
+        };
 
-                if (createNewCategoryResult?.acknowledged) {
-                    delete prepareNewCategoryDetails?._id;
+        const result = await addANewEntryToDatabase(db, CATEGORY_COLLECTION_NAME, categoryDetails);
+        const latestData = await findById(db, CATEGORY_COLLECTION_NAME, categoryDetails?.id);
 
-                    return {
-                        data: prepareNewCategoryDetails,
-                        success: true,
-                        status: 200,
-                        message: `${prepareNewCategoryDetails?.name} created successfully`
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 500,
-                        message: 'Failed to create'
-                    };
-                }
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 403,
-                    message: 'You do not have necessary permission'
-                };
-            }
-        }
+        delete latestData?.createdBy;
+        delete latestData?.modifiedBy;
+
+        return result?.acknowledged
+            ? generateResponse(latestData, true, 200, `${categoryDetails?.name} created successfully`)
+            : generateResponse({}, false, 500, 'Failed to create. Please try again');
+
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
+
 /**
- * Fetches a list of categories from the database.
+ * Retrieves a list of all category from the database.
  *
  * @async
- * @function
- * @param {object} db - The database connection object.
- * @returns {Promise<object>} - Returns an object containing the following properties:
- *  - data {Array<object>|object} - The list of categories if found, otherwise an empty object.
- *  - success {boolean} - Indicates if the operation was successful.
- *  - status {StatusCodes} - The HTTP status code.
- *  - message {string} - A message describing the result.
- * @throws {Error} - Throws an error if any issue occurs while fetching categories from the database.
+ * @param {Object} db - Database connection object.
+ * @returns {Object} - The list of category or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const getCategoryListService = async (db) => {
     try {
-        const categoryList = await db
-            .collection(CATEGORY_COLLECTION_NAME)
-            .find({}, { projection: { _id: 0 } })
-            .toArray();
+        const category = await getAllData(db, CATEGORY_COLLECTION_NAME);
 
-        if (categoryList?.length > 0) {
-            return {
-                data: categoryList,
-                success: true,
-                status: 200,
-                message: `${categoryList?.length} category found`
-            };
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: 'No category found'
-            };
-        }
+        return category?.length
+            ? generateResponse(category, true, 200, `${category?.length} category found`)
+            : generateResponse({}, false, 404, 'No category found');
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Fetches a specific category by its ID from the database.
+ * Retrieves a specific category by ID from the database.
  *
- * @function
  * @async
- * @param {Object} db - The database connection object.
- * @param {string} categoryId - The ID of the category to be fetched.
- *
- * @returns {Promise<Object>} The result object.
- * @returns {Object} result.data - The found category data or an empty object if not found.
- * @returns {boolean} result.success - Indicates whether the operation was successful.
- * @returns {number} result.status - The HTTP status code.
- * @returns {string} result.message - The message indicating the result of the operation.
- *
- * @throws {Error} Throws an error if there is any issue with the database operation.
+ * @param {Object} db - Database connection object.
+ * @param {string} categoryId - The ID of the category to retrieve.
+ * @returns {Object} - The category details or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const getACategoryService = async (db, categoryId) => {
     try {
-        const foundCategory = await db
-            .collection(CATEGORY_COLLECTION_NAME)
-            .findOne({ id: categoryId }, { projection: { _id: 0 } });
+        const category = await findById(db, CATEGORY_COLLECTION_NAME, categoryId);
 
-        if (foundCategory) {
-            return {
-                data: foundCategory,
-                success: true,
-                status: 200,
-                message: `${categoryId} found successfully`
-            };
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: `${categoryId} not found`
-            };
-        }
+        delete category?.createdBy;
+        delete category?.modifiedBy;
+
+        return category
+            ? generateResponse(category, true, 200, `${categoryId} found successfully`)
+            : generateResponse({}, false, 404, `${categoryId} not found`);
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Service to update a category in the database.
+ * Retrieves a specific category by ID from the database.
  *
  * @async
- * @function
- * @param {Object} db - The database connection object.
- * @param {string} categoryId - The ID of the category to be updated.
- * @param {Object} newCategoryDetails - The new details for the category.
- * @param {string} [newCategoryDetails.name] - The new name for the category (optional).
- * @param {string} newCategoryDetails.requestedBy - The ID of the user making the request.
- *
- * @returns {Promise<Object>} The result object containing:
- * - `data`: The updated category details (if updated successfully).
- * - `success`: A boolean indicating if the update operation was successful.
- * - `status`: The HTTP status code for the operation.
- * - `message`: A message indicating the result of the operation.
- *
- * @throws {Error} If there's any error during the update operation.
+ * @param {Object} db - Database connection object.
+ * @param {string} categoryId - The ID of the category to retrieve.
+ * @param newCategoryDetails
+ * @returns {Object} - The category details or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
     try {
-        const foundCategory = await db
-            .collection(CATEGORY_COLLECTION_NAME)
-            .findOne({ id: categoryId }, { projection: { _id: 0 } });
+        const { name, requestedBy } = newCategoryDetails;
 
-        if (foundCategory) {
-            const { name, requestedBy} = newCategoryDetails;
-            const updatedCategoryDetails = {
-                id: foundCategory?.id,
-                ...(name && { name }),
-                createdBy: foundCategory?.createdBy,
-                createdAt: foundCategory?.createdAt,
-                modifiedBy: requestedBy,
-                modifiedAt: new Date(),
-            };
-            const updateSuperAdminDataResult = await db
-                .collection(CATEGORY_COLLECTION_NAME)
-                .updateOne(
-                    { id: categoryId },
-                    { $set: updatedCategoryDetails },
-                );
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-            if (updateSuperAdminDataResult?.modifiedCount > 0) {
-                const updatedData = await db
-                    .collection(CATEGORY_COLLECTION_NAME)
-                    .findOne({ id: categoryId });
+        const updatedCategoryDetails = {
+            ...(name && { name }),
+            modifiedBy: requestedBy,
+            modifiedAt: new Date(),
+        };
+        const result = await updateById(db, CATEGORY_COLLECTION_NAME, categoryId, updatedCategoryDetails);
+        const latestData = await findById(db, CATEGORY_COLLECTION_NAME, categoryId);
 
-                delete updatedData._id;
+        delete latestData?.createdBy;
+        delete latestData?.modifiedBy;
 
-                return {
-                    data: updatedData,
-                    success: true,
-                    status: 200,
-                    message: `${categoryId} updated successfully`
-                };
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 422,
-                    message: `${categoryId} not updated`
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: `${categoryId} not found`
-            };
-        }
+        return result?.modifiedCount
+            ? generateResponse(latestData, true, 200, `${categoryId} updated successfully`)
+            : generateResponse({}, false, 422, `${categoryId} not updated`);
+
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Service for deleting a category.
+ * Deletes a specific category by ID from the database.
  *
  * @async
- * @function
- * @param {object} db - The database connection object.
- * @param {string} requestedBy - The requester's identifier.
+ * @param {Object} db - Database connection object.
+ * @param {string} requestedBy - The user ID making the request.
  * @param {string} categoryId - The ID of the category to delete.
- * @returns {Promise<Object>} An object containing the result of the delete operation.
- * @throws {Error} Throws an error if an issue arises during the delete process.
- *
- * @example
- *
- * const response = await deleteACategoryService(dbInstance, 'userId123', 'categoryId456');
- * console.log(response.message); // Outputs: 'categoryId456 deleted successfully'
+ * @returns {Object} - A confirmation message or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const deleteACategoryService = async (db, requestedBy, categoryId) => {
     try {
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-        if (isValidRequester) {
-            const isCategoryExists = await isCategoryValid(db, categoryId);
+        if (!await isValidById(db, CATEGORY_COLLECTION_NAME, categoryId))
+            return generateResponse({}, false, 404, `${categoryId} not found`);
 
-            if (isCategoryExists) {
-                const deleteResult = await db
-                    .collection(CATEGORY_COLLECTION_NAME)
-                    .deleteOne({ id: categoryId });
+        const result = await deleteById(db, CATEGORY_COLLECTION_NAME, categoryId);
 
-                if (deleteResult?.deletedCount === 1) {
-                    return {
-                        data: {},
-                        success: true,
-                        status: 200,
-                        message: `${categoryId} deleted successfully`,
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 422,
-                        message: `${categoryId} could not be deleted`,
-                    };
-                }
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 404,
-                    message: `${categoryId} not found`,
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 403,
-                message: 'You do not have necessary permission'
-            };
-        }
+        return result
+            ? generateResponse({}, true, 200, `${categoryId} deleted successfully`)
+            : generateResponse({}, false, 422, `${categoryId} could not be deleted`);
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
+/**
+ * @namespace CategoryService
+ * @description Group of services related to category operations.
+ */
 export const CategoryService = {
     createCategoryService,
     getCategoryListService,

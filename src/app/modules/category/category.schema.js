@@ -1,52 +1,32 @@
 import Joi from "joi";
+import { ID_CONSTANTS, IMAGE_PATTERN } from './category.constants.js';
+import createIdSchema from "../../../helpers/createIdSchema.js";
 
-/**
- * Regular expression pattern for different category ID prefixes.
- * @constant {RegExp}
- */
-const categoryIdPattern = /^(category)-\w+$/;
-
-/**
- * Joi schema for validating category IDs based on a specific pattern and length.
- * @constant {Object}
- */
-const idSchema = Joi.string().pattern(categoryIdPattern).min(9).max(20);
-
-/**
- * Joi schema for validating the creation of a new category.
- * It expects a 'name' and 'requestedBy' properties in the request body.
- * @constant {Object}
- */
-const categoryBodySchema = Joi.object({
-    name: Joi.string().min(3).max(20).required(),
-    requestedBy: Joi.string().min(3).max(20).required(),
+const categoryParamsSchema = Joi.object({
+    categoryId: createIdSchema(ID_CONSTANTS?.CATEGORY_PREFIX, ID_CONSTANTS).required()
 });
 
 /**
- * Joi schema for validating the retrieval of a category by its ID.
- * @constant {Object}
+ * @description Joi validation schema for category's body data.
+ * Validates the name, level, and image fields.
+ *
+ * - `name`: Should be a string with a minimum length of 3 and a maximum length of 30.
+ * - `level`: Should be a string with a minimum length of 2 and a maximum length of 20.
+ * - `image`: Should be a string that matches the IMAGE_PATTERN.
  */
-const categoryParamsSchema = idSchema.required();
+const categoryBodySchema = Joi.object({
+    name: Joi.string().min(3).max(30).required(),
+});
 
 /**
- * Joi schema to validate the delete category query parameter.
- *
- * This schema ensures that the provided query parameter is a string and
- * matches either 'admin' or 'user'. This schema is used primarily to
- * determine the role or type of user attempting to delete a category.
- *
- * @type {Joi.ObjectSchema<string>}
- * @constant
- */
-const deleteCategoryQuerySchema = Joi.string().valid('admin', 'user').required();
-
-/**
- * Collection of category-related Joi validation schemas.
  * @namespace CategorySchema
- * @type {Object}
+ * @description Exported Joi validation schemas for category data.
+ *
+ * - `categoryBodySchema`: Validates the body data of a category.
+ * - `categoryParamsSchema`: Validates the category ID in request parameters.
+ * - `deleteCategoryQuerySchema`: Validates the admin ID in the query.
  */
 export const CategorySchema = {
     categoryBodySchema,
     categoryParamsSchema,
-    deleteCategoryQuerySchema,
 };
