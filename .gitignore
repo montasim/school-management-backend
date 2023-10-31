@@ -11,3 +11,9 @@ node_modules
 /tmp
 /logs
 .log
+
+/uploads
+/uploads/download
+/uploads/notice
+/uploads/result
+/uploads/routine

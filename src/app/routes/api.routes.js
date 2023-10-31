@@ -14,7 +14,6 @@ import announcementRoutes from "../modules/announcement/announcement.routes.js";
 
 const router = express.Router();
 
-
 /**
  * Sets up routing for the home module.
  * @name /dashboard

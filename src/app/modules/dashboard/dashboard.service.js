@@ -1,4 +1,5 @@
 import {
+    ANNOUNCEMENT_COLLECTION_NAME,
     ADMIN_COLLECTION_NAME,
     ADMINISTRATION_COLLECTION_NAME,
     CATEGORY_COLLECTION_NAME,
@@ -29,42 +30,46 @@ const getSummaryService = async (db, requestedBy) => {
         if (!await isValidRequest(db, requestedBy))
             return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-        const totalAdmin = await getAllData(db, ADMIN_COLLECTION_NAME);
-        const totalAdministration = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
-        const totalCategory = await getAllData(db, CATEGORY_COLLECTION_NAME);
-        const totalLevel = await getAllData(db, LEVEL_COLLECTION_NAME);
-        const totalDownload = await getAllData(db, DOWNLOAD_COLLECTION_NAME);
-        const totalNotice = await getAllData(db, NOTICE_COLLECTION_NAME);
-        const totalResult = await getAllData(db, RESULT_COLLECTION_NAME);
-        const totalRoutine = await getAllData(db, ROUTINE_COLLECTION_NAME);
-        const totalStudent = await getAllData(db, STUDENT_COLLECTION_NAME);
+        const adminDetails = await getAllData(db, ADMIN_COLLECTION_NAME);
+        const administrationDetails = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
+        const categoryDetails = await getAllData(db, CATEGORY_COLLECTION_NAME);
+        const levelDetails = await getAllData(db, LEVEL_COLLECTION_NAME);
+        const downloadDetails = await getAllData(db, DOWNLOAD_COLLECTION_NAME);
+        const noticeDetails = await getAllData(db, NOTICE_COLLECTION_NAME);
+        const resultDetails = await getAllData(db, RESULT_COLLECTION_NAME);
+        const routineDetails = await getAllData(db, ROUTINE_COLLECTION_NAME);
+        const studentDetails = await getAllData(db, STUDENT_COLLECTION_NAME);
+        const announcementDetails = await getAllData(db, ANNOUNCEMENT_COLLECTION_NAME);
         const returnData = {
             admin: {
-                total: totalAdmin?.length,
+                total: adminDetails?.length,
             },
             administration: {
-                total: totalAdministration?.length,
+                total: administrationDetails?.length,
             },
             category: {
-                total: totalCategory?.length,
+                total: categoryDetails?.length,
             },
             level: {
-                total: totalLevel?.length,
+                total: levelDetails?.length,
             },
             download: {
-                total: totalDownload?.length,
+                total: downloadDetails?.length,
             },
             notice: {
-                total: totalNotice?.length,
+                total: noticeDetails?.length,
             },
             result: {
-                total: totalResult?.length,
+                total: resultDetails?.length,
             },
             routine: {
-                total: totalRoutine?.length,
+                total: routineDetails?.length,
             },
             student: {
-                total: totalStudent?.length,
+                total: studentDetails?.length,
+            },
+            announcement: {
+                total: announcementDetails?.length,
             }
         }
 
