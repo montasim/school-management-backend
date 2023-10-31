@@ -24,7 +24,6 @@ const loginService = async (db,  loginDetails) => {
         const foundAdminDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
 
         delete foundAdminDetails?._id;
-        delete foundAdminDetails?.id;
 
         if (foundAdminDetails) {
             if (foundAdminDetails?.password === password) {

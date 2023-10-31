@@ -11,6 +11,8 @@ const verifyAuthenticationToken = (req, res, next) => {
             const verified = jwt.verify(token, SECRET_TOKEN);
             req.requestedBy = verified?.id;
 
+            console.log(req.requestedBy)
+
             next();
         } else {
             return generateResponse({}, false, 401, 'Unauthorized');
