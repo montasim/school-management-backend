@@ -17,6 +17,8 @@ const validateWithSchema = (schema, source) => async (req, res, next) => {
     try {
         const { error } = schema.validate(req[source]);
 
+        console.log(req[source])
+
         if (error) {
             return handleValidationError(res, error);
         }

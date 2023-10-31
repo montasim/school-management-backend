@@ -1,231 +1,140 @@
-/**
- * @module DownloadService
- * @description This module provides services related to downloads such as creating, listing, retrieving, and deleting download entries in the database.
- */
-
-import {v4 as uuidv4} from "uuid";
-import fs from "fs";
+import { v4 as uuidv4 } from 'uuid';
+import { DOWNLOAD_COLLECTION_NAME } from "../../../config/config.js";
+import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import {DOWNLOAD_COLLECTION_NAME} from "../../../config/config.js";
+import isValidByFileName from "../../../shared/isValidByFileName.js";
+import generateResponse from "../../../helpers/generateResponse.js";
+import logger from "../../middlewares/logger.js";
+import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import findById from "../../../shared/findById.js";
+import getAllData from "../../../shared/getAllData.js";
+import deleteByFileName from "../../../shared/deleteByFileName.js";
+import getFileNameAndPathName from "../../../shared/getFileNameAndPathName.js";
+import findByFileName from "../../../shared/findByFileName.js";
 
 /**
  * Creates a new download entry in the database.
  *
  * @async
- * @function
- * @param {object} db - MongoDB database instance.
- * @param {object} newDownloadDetails - Details of the download.
- * @param {object} file - File uploaded via multer middleware.
- * @returns {Promise<object>} A promise that resolves to an object representing the operation's result.
- * @throws Will throw an error if an error occurs.
+ * @param req
+ * @param {Object} db - Database connection object.
+ * @param {Object} newDownloadDetails - New download's details.
+ * @param file
+ * @returns {Object} - The response after attempting download creation.
+ * @throws {Error} Throws an error if any.
  */
-const createDownloadService = async (db,  newDownloadDetails, file) => {
+const createDownloadService = async (req, db, newDownloadDetails, file) => {
     try {
-        const {
-            title,
-            requestedBy
-        } = newDownloadDetails;
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const { title, requestedBy } = newDownloadDetails;
 
-        if (isValidRequester) {
-            const prepareNewDownloadDetails = {
-                id: `download-${uuidv4().substr(0, 6)}`,
-                title: title,
-                filename: file?.originalname,
-                path: file?.path,
-                createdBy: requestedBy,
-                createdAt: new Date(),
-            };
-            const result = await db
-                .collection(DOWNLOAD_COLLECTION_NAME)
-                .insertOne(prepareNewDownloadDetails);
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-            if (result?.acknowledged) {
-                const fileDetails = await db
-                    .collection(DOWNLOAD_COLLECTION_NAME)
-                    .findOne({ filename: prepareNewDownloadDetails?.filename }, { projection: { _id: 0 } });
+        const getFileNameAndPathNameVariables = await getFileNameAndPathName(file);
+        const downloadDetails = {
+            id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
+            title: title,
+            fileName: getFileNameAndPathNameVariables?.uniqueFilename,
+            path: getFileNameAndPathNameVariables?.uniquePath,
+            createdBy: requestedBy,
+            createdAt: new Date(),
+        };
+        const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
+        const downloadLink = `${req?.protocol}://${req?.get('host')}/downloads/${downloadDetails.path}`;
+        const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
-                return {
-                    data: fileDetails,
-                    success: true,
-                    status: 200,
-                    message: `${fileDetails?.filename} uploaded successfully`
-                };
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 422,
-                    message: 'Error while uploading file'
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 403,
-                message: 'You do not have necessary permission'
-            };
-        }
+        return result?.acknowledged
+            ? generateResponse({ ...latestData, downloadLink }, true, 200, `${title} uploaded successfully`)
+            : generateResponse({}, false, 500, 'Failed to upload. Please try again');
+
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
+
 /**
- * Retrieves a list of all download entries from the database.
+ * Retrieves a list of all downloads from the database.
  *
  * @async
- * @function
- * @param {object} db - MongoDB database instance.
- * @returns {Promise<object>} A promise that resolves to an object containing a list of files or an error message.
- * @throws Will throw an error if an error occurs.
+ * @param {Object} db - Database connection object.
+ * @returns {Object} - The list of downloads or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const getDownloadListService = async (db) => {
     try {
-        const classList = await db
-            .collection(DOWNLOAD_COLLECTION_NAME)
-            .find({}, { projection: { _id: 0 } })
-            .toArray();
+        const downloads = await getAllData(db, DOWNLOAD_COLLECTION_NAME);
 
-        if (classList?.length > 0) {
-            return {
-                data: classList,
-                success: true,
-                status: 200,
-                message: `${classList?.length} file found`
-            };
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: 'No file found'
-            };
-        }
+        return downloads?.length
+            ? generateResponse(downloads, true, 200, `${downloads?.length} download found`)
+            : generateResponse({}, false, 404, 'No download found');
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Fetches a specific download entry from the database based on its filename.
+ * Retrieves a specific download by fileName from the database.
  *
  * @async
- * @function
- * @param {object} db - MongoDB database instance.
- * @param {string} fileName - The name of the file to retrieve.
- * @returns {Promise<object>} A promise that resolves to an object with file details or an error message.
- * @throws Will throw an error if an error occurs.
+ * @param {Object} db - Database connection object.
+ * @param {string} fileName - The fileName of the download to retrieve.
+ * @returns {Object} - The download details or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const getADownloadService = async (db, fileName) => {
     try {
-        const file = await db
-            .collection(DOWNLOAD_COLLECTION_NAME)
-            .findOne({ filename: fileName }, { projection: { _id: 0 } });
+        const download = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
-        if (file) {
-            return {
-                data: file,
-                success: true,
-                status: 200,
-                message: 'File fetched successfully'
-            };
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 404,
-                message: 'File not found'
-            };
-        }
+        return download
+            ? generateResponse(download, true, 200, `${fileName} found successfully`)
+            : generateResponse({}, false, 404, `${fileName} not found`);
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Deletes a specific download entry from the database based on its filename.
+ * Deletes a specific download by fileName from the database.
  *
  * @async
- * @function
- * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - Identifier of the requester.
- * @param {string} fileName - The name of the file to delete.
- * @returns {Promise<object>} A promise that resolves to an object representing the deletion operation's result.
- * @throws Will throw an error if an error occurs.
+ * @param {Object} db - Database connection object.
+ * @param {string} requestedBy - The user fileName making the request.
+ * @param {string} fileName - The fileName of the download to delete.
+ * @returns {Object} - A confirmation message or an error message.
+ * @throws {Error} Throws an error if any.
  */
 const deleteADownloadService = async (db, requestedBy, fileName) => {
     try {
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-        if (isValidRequester) {
-            const fileDetails = await db
-                .collection(DOWNLOAD_COLLECTION_NAME)
-                .findOne({ filename: fileName }, { projection: { _id: 0 } });
-            const result = await db
-                .collection(DOWNLOAD_COLLECTION_NAME)
-                .deleteOne({ filename: fileName });
+        if (!await isValidByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
+            return generateResponse({}, false, 404, `${fileName} not found`);
 
-            if (result?.acknowledged) {
-                // Check if file exists
-                if (fs.existsSync(fileDetails?.path)) {
-                    // Delete the file
-                    fs.unlink(fileDetails?.path, (error) => {
-                        if (error) {
-                            return {
-                                data: {},
-                                success: false,
-                                status: 500,
-                                message: 'Internal server error'
-                            };
-                        } else {
-                            return {
-                                data: result,
-                                success: true,
-                                status: 200,
-                                message: `${fileName} deleted successfully`
-                            };
-                        }
-                    });
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 404,
-                        message: 'File not found'
-                    };
-                }
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 404,
-                    message: 'File not found'
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 403,
-                message: 'You do not have necessary permission'
-            };
-        }
+        const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+
+        return result
+            ? generateResponse({}, true, 200, `${fileName} deleted successfully`)
+            : generateResponse({}, false, 422, `${fileName} could not be deleted`);
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * @typedef {Object} DownloadService
- * @property {function} createDownloadService - Function to create a download entry.
- * @property {function} getDownloadListService - Function to retrieve a list of downloads.
- * @property {function} getADownloadService - Function to fetch a specific download entry.
- * @property {function} deleteADownloadService - Function to delete a specific download entry.
+ * @namespace DownloadService
+ * @description Group of services related to download operations.
  */
-
-/** @type {DownloadService} */
 export const DownloadService = {
     createDownloadService,
     getDownloadListService,

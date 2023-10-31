@@ -1,110 +1,45 @@
 import { DownloadSchema } from "./download.schema.js";
+import validateWithSchema from "../../../helpers/validateWithSchema.js";
 
 /**
- * Middleware function to validate the creation of a new download.
- *
- * @async
  * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * @async
+ * @description Middleware validator for download's body data.
+ *
+ * Uses the downloadBodySchema from the DownloadSchema to validate
+ * the body of the incoming request. This ensures that the download's
+ * information is in the correct format before processing.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
  * @returns {void}
  */
-const downloadBodyValidator = async (req, res, next) => {
-    try {
-        const { error } = DownloadSchema.downloadBodySchema.validate(req?.body);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const downloadBodyValidator = validateWithSchema(DownloadSchema.downloadBodySchema, 'body');
 
 /**
- * Middleware function to validate fetching a download by its ID.
- *
- * @async
  * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * @async
+ * @description Middleware validator for download's ID in request parameters.
+ *
+ * Uses the downloadParamsSchema from the DownloadSchema to validate
+ * the download ID provided in the request parameters. This ensures that
+ * the download ID is in the correct format for further processing.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
  * @returns {void}
  */
-const downloadParamsValidator = async (req, res, next) => {
-    try {
-        const { error } = DownloadSchema.downloadParamsSchema.validate(req?.params?.fileName);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const downloadParamsValidator = await validateWithSchema(DownloadSchema.downloadParamsSchema, 'params');
 
 /**
- * Middleware to validate the query parameters for deleting a download.
- *
- * @async
- * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Callback to the next middleware or route.
- * @throws Will return a 400 BAD_REQUEST if the validation fails.
- * @throws Will return a 500 INTERNAL_SERVER_ERROR if any error occurs during validation.
- */
-const deleteDownloadQueryValidator = async (req, res, next) => {
-    try {
-        const { error } = DownloadSchema.deleteDownloadQuerySchema.validate(req?.query?.requestedBy);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 400,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
-
-/**
- * Collection of validator middlewares related to download operations.
- * @typedef {Object} DownloadValidators
- * @property {function} downloadBodyValidator - Validates creation of new download.
- * @property {function} downloadParamsValidator - Validates fetching a download by its ID.
+ * @namespace DownloadValidators
+ * @description Exported download validators to be used in routes.
  */
 export const DownloadValidators = {
     downloadBodyValidator,
     downloadParamsValidator,
-    deleteDownloadQueryValidator
 };

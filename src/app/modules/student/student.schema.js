@@ -26,7 +26,6 @@ const studentBodySchema = Joi.object({
  *
  * - `studentBodySchema`: Validates the body data of a student.
  * - `studentParamsSchema`: Validates the student ID in request parameters.
- * - `deleteStudentQuerySchema`: Validates the admin ID in the query.
  */
 export const StudentSchema = {
     studentBodySchema,

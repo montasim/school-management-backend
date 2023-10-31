@@ -1,63 +1,60 @@
-/**
- * @module upload
- * @description Provides utilities for handling file uploads in the application.
- */
-
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
 /**
- * Determines the appropriate storage destination for uploaded files.
- * It maps specific keywords in the requested URL to corresponding directories.
+ * Determines and sets the storage destination for uploaded files by mapping specific keywords
+ * in the requested URL to corresponding directories.
  *
- * @function
- * @param {Express.Request} req - The express request object.
- * @param {Express.Multer.File} file - The multer file object.
- * @param {function(Error, string):void} cb - Callback to be invoked with the final storage destination.
+ * @function destination
+ * @param {Express.Request} req - The Express request object containing the incoming request.
+ * @param {Express.Multer.File} file - The file object representing the file being uploaded.
+ * @param {function(Error, string):void} cb - Callback function to be invoked once the destination is determined.
  */
 const destination = (req, file, cb) => {
-    // Map of keywords in URL to corresponding directories
+    // Define a mapping between URL keywords and their corresponding directories
     const urlToDestinationMap = {
         'download': 'download',
         'notice': 'notice',
         'result': 'result',
         'routine': 'routine'
     };
+
     const requestedURL = req?.originalUrl;
-    let matchedDestination = Object.keys(urlToDestinationMap)
+    const matchedDestination = Object.keys(urlToDestinationMap)
         .find(keyword => requestedURL?.includes(keyword));
 
     const finalDestination = matchedDestination
         ? path.join('./uploads', urlToDestinationMap[matchedDestination])
         : './uploads';
 
-    // Ensure directory exists or create one if it doesn't
+    // Ensure the destination directory exists, or create it if it doesn't
     if (!fs.existsSync(finalDestination)) {
         fs.mkdirSync(finalDestination, { recursive: true });
     }
 
     cb(null, finalDestination);
-}
+};
 
 /**
- * Determines the filename for uploaded files.
- * It uses the current timestamp for uniqueness and appends the file's original extension.
+ * Determines and sets the filename for uploaded files by appending a unique timestamp before the file extension.
  *
- * @function
- * @param {Express.Request} req - The express request object.
- * @param {Express.Multer.File} file - The multer file object.
- * @param {function(Error, string):void} cb - Callback to be invoked with the final filename.
+ * @function filename
+ * @param {Express.Request} req - The Express request object containing the incoming request.
+ * @param {Express.Multer.File} file - The file object representing the file being uploaded.
+ * @param {function(Error, string):void} cb - Callback function to be invoked once the filename is determined.
  */
 const filename = (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file?.originalname));
-}
+    const fileExtension = path.extname(file?.originalname);
+    const uniqueFilename = path.basename(file?.originalname, fileExtension) + '-' + Date.now() + fileExtension;
+
+    cb(null, uniqueFilename);
+};
 
 /**
- * Configuration object for multer's disk storage.
- * Specifies the destination directory and filename for uploaded files.
+ * Configuration for multer's disk storage that specifies both the destination directory and filename for uploaded files.
  *
- * @type {multer.diskStorage}
+ * @type {multer.StorageEngine}
  */
 const storage = multer.diskStorage({
     destination,
@@ -65,8 +62,8 @@ const storage = multer.diskStorage({
 });
 
 /**
- * Multer instance initialized with the disk storage configuration.
- * This can be used as middleware in Express routes to handle file uploads.
+ * A Multer instance configured with the disk storage settings.
+ * It can be used as middleware in Express routes for handling file uploads.
  *
  * @type {multer.Multer}
  */

@@ -1,70 +1,91 @@
 import express from "express";
-import {DownloadValidators} from "./download.validator.js";
+import verifyJwt from "../../middlewares/verifyAuthenticationToken.js";
 import multerConfig from "../../../helpers/multerConfig.js";
+import { DownloadValidators } from "./download.validator.js";
 import { DownloadController } from "./download.controller.js";
 
 const router = express.Router();
 
 /**
- * @route POST /download
- * @group download - Operations about downloading
- * @param {file.formData} file.required - The file to upload
- * @returns {object} 200 - An object containing details of the uploaded file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for uploading a file to the server.
- * This route uses `multer` middleware to handle file uploads,
- * and then passes the request to the controller.
+ * @swagger
+ * /:
+ *   post:
+ *     summary: Create a download.
+ *     description: Endpoint to add a new download to the system.
+ *     parameters:
+ *       - in: body
+ *         name: download
+ *         description: The download to create.
+ *         schema:
+ *           $ref: '#/definitions/Download'
+ *     responses:
+ *       200:
+ *         description: Download successfully created.
  */
-router.post(
-    "/",
+router.post("/", [
+    verifyJwt,
     multerConfig.single('file'),
     DownloadValidators.downloadBodyValidator,
     DownloadController.createDownloadController
-);
+]);
 
 /**
- * @route GET /download
- * @group download - Operations about downloading
- * @returns {Array.<object>} 200 - An array of available downloads
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for retrieving a list of available files for download.
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Retrieve all downloads.
+ *     description: Endpoint to retrieve a list of all downloads.
+ *     responses:
+ *       200:
+ *         description: A list of downloads.
  */
-router.get(
-    "/",
+router.get("/", [
     DownloadController.getDownloadListController
-);
+]);
 
 /**
- * @route GET /download/{fileName}
- * @group download - Operations about downloading
- * @param {string} fileName.path.required - Name of the file to be retrieved
- * @returns {object} 200 - An object containing details of the specified file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for retrieving a specific file based on the provided file name.
+ * @swagger
+ * /{fileName}:
+ *   get:
+ *     summary: Retrieve a specific download by ID.
+ *     description: Endpoint to get details of a download by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: fileName
+ *         required: true
+ *         description: ID of the download to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Download details.
  */
-router.get(
-    "/:fileName",
+router.get("/:fileName", [
     DownloadValidators.downloadParamsValidator,
     DownloadController.getADownloadController
-);
+]);
 
 /**
- * @route DELETE /download/{fileName}
- * @group download - Operations about downloading
- * @param {string} fileName.path.required - Name of the file to be deleted
- * @returns {object} 200 - An object confirming the deletion of the specified file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for deleting a specific file based on the provided file name.
+ * @swagger
+ * /{fileName}:
+ *   delete:
+ *     summary: Delete a download by ID.
+ *     description: Endpoint to delete a download by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: fileName
+ *         required: true
+ *         description: ID of the download to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Download successfully deleted.
  */
-router.delete(
-    "/:fileName",
+router.delete("/:fileName", [
+    verifyJwt,
     DownloadValidators.downloadParamsValidator,
-    DownloadValidators.deleteDownloadQueryValidator,
     DownloadController.deleteADownloadController
-);
+]);
 
 export default router;
