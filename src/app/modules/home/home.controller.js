@@ -1,3 +1,6 @@
+import generateResponse from "../../../helpers/generateResponse.js";
+import logger from "../../middlewares/logger.js";
+
 /**
  * Controller to handle the home endpoint.
  * @async
@@ -8,15 +11,11 @@
  */
 const homeController = async (req, res) => {
     try {
-        if (!res.headersSent) {
-            return res
-                .status(200)
-                .send({ message: "🚀" });
-        }
+        return generateResponse({}, true, 200, "🚀");
     } catch (error) {
-        res
-            .status(500)
-            .send({ message: "Server is down" });
+        logger.error(error);
+
+        return generateResponse({}, false, 500, "Server is down");
     }
 };
 

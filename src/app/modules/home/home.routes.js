@@ -4,12 +4,16 @@ import homeController from "./home.controller.js";
 const router = express.Router();
 
 /**
- * Routes all requests to the homeController.
- * @function
- * @name all
- * @memberof module:express.Router
- * @param {string} path - A path pattern to route.
- * @param {module:express.RequestHandler} callback - The homeController function.
+ * @swagger
+ * /:
+ *   all:
+ *     summary: Index of the system.
+ *     description: Endpoint to check the index of the system.
+ *     responses:
+ *       200:
+ *         description: Server is up and running.:
+ *       500:
+ *         description: Server is down.
  */
 router.all("/", homeController);
 
