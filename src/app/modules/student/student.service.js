@@ -1,36 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
-import { STUDENT_COLLECTION_NAME } from "../../../config/config.js";
+import {ADMINISTRATION_COLLECTION_NAME, STUDENT_COLLECTION_NAME} from "../../../config/config.js";
 import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
+import generateResponse from "../../../helpers/generateResponse.js";
 import logger from "../../middlewares/logger.js";
-
-/**
- * Generates a standardized response object for service functions.
- *
- * @param {Object} data - The data to return.
- * @param {boolean} success - Indication if the operation was successful.
- * @param {number} status - The HTTP status code.
- * @param {string} message - A descriptive message about the response.
- * @returns {Object} - The standardized response object.
- */
-const generateResponse = (data, success, status, message) => ({ data, success, status, message });
-
-const insertStudent = async (db, studentDetails) =>
-    db.collection(STUDENT_COLLECTION_NAME).insertOne(studentDetails);
-
-const findStudent = async (db, studentId) =>
-    db.collection(STUDENT_COLLECTION_NAME).findOne({ id: studentId }, { projection: { _id: 0 } });
-
-const findAllStudents = async (db) =>
-    db.collection(STUDENT_COLLECTION_NAME).find({}, { projection: { _id: 0 } }).toArray();
-
-const updateStudent = async (db, studentId, updatedStudent) =>
-    db.collection(STUDENT_COLLECTION_NAME).updateOne({ id: studentId }, { $set: updatedStudent });
-
-const deleteStudent = async (db, studentId) =>
-    db.collection(STUDENT_COLLECTION_NAME).deleteOne({ id: studentId });
+import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import findById from "../../../shared/findById.js";
+import getAllData from "../../../shared/getAllData.js";
+import updateById from "../../../shared/updateById.js";
+import deleteById from "../../../shared/deleteById.js";
 
 /**
  * Creates a new student entry in the database.
@@ -56,11 +36,11 @@ const createStudentService = async (db, newStudentDetails) => {
             createdBy: requestedBy,
             createdAt: new Date(),
         };
-
-        const result = await insertStudent(db, studentDetails);
+        const result = await addANewEntryToDatabase(db, STUDENT_COLLECTION_NAME, studentDetails);
+        const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentDetails?.id);
 
         return result?.acknowledged
-            ? generateResponse(studentDetails, true, 200, `${studentDetails.name} created successfully`)
+            ? generateResponse(latestData, true, 200, `${studentDetails.name} created successfully`)
             : generateResponse({}, false, 500, 'Failed to create. Please try again');
 
     } catch (error) {
@@ -81,7 +61,8 @@ const createStudentService = async (db, newStudentDetails) => {
  */
 const getStudentListService = async (db) => {
     try {
-        const students = await findAllStudents(db);
+        const students = await getAllData(db, STUDENT_COLLECTION_NAME);
+
         return students?.length
             ? generateResponse(students, true, 200, `${students?.length} student found`)
             : generateResponse({}, false, 404, 'No student found');
@@ -103,7 +84,8 @@ const getStudentListService = async (db) => {
  */
 const getAStudentService = async (db, studentId) => {
     try {
-        const student = await findStudent(db, studentId);
+        const student = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+
         return student
             ? generateResponse(student, true, 200, `${studentId} found successfully`)
             : generateResponse({}, false, 404, `${studentId} not found`);
@@ -120,13 +102,13 @@ const getAStudentService = async (db, studentId) => {
  * @async
  * @param {Object} db - Database connection object.
  * @param {string} studentId - The ID of the student to retrieve.
- * @param newStudentDetails
+ * @param updateStudentDetails
  * @returns {Object} - The student details or an error message.
  * @throws {Error} Throws an error if any.
  */
-const updateAStudentService = async (db, studentId, newStudentDetails) => {
+const updateAStudentService = async (db, studentId, updateStudentDetails) => {
     try {
-        const { name, level, image, requestedBy } = newStudentDetails;
+        const { name, level, image, requestedBy } = updateStudentDetails;
 
         if (!await isValidRequest(db, requestedBy))
             return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
@@ -138,12 +120,11 @@ const updateAStudentService = async (db, studentId, newStudentDetails) => {
             modifiedBy: requestedBy,
             modifiedAt: new Date(),
         };
-
-        const result = await updateStudent(db, studentId, updatedStudent);
-        const updatedData = await findStudent(db, studentId);
+        const result = await updateById(db, STUDENT_COLLECTION_NAME, studentId, updatedStudent);
+        const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentId);
 
         return result?.modifiedCount
-            ? generateResponse(updatedData, true, 200, `${studentId} updated successfully`)
+            ? generateResponse(latestData, true, 200, `${studentId} updated successfully`)
             : generateResponse({}, false, 422, `${studentId} not updated`);
 
     } catch (error) {
@@ -171,9 +152,9 @@ const deleteAStudentService = async (db, requestedBy, studentId) => {
         if (!await isValidById(db, STUDENT_COLLECTION_NAME, studentId))
             return generateResponse({}, false, 404, `${studentId} not found`);
 
-        const result = await deleteStudent(db, studentId);
+        const result = await deleteById(db, STUDENT_COLLECTION_NAME, studentId);
 
-        return result?.deletedCount === 1
+        return result
             ? generateResponse({}, true, 200, `${studentId} deleted successfully`)
             : generateResponse({}, false, 422, `${studentId} could not be deleted`);
     } catch (error) {

@@ -1,20 +1,20 @@
 import logger from "../app/middlewares/logger.js";
 
 /**
- * Check if the requester is valid by looking up the requester userName in the collection.
+ * Check if the requester is valid by looking up the requester id in the collection.
  *
  * @async
  * @function
  * @param {object} db - The database connection object.
  * @param collectionName
- * @param userName
+ * @param id
  * @returns {Promise<boolean>} Returns `details` if the requester is valid.
  */
-const findByUserName = async (db, collectionName, userName) => {
+const findById = async (db, collectionName, id) => {
     try {
         return await db
             .collection(collectionName)
-            .findOne({userName: userName}, { projection: { _id: 0 } });
+            .findOne({id: id}, { projection: { _id: 0 } });
     } catch (error) {
         logger.error(error);
 
@@ -22,4 +22,4 @@ const findByUserName = async (db, collectionName, userName) => {
     }
 };
 
-export default findByUserName;
+export default findById;

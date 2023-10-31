@@ -5,32 +5,12 @@ import { ID_CONSTANTS } from "./administration.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
 import logger from "../../middlewares/logger.js";
-
-/**
- * Generates a standardized response object for service functions.
- *
- * @param {Object} data - The data to return.
- * @param {boolean} success - Indication if the operation was successful.
- * @param {number} status - The HTTP status code.
- * @param {string} message - A descriptive message about the response.
- * @returns {Object} - The standardized response object.
- */
-const generateResponse = (data, success, status, message) => ({ data, success, status, message });
-
-const insertAdministration = async (db, administrationDetails) =>
-    db.collection(ADMINISTRATION_COLLECTION_NAME).insertOne(administrationDetails);
-
-const findAdministration = async (db, administrationId) =>
-    db.collection(ADMINISTRATION_COLLECTION_NAME).findOne({ id: administrationId }, { projection: { _id: 0 } });
-
-const findAllAdministrations = async (db) =>
-    db.collection(ADMINISTRATION_COLLECTION_NAME).find({}, { projection: { _id: 0 } }).toArray();
-
-const updateAdministration = async (db, administrationId, updatedAdministration) =>
-    db.collection(ADMINISTRATION_COLLECTION_NAME).updateOne({ id: administrationId }, { $set: updatedAdministration });
-
-const deleteAdministration = async (db, administrationId) =>
-    db.collection(ADMINISTRATION_COLLECTION_NAME).deleteOne({ id: administrationId });
+import deleteById from "../../../shared/deleteById.js";
+import generateResponse from "../../../helpers/generateResponse.js";
+import findById from "../../../shared/findById.js";
+import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import updateById from "../../../shared/updateById.js";
+import getAllData from "../../../shared/getAllData.js";
 
 /**
  * Creates a new administration entry in the database.
@@ -58,10 +38,11 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
             createdAt: new Date(),
         };
 
-        const result = await insertAdministration(db, administrationDetails);
+        const result = await addANewEntryToDatabase(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails);
+        const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails?.id);
 
         return result?.acknowledged
-            ? generateResponse(administrationDetails, true, 200, `${administrationDetails.name} created successfully`)
+            ? generateResponse(latestData, true, 200, `${administrationDetails?.name} created successfully`)
             : generateResponse({}, false, 500, 'Failed to create. Please try again');
 
     } catch (error) {
@@ -82,7 +63,8 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
  */
 const getAdministrationListService = async (db) => {
     try {
-        const administrations = await findAllAdministrations(db);
+        const administrations = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
+
         return administrations?.length
             ? generateResponse(administrations, true, 200, `${administrations?.length} administration found`)
             : generateResponse({}, false, 404, 'No administration found');
@@ -104,7 +86,8 @@ const getAdministrationListService = async (db) => {
  */
 const getAAdministrationService = async (db, administrationId) => {
     try {
-        const administration = await findAdministration(db, administrationId);
+        const administration = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
+
         return administration
             ? generateResponse(administration, true, 200, `${administrationId} found successfully`)
             : generateResponse({}, false, 404, `${administrationId} not found`);
@@ -132,19 +115,18 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         if (!await isValidRequest(db, requestedBy))
             return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-        const updatedAdministration = {
+        const updatedAdministrationDetails = {
             ...(name && { name }),
             ...(level && { level }),
             ...(image && { image }),
             modifiedBy: requestedBy,
             modifiedAt: new Date(),
         };
-
-        const result = await updateAdministration(db, administrationId, updatedAdministration);
-        const updatedData = await findAdministration(db, administrationId);
+        const result = await updateById(db, ADMINISTRATION_COLLECTION_NAME, administrationId, updatedAdministrationDetails);
+        const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
         return result?.modifiedCount
-            ? generateResponse(updatedData, true, 200, `${administrationId} updated successfully`)
+            ? generateResponse(latestData, true, 200, `${administrationId} updated successfully`)
             : generateResponse({}, false, 422, `${administrationId} not updated`);
 
     } catch (error) {
@@ -172,9 +154,9 @@ const deleteAAdministrationService = async (db, requestedBy, administrationId) =
         if (!await isValidById(db, ADMINISTRATION_COLLECTION_NAME, administrationId))
             return generateResponse({}, false, 404, `${administrationId} not found`);
 
-        const result = await deleteAdministration(db, administrationId);
+        const result = await deleteById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
-        return result?.deletedCount === 1
+        return result
             ? generateResponse({}, true, 200, `${administrationId} deleted successfully`)
             : generateResponse({}, false, 422, `${administrationId} could not be deleted`);
     } catch (error) {

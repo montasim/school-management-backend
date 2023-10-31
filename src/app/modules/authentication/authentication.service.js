@@ -1,7 +1,15 @@
-import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
-import {ADMIN_COLLECTION_NAME, SECRET_TOKEN} from "../../../config/config.js";
+import { ADMIN_COLLECTION_NAME } from "../../../config/config.js";
+import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import findByUserName from "../../../shared/findByUserName.js";
+import logger from "../../middlewares/logger.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
+import deleteById from "../../../shared/deleteById.js";
+import createAuthenticationToken from "../../middlewares/createAuthenticationToken.js";
+import generateResponse from "../../../helpers/generateResponse.js";
+import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import updateById from "../../../shared/updateById.js";
+import findById from "../../../shared/findById.js";
 
 /**
  * Service to authenticate a user using their login details.
@@ -12,79 +20,56 @@ import findByUserName from "../../../shared/findByUserName.js";
  */
 const loginService = async (db,  loginDetails) => {
     try {
-        const {
-            userName,
-            password,
-        } = loginDetails;
+        const { userName, password } = loginDetails;
+        const foundAdminDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
 
-        const foundUserDetails = findByUserName(db, ADMIN_COLLECTION_NAME, userName)
+        delete foundAdminDetails?._id;
+        delete foundAdminDetails?.id;
+        delete foundAdminDetails?.password;
 
-        if (foundUserDetails) {
-            if (foundUserDetails?.password === password) {
-                const token = jwt.sign({
-                    name: foundUserDetails?.name,
-                    userName: foundUserDetails?.userName
-                }, SECRET_TOKEN, {
-                    expiresIn: '1d' // token will expire in 1 day
-                });
-                const returnData = {
-                    name: foundUserDetails?.name,
-                    userName: foundUserDetails?.userName,
-                    token: token,
+        if (foundAdminDetails) {
+            if (foundAdminDetails?.password === password) {
+                const token = await createAuthenticationToken(foundAdminDetails);
+
+                if (token) {
+                    const returnData = {
+                        name: foundAdminDetails?.name,
+                        userName: foundAdminDetails?.userName,
+                        token: token,
+                    }
+                    return generateResponse(returnData, true, 200, "Authorized");
+                } else {
+                    return generateResponse({}, false, 401, "Unauthorized");
                 }
-                return {
-                    data: returnData,
-                    success: true,
-                    status: 200,
-                    message: 'Authorized'
-                };
             } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 401,
-                    message: 'Unauthorized'
-                };
+                return generateResponse({}, false, 401, "Unauthorized");
             }
         } else {
-            return {
-                data: {},
-                success: false,
-                status: 401,
-                message: 'Unauthorized'
-            };
+            return generateResponse({}, false, 401, "Unauthorized");
         }
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
 
 /**
- * Service to sign up a new user.
+ * Creates a new admin entry in the database.
+ *
  * @async
- * @param {Object} db - Database instance.
- * @param {Object} signupDetails - The signup details provided.
- * @returns {Object} Result object containing status, message and data.
+ * @param {Object} db - Database connection object.
+ * @param signupDetails
+ * @returns {Object} - The response after attempting admin creation.
+ * @throws {Error} Throws an error if any.
  */
 const signupService = async (db, signupDetails) => {
     try {
-        const {
-            name,
-            userName,
-            password,
-            confirmPassword,
-        } = signupDetails;
-        const foundUserDetails = await db
-            .collection(ADMIN_COLLECTION_NAME)
-            .findOne({ userName: userName }, { projection: { _id: 0 } });
+        const { name, userName, password, confirmPassword } = signupDetails;
+        const foundUserDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
 
         if (foundUserDetails) {
-            return {
-                data: {},
-                success: false,
-                status: 422,
-                message: `${userName} already exists`
-            };
+            return generateResponse({}, false, 422, `${userName} already exists`);
         } else {
             if (password === confirmPassword) {
                 const prepareNewUserDetails = {
@@ -94,39 +79,24 @@ const signupService = async (db, signupDetails) => {
                     password: password,
                     createdAt: new Date(),
                 };
-    
-                const createNewUserResult = await db
-                    .collection(ADMIN_COLLECTION_NAME)
-                    .insertOne(prepareNewUserDetails);
-    
-                if (createNewUserResult?.acknowledged) {
-                    delete prepareNewUserDetails?._id;
-                    delete prepareNewUserDetails?.password;
+                const result = await addANewEntryToDatabase(db, ADMIN_COLLECTION_NAME, prepareNewUserDetails);
+                const latestData = await findById(db, ADMIN_COLLECTION_NAME, prepareNewUserDetails?.id);
 
-                    return {
-                        data: prepareNewUserDetails,
-                        success: true,
-                        status: 200,
-                        message: `${prepareNewUserDetails?.name} created successfully`
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 500,
-                        message: 'Failed to create'
-                    };
-                }
+                delete latestData?._id;
+                delete latestData?.id;
+                delete latestData?.password;
+
+                return result?.acknowledged
+                    ? generateResponse(latestData, true, 200, `${prepareNewUserDetails?.userName} created successfully`)
+                    : generateResponse({}, false, 500, 'Failed to create. Please try again');
+
             } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 422,
-                    message: 'Password did not matched'
-                };
+                return generateResponse({}, false, 422, "Password did not matched");
             }
         }
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
@@ -135,85 +105,53 @@ const signupService = async (db, signupDetails) => {
  * Service to reset a user's password.
  * @async
  * @param {Object} db - Database instance.
- * @param {string} adminId - ID of the admin whose password needs to be reset.
  * @param {Object} resetPasswordDetails - New password details.
  * @returns {Object} Result object containing status, message and data.
  */
-const resetPasswordService = async (db, adminId, resetPasswordDetails) => {
+const resetPasswordService = async (db, resetPasswordDetails) => {
     try {
-        const foundAdmin = await db
-            .collection(ADMIN_COLLECTION_NAME)
-            .findOne({ id: adminId }, { projection: { _id: 0 } });
+        const { requestedBy } = resetPasswordDetails;
+        const foundAdmin = await findByUserName(db, ADMIN_COLLECTION_NAME, requestedBy);
 
         if (foundAdmin) {
-            const {
-                password,
-                confirmPassword,
-                requestedBy
-            } = resetPasswordDetails;
+            const { oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
 
-            if (password === confirmPassword) {
-                if (foundAdmin?.userName === requestedBy) {
-                    const updatedAdminDetails = {
-                        id: foundAdmin?.id,
-                        userName: foundAdmin?.userName,
-                        ...(password && { password }),
-                        createdAt: foundAdmin?.createdAt,
-                        modifiedAt: new Date(),
-                    };
-                    const updateAdminDataResult = await db
-                        .collection(ADMIN_COLLECTION_NAME)
-                        .updateOne(
-                            { id: adminId },
-                            { $set: updatedAdminDetails },
-                        );
-
-                    if (updateAdminDataResult?.modifiedCount > 0) {
-                        const updatedData = await db
-                            .collection(ADMIN_COLLECTION_NAME)
-                            .findOne({ id: adminId });
-
-                        delete updatedData._id;
-
-                        return {
-                            data: updatedData,
-                            success: true,
-                            status: 200,
-                            message: `${adminId} updated successfully`
+            if (newPassword === confirmNewPassword) {
+                if (foundAdmin?.password === oldPassword) {
+                    if (foundAdmin?.id === requestedBy) {
+                        const updatedAdminDetails = {
+                            id: foundAdmin?.id,
+                            userName: foundAdmin?.userName,
+                            password: newPassword,
+                            createdAt: foundAdmin?.createdAt,
+                            modifiedAt: new Date(),
                         };
+                        const result = await updateById(db, ADMIN_COLLECTION_NAME, requestedBy, updatedAdminDetails);
+                        const latestData = await findById(db, ADMIN_COLLECTION_NAME, requestedBy);
+
+                        delete latestData?._id;
+                        delete latestData?.id;
+                        delete latestData?.password;
+
+                        return result?.modifiedCount
+                            ? generateResponse(latestData, true, 200, `${requestedBy} updated successfully`)
+                            : generateResponse({}, false, 422, `${requestedBy} not updated`);
+
                     } else {
-                        return {
-                            data: {},
-                            success: true,
-                            status: 422,
-                            message: `${adminId} not updated`
-                        };
+                        return generateResponse({}, false, 403, "Forbidden");
                     }
                 } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 403,
-                        message: 'Unauthorized'
-                    };
+                    return generateResponse({}, false, 422, "Wrong password");
                 }
             } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 422,
-                    message: 'Password did not matched'
-                };
+                return generateResponse({}, false, 422, "Password did not matched");
             }
         } else {
-            return {
-                data: {},
-                success: true,
-                status: 404,
-                message: `${adminId} not found`
-            };
+            return generateResponse({}, false, 403, "Forbidden");
         }
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };
@@ -222,54 +160,24 @@ const resetPasswordService = async (db, adminId, resetPasswordDetails) => {
  * Service to delete a user.
  * @async
  * @param {Object} db - Database instance.
- * @param {string} requestedBy - The username of the requester.
- * @param {string} adminId - ID of the admin to be deleted.
+ * @param deleteAdminDetails
  * @returns {Object} Result object containing status, message and data.
  */
-const deleteUserService = async (db, requestedBy, adminId) => {
+const deleteUserService = async (db, deleteAdminDetails) => {
     try {
-        const foundAdmin = await db
-            .collection(ADMIN_COLLECTION_NAME)
-            .findOne({ id: adminId }, { projection: { _id: 0 } });
+        const { requestedBy } = deleteAdminDetails;
+        if (!await isValidRequest(db, requestedBy))
+            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
 
-        if (foundAdmin) {
-            if (foundAdmin?.userName === requestedBy) {
-                const deleteResult = await db
-                    .collection(ADMIN_COLLECTION_NAME)
-                    .deleteOne({ id: adminId });
+        const result = await deleteById(db, ADMIN_COLLECTION_NAME, requestedBy);
 
-                if (deleteResult?.deletedCount === 1) {
-                    return {
-                        data: {},
-                        success: true,
-                        status: 200,
-                        message: `${adminId} deleted successfully`,
-                    };
-                } else {
-                    return {
-                        data: {},
-                        success: false,
-                        status: 422,
-                        message: `${adminId} could not be deleted`,
-                    };
-                }
-            } else {
-                return {
-                    data: {},
-                    success: false,
-                    status: 404,
-                    message: `${adminId} not found`,
-                };
-            }
-        } else {
-            return {
-                data: {},
-                success: false,
-                status: 403,
-                message: 'Unauthorized'
-            };
-        }
+        return result
+            ? generateResponse({}, true, 200, `${requestedBy} deleted successfully`)
+            : generateResponse({}, false, 422, `${requestedBy} could not be deleted`);
+
     } catch (error) {
+        logger.error(error);
+
         throw error;
     }
 };

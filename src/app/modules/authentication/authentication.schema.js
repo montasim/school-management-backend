@@ -38,9 +38,9 @@ const signupSchema = Joi.object({
  * - `confirmPassword`: Should be a string with a minimum length of 8 and a maximum length of 20.
  */
 const resetPasswordSchema = Joi.object({
-    userName: Joi.string().min(3).max(ID_CONSTANTS?.MAX_LENGTH).required(),
-    password: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
-    confirmPassword: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
+    oldPassword: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
+    newPassword: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
+    confirmNewPassword: Joi.string().min(ID_CONSTANTS?.MIN_LENGTH).max(ID_CONSTANTS?.MAX_LENGTH).required(),
 });
 
 /**

@@ -1,7 +1,7 @@
 import express from "express";
 import { AuthenticationValidators } from "./authentication.validator.js";
 import { AuthenticationController } from "./authentication.controller.js";
-import verifyJwt from "../../middlewares/jwtMiddleware.js";
+import verifyJwt from "../../middlewares/verifyAuthenticationToken.js";
 
 const router = express.Router();
 

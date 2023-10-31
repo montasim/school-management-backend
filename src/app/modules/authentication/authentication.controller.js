@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const loginController = async (req, res) => {
-    const { username, password, db } = extractFromRequest(req, ['username', 'password']);
-    const loginDetails = { username, password };
+    const { userName, password, db } = extractFromRequest(req, ['userName', 'password']);
+    const loginDetails = { userName, password };
 
     await handleServiceResponse(res, AuthenticationService.loginService, db, loginDetails);
 };
@@ -26,7 +26,7 @@ const loginController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const signupController = async (req, res) => {
-    const { name, userName, password, confirmPassword, db } = extractFromRequest(req, ['name', 'username', 'password', 'confirmPassword']);
+    const { name, userName, password, confirmPassword, db } = extractFromRequest(req, ['name', 'userName', 'password', 'confirmPassword']);
     const signupDetails = { name, userName, password, confirmPassword };
 
     await handleServiceResponse(res, AuthenticationService.signupService, db, signupDetails);
@@ -41,8 +41,8 @@ const signupController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const resetPasswordController = async (req, res) => {
-    const { oldPassword, newPassword, confirmNewPassword, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
-    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword };
+    const { oldPassword, newPassword, confirmNewPassword, requestedBy, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
+    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword, requestedBy };
 
     await handleServiceResponse(res, AuthenticationService.resetPasswordService, db, resetPasswordDetails);
 };
@@ -56,10 +56,10 @@ const resetPasswordController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteUserController = async (req, res) => {
-    const { password, confirmPassword, db } = extractFromRequest(req, ['password', 'confirmPassword']);
-    const resetPasswordDetails = { password, confirmPassword };
+    const { password, confirmPassword, requestedBy, db } = extractFromRequest(req, ['password', 'confirmPassword']);
+    const deleteAdminDetails = { password, confirmPassword, requestedBy };
 
-    await handleServiceResponse(res, AuthenticationService.deleteUserService, db, resetPasswordDetails);
+    await handleServiceResponse(res, AuthenticationService.deleteUserService, db, deleteAdminDetails);
 };
 
 /**

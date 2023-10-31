@@ -1,5 +1,5 @@
 import express from "express";
-import verifyJwt from "../../middlewares/jwtMiddleware.js";
+import verifyJwt from "../../middlewares/verifyAuthenticationToken.js";
 import { StudentValidators } from "./student.validator.js";
 import { StudentController } from "./student.controller.js";
 

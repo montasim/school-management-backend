@@ -1,5 +1,5 @@
 import express from "express";
-import verifyJwt from "../../middlewares/jwtMiddleware.js";
+import verifyJwt from "../../middlewares/verifyAuthenticationToken.js";
 import { AdministrationValidators } from "./administration.validator.js";
 import { AdministrationController } from "./administration.controller.js";
 
