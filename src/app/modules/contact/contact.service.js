@@ -1,57 +1,80 @@
 import nodemailer from "nodemailer";
+import Mailgen from "mailgen";
+import generateResponse from "../../../helpers/generateResponse.js";
+import logger from "../../middlewares/logger.js";
+import {
+    EMAIL_SERVICE,
+    EMAIL_SERVICE_DESTINATION_EMAIL,
+    EMAIL_SERVICE_PASSWORD,
+    EMAIL_SERVICE_USER
+} from "../../../config/config.js";
 
-const contactService = async (db,  contactDetails) => {
-        const {
-            firstName,
-            lastName,
-            phone,
-            email,
-            subject,
-            message,
-        } = contactDetails;
-
+/**
+ * Send email.
+ *
+ * @async
+ * @param emailDetails
+ * @returns {Object} - The response after attempting to send email.
+ * @throws {Error} Throws an error if any.
+ */
+const sendEmailService = async (emailDetails) => {
+    try {
         // Create a nodemailer transporter with your email service details
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: "your-email@gmail.com", // Your email address
-      pass: "your-email-password", // Your email password
-    },
-  });
+        const config = nodemailer.createTransport({
+            service : EMAIL_SERVICE,
+            auth: {
+                user: EMAIL_SERVICE_USER,
+                pass: EMAIL_SERVICE_PASSWORD,
+            },
+        });
+        const transporter = nodemailer.createTransport(config);
+        const MailGenerator = new Mailgen({
+            theme: "default",
+            product : {
+                name: "Mailgen",
+                link : 'https://mailgen.js/'
+            }
+        });
+        const response = {
+            body: {
+                name : "Daily Tuition",
+                intro: "Your bill has arrived!",
+                table : {
+                    data : [
+                        {
+                            item : "Nodemailer Stack Book",
+                            description: "A Backend application",
+                            price : "$10.99",
+                        }
+                    ]
+                },
+                outro: "Looking forward to do more business"
+            }
+        }
+        const mail = MailGenerator.generate(response)
+        const message = {
+            from : EMAIL_SERVICE_USER,
+            to : EMAIL_SERVICE_DESTINATION_EMAIL,
+            subject: emailDetails?.subject,
+            html: mail
+        }
 
-  // Email data
-  const mailOptions = {
-    from: "your-email@gmail.com",
-    to: "destination-email@example.com", // Replace with the destination email address
-    subject: subject,
-    text: `
-      Name: ${firstName} ${lastName}
-      Phone: ${phone}
-      Email: ${email}
-      Message: ${message}
-    `,
-  };
+        transporter?.sendMail(message).then(() => {
+            return generateResponse({}, true, 200, 'you should receive an email');
+        }).catch((error) => {
+            return generateResponse(error, false, 500, 'Failed to send email. Please try again');
+        })
+    } catch (error) {
+        logger.error(error);
 
-  // Send the email
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-        return {
-            data: {},
-            success: false,
-            status: 500,
-            message: "Error sending email"
-        };
-    } else {
-        return {
-            data: info?.response,
-            success: true,
-            status: 200,
-            message: "Email sent successfully"
-        };
+        throw error;
     }
-  });
 };
 
+/**
+ * @namespace ContactService
+ * @description Group of services related to contact operations.
+ */
 export const ContactService = {
-    contactService,
+    sendEmailService,
 };

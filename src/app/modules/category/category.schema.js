@@ -24,7 +24,6 @@ const categoryBodySchema = Joi.object({
  *
  * - `categoryBodySchema`: Validates the body data of a category.
  * - `categoryParamsSchema`: Validates the category ID in request parameters.
- * - `deleteCategoryQuerySchema`: Validates the admin ID in the query.
  */
 export const CategorySchema = {
     categoryBodySchema,

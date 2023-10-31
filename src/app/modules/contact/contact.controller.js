@@ -1,40 +1,40 @@
 import { ContactService } from "./contact.service.js";
+import extractFromRequest from "../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 
-const contactController = async (req, res) => {
-    try {
-        const {
-            firstName,
-            lastName,
-            phone,
-            email,
-            subject,
-            message,
-        } = req?.body;
-        const contactDetails = {
-            firstName,
-            lastName,
-            phone,
-            email,
-            subject,
-            message,
-        };
-        const contactServiceResponse = ContactService.contactService(req?.db, contactDetails);
-        const returnData = {
-            data: contactServiceResponse?.data,
-            success: contactServiceResponse?.success,
-            status: contactServiceResponse?.status,
-            message: contactServiceResponse?.message,
-        };
+/**
+ * @async
+ * @function sendEmailController
+ * @description Controller for creating a new sendEmail.
+ *
+ * @param {express.Request} req - Express request object containing sendEmail details.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
+const sendEmailController = async (req, res) => {
+    const {
+        firstName,
+        lastName,
+        phone,
+        email,
+        subject,
+        message,
+    } = extractFromRequest(req, ['firstName', 'lastName', 'phone', 'email', 'subject', 'message']);
+    const emailDetails = {
+        firstName,
+        lastName,
+        phone,
+        email,
+        subject,
+        message,
+    };
 
-        return res.status(contactServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, ContactService.sendEmailService, emailDetails);
 };
 
 /**
- * @module ContactController - Controller for contact-related operations.
+ * @namespace ContactController
+ * @description Group of controllers for handling sendEmail operations.
  */
 export const ContactController = {
-    contactController,
+    sendEmailController,
 };
