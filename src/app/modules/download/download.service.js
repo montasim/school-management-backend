@@ -17,14 +17,13 @@ import findByFileName from "../../../shared/findByFileName.js";
  * Creates a new download entry in the database.
  *
  * @async
- * @param req
  * @param {Object} db - Database connection object.
  * @param {Object} newDownloadDetails - New download's details.
  * @param file
  * @returns {Object} - The response after attempting download creation.
  * @throws {Error} Throws an error if any.
  */
-const createDownloadService = async (req, db, newDownloadDetails, file) => {
+const createDownloadService = async (db, newDownloadDetails, file) => {
     try {
         const { title, requestedBy } = newDownloadDetails;
 
@@ -41,11 +40,10 @@ const createDownloadService = async (req, db, newDownloadDetails, file) => {
             createdAt: new Date(),
         };
         const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
-        const downloadLink = `${req?.protocol}://${req?.get('host')}/downloads/${downloadDetails.path}`;
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
         return result?.acknowledged
-            ? generateResponse({ ...latestData, downloadLink }, true, 200, `${title} uploaded successfully`)
+            ? generateResponse(latestData, true, 200, `${title} uploaded successfully`)
             : generateResponse({}, false, 500, 'Failed to upload. Please try again');
 
     } catch (error) {

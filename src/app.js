@@ -14,8 +14,6 @@ const app = express();
  */
 app.use(express.json());
 
-app.use('/downloads', express.static('uploads'));
-
 app.use(cors(corsOptions));
 
 // app.use(isBrowserRequest);

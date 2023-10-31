@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken';
 import {SECRET_TOKEN} from "../../config/config.js";
+import generateResponse from "../../helpers/generateResponse.js";
+import logger from "./logger.js";
 
-const verifyJwt = (req, res, next) => {
+const verifyAuthenticationToken = (req, res, next) => {
     try {
         const token = req.headers['authorization']?.split(' ')[1];
 
@@ -11,25 +13,13 @@ const verifyJwt = (req, res, next) => {
 
             next();
         } else {
-            const returnData = {
-                data: {},
-                success: false,
-                status: 401,
-                message: "Unauthorized",
-            };
-
-            return res.status(returnData?.status).json(returnData);
+            return generateResponse({}, false, 401, 'Unauthorized');
         }
     } catch (error) {
-        const returnData = {
-            data: {},
-            success: false,
-            status: 400,
-            message: "Invalid token",
-        };
+        logger.error(error);
 
-        res.status(returnData?.status).json(returnData);
+        return generateResponse({}, false, 400, 'Invalid token');
     }
 };
 
-export default verifyJwt;
+export default verifyAuthenticationToken;

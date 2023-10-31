@@ -1,4 +1,5 @@
 import {ADMIN_COLLECTION_NAME} from "../config/config.js";
+import logger from "../app/middlewares/logger.js";
 
 /**
  * Check if the requester is valid by looking up the requester's ID in the admin collection.
@@ -10,11 +11,15 @@ import {ADMIN_COLLECTION_NAME} from "../config/config.js";
  * @returns {Promise<boolean>} Returns `true` if the requester is valid, otherwise `false`.
  */
 const isValidRequest = async (db, requestedBy) => {
-    const requesterValidity = await db
-        .collection(ADMIN_COLLECTION_NAME)
-        .findOne({ id: requestedBy });
+    try {
+        const requesterValidity = await db
+            .collection(ADMIN_COLLECTION_NAME)
+            .findOne({ id: requestedBy });
 
-    return !!requesterValidity;
+        return !!requesterValidity;
+    } catch (error) {
+        logger.error(error);
+    }
 };
 
 export default isValidRequest;

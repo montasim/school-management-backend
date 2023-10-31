@@ -1,7 +1,7 @@
 import express from "express";
 import { AuthenticationValidators } from "./authentication.validator.js";
 import { AuthenticationController } from "./authentication.controller.js";
-import verifyJwt from "../../middlewares/verifyAuthenticationToken.js";
+import verifyAuthenticationToken from "../../middlewares/verifyAuthenticationToken.js";
 
 const router = express.Router();
 
@@ -67,7 +67,7 @@ router.post(
  */
 router.put(
     "/reset-password",
-    verifyJwt,
+    verifyAuthenticationToken,
     AuthenticationValidators.resetPasswordValidator,
     AuthenticationController.resetPasswordController
 );
@@ -91,7 +91,7 @@ router.put(
  */
 router.delete(
     "/delete-user",
-    verifyJwt,
+    verifyAuthenticationToken,
     AuthenticationController.deleteUserController
 );
 

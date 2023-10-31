@@ -1,5 +1,5 @@
 import express from "express";
-import verifyJwt from "../../middlewares/verifyAuthenticationToken.js";
+import verifyAuthenticationToken from "../../middlewares/verifyAuthenticationToken.js";
 import { AdministrationValidators } from "./administration.validator.js";
 import { AdministrationController } from "./administration.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Administration successfully created.
  */
 router.post("/", [
-    verifyJwt,
+    verifyAuthenticationToken,
     AdministrationValidators.administrationBodyValidator,
     AdministrationController.createAdministrationController
 ]);
@@ -86,7 +86,7 @@ router.get("/:administrationId", [
  *         description: Administration successfully updated.
  */
 router.put("/:administrationId", [
-    verifyJwt,
+    verifyAuthenticationToken,
     AdministrationValidators.administrationParamsValidator,
     AdministrationValidators.administrationBodyValidator,
     AdministrationController.updateAAdministrationController
@@ -110,7 +110,7 @@ router.put("/:administrationId", [
  *         description: Administration successfully deleted.
  */
 router.delete("/:administrationId", [
-    verifyJwt,
+    verifyAuthenticationToken,
     AdministrationValidators.administrationParamsValidator,
     AdministrationController.deleteAAdministrationController
 ]);
