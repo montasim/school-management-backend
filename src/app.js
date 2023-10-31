@@ -29,7 +29,7 @@ app.use(Database.connectToDatabase);
 app.use(`/`, appRoutes);
 
 // Disconnect from the database
-app.use(Database.disconnectFromDatabase);
+// app.use(Database.disconnectFromDatabase);
 
 /**
  * Start the Express server.
@@ -42,7 +42,7 @@ app.listen(PORT, () => {
      */
     logger.http(`${SERVER_LOG_MESSAGE} ${PORT}`);
 
-    console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
+    // console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
 });
 
 export default app;
