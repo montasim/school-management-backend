@@ -1,24 +1,21 @@
+import generateResponse from "../../../helpers/generateResponse.js";
+import logger from "../../middlewares/logger.js";
+
 /**
- * Handle requests to undefined routes.
- *
- * If the route isn't defined in the application, it sends a 404 Not Found response.
- * If any internal error occurs while processing, it sends a 500 Internal Server Error response.
- *
  * @async
- * @function
+ * @function undefinedController
+ * @description Controller for getting the undefined status of the system.
+ *
  * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object.
- * @returns {express.Response} Express response object.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const undefinedController = async (req, res) => {
     try {
-      return res
-            .status(404)
-            .send({ message: "Route not found!" });
+        return generateResponse({}, true, 404, "Route not found");
     } catch (error) {
-        res
-            .status(500)
-            .send({ message: "An error occurred while processing the request." });
+        logger.error(error);
+
+        return generateResponse({}, false, 500, "An error occurred while processing the request");
     }
 };
 
