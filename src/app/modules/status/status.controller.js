@@ -1,20 +1,21 @@
+import generateResponse from "../../../helpers/generateResponse.js";
+import logger from "../../middlewares/logger.js";
+
 /**
- * Controller to handle the status endpoint.
  * @async
- * @function
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {Object} Express response object.
+ * @function statusController
+ * @description Controller for getting the status of the system.
+ *
+ * @param {express.Request} req - Express request object.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const statusController = async (req, res) => {
     try {
-        return res
-            .status(200)
-            .send({ message: "Server is up and running" });
+        return generateResponse({}, true, 200, "Server is up and running");
     } catch (error) {
-        res
-            .status(500)
-            .send({ message: "Server is down" });
+        logger.error(error);
+
+        return generateResponse({}, false, 500, "Server is down");
     }
 };
 
