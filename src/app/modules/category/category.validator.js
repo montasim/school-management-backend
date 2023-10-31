@@ -6,7 +6,7 @@ import { CategorySchema } from "./category.schema.js";
  * @async
  * @description Middleware validator for category's body data.
  *
- * Uses the categoryBodySchema from the CategorySchema to validate
+ * Uses the categoryBodySchema from the DashboardSchema to validate
  * the body of the incoming request. This ensures that the category's
  * information is in the correct format before processing.
  *
@@ -23,7 +23,7 @@ const categoryBodyValidator = validateWithSchema(CategorySchema.categoryBodySche
  * @async
  * @description Middleware validator for category's ID in request parameters.
  *
- * Uses the categoryParamsSchema from the CategorySchema to validate
+ * Uses the categoryParamsSchema from the DashboardSchema to validate
  * the category ID provided in the request parameters. This ensures that
  * the category ID is in the correct format for further processing.
  *

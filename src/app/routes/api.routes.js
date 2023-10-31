@@ -9,8 +9,19 @@ import noticeRoutes from "../modules/notice/notice.routes.js";
 import resultRoutes from "../modules/result/result.routes.js";
 import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
+import dashboardRoutes from "../modules/dashboard/dashboard.routes.js";
 
 const router = express.Router();
+
+
+/**
+ * Sets up routing for the home module.
+ * @name /dashboard
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use(`/dashboard`, dashboardRoutes);
 
 /**
  * Sets up routing for the authentication module.
