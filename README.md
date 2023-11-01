@@ -70,8 +70,8 @@ Explain how to use the application, including examples if necessary. Provide det
 Describe the project's structure, including directories, files, and their purposes. For example:
 
 - `src/`: Contains the source code.
-  - `app.js`: Main application file.
-  - `app/`: Contains middleware, modules, routes.
+  - `server.js`: Main application file.
+  - `server/`: Contains middleware, modules, routes.
   - `constants/`: Application constants.
   - `data/`: Data models.
   - `helpers/`: Application helpers function.
@@ -162,7 +162,7 @@ Give credit to any individuals, projects, or resources that helped or inspired y
 
 - `src/`
     - Source code of the application.
-    - `app/`
+    - `server/`
         - Core application logic.
         - `middleware/`
             - Middleware functions for request and response manipulation.
@@ -180,10 +180,10 @@ Give credit to any individuals, projects, or resources that helped or inspired y
         - Utility functions and helper scripts.
     - `shared/`
         - Shared resources and logic used across different modules.
-    - `app.js`
+    - `server.js`
         - Entry point where the Express application is initialized, and middlewares & routes are set up.
     - `server.js`
-        - Starts the server, listens on a port, imports `app.js`, and connects to the database.
+        - Starts the server, listens on a port, imports `server.js`, and connects to the database.
 
 - `uploads/`
     - Storage for files uploaded by users.

@@ -7,35 +7,35 @@ import { Database } from "./src/app/middlewares/database.js";
 import appRoutes from "./src/app/routes/index.js";
 import logger from "./src/app/middlewares/logger.js";
 
-const app = express();
+const server = express();
 
 /**
  * Middleware to parse JSON requests.
  */
-app.use(express.json());
+server.use(express.json());
 
-app.use(cors(corsOptions));
+server.use(cors(corsOptions));
 
-// app.use(isBrowserRequest);
+// server.use(isBrowserRequest);
 
 // Connect to the database
-app.use(Database.connectToDatabase);
+server.use(Database.connectToDatabase);
 
 /**
  * Main route that attaches all application routes.
  * For example, if there is a "/status" route in `appRoutes`,
  * you can access it directly via "http://localhost:<PORT>/status".
  */
-app.use(`/`, appRoutes);
+server.use(`/`, appRoutes);
 
 // Disconnect from the database
-// app.use(Database.disconnectFromDatabase);
+// server.use(Database.disconnectFromDatabase);
 
 /**
  * Start the Express server.
  * @listens {number} PORT - The port number from constants.
  */
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     // /**
     //  * Log server startup message to Winston logger.
     //  * @function
@@ -45,4 +45,4 @@ app.listen(PORT, () => {
     console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
 });
 
-export default app;
+export default server;
