@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createCategoryController = async (req, res) => {
-    const { name, requestedBy, db } = extractFromRequest(req, ['name']);
-    const newCategory = { name, requestedBy };
+    const { name, adminId, db } = extractFromRequest(req, ['name']);
+    const newCategory = { name, adminId };
 
     await handleServiceResponse(res, CategoryService.createCategoryService, db, newCategory);
 };
@@ -52,8 +52,8 @@ const getACategoryController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateACategoryController = async (req, res) => {
-    const { categoryId, name, requestedBy, db } = extractFromRequest(req, ['name'], ['categoryId']);
-    const updatedCategoryDetails = { name, requestedBy };
+    const { categoryId, name, adminId, db } = extractFromRequest(req, ['name'], ['categoryId']);
+    const updatedCategoryDetails = { name, adminId };
 
     await handleServiceResponse(res, CategoryService.updateACategoryService, db, categoryId, updatedCategoryDetails);
 };
@@ -67,9 +67,9 @@ const updateACategoryController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteACategoryController = async (req, res) => {
-    const { categoryId, requestedBy, db } = extractFromRequest(req, [], ['categoryId']);
+    const { categoryId, adminId, db } = extractFromRequest(req, [], ['categoryId']);
 
-    await handleServiceResponse(res, CategoryService.deleteACategoryService, db, requestedBy, categoryId);
+    await handleServiceResponse(res, CategoryService.deleteACategoryService, db, adminId, categoryId);
 };
 
 /**

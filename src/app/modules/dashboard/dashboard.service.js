@@ -30,13 +30,13 @@ import getAllData from "../../../shared/getAllData.js";
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param requestedBy
+ * @param adminId
  * @returns {Object} - The summary or an error message.
  * @throws {Error} Throws an error if any.
  */
-const getSummaryService = async (db, requestedBy) => {
+const getSummaryService = async (db, adminId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const adminDetails = await getAllData(db, ADMIN_COLLECTION_NAME);

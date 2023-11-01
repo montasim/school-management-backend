@@ -35,15 +35,15 @@ import getAllData from "../../../shared/getAllData.js";
  */
 const createLevelService = async (db, newLevelDetails) => {
     try {
-        const { name, requestedBy } = newLevelDetails;
+        const { name, adminId } = newLevelDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const levelDetails = {
             id: `${ID_CONSTANTS?.LEVEL_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
-            createdBy: requestedBy,
+            createdBy: adminId,
             createdAt: new Date(),
         };
 
@@ -125,14 +125,14 @@ const getALevelService = async (db, levelId) => {
  */
 const updateALevelService = async (db, levelId, newLevelDetails) => {
     try {
-        const { name, requestedBy } = newLevelDetails;
+        const { name, adminId } = newLevelDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedLevelDetails = {
             ...(name && { name }),
-            modifiedBy: requestedBy,
+            modifiedBy: adminId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, LEVEL_COLLECTION_NAME, levelId, updatedLevelDetails);
@@ -157,14 +157,14 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} requestedBy - The user ID making the request.
+ * @param {string} adminId - The user ID making the request.
  * @param {string} levelId - The ID of the level to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteALevelService = async (db, requestedBy, levelId) => {
+const deleteALevelService = async (db, adminId, levelId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, LEVEL_COLLECTION_NAME, levelId))

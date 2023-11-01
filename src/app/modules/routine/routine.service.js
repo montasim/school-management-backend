@@ -27,9 +27,9 @@ const createRoutineService = async (db,  newRoutineDetails, file) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = newRoutineDetails;
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const prepareNewRoutineDetails = {
@@ -37,7 +37,7 @@ const createRoutineService = async (db,  newRoutineDetails, file) => {
                 title: title,
                 filename: file?.originalname,
                 path: file?.path,
-                createdBy: requestedBy,
+                createdBy: adminId,
                 createdAt: new Date(),
             };
             const routine = await db
@@ -154,14 +154,14 @@ const getARoutineService = async (db, fileName) => {
  * @async
  * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - Identifier of the requester.
+ * @param {string} adminId - Identifier of the requester.
  * @param {string} fileName - The name of the file to delete.
  * @returns {Promise<object>} A promise that resolves to an object representing the deletion operation's routine.
  * @throws Will throw an error if an error occurs.
  */
-const deleteARoutineService = async (db, requestedBy, fileName) => {
+const deleteARoutineService = async (db, adminId, fileName) => {
     try {
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const fileDetails = await db

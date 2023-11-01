@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createDownloadController = async (req, res) => {
-    const { title, requestedBy, db } = extractFromRequest(req, ['title']);
-    const newDownloadDetails = { title, requestedBy };
+    const { title, adminId, db } = extractFromRequest(req, ['title']);
+    const newDownloadDetails = { title, adminId };
 
     await handleServiceResponse(res, DownloadService.createDownloadService, db, newDownloadDetails, req?.file);
 };
@@ -52,9 +52,9 @@ const getADownloadController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteADownloadController = async (req, res) => {
-    const { fileName, requestedBy, db } = extractFromRequest(req, [], ['fileName']);
+    const { fileName, adminId, db } = extractFromRequest(req, [], ['fileName']);
 
-    await handleServiceResponse(res, DownloadService.deleteADownloadService, db, requestedBy, fileName);
+    await handleServiceResponse(res, DownloadService.deleteADownloadService, db, adminId, fileName);
 };
 
 /**

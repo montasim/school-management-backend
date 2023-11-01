@@ -30,9 +30,9 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = newNoticeDetails;
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const prepareNewNoticeDetails = {
@@ -40,7 +40,7 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
                 title: title,
                 filename: file?.originalname,
                 path: file?.path,
-                createdBy: requestedBy,
+                createdBy: adminId,
                 createdAt: new Date(),
             };
             const result = await db
@@ -157,14 +157,14 @@ const getANoticeService = async (db, fileName) => {
  * @async
  * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - Identifier of the requester.
+ * @param {string} adminId - Identifier of the requester.
  * @param {string} fileName - The name of the file to delete.
  * @returns {Promise<object>} A promise that resolves to an object representing the deletion operation's result.
  * @throws Will throw an error if an error occurs.
  */
-const deleteANoticeService = async (db, requestedBy, fileName) => {
+const deleteANoticeService = async (db, adminId, fileName) => {
     try {
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const fileDetails = await db

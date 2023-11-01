@@ -12,11 +12,11 @@ const createResultController = async (req, res) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = req?.body;
         const newResultDetails = {
             title,
-            requestedBy
+            adminId
         };
         const createResultServiceResponse = await ResultService.createResultService(req?.db, newResultDetails, req.file);
 
@@ -95,9 +95,9 @@ const getAResultController = async (req, res) => {
 const deleteAResultController = async (req, res) => {
     try {
         const { fileName } = req?.params;
-        const { requestedBy } = req?.query;
+        const { adminId } = req?.query;
 
-        const deletedResultServiceResponse = await ResultService.deleteAResultService(req?.db, requestedBy, fileName);
+        const deletedResultServiceResponse = await ResultService.deleteAResultService(req?.db, adminId, fileName);
 
         const returnData = {
             data: deletedResultServiceResponse?.data,

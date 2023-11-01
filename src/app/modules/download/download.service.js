@@ -37,9 +37,9 @@ import findByFileName from "../../../shared/findByFileName.js";
  */
 const createDownloadService = async (db, newDownloadDetails, file) => {
     try {
-        const { title, requestedBy } = newDownloadDetails;
+        const { title, adminId } = newDownloadDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const getFileNameAndPathNameVariables = await getFileNameAndPathName(file);
@@ -48,7 +48,7 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
             title: title,
             fileName: getFileNameAndPathNameVariables?.uniqueFilename,
             path: getFileNameAndPathNameVariables?.uniquePath,
-            createdBy: requestedBy,
+            createdBy: adminId,
             createdAt: new Date(),
         };
         const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
@@ -116,14 +116,14 @@ const getADownloadService = async (db, fileName) => {
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} requestedBy - The user fileName making the request.
+ * @param {string} adminId - The user fileName making the request.
  * @param {string} fileName - The fileName of the download to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteADownloadService = async (db, requestedBy, fileName) => {
+const deleteADownloadService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))

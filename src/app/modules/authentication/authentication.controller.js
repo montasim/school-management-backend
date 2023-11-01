@@ -41,8 +41,8 @@ const signupController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const resetPasswordController = async (req, res) => {
-    const { oldPassword, newPassword, confirmNewPassword, requestedBy, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
-    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword, requestedBy };
+    const { oldPassword, newPassword, confirmNewPassword, adminId, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
+    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword, adminId };
 
     await handleServiceResponse(res, AuthenticationService.resetPasswordService, db, resetPasswordDetails);
 };
@@ -56,8 +56,8 @@ const resetPasswordController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteUserController = async (req, res) => {
-    const { password, confirmPassword, requestedBy, db } = extractFromRequest(req, ['password', 'confirmPassword']);
-    const deleteAdminDetails = { password, confirmPassword, requestedBy };
+    const { password, confirmPassword, adminId, db } = extractFromRequest(req, ['password', 'confirmPassword']);
+    const deleteAdminDetails = { password, confirmPassword, adminId };
 
     await handleServiceResponse(res, AuthenticationService.deleteUserService, db, deleteAdminDetails);
 };

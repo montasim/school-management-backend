@@ -78,7 +78,7 @@ const noticeParamsValidator = async (req, res, next) => {
  */
 const deleteNoticeQueryValidator = async (req, res, next) => {
     try {
-        const { error } = NoticeSchema.deleteNoticeQuerySchema.validate(req?.query?.requestedBy);
+        const { error } = NoticeSchema.deleteNoticeQuerySchema.validate(req?.query?.adminId);
         const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {

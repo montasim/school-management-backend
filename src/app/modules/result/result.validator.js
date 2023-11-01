@@ -78,7 +78,7 @@ const resultParamsValidator = async (req, res, next) => {
  */
 const deleteResultQueryValidator = async (req, res, next) => {
     try {
-        const { error } = ResultSchema.deleteResultQuerySchema.validate(req?.query?.requestedBy);
+        const { error } = ResultSchema.deleteResultQuerySchema.validate(req?.query?.adminId);
         const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {

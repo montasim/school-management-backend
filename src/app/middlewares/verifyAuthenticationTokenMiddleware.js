@@ -18,7 +18,8 @@ const verifyAuthenticationTokenMiddleware = (req, res, next) => {
 
         if (token) {
             const verified = jwt.verify(token, SECRET_TOKEN);
-            req.requestedBy = verified?.id;
+            req.adminId = verified?.id;
+            req.adminUserName = verified?.userName;
 
             next();
         } else {

@@ -37,15 +37,15 @@ import getAllData from "../../../shared/getAllData.js";
  */
 const createCategoryService = async (db, newCategoryDetails) => {
     try {
-        const { name, requestedBy } = newCategoryDetails;
+        const { name, adminId } = newCategoryDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const categoryDetails = {
             id: `${ID_CONSTANTS?.CATEGORY_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
-            createdBy: requestedBy,
+            createdBy: adminId,
             createdAt: new Date(),
         };
 
@@ -127,14 +127,14 @@ const getACategoryService = async (db, categoryId) => {
  */
 const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
     try {
-        const { name, requestedBy } = newCategoryDetails;
+        const { name, adminId } = newCategoryDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedCategoryDetails = {
             ...(name && { name }),
-            modifiedBy: requestedBy,
+            modifiedBy: adminId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, CATEGORY_COLLECTION_NAME, categoryId, updatedCategoryDetails);
@@ -159,14 +159,14 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} requestedBy - The user ID making the request.
+ * @param {string} adminId - The user ID making the request.
  * @param {string} categoryId - The ID of the category to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteACategoryService = async (db, requestedBy, categoryId) => {
+const deleteACategoryService = async (db, adminId, categoryId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, CATEGORY_COLLECTION_NAME, categoryId))

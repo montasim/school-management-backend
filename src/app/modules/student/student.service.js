@@ -37,9 +37,9 @@ import deleteById from "../../../shared/deleteById.js";
  */
 const createStudentService = async (db, newStudentDetails) => {
     try {
-        const { name, level, image, requestedBy } = newStudentDetails;
+        const { name, level, image, adminId } = newStudentDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const studentDetails = {
@@ -47,7 +47,7 @@ const createStudentService = async (db, newStudentDetails) => {
             name,
             level,
             image,
-            createdBy: requestedBy,
+            createdBy: adminId,
             createdAt: new Date(),
         };
         const result = await addANewEntryToDatabase(db, STUDENT_COLLECTION_NAME, studentDetails);
@@ -122,16 +122,16 @@ const getAStudentService = async (db, studentId) => {
  */
 const updateAStudentService = async (db, studentId, updateStudentDetails) => {
     try {
-        const { name, level, image, requestedBy } = updateStudentDetails;
+        const { name, level, image, adminId } = updateStudentDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedStudent = {
             ...(name && { name }),
             ...(level && { level }),
             ...(image && { image }),
-            modifiedBy: requestedBy,
+            modifiedBy: adminId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, STUDENT_COLLECTION_NAME, studentId, updatedStudent);
@@ -153,14 +153,14 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} requestedBy - The user ID making the request.
+ * @param {string} adminId - The user ID making the request.
  * @param {string} studentId - The ID of the student to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteAStudentService = async (db, requestedBy, studentId) => {
+const deleteAStudentService = async (db, adminId, studentId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, STUDENT_COLLECTION_NAME, studentId))

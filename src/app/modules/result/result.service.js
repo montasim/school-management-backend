@@ -30,9 +30,9 @@ const createResultService = async (db,  newResultDetails, file) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = newResultDetails;
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const prepareNewResultDetails = {
@@ -40,7 +40,7 @@ const createResultService = async (db,  newResultDetails, file) => {
                 title: title,
                 filename: file?.originalname,
                 path: file?.path,
-                createdBy: requestedBy,
+                createdBy: adminId,
                 createdAt: new Date(),
             };
             const result = await db
@@ -157,14 +157,14 @@ const getAResultService = async (db, fileName) => {
  * @async
  * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - Identifier of the requester.
+ * @param {string} adminId - Identifier of the requester.
  * @param {string} fileName - The name of the file to delete.
  * @returns {Promise<object>} A promise that resolves to an object representing the deletion operation's result.
  * @throws Will throw an error if an error occurs.
  */
-const deleteAResultService = async (db, requestedBy, fileName) => {
+const deleteAResultService = async (db, adminId, fileName) => {
     try {
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const fileDetails = await db

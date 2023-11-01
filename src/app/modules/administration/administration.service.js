@@ -37,9 +37,9 @@ import getAllData from "../../../shared/getAllData.js";
  */
 const createAdministrationService = async (db, newAdministrationDetails) => {
     try {
-        const { name, category, designation, image, requestedBy } = newAdministrationDetails;
+        const { name, category, designation, image, adminId } = newAdministrationDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const administrationDetails = {
@@ -48,7 +48,7 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
             category,
             designation,
             image,
-            createdBy: requestedBy,
+            createdBy: adminId,
             createdAt: new Date(),
         };
 
@@ -124,16 +124,16 @@ const getAAdministrationService = async (db, administrationId) => {
  */
 const updateAAdministrationService = async (db, administrationId, newAdministrationDetails) => {
     try {
-        const { name, level, image, requestedBy } = newAdministrationDetails;
+        const { name, level, image, adminId } = newAdministrationDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedAdministrationDetails = {
             ...(name && { name }),
             ...(level && { level }),
             ...(image && { image }),
-            modifiedBy: requestedBy,
+            modifiedBy: adminId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, ADMINISTRATION_COLLECTION_NAME, administrationId, updatedAdministrationDetails);
@@ -155,14 +155,14 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} requestedBy - The user ID making the request.
+ * @param {string} adminId - The user ID making the request.
  * @param {string} administrationId - The ID of the administration to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteAAdministrationService = async (db, requestedBy, administrationId) => {
+const deleteAAdministrationService = async (db, adminId, administrationId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, ADMINISTRATION_COLLECTION_NAME, administrationId))

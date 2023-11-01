@@ -78,7 +78,7 @@ const routineParamsValidator = async (req, res, next) => {
  */
 const deleteRoutineQueryValidator = async (req, res, next) => {
     try {
-        const { error } = RoutineSchema.deleteRoutineQuerySchema.validate(req?.query?.requestedBy);
+        const { error } = RoutineSchema.deleteRoutineQuerySchema.validate(req?.query?.adminId);
         const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {

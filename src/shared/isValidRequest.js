@@ -1,4 +1,4 @@
-import {ADMIN_COLLECTION_NAME} from "../config/config.js";
+import { ADMIN_COLLECTION_NAME } from "../config/config.js";
 import logger from "./logger.js";
 
 /**
@@ -7,14 +7,14 @@ import logger from "./logger.js";
  * @async
  * @function
  * @param {object} db - The database connection object.
- * @param {string} requestedBy - The ID of the requester to be validated.
+ * @param {string} adminId - The ID of the requester to be validated.
  * @returns {Promise<boolean>} Returns `true` if the requester is valid, otherwise `false`.
  */
-const isValidRequest = async (db, requestedBy) => {
+const isValidRequest = async (db, adminId) => {
     try {
         const requesterValidity = await db
             .collection(ADMIN_COLLECTION_NAME)
-            .findOne({ id: requestedBy });
+            .findOne({ id: adminId });
 
         return !!requesterValidity;
     } catch (error) {

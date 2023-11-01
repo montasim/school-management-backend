@@ -12,11 +12,11 @@ const createNoticeController = async (req, res) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = req?.body;
         const newNoticeDetails = {
             title,
-            requestedBy
+            adminId
         };
         const createNoticeServiceResponse = await NoticeService.createNoticeService(req?.db, newNoticeDetails, req.file);
 
@@ -95,9 +95,9 @@ const getANoticeController = async (req, res) => {
 const deleteANoticeController = async (req, res) => {
     try {
         const { fileName } = req?.params;
-        const { requestedBy } = req?.query;
+        const { adminId } = req?.query;
 
-        const deletedNoticeServiceResponse = await NoticeService.deleteANoticeService(req?.db, requestedBy, fileName);
+        const deletedNoticeServiceResponse = await NoticeService.deleteANoticeService(req?.db, adminId, fileName);
 
         const returnData = {
             data: deletedNoticeServiceResponse?.data,

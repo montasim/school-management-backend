@@ -15,13 +15,13 @@ import {
 } from "../../../constants/constants.js";
 
 // Shared utilities
+import findById from "../../../shared/findById.js";
 import findByUserName from "../../../shared/findByUserName.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
-import findById from "../../../shared/findById.js";
 
 // Helpers
 import createAuthenticationToken from "../../../helpers/createAuthenticationToken.js";
@@ -126,15 +126,15 @@ const signupService = async (db, signupDetails) => {
  */
 const resetPasswordService = async (db, resetPasswordDetails) => {
     try {
-        const { requestedBy } = resetPasswordDetails;
-        const foundAdmin = await findByUserName(db, ADMIN_COLLECTION_NAME, requestedBy);
+        const { adminId } = resetPasswordDetails;
+        const foundAdmin = await findById(db, ADMIN_COLLECTION_NAME, adminId);
 
         if (foundAdmin) {
             const { oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
 
             if (newPassword === confirmNewPassword) {
                 if (foundAdmin?.password === oldPassword) {
-                    if (foundAdmin?.id === requestedBy) {
+                    if (foundAdmin?.id === adminId) {
                         const updatedAdminDetails = {
                             id: foundAdmin?.id,
                             userName: foundAdmin?.userName,
@@ -142,16 +142,16 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
                             createdAt: foundAdmin?.createdAt,
                             modifiedAt: new Date(),
                         };
-                        const result = await updateById(db, ADMIN_COLLECTION_NAME, requestedBy, updatedAdminDetails);
-                        const latestData = await findById(db, ADMIN_COLLECTION_NAME, requestedBy);
+                        const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, updatedAdminDetails);
+                        const latestData = await findById(db, ADMIN_COLLECTION_NAME, adminId);
 
                         delete latestData?._id;
                         delete latestData?.id;
                         delete latestData?.password;
 
                         return result?.modifiedCount
-                            ? generateResponseData(latestData, true, STATUS_OK, `${requestedBy} updated successfully`)
-                            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${requestedBy} not updated`);
+                            ? generateResponseData(latestData, true, STATUS_OK, `${adminId} updated successfully`)
+                            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${adminId} not updated`);
 
                     } else {
                         return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
@@ -181,15 +181,15 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
  */
 const deleteUserService = async (db, deleteAdminDetails) => {
     try {
-        const { requestedBy } = deleteAdminDetails;
-        if (!await isValidRequest(db, requestedBy))
+        const { adminId } = deleteAdminDetails;
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const result = await deleteById(db, ADMIN_COLLECTION_NAME, requestedBy);
+        const result = await deleteById(db, ADMIN_COLLECTION_NAME, adminId);
 
         return result
-            ? generateResponseData({}, true, STATUS_OK, `${requestedBy} deleted successfully`)
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${requestedBy} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${adminId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${adminId} could not be deleted`);
 
     } catch (error) {
         logger.error(error);

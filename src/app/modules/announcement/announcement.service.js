@@ -39,15 +39,15 @@ import logger from "../../../shared/logger.js";
  */
 const createAnnouncementService = async (db, newAnnouncementDetails) => {
     try {
-        const { name, requestedBy } = newAnnouncementDetails;
+        const { name, adminId } = newAnnouncementDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const announcementDetails = {
             id: `${ID_CONSTANTS?.ANNOUNCEMENT_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
-            createdBy: requestedBy,
+            createdBy: adminId,
             createdAt: new Date(),
         };
 
@@ -129,14 +129,14 @@ const getAAnnouncementService = async (db, announcementId) => {
  */
 const updateAAnnouncementService = async (db, announcementId, newAnnouncementDetails) => {
     try {
-        const { name, requestedBy } = newAnnouncementDetails;
+        const { name, adminId } = newAnnouncementDetails;
 
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedAnnouncementDetails = {
             ...(name && { name }),
-            modifiedBy: requestedBy,
+            modifiedBy: adminId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId, updatedAnnouncementDetails);
@@ -161,14 +161,14 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} requestedBy - The user ID making the request.
+ * @param {string} adminId - The user ID making the request.
  * @param {string} announcementId - The ID of the announcement to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteAAnnouncementService = async (db, requestedBy, announcementId) => {
+const deleteAAnnouncementService = async (db, adminId, announcementId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
+        if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId))

@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createAdministrationController = async (req, res) => {
-    const { name, category, designation, image, requestedBy, db } = extractFromRequest(req, ['name', 'category', 'designation', 'image']);
-    const newAdministration = { name, category, designation, image, requestedBy };
+    const { name, category, designation, image, adminId, db } = extractFromRequest(req, ['name', 'category', 'designation', 'image']);
+    const newAdministration = { name, category, designation, image, adminId };
 
     await handleServiceResponse(res, AdministrationService.createAdministrationService, db, newAdministration);
 };
@@ -52,8 +52,8 @@ const getAAdministrationController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAAdministrationController = async (req, res) => {
-    const { administrationId, name, category, designation, image, requestedBy, db } = extractFromRequest(req, ['name', 'category', 'designation', 'image'], ['administrationId']);
-    const updatedAdministrationDetails = { name, category, designation, image, requestedBy };
+    const { administrationId, name, category, designation, image, adminId, db } = extractFromRequest(req, ['name', 'category', 'designation', 'image'], ['administrationId']);
+    const updatedAdministrationDetails = { name, category, designation, image, adminId };
 
     await handleServiceResponse(res, AdministrationService.updateAAdministrationService, db, administrationId, updatedAdministrationDetails);
 };
@@ -67,9 +67,9 @@ const updateAAdministrationController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAAdministrationController = async (req, res) => {
-    const { administrationId, requestedBy, db } = extractFromRequest(req, [], ['administrationId']);
+    const { administrationId, adminId, db } = extractFromRequest(req, [], ['administrationId']);
 
-    await handleServiceResponse(res, AdministrationService.deleteAAdministrationService, db, requestedBy, administrationId);
+    await handleServiceResponse(res, AdministrationService.deleteAAdministrationService, db, adminId, administrationId);
 };
 
 /**
