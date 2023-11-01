@@ -1,4 +1,5 @@
 import Joi from "joi";
+import logger from "./logger.js";
 
 /**
  * @function createIdSchema
@@ -9,12 +10,18 @@ import Joi from "joi";
  * @returns {Joi.StringSchema} The Joi validation schema for the ID.
  */
 const createIdSchema = (prefix, ID_CONSTANTS) => {
-    const pattern = new RegExp(`^(${prefix})-\\w+$`);
+    try {
+        const pattern = new RegExp(`^(${prefix})-\\w+$`);
 
-    return Joi.string()
-        .pattern(pattern)
-        .min(ID_CONSTANTS?.MIN_LENGTH)
-        .max(ID_CONSTANTS?.MAX_LENGTH)
+        return Joi.string()
+            .pattern(pattern)
+            .min(ID_CONSTANTS?.MIN_LENGTH)
+            .max(ID_CONSTANTS?.MAX_LENGTH)
+    } catch (error) {
+        logger.error(error);
+
+        throw error;
+    }
 };
 
 export default createIdSchema;

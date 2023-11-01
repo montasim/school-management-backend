@@ -10,6 +10,7 @@ import downloadRoutes from "../modules/download/download.routes.js";
 import levelRoutes from "../modules/level/level.routes.js";
 import noticeRoutes from "../modules/notice/notice.routes.js";
 import othersInformationRoutes from "../modules/othersInformation/othersInformation.routes.js";
+import othersInformationCategoryRoutes from "../modules/othersInformationCategory/othersInformationCategory.routes.js";
 import resultRoutes from "../modules/result/result.routes.js";
 import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
@@ -114,6 +115,15 @@ router.use("/notice", noticeRoutes);
  * @memberof module:routes
  */
 router.use(`/othersInformation`, othersInformationRoutes);
+
+/**
+ * Sets up routing for the othersInformationCategory module.
+ * @name /othersInformationCategory
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use(`/othersInformationCategory`, othersInformationCategoryRoutes);
 
 /**
  * Sets up versioned routing for the result module.
