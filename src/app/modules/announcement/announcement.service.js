@@ -4,9 +4,9 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./announcement.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
-import generateResponseData from "../../../helpers/generateResponseData.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
@@ -16,7 +16,7 @@ import getAllData from "../../../shared/getAllData.js";
  * Creates a new announcement entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newAnnouncementDetails - New announcement's details.
  * @returns {Object} - The response after attempting announcement creation.
  * @throws {Error} Throws an error if any.
@@ -57,7 +57,7 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
  * Retrieves a list of all announcement from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of announcement or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -79,7 +79,7 @@ const getAnnouncementListService = async (db) => {
  * Retrieves a specific announcement by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} announcementId - The ID of the announcement to retrieve.
  * @returns {Object} - The announcement details or an error message.
  * @throws {Error} Throws an error if any.
@@ -105,7 +105,7 @@ const getAAnnouncementService = async (db, announcementId) => {
  * Retrieves a specific announcement by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} announcementId - The ID of the announcement to retrieve.
  * @param newAnnouncementDetails
  * @returns {Object} - The announcement details or an error message.
@@ -144,7 +144,7 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
  * Deletes a specific announcement by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} requestedBy - The user ID making the request.
  * @param {string} announcementId - The ID of the announcement to delete.
  * @returns {Object} - A confirmation message or an error message.

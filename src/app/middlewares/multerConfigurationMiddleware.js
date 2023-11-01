@@ -1,6 +1,9 @@
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+
+import { UPLOAD_DIRECTORY_MAP } from "../../constants/constants.js";
+
+import createFolderIfNotExists from "../../shared/createFolderIfNotExists.js";
 
 /**
  * Determines and sets the storage destination for uploaded files by mapping specific keywords
@@ -11,27 +14,17 @@ import fs from 'fs';
  * @param {Express.Multer.File} file - The file object representing the file being uploaded.
  * @param {function(Error, string):void} cb - Callback function to be invoked once the destination is determined.
  */
-const destination = (req, file, cb) => {
-    // Define a mapping between URL keywords and their corresponding directories
-    const urlToDestinationMap = {
-        'download': 'download',
-        'notice': 'notice',
-        'result': 'result',
-        'routine': 'routine'
-    };
-
+const destination = async (req, file, cb) => {
     const requestedURL = req?.originalUrl;
-    const matchedDestination = Object.keys(urlToDestinationMap)
+    const matchedDestination = Object.keys(UPLOAD_DIRECTORY_MAP)
         .find(keyword => requestedURL?.includes(keyword));
 
     const finalDestination = matchedDestination
-        ? path.join('./uploads', urlToDestinationMap[matchedDestination])
+        ? path.join('./uploads', UPLOAD_DIRECTORY_MAP[matchedDestination])
         : './uploads';
 
     // Ensure the destination directory exists, or create it if it doesn't
-    if (!fs.existsSync(finalDestination)) {
-        fs.mkdirSync(finalDestination, { recursive: true });
-    }
+    await createFolderIfNotExists(finalDestination);
 
     cb(null, finalDestination);
 };
@@ -56,10 +49,7 @@ const filename = (req, file, cb) => {
  *
  * @type {multer.StorageEngine}
  */
-const storage = multer.diskStorage({
-    destination,
-    filename
-});
+const storage = multer.diskStorage({ destination, filename });
 
 /**
  * A Multer instance configured with the disk storage settings.

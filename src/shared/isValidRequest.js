@@ -1,5 +1,5 @@
 import {ADMIN_COLLECTION_NAME} from "../config/config.js";
-import logger from "../app/middlewares/logger.js";
+import logger from "./logger.js";
 
 /**
  * Check if the requester is valid by looking up the requester's ID in the admin collection.

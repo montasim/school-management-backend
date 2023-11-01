@@ -1,6 +1,6 @@
 import express from "express";
 import {NoticeValidators} from "./notice.validator.js";
-import multerConfig from "../../../helpers/multerConfig.js";
+import multerConfig from "../../middlewares/multerConfigurationMiddleware.js";
 import { NoticeController } from "./notice.controller.js";
 
 const router = express.Router();

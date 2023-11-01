@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import logger from "../app/middlewares/logger.js";
+import logger from "../shared/logger.js";
 
 /**
  * Generates a unique filename and path for an uploaded file by appending a timestamp before the file extension.

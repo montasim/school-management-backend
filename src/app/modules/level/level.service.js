@@ -4,9 +4,9 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./level.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
-import generateResponseData from "../../../helpers/generateResponseData.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
@@ -16,7 +16,7 @@ import getAllData from "../../../shared/getAllData.js";
  * Creates a new level entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newLevelDetails - New level's details.
  * @returns {Object} - The response after attempting level creation.
  * @throws {Error} Throws an error if any.
@@ -57,7 +57,7 @@ const createLevelService = async (db, newLevelDetails) => {
  * Retrieves a list of all level from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of level or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -79,7 +79,7 @@ const getLevelListService = async (db) => {
  * Retrieves a specific level by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} levelId - The ID of the level to retrieve.
  * @returns {Object} - The level details or an error message.
  * @throws {Error} Throws an error if any.
@@ -105,7 +105,7 @@ const getALevelService = async (db, levelId) => {
  * Retrieves a specific level by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} levelId - The ID of the level to retrieve.
  * @param newLevelDetails
  * @returns {Object} - The level details or an error message.
@@ -144,7 +144,7 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
  * Deletes a specific level by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} requestedBy - The user ID making the request.
  * @param {string} levelId - The ID of the level to delete.
  * @returns {Object} - A confirmation message or an error message.

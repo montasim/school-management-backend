@@ -1,4 +1,4 @@
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
 
 /**
  * Controller to handle the home endpoint.

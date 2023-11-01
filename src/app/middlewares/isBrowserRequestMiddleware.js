@@ -1,5 +1,5 @@
 /**
- * @file isBrowserRequest.js
+ * @file isBrowserRequestMiddleware.js
  * @description Middleware to check if a request is made from a web browser.
  * This module defines a middleware function that examines the user-agent header
  * to determine if the incoming request is from a web browser. If it detects a
@@ -17,7 +17,7 @@
  * @param {function} next - Next middleware function
  * @returns {void|object} Proceeds to the next middleware/controller if not a browser request
  */
-const isBrowserRequest = (req, res, next) => {
+const isBrowserRequestMiddleware = (req, res, next) => {
   // Check if the request is made from a browser
   const isBrowserRequest = req.headers["user-agent"].includes("Mozilla");
 
@@ -31,4 +31,4 @@ const isBrowserRequest = (req, res, next) => {
   }
 };
 
-export default isBrowserRequest;
+export default isBrowserRequestMiddleware;

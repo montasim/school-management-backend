@@ -1,4 +1,4 @@
-import logger from "../app/middlewares/logger.js";
+import logger from "./logger.js";
 
 /**
  * Check if the requester is valid by looking up the requester id in the collection.

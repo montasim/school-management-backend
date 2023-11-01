@@ -1,6 +1,6 @@
 import express from "express";
 import {ResultValidators} from "./result.validator.js";
-import multerConfig from "../../../helpers/multerConfig.js";
+import multerConfig from "../../middlewares/multerConfigurationMiddleware.js";
 import { ResultController } from "./result.controller.js";
 
 const router = express.Router();

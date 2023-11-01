@@ -4,8 +4,8 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import generateResponseData from "../../../helpers/generateResponseData.js";
-import logger from "../../middlewares/logger.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
+import logger from "../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import findById from "../../../shared/findById.js";
 import getAllData from "../../../shared/getAllData.js";
@@ -16,7 +16,7 @@ import deleteById from "../../../shared/deleteById.js";
  * Creates a new student entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newStudentDetails - New student's details.
  * @returns {Object} - The response after attempting student creation.
  * @throws {Error} Throws an error if any.
@@ -55,7 +55,7 @@ const createStudentService = async (db, newStudentDetails) => {
  * Retrieves a list of all students from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of students or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -77,7 +77,7 @@ const getStudentListService = async (db) => {
  * Retrieves a specific student by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} studentId - The ID of the student to retrieve.
  * @returns {Object} - The student details or an error message.
  * @throws {Error} Throws an error if any.
@@ -100,7 +100,7 @@ const getAStudentService = async (db, studentId) => {
  * Retrieves a specific student by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} studentId - The ID of the student to retrieve.
  * @param updateStudentDetails
  * @returns {Object} - The student details or an error message.
@@ -138,7 +138,7 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
  * Deletes a specific student by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} requestedBy - The user ID making the request.
  * @param {string} studentId - The ID of the student to delete.
  * @returns {Object} - A confirmation message or an error message.

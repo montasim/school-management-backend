@@ -1,17 +1,4 @@
-/**
- * List of allowed origins for CORS configuration.
- * @type {string[]}
- */
-const ALLOWED_ORIGIN = [
-    "https://school-abid.vercel.app",
-    "http://localhost:3000", // Allow requests from localhost
-];
-
-/**
- * Allowed HTTP methods for CORS configuration.
- * @type {string}
- */
-const ALLOWED_METHODS = "GET,PUT,POST,DELETE";
+import { ALLOWED_ORIGIN, ALLOWED_METHODS } from "../../constants/constants.js";
 
 /**
  * Configuration object for CORS middleware.
@@ -20,10 +7,10 @@ const ALLOWED_METHODS = "GET,PUT,POST,DELETE";
  * @property {string} methods - Allowed HTTP methods.
  * @property {boolean} credentials - Indicates whether user credentials are supported.
  */
-const corsOptions = {
+const corsConfigurationMiddleware = {
     origin: ALLOWED_ORIGIN,
     methods: ALLOWED_METHODS,
     credentials: true, // If you need to support cookies or authentication
 };
 
-export default corsOptions;
+export default corsConfigurationMiddleware;

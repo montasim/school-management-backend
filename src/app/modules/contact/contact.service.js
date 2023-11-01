@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
-import generateResponseData from "../../../helpers/generateResponseData.js";
-import logger from "../../middlewares/logger.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
+import logger from "../../../shared/logger.js";
 import {
     EMAIL_SERVICE,
     EMAIL_SERVICE_DESTINATION_EMAIL,

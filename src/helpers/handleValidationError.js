@@ -11,7 +11,7 @@
  *     return handleValidationError(res, validationError);
  * }
  */
-import logger from "../app/middlewares/logger.js";
+import logger from "../shared/logger.js";
 
 const handleValidationError = (res, error) => {
     try {

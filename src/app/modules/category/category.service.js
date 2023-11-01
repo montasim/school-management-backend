@@ -4,9 +4,9 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./category.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
-import generateResponseData from "../../../helpers/generateResponseData.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
@@ -16,7 +16,7 @@ import getAllData from "../../../shared/getAllData.js";
  * Creates a new category entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newCategoryDetails - New category's details.
  * @returns {Object} - The response after attempting category creation.
  * @throws {Error} Throws an error if any.
@@ -57,7 +57,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
  * Retrieves a list of all category from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of category or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -79,7 +79,7 @@ const getCategoryListService = async (db) => {
  * Retrieves a specific category by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} categoryId - The ID of the category to retrieve.
  * @returns {Object} - The category details or an error message.
  * @throws {Error} Throws an error if any.
@@ -105,7 +105,7 @@ const getACategoryService = async (db, categoryId) => {
  * Retrieves a specific category by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} categoryId - The ID of the category to retrieve.
  * @param newCategoryDetails
  * @returns {Object} - The category details or an error message.
@@ -144,7 +144,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
  * Deletes a specific category by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} requestedBy - The user ID making the request.
  * @param {string} categoryId - The ID of the category to delete.
  * @returns {Object} - A confirmation message or an error message.

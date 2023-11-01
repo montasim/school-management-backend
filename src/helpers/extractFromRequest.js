@@ -1,4 +1,4 @@
-import logger from "../app/middlewares/logger.js";
+import logger from "../shared/logger.js";
 
 /**
  * Extracts specified keys from the request body and parameters. Also extracts the

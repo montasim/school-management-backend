@@ -4,20 +4,20 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidByFileName from "../../../shared/isValidByFileName.js";
-import generateResponseData from "../../../helpers/generateResponseData.js";
-import logger from "../../middlewares/logger.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
+import logger from "../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import findById from "../../../shared/findById.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
-import getFileNameAndPathName from "../../../shared/getFileNameAndPathName.js";
+import getFileNameAndPathName from "../../../helpers/getFileNameAndPathName.js";
 import findByFileName from "../../../shared/findByFileName.js";
 
 /**
  * Creates a new download entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newDownloadDetails - New download's details.
  * @param file
  * @returns {Object} - The response after attempting download creation.
@@ -58,7 +58,7 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
  * Retrieves a list of all downloads from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of downloads or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -80,7 +80,7 @@ const getDownloadListService = async (db) => {
  * Retrieves a specific download by fileName from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} fileName - The fileName of the download to retrieve.
  * @returns {Object} - The download details or an error message.
  * @throws {Error} Throws an error if any.
@@ -103,7 +103,7 @@ const getADownloadService = async (db, fileName) => {
  * Deletes a specific download by fileName from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} requestedBy - The user fileName making the request.
  * @param {string} fileName - The fileName of the download to delete.
  * @returns {Object} - A confirmation message or an error message.

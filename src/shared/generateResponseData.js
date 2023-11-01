@@ -1,4 +1,4 @@
-import logger from "../app/middlewares/logger.js";
+import logger from "./logger.js";
 
 /**
  * Generates a standardized response object for service functions.

@@ -4,9 +4,9 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./administration.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
-import generateResponseData from "../../../helpers/generateResponseData.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
@@ -16,7 +16,7 @@ import getAllData from "../../../shared/getAllData.js";
  * Creates a new administration entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newAdministrationDetails - New administration's details.
  * @returns {Object} - The response after attempting administration creation.
  * @throws {Error} Throws an error if any.
@@ -57,7 +57,7 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
  * Retrieves a list of all administrations from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of administrations or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -79,7 +79,7 @@ const getAdministrationListService = async (db) => {
  * Retrieves a specific administration by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} administrationId - The ID of the administration to retrieve.
  * @returns {Object} - The administration details or an error message.
  * @throws {Error} Throws an error if any.
@@ -102,7 +102,7 @@ const getAAdministrationService = async (db, administrationId) => {
  * Retrieves a specific administration by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} administrationId - The ID of the administration to retrieve.
  * @param newAdministrationDetails
  * @returns {Object} - The administration details or an error message.
@@ -140,7 +140,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
  * Deletes a specific administration by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} requestedBy - The user ID making the request.
  * @param {string} administrationId - The ID of the administration to delete.
  * @returns {Object} - A confirmation message or an error message.

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { SECRET_TOKEN } from "../../config/config.js";
-import logger from "./logger.js";
+import { SECRET_TOKEN } from "../config/config.js";
+import logger from "../shared/logger.js";
 
 const createAuthenticationToken = async (userDetails = {}) => {
     try {

@@ -12,15 +12,15 @@ import {
 } from "../../../config/config.js";
 import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js"
 import isValidRequest from "../../../shared/isValidRequest.js";
-import logger from "../../middlewares/logger.js";
-import generateResponseData from "../../../helpers/generateResponseData.js";
+import logger from "../../../shared/logger.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import getAllData from "../../../shared/getAllData.js";
 
 /**
  * Retrieves summary from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param requestedBy
  * @returns {Object} - The summary or an error message.
  * @throws {Error} Throws an error if any.

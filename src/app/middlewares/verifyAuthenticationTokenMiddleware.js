@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import {SECRET_TOKEN} from "../../config/config.js";
-import generateResponseData from "../../helpers/generateResponseData.js";
-import logger from "./logger.js";
+import generateResponseData from "../../shared/generateResponseData.js";
+import logger from "../../shared/logger.js";
 
-const verifyAuthenticationToken = (req, res, next) => {
+const verifyAuthenticationTokenMiddleware = (req, res, next) => {
     try {
         const token = req.headers['authorization']?.split(' ')[1];
 
@@ -22,4 +22,4 @@ const verifyAuthenticationToken = (req, res, next) => {
     }
 };
 
-export default verifyAuthenticationToken;
+export default verifyAuthenticationTokenMiddleware;

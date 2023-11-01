@@ -1,4 +1,4 @@
-import logger from "../app/middlewares/logger.js";
+import logger from "../shared/logger.js";
 
 /**
  * Executes the provided service function, handles its response, and sends

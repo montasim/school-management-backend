@@ -1,5 +1,5 @@
 import handleValidationError from "./handleValidationError.js";
-import logger from "../app/middlewares/logger.js";
+import logger from "../shared/logger.js";
 
 /**
  * Generates a middleware to validate request data against a provided Joi schema.

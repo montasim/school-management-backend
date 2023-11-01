@@ -2,11 +2,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { ADMIN_COLLECTION_NAME } from "../../../config/config.js";
 import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import findByUserName from "../../../shared/findByUserName.js";
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import deleteById from "../../../shared/deleteById.js";
-import createAuthenticationToken from "../../middlewares/createAuthenticationToken.js";
-import generateResponseData from "../../../helpers/generateResponseData.js";
+import createAuthenticationToken from "../../../helpers/createAuthenticationToken.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import findById from "../../../shared/findById.js";
@@ -14,7 +14,7 @@ import findById from "../../../shared/findById.js";
 /**
  * Service to authenticate a user using their login details.
  * @async
- * @param {Object} db - Database instance.
+ * @param {Object} db - DatabaseMiddleware instance.
  * @param {Object} loginDetails - The login details provided.
  * @returns {Object} Result object containing status, message and data.
  */
@@ -56,7 +56,7 @@ const loginService = async (db,  loginDetails) => {
  * Creates a new admin entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param signupDetails
  * @returns {Object} - The response after attempting admin creation.
  * @throws {Error} Throws an error if any.
@@ -102,7 +102,7 @@ const signupService = async (db, signupDetails) => {
 /**
  * Service to reset a user's password.
  * @async
- * @param {Object} db - Database instance.
+ * @param {Object} db - DatabaseMiddleware instance.
  * @param {Object} resetPasswordDetails - New password details.
  * @returns {Object} Result object containing status, message and data.
  */
@@ -157,7 +157,7 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
 /**
  * Service to delete a user.
  * @async
- * @param {Object} db - Database instance.
+ * @param {Object} db - DatabaseMiddleware instance.
  * @param deleteAdminDetails
  * @returns {Object} Result object containing status, message and data.
  */

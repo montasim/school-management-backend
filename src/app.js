@@ -1,24 +1,62 @@
+// Third-party modules
 import express from "express";
 import cors from "cors";
-import corsOptions from "./app/middlewares/corsConfig.js";
-import { PORT } from "./config/config.js";
-import { SERVER_LOG_MESSAGE } from "./constants/constants.js";
-import { Database } from "./app/middlewares/database.js";
-import appRoutes from "./app/routes/index.js";
-import logger from "./app/middlewares/logger.js";
 
+// Middlewares modules
+import logMiddleware from "./app/middlewares/logMiddleware.js";
+import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
+import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
+import isBrowserRequestMiddleware from "./app/middlewares/isBrowserRequestMiddleware.js";
+
+// Routes modules
+import appRoutes from "./app/routes/index.js";
+
+/**
+ * This module is responsible for setting up and configuring the Express application.
+ *
+ * @module app
+ */
+
+/**
+ * Create an instance of an Express application.
+ * @type {Express.Application}
+ */
 const app = express();
 
+/**
+ * Use the JSON middleware to parse incoming JSON requests.
+ */
 app.use(express.json());
-app.use(cors(corsOptions));
-// server.use(isBrowserRequest);
-app.use(Database.connectToDatabase);
-app.use(`/`, appRoutes);
-// server.use(Database.disconnectFromDatabase);
 
-app.listen(PORT, () => {
-    // logger.http(`${SERVER_LOG_MESSAGE} ${PORT}`);
-    console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
-});
+/**
+ * Use the log middleware to log incoming requests.
+ */
+app.use(logMiddleware);
+
+/**
+ * Use the CORS middleware with a custom configuration.
+ */
+app.use(cors(corsConfigurationMiddleware));
+
+/**
+ * Use middleware to determine if the request comes from a browser.
+ */
+app.use(isBrowserRequestMiddleware);
+
+/**
+ * Connect to the database before processing requests.
+ */
+app.use(DatabaseMiddleware.connect);
+
+/**
+ * Use application routes.
+ */
+app.use(`/`, appRoutes);
+
+/**
+ * Optionally, disconnect from the database after processing requests.
+ * Uncomment the line below to enable this behavior.
+ */
+// app.use(DatabaseMiddleware.disconnect);
 
 export default app;
