@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "school-management-system-backend",
   "builds": [
     {
       "src": "src/app.js",
@@ -8,8 +9,31 @@
   ],
   "routes": [
     {
-      "src": "/.*",
+      "src": "/(.*)",
       "dest": "src/app.js"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "@node_env",
+    "PORT": "@port",
+    "MONGODB_URI": "@mongodb_uri",
+    "DATABASE_NAME": "@database_name",
+    "API_VERSION": "@api_version",
+    "SECRET_KEY": "@secret_key",
+    "SECRET_TOKEN": "@secret_token",
+    "ANNOUNCEMENT_COLLECTION_NAME": "@announcement_collection_name",
+    "ADMIN_COLLECTION_NAME": "@admin_collection_name",
+    "ADMINISTRATION_COLLECTION_NAME": "@administration_collection_name",
+    "CATEGORY_COLLECTION_NAME": "@category_collection_name",
+    "LEVEL_COLLECTION_NAME": "@level_collection_name",
+    "DOWNLOAD_COLLECTION_NAME": "@download_collection_name",
+    "NOTICE_COLLECTION_NAME": "@notice_collection_name",
+    "RESULT_COLLECTION_NAME": "@result_collection_name",
+    "ROUTINE_COLLECTION_NAME": "@routine_collection_name",
+    "STUDENT_COLLECTION_NAME": "@student_collection_name",
+    "EMAIL_SERVICE": "@email_service",
+    "EMAIL_SERVICE_USER": "@email_service_user",
+    "EMAIL_SERVICE_PASSWORD": "@email_service_password",
+    "EMAIL_SERVICE_DESTINATION_EMAIL": "@email_service_destination_email"
+  }
 }
