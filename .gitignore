@@ -17,3 +17,5 @@ node_modules
 /uploads/notice
 /uploads/result
 /uploads/routine
+
+.vercel
