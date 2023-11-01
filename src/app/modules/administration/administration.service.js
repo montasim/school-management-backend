@@ -124,14 +124,15 @@ const getAAdministrationService = async (db, administrationId) => {
  */
 const updateAAdministrationService = async (db, administrationId, newAdministrationDetails) => {
     try {
-        const { name, level, image, adminId } = newAdministrationDetails;
+        const { name, category, designation, image, adminId } = newAdministrationDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedAdministrationDetails = {
             ...(name && { name }),
-            ...(level && { level }),
+            ...(category && { category }),
+            ...(designation && { designation }),
             ...(image && { image }),
             modifiedBy: adminId,
             modifiedAt: new Date(),

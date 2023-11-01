@@ -14,6 +14,7 @@ import othersInformationCategoryRoutes from "../modules/othersInformationCategor
 import resultRoutes from "../modules/result/result.routes.js";
 import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
+import websiteRoutes from "../modules/website/website.routes.js";
 
 const router = express.Router();
 
@@ -151,6 +152,15 @@ router.use("/routine", routineRoutes);
  * @memberof module:routes
  */
 router.use("/student", studentRoutes);
+
+/**
+ * Sets up routing for the website module.
+ * @name /website
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use(`/website`, websiteRoutes);
 
 /**
  * The main router object that combines all route modules.
