@@ -6,7 +6,13 @@
 import {v4 as uuidv4} from "uuid";
 import fs from "fs";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import {RESULT_COLLECTION_NAME} from "../../../config/config.js";
+import { RESULT_COLLECTION_NAME } from "../../../config/config.js";
+import {
+    STATUS_FORBIDDEN, STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 
 /**
  * Creates a new result entry in the database.
@@ -48,14 +54,14 @@ const createResultService = async (db,  newResultDetails, file) => {
                 return {
                     data: fileDetails,
                     success: true,
-                    status: 200,
+                    status: STATUS_OK,
                     message: `${fileDetails?.filename} uploaded successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: false,
-                    status: 422,
+                    status: STATUS_UNPROCESSABLE_ENTITY,
                     message: 'Error while uploading file'
                 };
             }
@@ -63,7 +69,7 @@ const createResultService = async (db,  newResultDetails, file) => {
             return {
                 data: {},
                 success: false,
-                status: 403,
+                status: STATUS_FORBIDDEN,
                 message: 'You do not have necessary permission'
             };
         }
@@ -92,14 +98,14 @@ const getResultListService = async (db) => {
             return {
                 data: classList,
                 success: true,
-                status: 200,
+                status: STATUS_OK,
                 message: `${classList?.length} file found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: 404,
+                status: STATUS_NOT_FOUND,
                 message: 'No file found'
             };
         }
@@ -128,14 +134,14 @@ const getAResultService = async (db, fileName) => {
             return {
                 data: file,
                 success: true,
-                status: 200,
+                status: STATUS_OK,
                 message: 'File fetched successfully'
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: 404,
+                status: STATUS_NOT_FOUND,
                 message: 'File not found'
             };
         }
@@ -176,14 +182,14 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
                             return {
                                 data: {},
                                 success: false,
-                                status: 500,
+                                status: STATUS_INTERNAL_SERVER_ERROR,
                                 message: 'Internal server error'
                             };
                         } else {
                             return {
                                 data: result,
                                 success: true,
-                                status: 200,
+                                status: STATUS_OK,
                                 message: `${fileName} deleted successfully`
                             };
                         }
@@ -192,7 +198,7 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
                     return {
                         data: {},
                         success: false,
-                        status: 404,
+                        status: STATUS_NOT_FOUND,
                         message: 'File not found'
                     };
                 }
@@ -200,7 +206,7 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
                 return {
                     data: {},
                     success: false,
-                    status: 404,
+                    status: STATUS_NOT_FOUND,
                     message: 'File not found'
                 };
             }
@@ -208,7 +214,7 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
             return {
                 data: {},
                 success: false,
-                status: 403,
+                status: STATUS_FORBIDDEN,
                 message: 'You do not have necessary permission'
             };
         }

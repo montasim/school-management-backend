@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DOWNLOAD_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND,
+    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidByFileName from "../../../shared/isValidByFileName.js";
@@ -28,7 +33,7 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
         const { title, requestedBy } = newDownloadDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const getFileNameAndPathNameVariables = await getFileNameAndPathName(file);
         const downloadDetails = {
@@ -43,8 +48,8 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, 200, `${title} uploaded successfully`)
-            : generateResponseData({}, false, 500, 'Failed to upload. Please try again');
+            ? generateResponseData(latestData, true, STATUS_OK, `${title} uploaded successfully`)
+            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -67,8 +72,8 @@ const getDownloadListService = async (db) => {
         const downloads = await getAllData(db, DOWNLOAD_COLLECTION_NAME);
 
         return downloads?.length
-            ? generateResponseData(downloads, true, 200, `${downloads?.length} download found`)
-            : generateResponseData({}, false, 404, 'No download found');
+            ? generateResponseData(downloads, true, STATUS_OK, `${downloads?.length} download found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No download found');
     } catch (error) {
         logger.error(error);
 
@@ -90,8 +95,8 @@ const getADownloadService = async (db, fileName) => {
         const download = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
         return download
-            ? generateResponseData(download, true, 200, `${fileName} found successfully`)
-            : generateResponseData({}, false, 404, `${fileName} not found`);
+            ? generateResponseData(download, true, STATUS_OK, `${fileName} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -112,16 +117,16 @@ const getADownloadService = async (db, fileName) => {
 const deleteADownloadService = async (db, requestedBy, fileName) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
-            return generateResponseData({}, false, 404, `${fileName} not found`);
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
 
         const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
         return result
-            ? generateResponseData({}, true, 200, `${fileName} deleted successfully`)
-            : generateResponseData({}, false, 422, `${fileName} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${fileName} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

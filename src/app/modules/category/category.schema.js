@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './category.constants.js';
-import createIdSchema from "../../../helpers/createIdSchema.js";
+import createIdSchema from "../../../shared/createIdSchema.js";
 
 const categoryParamsSchema = Joi.object({
     categoryId: createIdSchema(ID_CONSTANTS?.CATEGORY_PREFIX, ID_CONSTANTS).required()

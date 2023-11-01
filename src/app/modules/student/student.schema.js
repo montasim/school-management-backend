@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { ID_CONSTANTS, IMAGE_PATTERN } from './student.constants.js';
-import createIdSchema from "../../../helpers/createIdSchema.js";
+import createIdSchema from "../../../shared/createIdSchema.js";
 
 const studentParamsSchema = Joi.object({
     studentId: createIdSchema(ID_CONSTANTS?.STUDENT_PREFIX, ID_CONSTANTS).required()

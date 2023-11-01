@@ -1,5 +1,5 @@
 /**
- * Check if the requester is valid by looking up the requester's ID in the admin collection.
+ * Check if the requester is valid by looking up the requester ID in the admin collection.
  *
  * @async
  * @function

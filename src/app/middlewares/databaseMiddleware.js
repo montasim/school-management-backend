@@ -24,7 +24,7 @@ const connect = async (req, res, next) => {
     req.dbClient = client;
     req.db = client.db(DATABASE_NAME);
 
-    console.info("DatabaseMiddleware connection successfully established.");
+    console.info("Database connection successfully established 🚀");
 
     // Proceed to the next middleware/controller
     next();
@@ -44,7 +44,7 @@ const disconnect = async (req) => {
     // Close the MongoDB client connection
     await req.dbClient.close();
 
-    console.info("DatabaseMiddleware connection closed.");
+    console.info("Database connection closed");
   } catch (error) {
     console.error(`Error closing the Database connection: ${error.message}`);
   }

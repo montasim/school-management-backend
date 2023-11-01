@@ -12,6 +12,7 @@
  * }
  */
 import logger from "../shared/logger.js";
+import {STATUS_BAD_REQUEST} from "../constants/constants.js";
 
 const handleValidationError = (res, error) => {
     try {
@@ -20,7 +21,7 @@ const handleValidationError = (res, error) => {
         return res.status(400).json({
             data: {},
             success: false,
-            status: 400,
+            status: STATUS_BAD_REQUEST,
             message: messages,
         });
     } catch (error) {

@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { STUDENT_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND,
+    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
@@ -26,7 +31,7 @@ const createStudentService = async (db, newStudentDetails) => {
         const { name, level, image, requestedBy } = newStudentDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const studentDetails = {
             id: `${ID_CONSTANTS?.STUDENT_PREFIX}-${uuidv4().substr(0, 6)}`,
@@ -40,8 +45,8 @@ const createStudentService = async (db, newStudentDetails) => {
         const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentDetails?.id);
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, 200, `${studentDetails.name} created successfully`)
-            : generateResponseData({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, STATUS_OK, `${studentDetails.name} created successfully`)
+            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -64,8 +69,8 @@ const getStudentListService = async (db) => {
         const students = await getAllData(db, STUDENT_COLLECTION_NAME);
 
         return students?.length
-            ? generateResponseData(students, true, 200, `${students?.length} student found`)
-            : generateResponseData({}, false, 404, 'No student found');
+            ? generateResponseData(students, true, STATUS_OK, `${students?.length} student found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No student found');
     } catch (error) {
         logger.error(error);
 
@@ -87,8 +92,8 @@ const getAStudentService = async (db, studentId) => {
         const student = await findById(db, STUDENT_COLLECTION_NAME, studentId);
 
         return student
-            ? generateResponseData(student, true, 200, `${studentId} found successfully`)
-            : generateResponseData({}, false, 404, `${studentId} not found`);
+            ? generateResponseData(student, true, STATUS_OK, `${studentId} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${studentId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -111,7 +116,7 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
         const { name, level, image, requestedBy } = updateStudentDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedStudent = {
             ...(name && { name }),
@@ -124,8 +129,8 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
         const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentId);
 
         return result?.modifiedCount
-            ? generateResponseData(latestData, true, 200, `${studentId} updated successfully`)
-            : generateResponseData({}, false, 422, `${studentId} not updated`);
+            ? generateResponseData(latestData, true, STATUS_OK, `${studentId} updated successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${studentId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -147,16 +152,16 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
 const deleteAStudentService = async (db, requestedBy, studentId) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, STUDENT_COLLECTION_NAME, studentId))
-            return generateResponseData({}, false, 404, `${studentId} not found`);
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${studentId} not found`);
 
         const result = await deleteById(db, STUDENT_COLLECTION_NAME, studentId);
 
         return result
-            ? generateResponseData({}, true, 200, `${studentId} deleted successfully`)
-            : generateResponseData({}, false, 422, `${studentId} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${studentId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${studentId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

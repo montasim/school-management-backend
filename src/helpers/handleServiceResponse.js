@@ -1,4 +1,5 @@
 import logger from "../shared/logger.js";
+import {STATUS_INTERNAL_SERVER_ERROR} from "../constants/constants.js";
 
 /**
  * Executes the provided service function, handles its response, and sends
@@ -22,7 +23,7 @@ const handleServiceResponse = async (res, serviceFunction, ...params) => {
     } catch (error) {
         logger.error(error);
 
-        return res.status(500).json(error);
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json(error);
     }
 };
 

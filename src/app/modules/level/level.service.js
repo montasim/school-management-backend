@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { LEVEL_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND,
+    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./level.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
@@ -26,7 +31,7 @@ const createLevelService = async (db, newLevelDetails) => {
         const { name, requestedBy } = newLevelDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const levelDetails = {
             id: `${ID_CONSTANTS?.LEVEL_PREFIX}-${uuidv4().substr(0, 6)}`,
@@ -42,8 +47,8 @@ const createLevelService = async (db, newLevelDetails) => {
         delete latestData?.modifiedBy;
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, 200, `${levelDetails?.name} created successfully`)
-            : generateResponseData({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, STATUS_OK, `${levelDetails?.name} created successfully`)
+            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -66,8 +71,8 @@ const getLevelListService = async (db) => {
         const level = await getAllData(db, LEVEL_COLLECTION_NAME);
 
         return level?.length
-            ? generateResponseData(level, true, 200, `${level?.length} level found`)
-            : generateResponseData({}, false, 404, 'No level found');
+            ? generateResponseData(level, true, STATUS_OK, `${level?.length} level found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No level found');
     } catch (error) {
         logger.error(error);
 
@@ -92,8 +97,8 @@ const getALevelService = async (db, levelId) => {
         delete level?.modifiedBy;
 
         return level
-            ? generateResponseData(level, true, 200, `${levelId} found successfully`)
-            : generateResponseData({}, false, 404, `${levelId} not found`);
+            ? generateResponseData(level, true, STATUS_OK, `${levelId} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${levelId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -116,7 +121,7 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
         const { name, requestedBy } = newLevelDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedLevelDetails = {
             ...(name && { name }),
@@ -130,8 +135,8 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
         delete latestData?.modifiedBy;
 
         return result?.modifiedCount
-            ? generateResponseData(latestData, true, 200, `${levelId} updated successfully`)
-            : generateResponseData({}, false, 422, `${levelId} not updated`);
+            ? generateResponseData(latestData, true, STATUS_OK, `${levelId} updated successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${levelId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -153,16 +158,16 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
 const deleteALevelService = async (db, requestedBy, levelId) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, LEVEL_COLLECTION_NAME, levelId))
-            return generateResponseData({}, false, 404, `${levelId} not found`);
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${levelId} not found`);
 
         const result = await deleteById(db, LEVEL_COLLECTION_NAME, levelId);
 
         return result
-            ? generateResponseData({}, true, 200, `${levelId} deleted successfully`)
-            : generateResponseData({}, false, 422, `${levelId} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${levelId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${levelId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

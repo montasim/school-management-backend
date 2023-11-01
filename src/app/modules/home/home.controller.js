@@ -1,4 +1,5 @@
 import logger from "../../../shared/logger.js";
+import {SERVER_DOWN_MESSAGE, STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../../../constants/constants.js";
 
 /**
  * Controller to handle the home endpoint.
@@ -13,7 +14,7 @@ const homeController = async (req, res) => {
         const returnData = {
             data: "Home page of the school management API",
             success: true,
-            status: 200,
+            status: STATUS_OK,
             message: "Welcome to school management API 🚀",
         };
 
@@ -22,9 +23,9 @@ const homeController = async (req, res) => {
         logger.error(error);
 
         const returnData = {
-            data: "Server is down 🥲🥲🥲",
+            data: SERVER_DOWN_MESSAGE,
             success: true,
-            status: 500,
+            status: STATUS_INTERNAL_SERVER_ERROR,
             message: error,
         };
 

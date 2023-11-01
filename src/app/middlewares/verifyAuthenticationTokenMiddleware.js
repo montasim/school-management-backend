@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import {SECRET_TOKEN} from "../../config/config.js";
 import generateResponseData from "../../shared/generateResponseData.js";
 import logger from "../../shared/logger.js";
+import {STATUS_BAD_REQUEST, STATUS_UNAUTHORIZED} from "../../constants/constants.js";
 
 const verifyAuthenticationTokenMiddleware = (req, res, next) => {
     try {
@@ -13,12 +14,12 @@ const verifyAuthenticationTokenMiddleware = (req, res, next) => {
 
             next();
         } else {
-            return generateResponseData({}, false, 401, 'Unauthorized');
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized');
         }
     } catch (error) {
         logger.error(error);
 
-        return generateResponseData({}, false, 400, 'Invalid token');
+        return generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token');
     }
 };
 

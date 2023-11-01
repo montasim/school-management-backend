@@ -1,3 +1,6 @@
+import { STATUS_BAD_REQUEST } from "../../constants/constants.js";
+import logger from "../../shared/logger.js";
+
 /**
  * Middleware function to strictly check if a request is made from a web browser.
  * It examines the user-agent header to determine if the request is from a browser,
@@ -9,22 +12,26 @@
  * @returns {void|object} Proceeds to the next middleware/controller if not a browser request
  */
 const isBrowserRequestMiddleware = (req, res, next) => {
-  // Retrieve the user-agent header
-  const userAgent = req.headers["user-agent"];
+  try {
+    // Retrieve the user-agent header
+    const userAgent = req.headers["user-agent"];
 
-  // List of substrings commonly found in browsers' user-agent strings
-  const browserIdentifiers = ["Mozilla", "Chrome", "Safari", "Opera", "MSIE", "Edge", "Firefox"];
+    // List of substrings commonly found in browsers' user-agent strings
+    const browserIdentifiers = ["Mozilla", "Chrome", "Safari", "Opera", "MSIE", "Edge", "Firefox"];
 
-  // Check if the request is made from a browser
-  const isBrowserRequest = browserIdentifiers.some(identifier => userAgent.includes(identifier));
+    // Check if the request is made from a browser
+    const isBrowserRequest = browserIdentifiers.some(identifier => userAgent.includes(identifier));
 
-  if (isBrowserRequest) {
-    return res
-        .status(400)
-        .json({ error: "API endpoints can't be accessed from a browser." });
-  } else {
-    // Proceed to other routes and middleware
-    next();
+    if (isBrowserRequest) {
+      return res
+          .status(STATUS_BAD_REQUEST)
+          .json({ error: "API endpoints can't be accessed from a browser." });
+    } else {
+      // Proceed to other routes and middleware
+      next();
+    }
+  } catch (error) {
+    logger.error(error);
   }
 };
 

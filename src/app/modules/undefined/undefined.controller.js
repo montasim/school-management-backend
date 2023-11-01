@@ -1,4 +1,5 @@
 import logger from "../../../shared/logger.js";
+import {SERVER_DOWN_MESSAGE, STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../../../constants/constants.js";
 
 /**
  * @async
@@ -13,7 +14,7 @@ const undefinedController = async (req, res) => {
         const returnData = {
             data: "Undefined page of the school management API",
             success: true,
-            status: 200,
+            status: STATUS_OK,
             message: "This route is to test the undefined route 😁",
         };
 
@@ -22,9 +23,9 @@ const undefinedController = async (req, res) => {
         logger.error(error);
 
         const returnData = {
-            data: "An error occurred while processing the request 🥲🥲🥲",
+            data: SERVER_DOWN_MESSAGE,
             success: true,
-            status: 500,
+            status: STATUS_INTERNAL_SERVER_ERROR,
             message: error,
         };
 

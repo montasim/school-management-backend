@@ -10,7 +10,7 @@ import {
     ROUTINE_COLLECTION_NAME,
     STUDENT_COLLECTION_NAME,
 } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js"
+import {FORBIDDEN_MESSAGE, STATUS_FORBIDDEN, STATUS_OK} from "../../../constants/constants.js"
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -28,7 +28,7 @@ import getAllData from "../../../shared/getAllData.js";
 const getSummaryService = async (db, requestedBy) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const adminDetails = await getAllData(db, ADMIN_COLLECTION_NAME);
         const administrationDetails = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
@@ -73,7 +73,7 @@ const getSummaryService = async (db, requestedBy) => {
             }
         }
 
-        return generateResponseData(returnData, true, 200, "Summary fetched successfully");
+        return generateResponseData(returnData, true, STATUS_OK, "Summary fetched successfully");
     } catch (error) {
         logger.error(error);
 

@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ADMIN_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import {
+    FORBIDDEN_MESSAGE, STATUS_FORBIDDEN, STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_OK,
+    STATUS_UNAUTHORIZED,
+    STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 import findByUserName from "../../../shared/findByUserName.js";
 import logger from "../../../shared/logger.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
@@ -35,15 +40,15 @@ const loginService = async (db,  loginDetails) => {
                         userName: foundAdminDetails?.userName,
                         token: token,
                     }
-                    return generateResponseData(returnData, true, 200, "Authorized");
+                    return generateResponseData(returnData, true, STATUS_OK, "Authorized");
                 } else {
-                    return generateResponseData({}, false, 401, "Unauthorized");
+                    return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
                 }
             } else {
-                return generateResponseData({}, false, 401, "Unauthorized");
+                return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
             }
         } else {
-            return generateResponseData({}, false, 401, "Unauthorized");
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
         }
     } catch (error) {
         logger.error(error);
@@ -67,7 +72,7 @@ const signupService = async (db, signupDetails) => {
         const foundUserDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
 
         if (foundUserDetails) {
-            return generateResponseData({}, false, 422, `${userName} already exists`);
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${userName} already exists`);
         } else {
             if (password === confirmPassword) {
                 const prepareNewUserDetails = {
@@ -85,11 +90,11 @@ const signupService = async (db, signupDetails) => {
                 delete latestData?.password;
 
                 return result?.acknowledged
-                    ? generateResponseData(latestData, true, 200, `${prepareNewUserDetails?.userName} created successfully`)
-                    : generateResponseData({}, false, 500, 'Failed to create. Please try again');
+                    ? generateResponseData(latestData, true, STATUS_OK, `${prepareNewUserDetails?.userName} created successfully`)
+                    : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
             } else {
-                return generateResponseData({}, false, 422, "Password did not matched");
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Password did not matched");
             }
         }
     } catch (error) {
@@ -132,20 +137,20 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
                         delete latestData?.password;
 
                         return result?.modifiedCount
-                            ? generateResponseData(latestData, true, 200, `${requestedBy} updated successfully`)
-                            : generateResponseData({}, false, 422, `${requestedBy} not updated`);
+                            ? generateResponseData(latestData, true, STATUS_OK, `${requestedBy} updated successfully`)
+                            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${requestedBy} not updated`);
 
                     } else {
-                        return generateResponseData({}, false, 403, "Forbidden");
+                        return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
                     }
                 } else {
-                    return generateResponseData({}, false, 422, "Wrong password");
+                    return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Wrong password");
                 }
             } else {
-                return generateResponseData({}, false, 422, "Password did not matched");
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Password did not matched");
             }
         } else {
-            return generateResponseData({}, false, 403, "Forbidden");
+            return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
         }
     } catch (error) {
         logger.error(error);
@@ -165,13 +170,13 @@ const deleteUserService = async (db, deleteAdminDetails) => {
     try {
         const { requestedBy } = deleteAdminDetails;
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const result = await deleteById(db, ADMIN_COLLECTION_NAME, requestedBy);
 
         return result
-            ? generateResponseData({}, true, 200, `${requestedBy} deleted successfully`)
-            : generateResponseData({}, false, 422, `${requestedBy} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${requestedBy} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${requestedBy} could not be deleted`);
 
     } catch (error) {
         logger.error(error);

@@ -8,6 +8,7 @@ import {
     EMAIL_SERVICE_PASSWORD,
     EMAIL_SERVICE_USER
 } from "../../../config/config.js";
+import {STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../../../constants/constants.js";
 
 /**
  * Send email.
@@ -60,9 +61,9 @@ const sendEmailService = async (emailDetails) => {
         }
 
         transporter?.sendMail(message).then(() => {
-            return generateResponseData({}, true, 200, 'you should receive an email');
+            return generateResponseData({}, true, STATUS_OK, 'you should receive an email');
         }).catch((error) => {
-            return generateResponseData(error, false, 500, 'Failed to send email. Please try again');
+            return generateResponseData(error, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to send email. Please try again');
         })
     } catch (error) {
         logger.error(error);

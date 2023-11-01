@@ -1,4 +1,5 @@
 import { ResultSchema } from "./result.schema.js";
+import {STATUS_BAD_REQUEST} from "../../../constants/constants.js";
 
 /**
  * Middleware function to validate the creation of a new result.
@@ -19,7 +20,7 @@ const resultBodyValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 
@@ -51,7 +52,7 @@ const resultParamsValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 
@@ -84,7 +85,7 @@ const deleteResultQueryValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 

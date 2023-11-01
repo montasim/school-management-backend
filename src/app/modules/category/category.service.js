@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND,
+    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./category.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
@@ -26,7 +31,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
         const { name, requestedBy } = newCategoryDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const categoryDetails = {
             id: `${ID_CONSTANTS?.CATEGORY_PREFIX}-${uuidv4().substr(0, 6)}`,
@@ -42,8 +47,8 @@ const createCategoryService = async (db, newCategoryDetails) => {
         delete latestData?.modifiedBy;
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, 200, `${categoryDetails?.name} created successfully`)
-            : generateResponseData({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, STATUS_OK, `${categoryDetails?.name} created successfully`)
+            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -66,8 +71,8 @@ const getCategoryListService = async (db) => {
         const category = await getAllData(db, CATEGORY_COLLECTION_NAME);
 
         return category?.length
-            ? generateResponseData(category, true, 200, `${category?.length} category found`)
-            : generateResponseData({}, false, 404, 'No category found');
+            ? generateResponseData(category, true, STATUS_OK, `${category?.length} category found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No category found');
     } catch (error) {
         logger.error(error);
 
@@ -92,8 +97,8 @@ const getACategoryService = async (db, categoryId) => {
         delete category?.modifiedBy;
 
         return category
-            ? generateResponseData(category, true, 200, `${categoryId} found successfully`)
-            : generateResponseData({}, false, 404, `${categoryId} not found`);
+            ? generateResponseData(category, true, STATUS_OK, `${categoryId} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${categoryId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -116,7 +121,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
         const { name, requestedBy } = newCategoryDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedCategoryDetails = {
             ...(name && { name }),
@@ -130,8 +135,8 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
         delete latestData?.modifiedBy;
 
         return result?.modifiedCount
-            ? generateResponseData(latestData, true, 200, `${categoryId} updated successfully`)
-            : generateResponseData({}, false, 422, `${categoryId} not updated`);
+            ? generateResponseData(latestData, true, STATUS_OK, `${categoryId} updated successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${categoryId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -153,16 +158,16 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
 const deleteACategoryService = async (db, requestedBy, categoryId) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, CATEGORY_COLLECTION_NAME, categoryId))
-            return generateResponseData({}, false, 404, `${categoryId} not found`);
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${categoryId} not found`);
 
         const result = await deleteById(db, CATEGORY_COLLECTION_NAME, categoryId);
 
         return result
-            ? generateResponseData({}, true, 200, `${categoryId} deleted successfully`)
-            : generateResponseData({}, false, 422, `${categoryId} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${categoryId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${categoryId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 
