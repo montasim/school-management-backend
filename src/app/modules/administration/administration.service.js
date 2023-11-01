@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ADMINISTRATION_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND,
+    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./administration.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
@@ -26,7 +31,7 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
         const { name, category, designation, image, requestedBy } = newAdministrationDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const administrationDetails = {
             id: `${ID_CONSTANTS?.ADMINISTRATION_PREFIX}-${uuidv4().substr(0, 6)}`,
@@ -42,8 +47,8 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
         const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails?.id);
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, 200, `${administrationDetails?.name} created successfully`)
-            : generateResponseData({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, STATUS_OK, `${administrationDetails?.name} created successfully`)
+            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -66,8 +71,8 @@ const getAdministrationListService = async (db) => {
         const administrations = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
 
         return administrations?.length
-            ? generateResponseData(administrations, true, 200, `${administrations?.length} administration found`)
-            : generateResponseData({}, false, 404, 'No administration found');
+            ? generateResponseData(administrations, true, STATUS_OK, `${administrations?.length} administration found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No administration found');
     } catch (error) {
         logger.error(error);
 
@@ -89,8 +94,8 @@ const getAAdministrationService = async (db, administrationId) => {
         const administration = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
         return administration
-            ? generateResponseData(administration, true, 200, `${administrationId} found successfully`)
-            : generateResponseData({}, false, 404, `${administrationId} not found`);
+            ? generateResponseData(administration, true, STATUS_OK, `${administrationId} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -113,7 +118,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         const { name, level, image, requestedBy } = newAdministrationDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedAdministrationDetails = {
             ...(name && { name }),
@@ -126,8 +131,8 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
         return result?.modifiedCount
-            ? generateResponseData(latestData, true, 200, `${administrationId} updated successfully`)
-            : generateResponseData({}, false, 422, `${administrationId} not updated`);
+            ? generateResponseData(latestData, true, STATUS_OK, `${administrationId} updated successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${administrationId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -149,16 +154,16 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
 const deleteAAdministrationService = async (db, requestedBy, administrationId) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, ADMINISTRATION_COLLECTION_NAME, administrationId))
-            return generateResponseData({}, false, 404, `${administrationId} not found`);
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
 
         const result = await deleteById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
         return result
-            ? generateResponseData({}, true, 200, `${administrationId} deleted successfully`)
-            : generateResponseData({}, false, 422, `${administrationId} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${administrationId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${administrationId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 
