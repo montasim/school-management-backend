@@ -36,11 +36,11 @@ app.use(`/`, appRoutes);
  * @listens {number} PORT - The port number from constants.
  */
 app.listen(PORT, () => {
-    /**
-     * Log server startup message to Winston logger.
-     * @function
-     */
-    logger.http(`${SERVER_LOG_MESSAGE} ${PORT}`);
+    // /**
+    //  * Log server startup message to Winston logger.
+    //  * @function
+    //  */
+    // logger.http(`${SERVER_LOG_MESSAGE} ${PORT}`);
 
     console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
 });
