@@ -10,11 +10,25 @@ import logger from "../../../shared/logger.js";
  */
 const homeController = async (req, res) => {
     try {
-        return res.status(200).send({ message: "🚀" });
+        const returnData = {
+            data: "Home page of the school management API",
+            success: true,
+            status: 200,
+            message: "Welcome to school management API 🚀",
+        };
+
+        return res.status(returnData?.status).json(returnData);
     } catch (error) {
         logger.error(error);
 
-        return res.status(500).send({ message: "Server is down 🥲🥲🥲" });
+        const returnData = {
+            data: "Server is down 🥲🥲🥲",
+            success: true,
+            status: 500,
+            message: error,
+        };
+
+        return res.status(returnData?.status).json(returnData);
     }
 };
 

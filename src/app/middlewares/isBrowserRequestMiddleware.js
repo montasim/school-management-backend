@@ -1,16 +1,7 @@
 /**
- * @file isBrowserRequestMiddleware.js
- * @description Middleware to check if a request is made from a web browser.
- * This module defines a middleware function that examines the user-agent header
- * to determine if the incoming request is from a web browser. If it detects a
- * browser request, it responds with an error; otherwise, it allows the request
- * to proceed to other routes and middleware.
- * @module IsBrowserRequest
- */
-
-/**
- * Middleware function to check if a request is made from a web browser.
- * It examines the user-agent header to determine if the request is from a browser.
+ * Middleware function to strictly check if a request is made from a web browser.
+ * It examines the user-agent header to determine if the request is from a browser,
+ * looking for specific substrings that are commonly present in browsers' user-agent strings.
  *
  * @param {object} req - Express request object
  * @param {object} res - Express response object
@@ -18,13 +9,19 @@
  * @returns {void|object} Proceeds to the next middleware/controller if not a browser request
  */
 const isBrowserRequestMiddleware = (req, res, next) => {
+  // Retrieve the user-agent header
+  const userAgent = req.headers["user-agent"];
+
+  // List of substrings commonly found in browsers' user-agent strings
+  const browserIdentifiers = ["Mozilla", "Chrome", "Safari", "Opera", "MSIE", "Edge", "Firefox"];
+
   // Check if the request is made from a browser
-  const isBrowserRequest = req.headers["user-agent"].includes("Mozilla");
+  const isBrowserRequest = browserIdentifiers.some(identifier => userAgent.includes(identifier));
 
   if (isBrowserRequest) {
     return res
-      .status(400)
-      .json({ error: "API endpoints can't be accessed from a browser." });
+        .status(400)
+        .json({ error: "API endpoints can't be accessed from a browser." });
   } else {
     // Proceed to other routes and middleware
     next();

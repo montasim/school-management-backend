@@ -10,11 +10,25 @@ import logger from "../../../shared/logger.js";
  */
 const undefinedController = async (req, res) => {
     try {
-        return res.status(404).send({ message: "This route is to test the undefined route 😁" });
+        const returnData = {
+            data: "Undefined page of the school management API",
+            success: true,
+            status: 200,
+            message: "This route is to test the undefined route 😁",
+        };
+
+        return res.status(returnData?.status).json(returnData);
     } catch (error) {
         logger.error(error);
 
-        return res.status(500).send({ message: "An error occurred while processing the request" });
+        const returnData = {
+            data: "An error occurred while processing the request 🥲🥲🥲",
+            success: true,
+            status: 500,
+            message: error,
+        };
+
+        return res.status(returnData?.status).json(returnData);
     }
 };
 

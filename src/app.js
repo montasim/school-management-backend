@@ -41,7 +41,7 @@ app.use(cors(corsConfigurationMiddleware));
 /**
  * Use middleware to determine if the request comes from a browser.
  */
-app.use(isBrowserRequestMiddleware);
+// app.use(isBrowserRequestMiddleware);
 
 /**
  * Connect to the database before processing requests.

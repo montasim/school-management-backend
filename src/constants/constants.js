@@ -1,3 +1,17 @@
+/**
+ * @file
+ * This file defines various constants related to CORS settings, logging levels, logging colors, server messages, and upload directories.
+ *
+ * @description
+ * - `ALLOWED_ORIGIN`: Specifies the allowed origins for CORS.
+ * - `ALLOWED_METHODS`: Specifies the allowed HTTP methods for CORS.
+ * - `LOG_LEVELS`: Defines the logging levels used in the application.
+ * - `LOG_COLORS`: Specifies the colors corresponding to each log level.
+ * - `SERVER_LOG_MESSAGE`: A message indicating that the server is running.
+ * - `FORBIDDEN_MESSAGE`: A message indicating that the user does not have the necessary permissions.
+ * - `UPLOAD_DIRECTORY_MAP`: Maps upload categories to their respective directories.
+ */
+
 // CORS related
 const ALLOWED_ORIGIN = [
     "https://school-abid.vercel.app",
