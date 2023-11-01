@@ -25,6 +25,7 @@ import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new category entry in the database.
@@ -38,6 +39,9 @@ import getAllData from "../../../shared/getAllData.js";
 const createCategoryService = async (db, newCategoryDetails) => {
     try {
         const { name, adminId } = newCategoryDetails;
+
+        if (await isAlreadyExistsByName(db, CATEGORY_COLLECTION_NAME, name))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);

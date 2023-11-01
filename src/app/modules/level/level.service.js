@@ -23,6 +23,7 @@ import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new level entry in the database.
@@ -36,6 +37,9 @@ import getAllData from "../../../shared/getAllData.js";
 const createLevelService = async (db, newLevelDetails) => {
     try {
         const { name, adminId } = newLevelDetails;
+
+        if (await isAlreadyExistsByName(db, LEVEL_COLLECTION_NAME, name))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);

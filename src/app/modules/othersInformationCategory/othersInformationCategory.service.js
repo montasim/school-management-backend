@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 // Configurations
-import { OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
+import {CATEGORY_COLLECTION_NAME, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME} from "../../../config/config.js";
 
 // Constants
 import {
@@ -25,6 +25,7 @@ import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new othersInformationCategory entry in the database.
@@ -38,6 +39,9 @@ import getAllData from "../../../shared/getAllData.js";
 const createOthersInformationCategory = async (db, newOthersInformationCategoryDetails) => {
     try {
         const { name, adminId } = newOthersInformationCategoryDetails;
+
+        if (await isAlreadyExistsByName(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, name))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
