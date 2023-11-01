@@ -1,4 +1,3 @@
-import generateResponse from "../../../helpers/generateResponse.js";
 import logger from "../../middlewares/logger.js";
 
 /**
@@ -11,11 +10,11 @@ import logger from "../../middlewares/logger.js";
  */
 const homeController = async (req, res) => {
     try {
-        return generateResponse({}, true, 200, "🚀");
+        return res.status(200).send({ message: "🚀" });
     } catch (error) {
         logger.error(error);
 
-        return generateResponse({}, false, 500, "Server is down");
+        return res.status(500).send({ message: "Server is down 🥲🥲🥲" });
     }
 };
 
