@@ -14,7 +14,7 @@ const findByFileName = async (db, collectionName, fileName) => {
     try {
         return await db
             .collection(collectionName)
-            .findOne({fileName: fileName}, { projection: { _id: 0, createdBy: 0 } });
+            .findOne({fileName: fileName}, { projection: { _id: 0, createdBy: 0, modifiedBy: 0 } });
     } catch (error) {
         logger.error(error);
 
