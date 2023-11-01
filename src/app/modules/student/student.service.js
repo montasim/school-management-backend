@@ -4,7 +4,7 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../helpers/generateResponseData.js";
 import logger from "../../middlewares/logger.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import findById from "../../../shared/findById.js";
@@ -26,7 +26,7 @@ const createStudentService = async (db, newStudentDetails) => {
         const { name, level, image, requestedBy } = newStudentDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         const studentDetails = {
             id: `${ID_CONSTANTS?.STUDENT_PREFIX}-${uuidv4().substr(0, 6)}`,
@@ -40,8 +40,8 @@ const createStudentService = async (db, newStudentDetails) => {
         const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentDetails?.id);
 
         return result?.acknowledged
-            ? generateResponse(latestData, true, 200, `${studentDetails.name} created successfully`)
-            : generateResponse({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, 200, `${studentDetails.name} created successfully`)
+            : generateResponseData({}, false, 500, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -64,8 +64,8 @@ const getStudentListService = async (db) => {
         const students = await getAllData(db, STUDENT_COLLECTION_NAME);
 
         return students?.length
-            ? generateResponse(students, true, 200, `${students?.length} student found`)
-            : generateResponse({}, false, 404, 'No student found');
+            ? generateResponseData(students, true, 200, `${students?.length} student found`)
+            : generateResponseData({}, false, 404, 'No student found');
     } catch (error) {
         logger.error(error);
 
@@ -87,8 +87,8 @@ const getAStudentService = async (db, studentId) => {
         const student = await findById(db, STUDENT_COLLECTION_NAME, studentId);
 
         return student
-            ? generateResponse(student, true, 200, `${studentId} found successfully`)
-            : generateResponse({}, false, 404, `${studentId} not found`);
+            ? generateResponseData(student, true, 200, `${studentId} found successfully`)
+            : generateResponseData({}, false, 404, `${studentId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -111,7 +111,7 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
         const { name, level, image, requestedBy } = updateStudentDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         const updatedStudent = {
             ...(name && { name }),
@@ -124,8 +124,8 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
         const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentId);
 
         return result?.modifiedCount
-            ? generateResponse(latestData, true, 200, `${studentId} updated successfully`)
-            : generateResponse({}, false, 422, `${studentId} not updated`);
+            ? generateResponseData(latestData, true, 200, `${studentId} updated successfully`)
+            : generateResponseData({}, false, 422, `${studentId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -147,16 +147,16 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
 const deleteAStudentService = async (db, requestedBy, studentId) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, STUDENT_COLLECTION_NAME, studentId))
-            return generateResponse({}, false, 404, `${studentId} not found`);
+            return generateResponseData({}, false, 404, `${studentId} not found`);
 
         const result = await deleteById(db, STUDENT_COLLECTION_NAME, studentId);
 
         return result
-            ? generateResponse({}, true, 200, `${studentId} deleted successfully`)
-            : generateResponse({}, false, 422, `${studentId} could not be deleted`);
+            ? generateResponseData({}, true, 200, `${studentId} deleted successfully`)
+            : generateResponseData({}, false, 422, `${studentId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

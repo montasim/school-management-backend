@@ -4,7 +4,7 @@ import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidByFileName from "../../../shared/isValidByFileName.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../helpers/generateResponseData.js";
 import logger from "../../middlewares/logger.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import findById from "../../../shared/findById.js";
@@ -28,7 +28,7 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
         const { title, requestedBy } = newDownloadDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         const getFileNameAndPathNameVariables = await getFileNameAndPathName(file);
         const downloadDetails = {
@@ -43,8 +43,8 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
         return result?.acknowledged
-            ? generateResponse(latestData, true, 200, `${title} uploaded successfully`)
-            : generateResponse({}, false, 500, 'Failed to upload. Please try again');
+            ? generateResponseData(latestData, true, 200, `${title} uploaded successfully`)
+            : generateResponseData({}, false, 500, 'Failed to upload. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -67,8 +67,8 @@ const getDownloadListService = async (db) => {
         const downloads = await getAllData(db, DOWNLOAD_COLLECTION_NAME);
 
         return downloads?.length
-            ? generateResponse(downloads, true, 200, `${downloads?.length} download found`)
-            : generateResponse({}, false, 404, 'No download found');
+            ? generateResponseData(downloads, true, 200, `${downloads?.length} download found`)
+            : generateResponseData({}, false, 404, 'No download found');
     } catch (error) {
         logger.error(error);
 
@@ -90,8 +90,8 @@ const getADownloadService = async (db, fileName) => {
         const download = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
         return download
-            ? generateResponse(download, true, 200, `${fileName} found successfully`)
-            : generateResponse({}, false, 404, `${fileName} not found`);
+            ? generateResponseData(download, true, 200, `${fileName} found successfully`)
+            : generateResponseData({}, false, 404, `${fileName} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -112,16 +112,16 @@ const getADownloadService = async (db, fileName) => {
 const deleteADownloadService = async (db, requestedBy, fileName) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         if (!await isValidByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
-            return generateResponse({}, false, 404, `${fileName} not found`);
+            return generateResponseData({}, false, 404, `${fileName} not found`);
 
         const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
         return result
-            ? generateResponse({}, true, 200, `${fileName} deleted successfully`)
-            : generateResponse({}, false, 422, `${fileName} could not be deleted`);
+            ? generateResponseData({}, true, 200, `${fileName} deleted successfully`)
+            : generateResponseData({}, false, 422, `${fileName} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

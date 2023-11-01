@@ -6,7 +6,7 @@ import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
 import logger from "../../middlewares/logger.js";
 import deleteById from "../../../shared/deleteById.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../helpers/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
@@ -26,7 +26,7 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
         const { name, requestedBy } = newAnnouncementDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         const announcementDetails = {
             id: `${ID_CONSTANTS?.ANNOUNCEMENT_PREFIX}-${uuidv4().substr(0, 6)}`,
@@ -42,8 +42,8 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
         delete latestData?.modifiedBy;
 
         return result?.acknowledged
-            ? generateResponse(latestData, true, 200, `${announcementDetails?.id} created successfully`)
-            : generateResponse({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, 200, `${announcementDetails?.id} created successfully`)
+            : generateResponseData({}, false, 500, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -66,8 +66,8 @@ const getAnnouncementListService = async (db) => {
         const announcement = await getAllData(db, ANNOUNCEMENT_COLLECTION_NAME);
 
         return announcement?.length > 0
-            ? generateResponse(announcement, true, 200, `${announcement?.length} announcement found`)
-            : generateResponse({}, false, 404, 'No announcement found');
+            ? generateResponseData(announcement, true, 200, `${announcement?.length} announcement found`)
+            : generateResponseData({}, false, 404, 'No announcement found');
     } catch (error) {
         logger.error(error);
 
@@ -92,8 +92,8 @@ const getAAnnouncementService = async (db, announcementId) => {
         delete announcement?.modifiedBy;
 
         return announcement
-            ? generateResponse(announcement, true, 200, `${announcementId} found successfully`)
-            : generateResponse({}, false, 404, `${announcementId} not found`);
+            ? generateResponseData(announcement, true, 200, `${announcementId} found successfully`)
+            : generateResponseData({}, false, 404, `${announcementId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -116,7 +116,7 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
         const { name, requestedBy } = newAnnouncementDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         const updatedAnnouncementDetails = {
             ...(name && { name }),
@@ -130,8 +130,8 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
         delete latestData?.modifiedBy;
 
         return result?.modifiedCount
-            ? generateResponse(latestData, true, 200, `${announcementId} updated successfully`)
-            : generateResponse({}, false, 422, `${announcementId} not updated`);
+            ? generateResponseData(latestData, true, 200, `${announcementId} updated successfully`)
+            : generateResponseData({}, false, 422, `${announcementId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -153,16 +153,16 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
 const deleteAAnnouncementService = async (db, requestedBy, announcementId) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId))
-            return generateResponse({}, false, 404, `${announcementId} not found`);
+            return generateResponseData({}, false, 404, `${announcementId} not found`);
 
         const result = await deleteById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId);
 
         return result
-            ? generateResponse({}, true, 200, `${announcementId} deleted successfully`)
-            : generateResponse({}, false, 422, `${announcementId} could not be deleted`);
+            ? generateResponseData({}, true, 200, `${announcementId} deleted successfully`)
+            : generateResponseData({}, false, 422, `${announcementId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

@@ -1,4 +1,3 @@
-import generateResponse from "../../../helpers/generateResponse.js";
 import logger from "../../middlewares/logger.js";
 
 /**

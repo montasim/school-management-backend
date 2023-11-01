@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import {SECRET_TOKEN} from "../../config/config.js";
-import generateResponse from "../../helpers/generateResponse.js";
+import generateResponseData from "../../helpers/generateResponseData.js";
 import logger from "./logger.js";
 
 const verifyAuthenticationToken = (req, res, next) => {
@@ -13,12 +13,12 @@ const verifyAuthenticationToken = (req, res, next) => {
 
             next();
         } else {
-            return generateResponse({}, false, 401, 'Unauthorized');
+            return generateResponseData({}, false, 401, 'Unauthorized');
         }
     } catch (error) {
         logger.error(error);
 
-        return generateResponse({}, false, 400, 'Invalid token');
+        return generateResponseData({}, false, 400, 'Invalid token');
     }
 };
 

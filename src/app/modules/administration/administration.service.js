@@ -6,7 +6,7 @@ import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
 import logger from "../../middlewares/logger.js";
 import deleteById from "../../../shared/deleteById.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../helpers/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
@@ -26,7 +26,7 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
         const { name, category, designation, image, requestedBy } = newAdministrationDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         const administrationDetails = {
             id: `${ID_CONSTANTS?.ADMINISTRATION_PREFIX}-${uuidv4().substr(0, 6)}`,
@@ -42,8 +42,8 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
         const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails?.id);
 
         return result?.acknowledged
-            ? generateResponse(latestData, true, 200, `${administrationDetails?.name} created successfully`)
-            : generateResponse({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, 200, `${administrationDetails?.name} created successfully`)
+            : generateResponseData({}, false, 500, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -66,8 +66,8 @@ const getAdministrationListService = async (db) => {
         const administrations = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
 
         return administrations?.length
-            ? generateResponse(administrations, true, 200, `${administrations?.length} administration found`)
-            : generateResponse({}, false, 404, 'No administration found');
+            ? generateResponseData(administrations, true, 200, `${administrations?.length} administration found`)
+            : generateResponseData({}, false, 404, 'No administration found');
     } catch (error) {
         logger.error(error);
 
@@ -89,8 +89,8 @@ const getAAdministrationService = async (db, administrationId) => {
         const administration = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
         return administration
-            ? generateResponse(administration, true, 200, `${administrationId} found successfully`)
-            : generateResponse({}, false, 404, `${administrationId} not found`);
+            ? generateResponseData(administration, true, 200, `${administrationId} found successfully`)
+            : generateResponseData({}, false, 404, `${administrationId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -113,7 +113,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         const { name, level, image, requestedBy } = newAdministrationDetails;
 
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         const updatedAdministrationDetails = {
             ...(name && { name }),
@@ -126,8 +126,8 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
         return result?.modifiedCount
-            ? generateResponse(latestData, true, 200, `${administrationId} updated successfully`)
-            : generateResponse({}, false, 422, `${administrationId} not updated`);
+            ? generateResponseData(latestData, true, 200, `${administrationId} updated successfully`)
+            : generateResponseData({}, false, 422, `${administrationId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -149,16 +149,16 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
 const deleteAAdministrationService = async (db, requestedBy, administrationId) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, ADMINISTRATION_COLLECTION_NAME, administrationId))
-            return generateResponse({}, false, 404, `${administrationId} not found`);
+            return generateResponseData({}, false, 404, `${administrationId} not found`);
 
         const result = await deleteById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
         return result
-            ? generateResponse({}, true, 200, `${administrationId} deleted successfully`)
-            : generateResponse({}, false, 422, `${administrationId} could not be deleted`);
+            ? generateResponseData({}, true, 200, `${administrationId} deleted successfully`)
+            : generateResponseData({}, false, 422, `${administrationId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

@@ -9,7 +9,7 @@ import logger from "../app/middlewares/logger.js";
  * @param {string} message - A descriptive message about the response.
  * @returns {Object} - The standardized response object.
  */
-const generateResponse = (data, success, status, message) => {
+const generateResponseData = (data, success, status, message) => {
     try {
         return { data, success, status, message };
     } catch (error) {
@@ -19,4 +19,4 @@ const generateResponse = (data, success, status, message) => {
     }
 };
 
-export default generateResponse;
+export default generateResponseData;

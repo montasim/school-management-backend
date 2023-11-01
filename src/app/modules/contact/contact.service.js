@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../helpers/generateResponseData.js";
 import logger from "../../middlewares/logger.js";
 import {
     EMAIL_SERVICE,
@@ -60,9 +60,9 @@ const sendEmailService = async (emailDetails) => {
         }
 
         transporter?.sendMail(message).then(() => {
-            return generateResponse({}, true, 200, 'you should receive an email');
+            return generateResponseData({}, true, 200, 'you should receive an email');
         }).catch((error) => {
-            return generateResponse(error, false, 500, 'Failed to send email. Please try again');
+            return generateResponseData(error, false, 500, 'Failed to send email. Please try again');
         })
     } catch (error) {
         logger.error(error);

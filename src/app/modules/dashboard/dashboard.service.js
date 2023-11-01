@@ -13,7 +13,7 @@ import {
 import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js"
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../middlewares/logger.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../helpers/generateResponseData.js";
 import getAllData from "../../../shared/getAllData.js";
 
 /**
@@ -28,7 +28,7 @@ import getAllData from "../../../shared/getAllData.js";
 const getSummaryService = async (db, requestedBy) => {
     try {
         if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+            return generateResponseData({}, false, 403, FORBIDDEN_MESSAGE);
 
         const adminDetails = await getAllData(db, ADMIN_COLLECTION_NAME);
         const administrationDetails = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
@@ -73,7 +73,7 @@ const getSummaryService = async (db, requestedBy) => {
             }
         }
 
-        return generateResponse(returnData, true, 200, "Summary fetched successfully");
+        return generateResponseData(returnData, true, 200, "Summary fetched successfully");
     } catch (error) {
         logger.error(error);
 
