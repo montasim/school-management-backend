@@ -1,8 +1,16 @@
+// External Modules
 import jwt from 'jsonwebtoken';
-import {SECRET_TOKEN} from "../../config/config.js";
-import generateResponseData from "../../shared/generateResponseData.js";
-import logger from "../../shared/logger.js";
-import {STATUS_BAD_REQUEST, STATUS_UNAUTHORIZED} from "../../constants/constants.js";
+
+// Internal Modules - Configurations
+import { SECRET_TOKEN } from '../../config/config.js';
+
+// Internal Modules - Shared Utilities
+import generateResponseData from '../../shared/generateResponseData.js';
+import logger from '../../shared/logger.js';
+
+// Internal Modules - Constants
+import { STATUS_BAD_REQUEST, STATUS_UNAUTHORIZED } from '../../constants/constants.js';
+
 
 const verifyAuthenticationTokenMiddleware = (req, res, next) => {
     try {

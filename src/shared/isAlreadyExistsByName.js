@@ -1,3 +1,5 @@
+import logger from "./logger.js";
+
 /**
  * Checks if a level with the given name already exists in the database.
  *
@@ -9,11 +11,19 @@
  * @returns {Promise<boolean>} Returns true if the level already exists, otherwise false.
  */
 const isAlreadyExistsByName = async (db, collectionName, requestedName) => {
-    const isClassExists = await db
-        .collection(collectionName)
-        .findOne({ name: requestedName });
+    try {
+        const isClassExists = await db
+            .collection(collectionName)
+            .findOne({ name: requestedName });
 
-    return !!isClassExists;
+        return !!isClassExists;
+    } catch (error) {
+        // Log the error using the logger
+        logger.error(error);
+
+        // Propagate the error to the calling function
+        throw error;
+    }
 };
 
 export default isAlreadyExistsByName;

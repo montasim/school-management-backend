@@ -1,14 +1,15 @@
-/**
- * @module ResultService
- * @description This module provides services related to results such as creating, listing, retrieving, and deleting result entries in the database.
- */
-
-import {v4 as uuidv4} from "uuid";
+// Third-party modules
+import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
+
+// Shared modules
 import isValidRequest from "../../../shared/isValidRequest.js";
+
+// Configuration and constants
 import { RESULT_COLLECTION_NAME } from "../../../config/config.js";
 import {
-    STATUS_FORBIDDEN, STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
     STATUS_NOT_FOUND,
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY

@@ -1,9 +1,13 @@
+// Third-party modules
 import multer from 'multer';
 import path from 'path';
 
-import { UPLOAD_DIRECTORY_MAP } from "../../constants/constants.js";
+// Constants
+import { UPLOAD_DIRECTORY_MAP } from '../../constants/constants.js';
 
-import createFolderIfNotExists from "../../shared/createFolderIfNotExists.js";
+// Shared utilities
+import createFolderIfNotExists from '../../shared/createFolderIfNotExists.js';
+
 
 /**
  * Determines and sets the storage destination for uploaded files by mapping specific keywords

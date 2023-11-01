@@ -1,14 +1,15 @@
-/**
- * @module NoticeService
- * @description This module provides services related to notices such as creating, listing, retrieving, and deleting notice entries in the database.
- */
-
+// External modules
 import {v4 as uuidv4} from "uuid";
 import fs from "fs";
+
+// Internal modules
 import isValidRequest from "../../../shared/isValidRequest.js";
 import {NOTICE_COLLECTION_NAME} from "../../../config/config.js";
+
+// Constants
 import {
-    STATUS_FORBIDDEN, STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
     STATUS_NOT_FOUND,
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY

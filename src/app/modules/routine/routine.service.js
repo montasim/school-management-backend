@@ -1,18 +1,16 @@
-/**
- * @module RoutineService
- * @description This module provides services related to routines such as creating, listing, retrieving, and deleting routine entries in the database.
- */
+import fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 
-import {v4 as uuidv4} from "uuid";
-import fs from "fs";
-import isValidRequest from "../../../shared/isValidRequest.js";
-import {ROUTINE_COLLECTION_NAME} from "../../../config/config.js";
+// Local imports
+import isValidRequest from '../../../shared/isValidRequest.js';
+import { ROUTINE_COLLECTION_NAME } from '../../../config/config.js';
 import {
-    STATUS_FORBIDDEN, STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
     STATUS_NOT_FOUND,
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
-} from "../../../constants/constants.js";
+} from '../../../constants/constants.js';
 
 /**
  * Creates a new routine entry in the database.

@@ -1,14 +1,22 @@
+// Third-party modules
 import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
+
+// Shared modules
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
+
+// Configuration and constants
 import {
     EMAIL_SERVICE,
     EMAIL_SERVICE_DESTINATION_EMAIL,
     EMAIL_SERVICE_PASSWORD,
     EMAIL_SERVICE_USER
 } from "../../../config/config.js";
-import {STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../../../constants/constants.js";
+import {
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_OK
+} from "../../../constants/constants.js";
 
 /**
  * Send email.

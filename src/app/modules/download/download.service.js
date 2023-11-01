@@ -1,11 +1,18 @@
+// Third-party modules
 import { v4 as uuidv4 } from 'uuid';
+
+// Absolute imports
 import { DOWNLOAD_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
-    STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND,
-    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
+
+// Relative imports
 import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidByFileName from "../../../shared/isValidByFileName.js";

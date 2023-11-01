@@ -1,12 +1,21 @@
+// External modules
 import { v4 as uuidv4 } from 'uuid';
+
+// Configurations
 import { STUDENT_COLLECTION_NAME } from "../../../config/config.js";
+
+// Constants
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
-    STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND,
-    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
+
+// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";

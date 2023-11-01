@@ -1,20 +1,33 @@
+// External libraries
 import { v4 as uuidv4 } from 'uuid';
+
+// Configurations
 import { ADMIN_COLLECTION_NAME } from "../../../config/config.js";
+
+// Constants
 import {
-    FORBIDDEN_MESSAGE, STATUS_FORBIDDEN, STATUS_INTERNAL_SERVER_ERROR,
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
     STATUS_OK,
     STATUS_UNAUTHORIZED,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
+
+// Shared utilities
 import findByUserName from "../../../shared/findByUserName.js";
-import logger from "../../../shared/logger.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import deleteById from "../../../shared/deleteById.js";
-import createAuthenticationToken from "../../../helpers/createAuthenticationToken.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import findById from "../../../shared/findById.js";
+
+// Helpers
+import createAuthenticationToken from "../../../helpers/createAuthenticationToken.js";
+
+// Logger
+import logger from "../../../shared/logger.js";
 
 /**
  * Service to authenticate a user using their login details.

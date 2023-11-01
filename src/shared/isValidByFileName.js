@@ -1,3 +1,5 @@
+import logger from "./logger.js";
+
 /**
  * Check if the requester is valid by looking up the file name in the admin collection.
  *
@@ -9,11 +11,19 @@
  * @returns {Promise<boolean>} Returns `true` if the file name is valid, otherwise `false`.
  */
 const isValidByFileName = async (db, collectionName, fileName) => {
-    const requestedIdValidity = await db
-        .collection(collectionName)
-        .findOne({ fileName: fileName });
+    try {
+        const requestedIdValidity = await db
+            .collection(collectionName)
+            .findOne({ fileName: fileName });
 
-    return !!requestedIdValidity;
+        return !!requestedIdValidity;
+    } catch (error) {
+        // Log the error using the logger
+        logger.error(error);
+
+        // Propagate the error to the calling function
+        throw error;
+    }
 };
 
 export default isValidByFileName;

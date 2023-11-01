@@ -1,7 +1,9 @@
 import express from "express";
+
+import { API_VERSION } from "../../config/config.js";
+
 import homeRoutes from "../modules/home/home.routes.js";
 import statusRoutes from "../modules/status/status.routes.js";
-import {API_VERSION} from "../../config/config.js";
 import apiRoutes from "./api.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 

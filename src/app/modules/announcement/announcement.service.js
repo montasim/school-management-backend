@@ -1,21 +1,32 @@
+// Third-party modules
 import { v4 as uuidv4 } from 'uuid';
+
+// Configuration
 import { ANNOUNCEMENT_COLLECTION_NAME } from "../../../config/config.js";
+
+// Constants
 import {
-    FORBIDDEN_MESSAGE, STATUS_FORBIDDEN,
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
     STATUS_INTERNAL_SERVER_ERROR,
     STATUS_NOT_FOUND,
-    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./announcement.constants.js";
+
+// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+
+// Logger
+import logger from "../../../shared/logger.js";
 
 /**
  * Creates a new announcement entry in the database.

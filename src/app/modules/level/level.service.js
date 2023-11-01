@@ -1,12 +1,19 @@
+// Third-party libraries
 import { v4 as uuidv4 } from 'uuid';
+
+// Configuration and Constants
 import { LEVEL_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
-    STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND,
-    STATUS_OK, STATUS_UNPROCESSABLE_ENTITY
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./level.constants.js";
+
+// Shared utilities and functions
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
