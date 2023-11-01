@@ -11,7 +11,7 @@ import logger from "../../middlewares/logger.js";
  */
 const undefinedController = async (req, res) => {
     try {
-        return res.status(404).send({ message: "Route not found" });
+        return res.status(404).send({ message: "This route is to test the undefined route 😁" });
     } catch (error) {
         logger.error(error);
 
