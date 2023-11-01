@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create a student.
  *     description: Endpoint to add a new student to the system.
  *     parameters:

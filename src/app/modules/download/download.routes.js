@@ -9,7 +9,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create a download.
  *     description: Endpoint to add a new download to the system.
  *     parameters:

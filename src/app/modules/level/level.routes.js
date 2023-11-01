@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create a level.
  *     description: Endpoint to add a new level to the system.
  *     parameters:

@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create a category.
  *     description: Endpoint to add a new category to the system.
  *     parameters:

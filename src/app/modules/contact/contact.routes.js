@@ -7,7 +7,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Send email.
  *     description: Endpoint to send email.
  *     parameters:

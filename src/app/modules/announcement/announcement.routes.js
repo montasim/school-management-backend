@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create an announcement.
  *     description: Endpoint to add a new announcement to the system.
  *     parameters:

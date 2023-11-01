@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create an administration.
  *     description: Endpoint to add a new administration to the system.
  *     parameters:

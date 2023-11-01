@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: login an admin.
  *     description: Endpoint to login admin to the system.
  *     parameters:
@@ -30,7 +30,7 @@ router.post(
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create an admin.
  *     description: Endpoint to add a new admin to the system.
  *     parameters:

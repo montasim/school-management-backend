@@ -6,7 +6,7 @@ import { OthersInformationSchema } from "./othersInformation.schema.js";
  * @async
  * @description Middleware validator for othersInformation's body data.
  *
- * Uses the othersInformationBodySchema from the OthersInformationSchema to validate
+ * Uses the othersInformationBodySchema from the HomePagePostSchema to validate
  * the body of the incoming request. This ensures that the othersInformation's
  * information is in the correct format before processing.
  *
@@ -23,7 +23,7 @@ const othersInformationBodyValidator = validateWithSchema(OthersInformationSchem
  * @async
  * @description Middleware validator for othersInformation's ID in request parameters.
  *
- * Uses the othersInformationParamsSchema from the OthersInformationSchema to validate
+ * Uses the othersInformationParamsSchema from the HomePagePostSchema to validate
  * the othersInformation ID provided in the request parameters. This ensures that
  * the othersInformation ID is in the correct format for further processing.
  *

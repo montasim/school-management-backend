@@ -12,7 +12,7 @@ import { STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";
  * @returns {Function} Middleware function for validation.
  * @example
  * // Usage
- * router.post('/path', validateWithSchema(mySchema, 'body'), myController);
+ * router.homePagePost('/path', validateWithSchema(mySchema, 'body'), myController);
  */
 const validateWithSchema = (schema, source) => async (req, res, next) => {
     try {

@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create a website.
  *     description: Endpoint to add a new website to the system.
  *     parameters:

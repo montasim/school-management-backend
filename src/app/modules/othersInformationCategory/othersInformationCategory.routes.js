@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create a othersInformationCategory.
  *     description: Endpoint to add a new othersInformationCategory to the system.
  *     parameters:

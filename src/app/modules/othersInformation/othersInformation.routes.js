@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create an othersInformation.
  *     description: Endpoint to add a new othersInformation to the system.
  *     parameters:

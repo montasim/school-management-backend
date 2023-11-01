@@ -8,6 +8,7 @@ import contactRoutes from "../modules/contact/contact.routes.js";
 import dashboardRoutes from "../modules/dashboard/dashboard.routes.js";
 import downloadRoutes from "../modules/download/download.routes.js";
 import levelRoutes from "../modules/level/level.routes.js";
+import homePageRoutes from "./homePage.routes.js";
 import noticeRoutes from "../modules/notice/notice.routes.js";
 import othersInformationRoutes from "../modules/othersInformation/othersInformation.routes.js";
 import othersInformationCategoryRoutes from "../modules/othersInformationCategory/othersInformationCategory.routes.js";
@@ -98,6 +99,15 @@ router.use("/download", downloadRoutes);
  * @memberof module:routes
  */
 router.use("/level", levelRoutes);
+
+/**
+ * Sets up versioned routing for the homePagePost module.
+ * @name /level
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use("/homePage", homePageRoutes);
 
 /**
  * Sets up routing for the notice module.
