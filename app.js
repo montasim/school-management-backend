@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
-import corsOptions from "./app/middlewares/corsConfig.js";
-import { PORT } from "./config/config.js";
-import { SERVER_LOG_MESSAGE } from "./constants/constants.js";
-import { Database } from "./app/middlewares/database.js";
-import appRoutes from "./app/routes/index.js";
-import logger from "./app/middlewares/logger.js";
+import corsOptions from "./src/app/middlewares/corsConfig.js";
+import { PORT } from "./src/config/config.js";
+import { SERVER_LOG_MESSAGE } from "./src/constants/constants.js";
+import { Database } from "./src/app/middlewares/database.js";
+import appRoutes from "./src/app/routes/index.js";
+import logger from "./src/app/middlewares/logger.js";
 
 const app = express();
 
