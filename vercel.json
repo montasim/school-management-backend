@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "school-management-system-backend",
   "builds": [
     {
       "src": "src/app.js",
