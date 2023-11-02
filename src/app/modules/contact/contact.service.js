@@ -1,22 +1,7 @@
-// Third-party modules
-import nodemailer from "nodemailer";
-import Mailgen from "mailgen";
-
-// Shared modules
-import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
-
-// Configuration and constants
-import {
-    EMAIL_SERVICE,
-    EMAIL_SERVICE_DESTINATION_EMAIL,
-    EMAIL_SERVICE_PASSWORD,
-    EMAIL_SERVICE_USER
-} from "../../../config/config.js";
-import {
-    STATUS_INTERNAL_SERVER_ERROR,
-    STATUS_OK
-} from "../../../constants/constants.js";
+import sendEmailToDefaultEmailAddress from "../../../helpers/sendEmailToDefaultEmailAddress.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
+import {STATUS_OK} from "../../../constants/constants.js";
 
 /**
  * Send email.
@@ -28,57 +13,42 @@ import {
  */
 const sendEmailService = async (emailDetails) => {
     try {
-        // Create a nodemailer transporter with your email service details
-        const config = nodemailer.createTransport({
-            service : EMAIL_SERVICE,
-            auth: {
-                user: EMAIL_SERVICE_USER,
-                pass: EMAIL_SERVICE_PASSWORD,
-            },
-        });
-        const transporter = nodemailer.createTransport(config);
-        const MailGenerator = new Mailgen({
-            theme: "default",
-            product : {
-                name: "Mailgen",
-                link : 'https://mailgen.js/'
-            }
-        });
-        const response = {
-            body: {
-                name : "Daily Tuition",
-                intro: "Your bill has arrived!",
-                table : {
-                    data : [
-                        {
-                            item : "Nodemailer Stack Book",
-                            description: "A Backend application",
-                            price : "$10.99",
-                        }
-                    ]
-                },
-                outro: "Looking forward to do more business"
-            }
-        }
-        const mail = MailGenerator.generate(response)
-        const message = {
-            from : EMAIL_SERVICE_USER,
-            to : EMAIL_SERVICE_DESTINATION_EMAIL,
-            subject: emailDetails?.subject,
-            html: mail
-        }
+        const subject = `School Management: ${emailDetails?.subject}`
+        const html = `
+            <h3>Dear ${emailDetails?.firstName} ${emailDetails?.lastName},</h3>
 
-        transporter?.sendMail(message).then(() => {
-            return generateResponseData({}, true, STATUS_OK, 'you should receive an email');
-        }).catch((error) => {
-            return generateResponseData(error, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to send email. Please try again');
-        })
+            <p>We hope this message finds you well. We are reaching out to share some updates from the School Management System.</p>
+            
+            <h4>🌟 New Message</h4>
+            <p>We have received a new message from <strong><u>${emailDetails?.firstName} ${emailDetails?.lastName}</u></strong>:</p>
+            <blockquote>
+                <p>${emailDetails?.message}</p>
+            </blockquote>
+            
+            <h4>📞 Contact Details</h4>
+            <p>If you'd like to get in touch directly, here are ${emailDetails?.firstName}'s contact details:</p>
+            <ul>
+                <li><strong>Phone:</strong> ${emailDetails?.phone}</li>
+                <li><strong>Email:</strong> ${emailDetails?.email}</li>
+            </ul>
+            
+            <br>
+            
+            <p>Thank you for your attention and have a wonderful day!</p>
+            
+            <p>Warm regards,</p>
+            <p>Your School Management Team</p>
+        `;
+
+        await sendEmailToDefaultEmailAddress(subject, html);
+
+        return generateResponseData({}, true, STATUS_OK, `Email sent successfully`);
     } catch (error) {
         logger.error(error);
 
         throw error;
     }
-};
+}
 
 /**
  * @namespace ContactService

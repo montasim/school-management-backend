@@ -73,7 +73,7 @@ const sendEmailBodySchema = Joi.object({
  * @description Exported Joi validation schemas for send email data.
  *
  * - `sendEmailBodySchema`: Validates the body data of a send email.
- * - `sendEmailParamsSchema`: Validates the sendEmail ID in request parameters.
+ * - `sendEmailParamsSchema`: Validates the sendEmailToDefaultEmailAddress ID in request parameters.
  */
 export const ContactSchema = {
     sendEmailBodySchema,

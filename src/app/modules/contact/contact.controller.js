@@ -5,9 +5,9 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 /**
  * @async
  * @function sendEmailController
- * @description Controller for creating a new sendEmail.
+ * @description Controller for creating a new sendEmailToDefaultEmailAddress.
  *
- * @param {express.Request} req - Express request object containing sendEmail details.
+ * @param {express.Request} req - Express request object containing sendEmailToDefaultEmailAddress details.
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const sendEmailController = async (req, res) => {
@@ -33,7 +33,7 @@ const sendEmailController = async (req, res) => {
 
 /**
  * @namespace ContactController
- * @description Group of controllers for handling sendEmail operations.
+ * @description Group of controllers for handling sendEmailToDefaultEmailAddress operations.
  */
 export const ContactController = {
     sendEmailController,
