@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "schoolmanagementbackend",
+  "private_key_id": "aa902db1cdc443a6044735ab7856ceed3918c4be",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCKW2MMalsxM9/n\nYvdHznP1mbzwzb1LLzkg8G3ON/8BWOUbeRrMGx4qF7b0BAWJELtCTjhCc7yBih7R\nLfObHRfOKM3BltORGP5cY3hpWuQtOacacydwAq7qKANp3CopaGd+zfIMO+7AMthp\nPgBQgt6/cYFduRbsLHHbwxmBBKBMgMoiML0hPyJmwrv9sbArrv6aCQUK+EFDqXmG\n+VcM8ux2omN1bk8SkrKabGS+MvyJ9ip/40boLk2Os1FWyvIirlTlxr5xLSuVGp+a\npfrJrnoZP5eEFJys3PBJnJDNIhmvgBuZIzvU0l9fX3ZtWuoz8AcYepkgPWCw7//B\nzdTd7Q6DAgMBAAECggEAOlcHoHwWYNxpXOWvtJEa92Rwta9jUtkiQz/uZUbaWcSU\nsu1xfcAvi3s9c45gkSfDdlWKRocL5SmLDhRMxMrTN2SgQjGpm2TJGMb+xpoDXgiR\n7EbDSelvvR/LNK+X/abfASqxFjSNW3D1LQduVYShjWM8s/rwbfzds9eEIRGE0Ezd\nXCQm9ZDb8K7cTDe+Cni7X0/gtNJV2zyEFiGWYibLIAO6kV/dqu+Ka7PA+JRYpsdt\n6wbOZd7OtDcpxUbGfp09jtKm5sk5lcZWeipty+3fYHp02J9si5UNOdMud7sqcaQJ\nk80W5ON1+tPZuv8hiEFut5xt6fiXru42yp1Z8gtZFQKBgQDDOugGV4Zu+qVNL+qC\njswezo0/3GBtaJiA8TyZfaEYCGb2O38k/nCYnKmm/FgEQm8qfX+IGmXsnqojCF2n\ncPoBiHocfDrCfhuw6midj1Tlfd3EyY+fuzlOk5in273UQWWq719Zz89V36DNufHe\nI02FlWibWDpHVp5GiTtks2JqfQKBgQC1bH4TvR6q0g0EgE392fbmOThNTCwExcBj\nFHpko6NbmHjBu/ToU37cce+qEsDGPDvqTgDQPvOq6dIzUZEhfpgL3bGEjdzt0kEw\ncoZ3DCLPZ9N6PX4zZqdctMsWetixMo0dS5QooNpqqNX5szshhC16DxKNMxB3GiGl\npfBc8w2s/wKBgCwcq0CDlkSNLbx7Dyngyg5L7W54hPEzqQG5gE/OKxAbFeidGOVq\n+FYDT/IDIoAT4rpfEOnXzR/h2d+AjGjBBjxCchTtnPlFNUyMKocvU6dnASztvh4B\nV7mBcAS9ie7jt+0fmRPZ+KcWmGbjlNr0bxe34qL3FHP6Blk5uMnQHnShAoGAduqX\nNT74NAWcrL+g32yYLk2BPwFXtQUd1pPcqcyszeQB+xLFM+dOtxYjfrnuC8H9j9Xz\nKIyq0POUaTjkxSyiYty8d+M41dXEDwpyYuPciVBHyM83wl9eAiErISACmxtEbdhV\nU9AjelgScSpu7sghuujYQx8egsLpHRfIllRmOWcCgYBFDtvTt4RRGFTZh7SmI1Jr\n2eRpQGdT/5bYwfjIKbVhk5qoY4jbboifbcN54sckeBRN53+Umki87nJ3bbI9qIr7\nBq5gJUIcSAO8nM9HqtEMI0ZrLa2sK594SlkGfjLV3MhpeCJhyVz1I4pPBKa6z68n\nZhGg5vnW1qzMnPgmL6iqJQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "schoolmanagementbackend@schoolmanagementbackend.iam.gserviceaccount.com",
+  "client_id": "102756370774823596743",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/schoolmanagementbackend%40schoolmanagementbackend.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

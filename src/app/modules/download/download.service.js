@@ -24,6 +24,8 @@ import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
 import getFileNameAndPathName from "../../../helpers/getFileNameAndPathName.js";
 import findByFileName from "../../../shared/findByFileName.js";
+import { HandleGoogleDrive } from "../../../shared/handleGoogleDriveApi.js";
+import {file} from "googleapis/build/src/apis/file/index.js";
 
 /**
  * Creates a new download entry in the database.
@@ -35,6 +37,7 @@ import findByFileName from "../../../shared/findByFileName.js";
  * @returns {Object} - The response after attempting download creation.
  * @throws {Error} Throws an error if any.
  */
+
 const createDownloadService = async (db, newDownloadDetails, file) => {
     try {
         const { title, adminId } = newDownloadDetails;
@@ -42,29 +45,35 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const getFileNameAndPathNameVariables = await getFileNameAndPathName(file);
+        const { uniqueFilename, uniquePath } = await getFileNameAndPathName(file);
+        const response = await HandleGoogleDrive.uploadFile(uniquePath, uniqueFilename, file);
+
+        if (!response?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
         const downloadDetails = {
             id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
-            fileName: getFileNameAndPathNameVariables?.uniqueFilename,
-            path: getFileNameAndPathNameVariables?.uniquePath,
+            fileName: uniqueFilename,
+            googleDriveFileId: response?.fileId,
+            googleDriveShareableLink: response?.shareableLink,
+            path: uniquePath,
             createdBy: adminId,
             createdAt: new Date(),
         };
+
         const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} uploaded successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
-
     } catch (error) {
         logger.error(error);
 
         throw error;
     }
 };
-
 
 /**
  * Retrieves a list of all downloads from the database.
@@ -126,14 +135,18 @@ const deleteADownloadService = async (db, adminId, fileName) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
+        const fileDetails = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+
+        if (fileDetails) {
+            const response = await HandleGoogleDrive.deleteFile(fileDetails?.googleDriveFileId);
+            const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+
+            return result
+                ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)
+                : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${fileName} could not be deleted`);
+        } else {
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
-
-        const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
-
-        return result
-            ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${fileName} could not be deleted`);
+        }
     } catch (error) {
         logger.error(error);
 
