@@ -23,6 +23,9 @@ import appRoutes from "./app/routes/index.js";
  */
 const app = express();
 
+// To serve static files:
+app.use(express.static('public'));
+
 /**
  * Use the JSON middleware to parse incoming JSON requests.
  */
