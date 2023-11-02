@@ -24,8 +24,8 @@ const destination = async (req, file, cb) => {
         .find(keyword => requestedURL?.includes(keyword));
 
     const finalDestination = matchedDestination
-        ? path.join('/tmp', UPLOAD_DIRECTORY_MAP[matchedDestination])
-        : '/tmp';
+        ? path.join('./tmp', UPLOAD_DIRECTORY_MAP[matchedDestination])
+        : './tmp';
 
     // Ensure the destination directory exists, or create it if it doesn't
     await createFolderIfNotExists(finalDestination);
