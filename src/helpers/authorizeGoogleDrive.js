@@ -1,7 +1,6 @@
 import { google } from "googleapis";
-import { GOOGLE_DRIVE_CLIENT_EMAIL } from "../config/config.js";
-import googleDriveApiKeys from "../../googleDriveApiKeys.json" assert { type: 'json' };
 import logger from "../shared/logger.js";
+import fs from "fs";
 
 /**
  * Authorizes and authenticates the application to access Google Drive using service account credentials.
@@ -14,12 +13,14 @@ const authorizeGoogleDrive = async () => {
     try {
         // Define the scope of access required by the application.
         const SCOPE = ["https://www.googleapis.com/auth/drive"];
+        const googleDriveApiKeys = JSON.parse(fs.readFileSync('./googleDriveApiKeys.json', 'utf8'));
+        const { client_email, private_key } = googleDriveApiKeys;
 
         // Initialize a JWT client for authentication with Google Drive.
         const jwtClient = new google.auth.JWT(
-            GOOGLE_DRIVE_CLIENT_EMAIL,
+            client_email,
             null,
-            googleDriveApiKeys.private_key,
+            private_key,
             SCOPE,
         );
 
