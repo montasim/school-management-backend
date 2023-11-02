@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { GOOGLE_DRIVE_CLIENT_EMAIL } from "../config/config.js";
+import googleDriveApiKeys from "../../googleDriveApiKeys.json" assert { type: 'json' };
 import logger from "../shared/logger.js";
 
 /**
@@ -19,7 +20,7 @@ const authorizeGoogleDrive = async () => {
         const jwtClient = new google.auth.JWT(
             GOOGLE_DRIVE_CLIENT_EMAIL,
             null,
-            "aa902db1cdc443a6044735ab7856ceed3918c4be",
+            googleDriveApiKeys.private_key,
             SCOPE,
         );
 
