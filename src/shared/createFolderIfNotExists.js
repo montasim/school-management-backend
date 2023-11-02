@@ -1,22 +1,27 @@
-import fs from 'fs';
-import path from 'path';
+import logger from "./logger.js";
+import fs from "fs";
 
 /**
- * Creates the specified folder if it doesn't exist.
+ * Creates a folder at the given directory path if it does not exist.
  *
- * @function createFolderIfNotExists
- * @param {string} directoryName - The path of the folder to create.
- * @returns {Promise<void>}
+ * @function
+ * @async
+ * @param {string} directoryName - The path of the directory to be created.
+ * @throws Will throw an error if the directory creation fails.
  */
 const createFolderIfNotExists = async (directoryName) => {
     try {
-        // Resolve the path to an absolute path
-        const absoluteFolderPath = path.resolve(directoryName);
-
-        // Ensure the path exists, creating the directory if necessary.
-        await fs.promises.mkdir(absoluteFolderPath, { recursive: true });
+        // Check if the directory exists
+        if (!fs.existsSync(directoryName)){
+            // If not, create the directory (and any necessary parent directories)
+            return fs.mkdirSync(directoryName, {recursive: true});
+        }
     } catch (error) {
-        console.error(`Failed to ensure folder exists at ${directoryName}:`, error);
+        // Log the error using the logger
+        logger.error(error);
+
+        // Propagate the error to the calling function
+        throw error;
     }
 };
 
