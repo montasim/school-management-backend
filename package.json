@@ -31,8 +31,10 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
+    "swagger-ui-express": "^5.0.0",
     "useragent": "^2.3.0",
     "uuid": "^9.0.1",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "yamljs": "^0.3.0"
   }
 }

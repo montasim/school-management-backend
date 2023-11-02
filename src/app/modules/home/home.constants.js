@@ -100,9 +100,9 @@ const returnData = {
     },
     links: {
         documentation: "https://your-api-domain.com/docs",
-        swagger_ui: "https://your-api-domain.com/swagger",
+        swagger_ui: "/api-docs",
         terms_of_service: "https://your-api-domain.com/terms",
-        main_site: "https://your-main-domain.com",
+        main_site: "https://school-abid.vercel.app/",
     },
     support: {
         contact: "montasimmamun@gmail.com",
@@ -111,7 +111,7 @@ const returnData = {
         gettingStarted: "https://yourapi.com/docs/getting-started",
     },
     healthStatus: {
-        serviceStatus: "https://status.yourapi.com",
+        serviceStatus: "/status",
         knownIssues: [],
     },
     aboutDeveloper: {

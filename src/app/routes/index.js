@@ -1,4 +1,6 @@
 import express from "express";
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../../../swagger.json' assert { type: 'json' };
 
 import { API_VERSION } from "../../config/config.js";
 
@@ -8,6 +10,15 @@ import apiRoutes from "./api.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 
 const router = express.Router();
+
+/**
+ * Sets up routing for the home module.
+ * @name /
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 /**
  * Sets up routing for the home module.
