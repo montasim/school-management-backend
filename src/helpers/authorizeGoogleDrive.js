@@ -19,7 +19,7 @@ const authorizeGoogleDrive = async () => {
         const jwtClient = new google.auth.JWT(
             GOOGLE_DRIVE_CLIENT_EMAIL,
             null,
-            GOOGLE_DRIVE_PRIVATE_KEY,
+            "aa902db1cdc443a6044735ab7856ceed3918c4be",
             SCOPE,
         );
 
