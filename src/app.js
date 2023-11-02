@@ -6,7 +6,6 @@ import cors from "cors";
 import logMiddleware from "./app/middlewares/logMiddleware.js";
 import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
-import isBrowserRequestMiddleware from "./app/middlewares/isBrowserRequestMiddleware.js";
 
 // Routes modules
 import appRoutes from "./app/routes/index.js";
@@ -24,7 +23,7 @@ import appRoutes from "./app/routes/index.js";
 const app = express();
 
 // To serve static files:
-app.use(express.static('public'));
+app.use(express.static('./'));
 
 /**
  * Use the JSON middleware to parse incoming JSON requests.
