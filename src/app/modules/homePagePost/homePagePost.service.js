@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 // Configurations
-import { HOME_PAGE_DETAILS_COLLECTION_NAME } from "../../../config/config.js";
+import { HOME_PAGE_POST_COLLECTION_NAME } from "../../../config/config.js";
 
 // Constants
 import {
@@ -52,8 +52,8 @@ const createHomePagePost = async (db, newHomePagePostDetails) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, HOME_PAGE_DETAILS_COLLECTION_NAME, homePagePostDetails);
-        const latestData = await findById(db, HOME_PAGE_DETAILS_COLLECTION_NAME, homePagePostDetails?.id);
+        const result = await addANewEntryToDatabase(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostDetails);
+        const latestData = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostDetails?.id);
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${homePagePostDetails?.name} created successfully`)
@@ -77,7 +77,7 @@ const createHomePagePost = async (db, newHomePagePostDetails) => {
  */
 const getHomePagePostList = async (db) => {
     try {
-        const homePagePost = await getAllData(db, HOME_PAGE_DETAILS_COLLECTION_NAME);
+        const homePagePost = await getAllData(db, HOME_PAGE_POST_COLLECTION_NAME);
 
         return homePagePost?.length
             ? generateResponseData(homePagePost, true, STATUS_OK, `${homePagePost?.length} homePagePost found`)
@@ -100,7 +100,7 @@ const getHomePagePostList = async (db) => {
  */
 const getAHomePagePost = async (db, homePagePostId) => {
     try {
-        const homePagePost = await findById(db, HOME_PAGE_DETAILS_COLLECTION_NAME, homePagePostId);
+        const homePagePost = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
 
         return homePagePost
             ? generateResponseData(homePagePost, true, STATUS_OK, `${homePagePostId} found successfully`)
@@ -137,8 +137,8 @@ const updateAHomePagePost = async (db, homePagePostId, newHomePagePostDetails) =
             modifiedBy: adminId,
             modifiedAt: new Date(),
         };
-        const result = await updateById(db, HOME_PAGE_DETAILS_COLLECTION_NAME, homePagePostId, updatedHomePagePostDetails);
-        const latestData = await findById(db, HOME_PAGE_DETAILS_COLLECTION_NAME, homePagePostId);
+        const result = await updateById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId, updatedHomePagePostDetails);
+        const latestData = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${homePagePostId} updated successfully`)
@@ -166,10 +166,10 @@ const deleteAHomePagePost = async (db, adminId, homePagePostId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, HOME_PAGE_DETAILS_COLLECTION_NAME, homePagePostId))
+        if (!await isValidById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePagePostId} not found`);
 
-        const result = await deleteById(db, HOME_PAGE_DETAILS_COLLECTION_NAME, homePagePostId);
+        const result = await deleteById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${homePagePostId} deleted successfully`)
