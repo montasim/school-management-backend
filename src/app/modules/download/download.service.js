@@ -15,7 +15,6 @@ import {
 // Relative imports
 import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidByFileName from "../../../shared/isValidByFileName.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
@@ -25,7 +24,6 @@ import deleteByFileName from "../../../shared/deleteByFileName.js";
 import getFileNameAndPathName from "../../../helpers/getFileNameAndPathName.js";
 import findByFileName from "../../../shared/findByFileName.js";
 import { HandleGoogleDrive } from "../../../shared/handleGoogleDriveApi.js";
-import {file} from "googleapis/build/src/apis/file/index.js";
 
 /**
  * Creates a new download entry in the database.
@@ -46,17 +44,17 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const { uniqueFilename, uniquePath } = await getFileNameAndPathName(file);
-        const response = await HandleGoogleDrive.uploadFile(uniquePath, uniqueFilename, file);
+        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(uniquePath, uniqueFilename, file);
 
-        if (!response?.shareableLink)
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const downloadDetails = {
             id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
             fileName: uniqueFilename,
-            googleDriveFileId: response?.fileId,
-            googleDriveShareableLink: response?.shareableLink,
+            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
+            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             path: uniquePath,
             createdBy: adminId,
             createdAt: new Date(),
