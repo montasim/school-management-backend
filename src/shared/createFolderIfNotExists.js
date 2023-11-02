@@ -1,5 +1,6 @@
+import fs from 'fs';
+import path from 'path';
 import logger from "./logger.js";
-import fs from "fs";
 
 /**
  * Creates a folder at the given directory path if it does not exist.
@@ -13,8 +14,11 @@ const createFolderIfNotExists = async (directoryName) => {
     try {
         // Check if the directory exists
         if (!fs.existsSync(directoryName)){
-            // If not, create the directory (and any necessary parent directories)
-            fs.mkdirSync(directoryName, { recursive: true });
+            // Resolve the path to an absolute path
+            const absoluteFolderPath = path.resolve(directoryName);
+
+            // Ensure the path exists, creating the directory if necessary.
+            return await fs.promises.mkdir(absoluteFolderPath, { recursive: true });
         }
     } catch (error) {
         // Log the error using the logger
