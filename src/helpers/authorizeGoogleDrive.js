@@ -14,7 +14,6 @@ const authorizeGoogleDrive = async () => {
     try {
         // Define the scope of access required by the application.
         const SCOPE = ["https://www.googleapis.com/auth/drive"];
-        const GOOGLE_DRIVE_PRIVATE_KEY = "aa902db1cdc443a6044735ab7856ceed3918c4be";
 
         // Initialize a JWT client for authentication with Google Drive.
         const jwtClient = new google.auth.JWT(
