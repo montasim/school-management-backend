@@ -71,6 +71,29 @@ const loginService = async (db,  loginDetails) => {
 };
 
 /**
+ * Service to authenticate an admin using their login token.
+ * @async
+ * @param {Object} db - DatabaseMiddleware instance.
+ * @param {Object} adminId - The login details provided.
+ * @returns {Object} Result object containing status, message and data.
+ */
+const verifyUserService = async (db,  adminId) => {
+    try {
+        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
+
+        delete foundAdminDetails?._id;
+
+        return foundAdminDetails
+            ? generateResponseData({}, true, STATUS_OK, "Authorized")
+            : generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
+    } catch (error) {
+        logger.error(error);
+
+        throw error;
+    }
+};
+
+/**
  * Creates a new admin entry in the database.
  *
  * @async
@@ -207,6 +230,7 @@ const deleteUserService = async (db, deleteAdminDetails) => {
  */
 export const AuthenticationService = {
     loginService,
+    verifyUserService,
     signupService,
     resetPasswordService,
     deleteUserService,

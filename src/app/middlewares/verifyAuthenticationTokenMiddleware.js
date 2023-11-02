@@ -11,25 +11,50 @@ import logger from '../../shared/logger.js';
 // Internal Modules - Constants
 import { STATUS_BAD_REQUEST, STATUS_UNAUTHORIZED } from '../../constants/constants.js';
 
+// Extracts token from the Authorization header
+const extractToken = (header) => {
+    const bearer = 'Bearer ';
+    return header?.startsWith(bearer) ? header.slice(bearer.length) : null;
+};
 
-const verifyAuthenticationTokenMiddleware = (req, res, next) => {
+// Verifies the validity of the token
+const verifyToken = (token) => {
     try {
-        const token = req.headers['authorization']?.split(' ')[1];
-
-        if (token) {
-            const verified = jwt.verify(token, SECRET_TOKEN);
-            req.adminId = verified?.id;
-            req.adminUserName = verified?.userName;
-
-            next();
-        } else {
-            return generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized');
-        }
+        return jwt.verify(token, SECRET_TOKEN);
     } catch (error) {
         logger.error(error);
-
-        return generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token');
+        return null;
     }
+};
+
+// Sends an unauthorized response
+const sendUnauthorizedResponse = (res) => {
+    res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
+};
+
+// Sends an invalid token response
+const sendInvalidTokenResponse = (res) => {
+    res.status(STATUS_BAD_REQUEST).json(generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token'));
+};
+
+// Main middleware to verify authentication token
+const verifyAuthenticationTokenMiddleware = (req, res, next) => {
+    const token = extractToken(req.headers['authorization']);
+
+    if (!token) {
+        return sendUnauthorizedResponse(res);
+    }
+
+    const verified = verifyToken(token);
+
+    if (!verified) {
+        return sendInvalidTokenResponse(res);
+    }
+
+    req.adminId = verified.id;
+    req.adminUserName = verified.userName;
+
+    next();
 };
 
 export default verifyAuthenticationTokenMiddleware;

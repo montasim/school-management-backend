@@ -19,6 +19,20 @@ const loginController = async (req, res) => {
 
 /**
  * @async
+ * @function loginController
+ * @description Controller for login an admin.
+ *
+ * @param {express.Request} req - Express request object containing login details.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
+const verifyUserController = async (req, res) => {
+    const {adminId, db } = extractFromRequest(req, []);
+
+    await handleServiceResponse(res, AuthenticationService.verifyUserService, db, adminId);
+};
+
+/**
+ * @async
  * @function signupController
  * @description Controller for signup an admin.
  *
@@ -71,6 +85,7 @@ const deleteUserController = async (req, res) => {
  */
 export const AuthenticationController = {
     loginController,
+    verifyUserController,
     signupController,
     resetPasswordController,
     deleteUserController,

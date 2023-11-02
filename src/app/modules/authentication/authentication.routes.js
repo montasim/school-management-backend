@@ -31,6 +31,22 @@ router.post(
  * @swagger
  * /:
  *   homePagePost:
+ *     summary: Verify an admin.
+ *     description: Endpoint to verify the login admin of the system.
+ *     responses:
+ *       200:
+ *         description: Admin verified.
+ */
+router.get(
+    "/verify-user",
+    verifyAuthenticationTokenMiddleware,
+    AuthenticationController.verifyUserController
+);
+
+/**
+ * @swagger
+ * /:
+ *   homePagePost:
  *     summary: Create an admin.
  *     description: Endpoint to add a new admin to the system.
  *     parameters:
