@@ -32,16 +32,16 @@ const sendEmailToDefaultEmailAddress = async (subject, html) => {
         });
 
         // Send the email using the transporter
-        await transporter.sendMail({
+        return await transporter.sendMail({
             from: EMAIL_SERVICE_USER, // Sender's email address
             to: EMAIL_SERVICE_DESTINATION_EMAIL, // Receiver's email address
             subject: subject, // Subject of the email
             html: html, // HTML content of the email
         });
     } catch (error) {
-        // Log the error and re-throw it
         logger.error(error);
-        throw error;
+
+        return error;
     }
 }
 

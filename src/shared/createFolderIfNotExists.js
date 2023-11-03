@@ -17,11 +17,9 @@ const createFolderIfNotExists = async (directoryName) => {
             return fs.mkdirSync(directoryName, {recursive: true});
         }
     } catch (error) {
-        // Log the error using the logger
         logger.error(error);
 
-        // Propagate the error to the calling function
-        throw error;
+        return error;
     }
 };
 

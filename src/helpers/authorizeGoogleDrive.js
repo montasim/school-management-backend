@@ -29,7 +29,6 @@ const authorizeGoogleDrive = async () => {
         // Return the authorized JWT client.
         return jwtClient;
     } catch (error) {
-        // Log and return the error if authorization fails.
         logger.error(error);
 
         return error;

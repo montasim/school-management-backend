@@ -18,7 +18,7 @@ const findByFileName = async (db, collectionName, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

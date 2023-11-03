@@ -18,7 +18,7 @@ const addANewEntryToDatabase = async (db, collectionName, details) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

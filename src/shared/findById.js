@@ -18,7 +18,7 @@ const findById = async (db, collectionName, id) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

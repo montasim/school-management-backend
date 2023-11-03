@@ -15,7 +15,7 @@ const generateResponseData = (data, success, status, message) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

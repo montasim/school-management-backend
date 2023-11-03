@@ -17,7 +17,7 @@ const getAllData = async (db, collectionName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

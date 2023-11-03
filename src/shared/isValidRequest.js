@@ -19,6 +19,8 @@ const isValidRequest = async (db, adminId) => {
         return !!requesterValidity;
     } catch (error) {
         logger.error(error);
+
+        return error;
     }
 };
 

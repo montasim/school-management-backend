@@ -29,8 +29,8 @@ const createAuthenticationToken = async (userDetails = {}) => {
             }
         );
     } catch (error) {
-        // Log the error and throw it to the calling function
         logger.error(error);
+
         return error;
     }
 };
