@@ -22,7 +22,7 @@ import findById from "../../../shared/findById.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
 import findByFileName from "../../../shared/findByFileName.js";
-import { HandleGoogleDrive } from "../../../shared/handleGoogleDriveApi.js";
+import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js";
 
 /**
  * Creates a new download entry in the database.

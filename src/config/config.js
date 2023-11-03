@@ -107,7 +107,7 @@ export const {
 // Google Drive configurations
 export const {
     GOOGLE_DRIVE_CLIENT_EMAIL,
-    GOOGLE_DRIVE_PARENTS,
+    GOOGLE_DRIVE_FOLDER_KEY,
     GOOGLE_DRIVE_PRIVATE_KEY,
     GOOGLE_DRIVE_SCOPE,
 } = process.env;

@@ -1,6 +1,7 @@
 import { google } from 'googleapis';
-import logger from "./logger.js";
-import authorizeGoogleDrive from "../helpers/authorizeGoogleDrive.js";
+import logger from "../shared/logger.js";
+import authorizeGoogleDrive from "./authorizeGoogleDrive.js";
+import { GOOGLE_DRIVE_FOLDER_KEY } from "../config/config.js";
 
 /**
  * Uploads a file to Google Drive.
@@ -21,7 +22,7 @@ const uploadFile = async (uniqueFileName, fileBuffer, mimeType) => {
         });
         const fileMetaData = {
             name: uniqueFileName,
-            parents: ['1de6FsdZyPYHh4tjqPbf4NCE9cpKWHAB6'],
+            parents: [GOOGLE_DRIVE_FOLDER_KEY],
         };
 
         // Upload the file
