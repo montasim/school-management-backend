@@ -1,39 +1,48 @@
 import Joi from "joi";
 
 /**
- * @typedef {Object} FileSchema
- * @property {string} title - The title of the file. Min length: 3, Max length: 200.
- * @property {Object} file - The file object containing details of the uploaded file.
- * @property {string} file.fieldname - The field name. Should always be 'file'.
- * @property {string} file.originalname - Original name of the file. Min length: 3, Max length: 200.
- * @property {string} file.encoding - The encoding type. Should always be '7bit'.
- * @property {string} file.mimetype - The MIME type. Should always be 'application/pdf'.
- * @property {string} file.destination - The destination path. Should always be './uploads'.
- * @property {string} file.filename - The saved filename. Must match the pattern /^[0-9]+\.pdf$/.
- * @property {string} file.path - The path where the file is saved. Must match the pattern /^uploads\\[0-9]+\.pdf$/.
- * @property {number} file.size - The size of the file. Must not exceed 5MB.
+ * Generates a Joi schema for validating PDF files.
+ *
+ * @type {Joi.ObjectSchema}
  */
 const pdfFileSchema = Joi.object({
-    title: Joi.string().min(3).max(200).required(),
-    file: Joi.object({
-        fieldname: Joi.string().valid('file').required(),
-        originalname: Joi.string().min(3).max(200).required(),
-        encoding: Joi.string().valid('7bit').required(),
-        mimetype: Joi.string().valid('application/pdf').required(),
-        destination: Joi.string().valid('./uploads').required(),
-        filename: Joi.string().regex(/^[0-9]+\.pdf$/).required(),
-        path: Joi.string().regex(/^uploads\\[0-9]+\.pdf$/).required(),
-        size: Joi.number().max(1024 * 1024 * 5).required(),
-    }),
-});
+    // Title of the file, used for identification
+    title: Joi.string()
+        .min(1)
+        .max(255)
+        .required()
+        .description('Title of the file, used for identification.'),
+
+    // The unique filename with a valid extension
+    uniqueFileName: Joi.string()
+        .min(1)
+        .max(255)
+        .required()
+        .pattern(/^(.*\.(pdf))?$/i)
+        .description('The unique filename with a valid extension.'),
+
+    // The base64 encoded data of the file
+    fileBuffer: Joi.string()
+        .base64()
+        .required()
+        .description('The base64 encoded data of the file.'),
+
+    // MIME type of the file
+    mimeType: Joi.string()
+        .valid("application/pdf")
+        .required()
+        .description('MIME type of the file.')
+}).required();
 
 /**
+ * Schema for validating download parameters.
+ *
  * @typedef {Object} DownloadParams
- * @property {string} fileName - The name of the file.
- * Must contain only alphanumeric characters, underscores, spaces, hyphens, and must end with ".pdf".
- * Min length: 5, Max length: 255.
+ * @property {string} fileName - The name of the file. Must contain only alphanumeric characters,
+ * underscores, spaces, hyphens, and must end with ".pdf". Min length: 5, Max length: 255.
  */
 const downloadParamsSchema = Joi.object({
+    // Define the fileName schema
     fileName: Joi.string()
         .required()
         .regex(/^[a-zA-Z\s]+-\d{13}\.pdf$/)
@@ -44,6 +53,13 @@ const downloadParamsSchema = Joi.object({
         .message('File name must be at least 5 characters long.')
 });
 
+/**
+ * Shared Joi schemas for file validation.
+ *
+ * @type {Object}
+ * @property {Joi.ObjectSchema} pdfFileSchema - Schema for validating PDF files.
+ * @property {Joi.ObjectSchema} downloadParamsSchema - Schema for validating download parameters.
+ */
 export const SharedSchema = {
     pdfFileSchema,
     downloadParamsSchema

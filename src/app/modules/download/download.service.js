@@ -21,7 +21,6 @@ import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import findById from "../../../shared/findById.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
-import getFileNameAndPathName from "../../../helpers/getFileNameAndPathName.js";
 import findByFileName from "../../../shared/findByFileName.js";
 import { HandleGoogleDrive } from "../../../shared/handleGoogleDriveApi.js";
 
@@ -31,20 +30,20 @@ import { HandleGoogleDrive } from "../../../shared/handleGoogleDriveApi.js";
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newDownloadDetails - New download's details.
- * @param file
  * @returns {Object} - The response after attempting download creation.
  * @throws {Error} Throws an error if any.
  */
-
-const createDownloadService = async (db, newDownloadDetails, file) => {
+const createDownloadService = async (db, newDownloadDetails) => {
     try {
-        const { title, adminId } = newDownloadDetails;
+        const { title, uniqueFileName, fileBuffer, mimeType, adminId } = newDownloadDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const { uniqueFilename, uniquePath } = await getFileNameAndPathName(file);
-        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(uniquePath, uniqueFilename, file);
+        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, uniqueFileName))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${uniqueFileName} already exists. Please select a different file name`)
+
+        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(uniqueFileName, fileBuffer, mimeType);
 
         if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -52,10 +51,9 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
         const downloadDetails = {
             id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
-            fileName: uniqueFilename,
+            fileName: uniqueFileName,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            path: uniquePath,
             createdBy: adminId,
             createdAt: new Date(),
         };

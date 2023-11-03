@@ -1,7 +1,5 @@
-import fs from 'fs';
 import { google } from 'googleapis';
 import logger from "./logger.js";
-import deleteFileFromLocalStorage from "../helpers/deleteFileFromLocalStorage.js";
 import authorizeGoogleDrive from "../helpers/authorizeGoogleDrive.js";
 
 /**
@@ -9,13 +7,12 @@ import authorizeGoogleDrive from "../helpers/authorizeGoogleDrive.js";
  *
  * @async
  * @function
- * @param {string} uniquePath - The unique path to the file on local storage.
- * @param {string} uniqueFilename - The unique filename to be used in Google Drive.
- * @param {Object} file - The file object containing details of the file.
- * @param {string} file.mimetype - The MIME type of the file.
+ * @param uniqueFileName
+ * @param fileBuffer
+ * @param mimeType
  * @returns {Promise<Object>} Returns an object containing the file ID and shareable link.
  */
-const uploadFile = async (uniquePath, uniqueFilename, file) => {
+const uploadFile = async (uniqueFileName, fileBuffer, mimeType) => {
     try {
         const authorizationClient = await authorizeGoogleDrive();
         const drive = google.drive({
@@ -23,18 +20,20 @@ const uploadFile = async (uniquePath, uniqueFilename, file) => {
             auth: authorizationClient
         });
         const fileMetaData = {
-            name: uniqueFilename,
+            name: uniqueFileName,
             parents: ['1de6FsdZyPYHh4tjqPbf4NCE9cpKWHAB6'],
         };
+
         // Upload the file
         const { data: fileData } = await drive.files.create({
             requestBody: fileMetaData,
             media: {
-                body: fs.createReadStream(uniquePath),  // Replace hardcoded filename with uniqueFilename
-                mimeType: file?.mimetype,
+                body: fileBuffer, // Directly use the file buffer
+                mimeType: mimeType,
             },
             fields: 'id',
         });
+
         // Set the file permissions to 'anyone with the link can view'
         await drive.permissions.create({
             fileId: fileData.id,
@@ -43,6 +42,7 @@ const uploadFile = async (uniquePath, uniqueFilename, file) => {
                 type: 'anyone',
             },
         });
+
         // Get the shareable link
         const { data: fileInfo } = await drive.files.get({
             fileId: fileData.id,
@@ -57,8 +57,6 @@ const uploadFile = async (uniquePath, uniqueFilename, file) => {
         logger.error(error);
 
         return error;
-    } finally {
-        await deleteFileFromLocalStorage(uniquePath);
     }
 };
 

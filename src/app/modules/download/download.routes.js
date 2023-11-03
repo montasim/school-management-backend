@@ -1,6 +1,5 @@
 import express from "express";
 import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
-import multerConfig from "../../middlewares/multerConfigurationMiddleware.js";
 import { DownloadValidators } from "./download.validator.js";
 import { DownloadController } from "./download.controller.js";
 
@@ -24,7 +23,6 @@ const router = express.Router();
  */
 router.post("/", [
     verifyAuthenticationTokenMiddleware,
-    multerConfig.single('file'),
     DownloadValidators.downloadBodyValidator,
     DownloadController.createDownloadController
 ]);
