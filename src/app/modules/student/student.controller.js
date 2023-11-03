@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createStudentController = async (req, res) => {
-    const { name, level, image, requestedBy, db } = extractFromRequest(req, ['name', 'level', 'image']);
-    const newStudent = { name, level, image, requestedBy };
+    const { name, level, image, adminId, db } = extractFromRequest(req, ['name', 'level', 'image']);
+    const newStudent = { name, level, image, adminId };
 
     await handleServiceResponse(res, StudentService.createStudentService, db, newStudent);
 };
@@ -52,8 +52,8 @@ const getAStudentController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAStudentController = async (req, res) => {
-    const { studentId, name, level, image, requestedBy, db } = extractFromRequest(req, ['name', 'level', 'image'], ['studentId']);
-    const updatedStudentDetails = { name, level, image, requestedBy };
+    const { studentId, name, level, image, adminId, db } = extractFromRequest(req, ['name', 'level', 'image'], ['studentId']);
+    const updatedStudentDetails = { name, level, image, adminId };
 
     await handleServiceResponse(res, StudentService.updateAStudentService, db, studentId, updatedStudentDetails);
 };
@@ -67,9 +67,9 @@ const updateAStudentController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAStudentController = async (req, res) => {
-    const { studentId, requestedBy, db } = extractFromRequest(req, [], ['studentId']);
+    const { studentId, adminId, db } = extractFromRequest(req, [], ['studentId']);
 
-    await handleServiceResponse(res, StudentService.deleteAStudentService, db, requestedBy, studentId);
+    await handleServiceResponse(res, StudentService.deleteAStudentService, db, adminId, studentId);
 };
 
 /**

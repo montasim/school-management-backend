@@ -1,12 +1,19 @@
-/**
- * @module NoticeService
- * @description This module provides services related to notices such as creating, listing, retrieving, and deleting notice entries in the database.
- */
-
+// External modules
 import {v4 as uuidv4} from "uuid";
 import fs from "fs";
+
+// Internal modules
 import isValidRequest from "../../../shared/isValidRequest.js";
 import {NOTICE_COLLECTION_NAME} from "../../../config/config.js";
+
+// Constants
+import {
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 
 /**
  * Creates a new notice entry in the database.
@@ -23,9 +30,9 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = newNoticeDetails;
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const prepareNewNoticeDetails = {
@@ -33,7 +40,7 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
                 title: title,
                 filename: file?.originalname,
                 path: file?.path,
-                createdBy: requestedBy,
+                createdBy: adminId,
                 createdAt: new Date(),
             };
             const result = await db
@@ -48,14 +55,14 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
                 return {
                     data: fileDetails,
                     success: true,
-                    status: 200,
+                    status: STATUS_OK,
                     message: `${fileDetails?.filename} uploaded successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: false,
-                    status: 422,
+                    status: STATUS_UNPROCESSABLE_ENTITY,
                     message: 'Error while uploading file'
                 };
             }
@@ -63,7 +70,7 @@ const createNoticeService = async (db,  newNoticeDetails, file) => {
             return {
                 data: {},
                 success: false,
-                status: 403,
+                status: STATUS_FORBIDDEN,
                 message: 'You do not have necessary permission'
             };
         }
@@ -92,14 +99,14 @@ const getNoticeListService = async (db) => {
             return {
                 data: classList,
                 success: true,
-                status: 200,
+                status: STATUS_OK,
                 message: `${classList?.length} file found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: 404,
+                status: STATUS_NOT_FOUND,
                 message: 'No file found'
             };
         }
@@ -128,14 +135,14 @@ const getANoticeService = async (db, fileName) => {
             return {
                 data: file,
                 success: true,
-                status: 200,
+                status: STATUS_OK,
                 message: 'File fetched successfully'
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: 404,
+                status: STATUS_NOT_FOUND,
                 message: 'File not found'
             };
         }
@@ -150,14 +157,14 @@ const getANoticeService = async (db, fileName) => {
  * @async
  * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - Identifier of the requester.
+ * @param {string} adminId - Identifier of the requester.
  * @param {string} fileName - The name of the file to delete.
  * @returns {Promise<object>} A promise that resolves to an object representing the deletion operation's result.
  * @throws Will throw an error if an error occurs.
  */
-const deleteANoticeService = async (db, requestedBy, fileName) => {
+const deleteANoticeService = async (db, adminId, fileName) => {
     try {
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const fileDetails = await db
@@ -176,14 +183,14 @@ const deleteANoticeService = async (db, requestedBy, fileName) => {
                             return {
                                 data: {},
                                 success: false,
-                                status: 500,
+                                status: STATUS_INTERNAL_SERVER_ERROR,
                                 message: 'Internal server error'
                             };
                         } else {
                             return {
                                 data: result,
                                 success: true,
-                                status: 200,
+                                status: STATUS_OK,
                                 message: `${fileName} deleted successfully`
                             };
                         }
@@ -192,7 +199,7 @@ const deleteANoticeService = async (db, requestedBy, fileName) => {
                     return {
                         data: {},
                         success: false,
-                        status: 404,
+                        status: STATUS_NOT_FOUND,
                         message: 'File not found'
                     };
                 }
@@ -200,7 +207,7 @@ const deleteANoticeService = async (db, requestedBy, fileName) => {
                 return {
                     data: {},
                     success: false,
-                    status: 404,
+                    status: STATUS_NOT_FOUND,
                     message: 'File not found'
                 };
             }
@@ -208,7 +215,7 @@ const deleteANoticeService = async (db, requestedBy, fileName) => {
             return {
                 data: {},
                 success: false,
-                status: 403,
+                status: STATUS_FORBIDDEN,
                 message: 'You do not have necessary permission'
             };
         }

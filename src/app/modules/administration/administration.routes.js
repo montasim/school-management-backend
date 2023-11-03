@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationToken from "../../middlewares/verifyAuthenticationToken.js";
+import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
 import { AdministrationValidators } from "./administration.validator.js";
 import { AdministrationController } from "./administration.controller.js";
 
@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create an administration.
  *     description: Endpoint to add a new administration to the system.
  *     parameters:
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Administration successfully created.
  */
 router.post("/", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     AdministrationValidators.administrationBodyValidator,
     AdministrationController.createAdministrationController
 ]);
@@ -86,7 +86,7 @@ router.get("/:administrationId", [
  *         description: Administration successfully updated.
  */
 router.put("/:administrationId", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     AdministrationValidators.administrationParamsValidator,
     AdministrationValidators.administrationBodyValidator,
     AdministrationController.updateAAdministrationController
@@ -110,7 +110,7 @@ router.put("/:administrationId", [
  *         description: Administration successfully deleted.
  */
 router.delete("/:administrationId", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     AdministrationValidators.administrationParamsValidator,
     AdministrationController.deleteAAdministrationController
 ]);

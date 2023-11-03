@@ -12,11 +12,11 @@ const createRoutineController = async (req, res) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = req?.body;
         const newRoutineDetails = {
             title,
-            requestedBy
+            adminId
         };
         const createRoutineServiceResponse = await RoutineService.createRoutineService(req?.db, newRoutineDetails, req.file);
 
@@ -95,9 +95,9 @@ const getARoutineController = async (req, res) => {
 const deleteARoutineController = async (req, res) => {
     try {
         const { fileName } = req?.params;
-        const { requestedBy } = req?.query;
+        const { adminId } = req?.query;
 
-        const deletedRoutineServiceResponse = await RoutineService.deleteARoutineService(req?.db, requestedBy, fileName);
+        const deletedRoutineServiceResponse = await RoutineService.deleteARoutineService(req?.db, adminId, fileName);
 
         const returnData = {
             data: deletedRoutineServiceResponse?.data,

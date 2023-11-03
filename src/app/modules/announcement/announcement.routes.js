@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationToken from "../../middlewares/verifyAuthenticationToken.js";
+import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
 import { AnnouncementValidators } from "./announcement.validator.js";
 import { AnnouncementController } from "./announcement.controller.js";
 
@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create an announcement.
  *     description: Endpoint to add a new announcement to the system.
  *     parameters:
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Announcement successfully created.
  */
 router.post("/", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     AnnouncementValidators.announcementBodyValidator,
     AnnouncementController.createAnnouncementController
 ]);
@@ -86,7 +86,7 @@ router.get("/:announcementId", [
  *         description: Announcement successfully updated.
  */
 router.put("/:announcementId", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     AnnouncementValidators.announcementParamsValidator,
     AnnouncementValidators.announcementBodyValidator,
     AnnouncementController.updateAAnnouncementController
@@ -110,7 +110,7 @@ router.put("/:announcementId", [
  *         description: Announcement successfully deleted.
  */
 router.delete("/:announcementId", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     AnnouncementValidators.announcementParamsValidator,
     AnnouncementController.deleteAAnnouncementController
 ]);

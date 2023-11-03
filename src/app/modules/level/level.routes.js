@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationToken from "../../middlewares/verifyAuthenticationToken.js";
+import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
 import { LevelValidators } from "./level.validator.js";
 import { LevelController } from "./level.controller.js";
 
@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create a level.
  *     description: Endpoint to add a new level to the system.
  *     parameters:
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Level successfully created.
  */
 router.post("/", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     LevelValidators.levelBodyValidator,
     LevelController.createLevelController
 ]);
@@ -86,7 +86,7 @@ router.get("/:levelId", [
  *         description: Level successfully updated.
  */
 router.put("/:levelId", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     LevelValidators.levelParamsValidator,
     LevelValidators.levelBodyValidator,
     LevelController.updateALevelController
@@ -110,7 +110,7 @@ router.put("/:levelId", [
  *         description: Level successfully deleted.
  */
 router.delete("/:levelId", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     LevelValidators.levelParamsValidator,
     LevelController.deleteALevelController
 ]);

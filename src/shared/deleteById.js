@@ -1,3 +1,5 @@
+import logger from "./logger.js";
+
 /**
  * Delete the requester by looking up the requester's ID in the collection.
  *
@@ -9,11 +11,19 @@
  * @returns {Promise<boolean>} Returns `true` if the requester is valid, otherwise `false`.
  */
 const deleteById = async (db, collectionName, requestedId) => {
-    const requesterValidity = await db
-        .collection(collectionName)
-        .deleteOne({ id: requestedId });
+    try {
+        const requesterValidity = await db
+            .collection(collectionName)
+            .deleteOne({ id: requestedId });
 
-    return !!requesterValidity;
+        return !!requesterValidity;
+    } catch (error) {
+        // Log the error using the logger
+        logger.error(error);
+
+        // Propagate the error to the calling function
+        throw error;
+    }
 };
 
 export default deleteById;

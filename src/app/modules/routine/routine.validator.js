@@ -1,4 +1,5 @@
 import { RoutineSchema } from "./routine.schema.js";
+import {STATUS_BAD_REQUEST} from "../../../constants/constants.js";
 
 /**
  * Middleware function to validate the creation of a new routine.
@@ -19,7 +20,7 @@ const routineBodyValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 
@@ -51,7 +52,7 @@ const routineParamsValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 
@@ -77,14 +78,14 @@ const routineParamsValidator = async (req, res, next) => {
  */
 const deleteRoutineQueryValidator = async (req, res, next) => {
     try {
-        const { error } = RoutineSchema.deleteRoutineQuerySchema.validate(req?.query?.requestedBy);
+        const { error } = RoutineSchema.deleteRoutineQuerySchema.validate(req?.query?.adminId);
         const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 

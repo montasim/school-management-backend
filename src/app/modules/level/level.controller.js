@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createLevelController = async (req, res) => {
-    const { name, requestedBy, db } = extractFromRequest(req, ['name']);
-    const newLevel = { name, requestedBy };
+    const { name, adminId, db } = extractFromRequest(req, ['name']);
+    const newLevel = { name, adminId };
 
     await handleServiceResponse(res, LevelService.createLevelService, db, newLevel);
 };
@@ -52,8 +52,8 @@ const getALevelController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateALevelController = async (req, res) => {
-    const { levelId, name, requestedBy, db } = extractFromRequest(req, ['name'], ['levelId']);
-    const updatedLevelDetails = { name, requestedBy };
+    const { levelId, name, adminId, db } = extractFromRequest(req, ['name'], ['levelId']);
+    const updatedLevelDetails = { name, adminId };
 
     await handleServiceResponse(res, LevelService.updateALevelService, db, levelId, updatedLevelDetails);
 };
@@ -67,9 +67,9 @@ const updateALevelController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteALevelController = async (req, res) => {
-    const { levelId, requestedBy, db } = extractFromRequest(req, [], ['levelId']);
+    const { levelId, adminId, db } = extractFromRequest(req, [], ['levelId']);
 
-    await handleServiceResponse(res, LevelService.deleteALevelService, db, requestedBy, levelId);
+    await handleServiceResponse(res, LevelService.deleteALevelService, db, adminId, levelId);
 };
 
 /**

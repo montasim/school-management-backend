@@ -1,3 +1,4 @@
+// Config Imports
 import {
     ANNOUNCEMENT_COLLECTION_NAME,
     ADMIN_COLLECTION_NAME,
@@ -10,73 +11,101 @@ import {
     ROUTINE_COLLECTION_NAME,
     STUDENT_COLLECTION_NAME,
 } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js"
+
+// Constants Imports
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_OK
+} from "../../../constants/constants.js";
+
+// Shared Utilities Imports
 import isValidRequest from "../../../shared/isValidRequest.js";
-import logger from "../../middlewares/logger.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import logger from "../../../shared/logger.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import getAllData from "../../../shared/getAllData.js";
 
 /**
  * Retrieves summary from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
- * @param requestedBy
+ * @param {Object} db - DatabaseMiddleware connection object.
+ * @param adminId
  * @returns {Object} - The summary or an error message.
  * @throws {Error} Throws an error if any.
  */
-const getSummaryService = async (db, requestedBy) => {
+const getSummaryService = async (db, adminId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const adminDetails = await getAllData(db, ADMIN_COLLECTION_NAME);
-        const administrationDetails = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
-        const categoryDetails = await getAllData(db, CATEGORY_COLLECTION_NAME);
-        const levelDetails = await getAllData(db, LEVEL_COLLECTION_NAME);
-        const downloadDetails = await getAllData(db, DOWNLOAD_COLLECTION_NAME);
-        const noticeDetails = await getAllData(db, NOTICE_COLLECTION_NAME);
-        const resultDetails = await getAllData(db, RESULT_COLLECTION_NAME);
-        const routineDetails = await getAllData(db, ROUTINE_COLLECTION_NAME);
-        const studentDetails = await getAllData(db, STUDENT_COLLECTION_NAME);
-        const announcementDetails = await getAllData(db, ANNOUNCEMENT_COLLECTION_NAME);
+        const getCategoryCount = async (collectionName) => {
+            return await db.collection(collectionName).aggregate([
+                {
+                    $group: {
+                        _id: { category: `$category` },
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        category: '$_id.category',
+                        count: 1,
+                        _id: 0
+                    }
+                }
+            ]).toArray();
+        };
+
+        const adminCategoryCount = await getCategoryCount(ADMIN_COLLECTION_NAME);
+        const administrationCategoryCount = await getCategoryCount(ADMINISTRATION_COLLECTION_NAME);
+        const categoryCount = await getCategoryCount(CATEGORY_COLLECTION_NAME);
+        const leveCount = await getCategoryCount(LEVEL_COLLECTION_NAME);
+        const downloadCount = await getCategoryCount(DOWNLOAD_COLLECTION_NAME);
+        const noticeCount = await getCategoryCount(NOTICE_COLLECTION_NAME);
+        const resultCount = await getCategoryCount(RESULT_COLLECTION_NAME);
+        const routineCount = await getCategoryCount(ROUTINE_COLLECTION_NAME);
+        const studentCount = await getCategoryCount(STUDENT_COLLECTION_NAME);
+        const announcementCount = await getCategoryCount(ANNOUNCEMENT_COLLECTION_NAME);
+
+
         const returnData = {
             admin: {
-                total: adminDetails?.length,
+                total: adminCategoryCount.reduce((acc, item) => acc + item.count, 0),
             },
             administration: {
-                total: administrationDetails?.length,
+                total: administrationCategoryCount.reduce((acc, item) => acc + item.count, 0),
+                details: administrationCategoryCount
             },
             category: {
-                total: categoryDetails?.length,
+                total: categoryCount.reduce((acc, item) => acc + item.count, 0),
             },
             level: {
-                total: levelDetails?.length,
+                total: leveCount.reduce((acc, item) => acc + item.count, 0),
             },
             download: {
-                total: downloadDetails?.length,
+                total: downloadCount.reduce((acc, item) => acc + item.count, 0),
             },
             notice: {
-                total: noticeDetails?.length,
+                total: noticeCount.reduce((acc, item) => acc + item.count, 0),
             },
             result: {
-                total: resultDetails?.length,
+                total: resultCount.reduce((acc, item) => acc + item.count, 0),
             },
             routine: {
-                total: routineDetails?.length,
+                total: routineCount.reduce((acc, item) => acc + item.count, 0),
             },
             student: {
-                total: studentDetails?.length,
+                total: studentCount.reduce((acc, item) => acc + item.count, 0),
             },
             announcement: {
-                total: announcementDetails?.length,
+                total: announcementCount.reduce((acc, item) => acc + item.count, 0),
             }
         }
 
-        return generateResponse(returnData, true, 200, "Summary fetched successfully");
+        return generateResponseData(returnData, true, STATUS_OK, "Summary fetched successfully");
     } catch (error) {
         logger.error(error);
-
         throw error;
     }
 };

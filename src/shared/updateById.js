@@ -1,4 +1,4 @@
-import logger from "../app/middlewares/logger.js";
+import logger from "./logger.js";
 
 /**
  * Update the requester details in the collection.

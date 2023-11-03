@@ -1,8 +1,8 @@
-import logger from "../app/middlewares/logger.js";
+import logger from "../shared/logger.js";
 
 /**
  * Extracts specified keys from the request body and parameters. Also extracts the
- * 'requestedBy' and 'db' fields directly from the request object.
+ * 'adminId' and 'db' fields directly from the request object.
  *
  * @function
  * @param {Object} req - The Express request object.
@@ -26,7 +26,7 @@ const extractFromRequest = (req, keysFromBody = [], keysFromParams = []) => {
             if (req.params && key in req.params) extractedData[key] = req.params[key];
         });
 
-        extractedData.requestedBy = req.requestedBy;
+        extractedData.adminId = req.adminId;
         extractedData.db = req.db;
 
         return extractedData;

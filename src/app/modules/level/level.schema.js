@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './level.constants.js';
-import createIdSchema from "../../../helpers/createIdSchema.js";
+import createIdSchema from "../../../shared/createIdSchema.js";
 
 const levelParamsSchema = Joi.object({
     levelId: createIdSchema(ID_CONSTANTS?.LEVEL_PREFIX, ID_CONSTANTS).required()

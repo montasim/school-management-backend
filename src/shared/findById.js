@@ -1,4 +1,4 @@
-import logger from "../app/middlewares/logger.js";
+import logger from "./logger.js";
 
 /**
  * Check if the requester is valid by looking up the requester id in the collection.
@@ -14,7 +14,7 @@ const findById = async (db, collectionName, id) => {
     try {
         return await db
             .collection(collectionName)
-            .findOne({id: id}, { projection: { _id: 0, createdBy: 0 } });
+            .findOne({id: id}, { projection: { _id: 0, createdBy: 0, modifiedBy: 0 } });
     } catch (error) {
         logger.error(error);
 

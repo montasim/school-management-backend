@@ -1,6 +1,6 @@
 import express from "express";
 import {RoutineValidators} from "./routine.validator.js";
-import multerConfig from "../../../helpers/multerConfig.js";
+import multerConfig from "../../middlewares/multerConfigurationMiddleware.js";
 import { RoutineController } from "./routine.controller.js";
 
 const router = express.Router();

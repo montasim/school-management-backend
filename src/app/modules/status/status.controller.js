@@ -1,5 +1,5 @@
-import generateResponse from "../../../helpers/generateResponse.js";
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
+import {SERVER_DOWN_MESSAGE, STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../../../constants/constants.js";
 
 /**
  * @async
@@ -11,11 +11,25 @@ import logger from "../../middlewares/logger.js";
  */
 const statusController = async (req, res) => {
     try {
-        return generateResponse({}, true, 200, "Server is up and running");
+        const returnData = {
+            data: "Status page of the school management API",
+            success: true,
+            status: STATUS_OK,
+            message: "Server is up and running 🚀",
+        };
+
+        return res.status(returnData?.status).json(returnData);
     } catch (error) {
         logger.error(error);
 
-        return generateResponse({}, false, 500, "Server is down");
+        const returnData = {
+            data: SERVER_DOWN_MESSAGE,
+            success: true,
+            status: STATUS_INTERNAL_SERVER_ERROR,
+            message: error,
+        };
+
+        return res.status(returnData?.status).json(returnData);
     }
 };
 

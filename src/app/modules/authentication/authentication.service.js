@@ -1,20 +1,38 @@
+// External libraries
 import { v4 as uuidv4 } from 'uuid';
+
+// Configurations
 import { ADMIN_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+
+// Constants
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_OK,
+    STATUS_UNAUTHORIZED,
+    STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
+
+// Shared utilities
+import findById from "../../../shared/findById.js";
 import findByUserName from "../../../shared/findByUserName.js";
-import logger from "../../middlewares/logger.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import deleteById from "../../../shared/deleteById.js";
-import createAuthenticationToken from "../../middlewares/createAuthenticationToken.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
-import findById from "../../../shared/findById.js";
+
+// Helpers
+import createAuthenticationToken from "../../../helpers/createAuthenticationToken.js";
+
+// Logger
+import logger from "../../../shared/logger.js";
 
 /**
  * Service to authenticate a user using their login details.
  * @async
- * @param {Object} db - Database instance.
+ * @param {Object} db - DatabaseMiddleware instance.
  * @param {Object} loginDetails - The login details provided.
  * @returns {Object} Result object containing status, message and data.
  */
@@ -35,16 +53,39 @@ const loginService = async (db,  loginDetails) => {
                         userName: foundAdminDetails?.userName,
                         token: token,
                     }
-                    return generateResponse(returnData, true, 200, "Authorized");
+                    return generateResponseData(returnData, true, STATUS_OK, "Authorized");
                 } else {
-                    return generateResponse({}, false, 401, "Unauthorized");
+                    return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
                 }
             } else {
-                return generateResponse({}, false, 401, "Unauthorized");
+                return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
             }
         } else {
-            return generateResponse({}, false, 401, "Unauthorized");
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
         }
+    } catch (error) {
+        logger.error(error);
+
+        throw error;
+    }
+};
+
+/**
+ * Service to authenticate an admin using their login token.
+ * @async
+ * @param {Object} db - DatabaseMiddleware instance.
+ * @param {Object} adminId - The login details provided.
+ * @returns {Object} Result object containing status, message and data.
+ */
+const verifyUserService = async (db,  adminId) => {
+    try {
+        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
+
+        delete foundAdminDetails?._id;
+
+        return foundAdminDetails
+            ? generateResponseData({}, true, STATUS_OK, "Authorized")
+            : generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
     } catch (error) {
         logger.error(error);
 
@@ -56,7 +97,7 @@ const loginService = async (db,  loginDetails) => {
  * Creates a new admin entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param signupDetails
  * @returns {Object} - The response after attempting admin creation.
  * @throws {Error} Throws an error if any.
@@ -67,7 +108,7 @@ const signupService = async (db, signupDetails) => {
         const foundUserDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
 
         if (foundUserDetails) {
-            return generateResponse({}, false, 422, `${userName} already exists`);
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${userName} already exists`);
         } else {
             if (password === confirmPassword) {
                 const prepareNewUserDetails = {
@@ -85,11 +126,11 @@ const signupService = async (db, signupDetails) => {
                 delete latestData?.password;
 
                 return result?.acknowledged
-                    ? generateResponse(latestData, true, 200, `${prepareNewUserDetails?.userName} created successfully`)
-                    : generateResponse({}, false, 500, 'Failed to create. Please try again');
+                    ? generateResponseData(latestData, true, STATUS_OK, `${prepareNewUserDetails?.userName} created successfully`)
+                    : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
             } else {
-                return generateResponse({}, false, 422, "Password did not matched");
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Password did not matched");
             }
         }
     } catch (error) {
@@ -102,21 +143,21 @@ const signupService = async (db, signupDetails) => {
 /**
  * Service to reset a user's password.
  * @async
- * @param {Object} db - Database instance.
+ * @param {Object} db - DatabaseMiddleware instance.
  * @param {Object} resetPasswordDetails - New password details.
  * @returns {Object} Result object containing status, message and data.
  */
 const resetPasswordService = async (db, resetPasswordDetails) => {
     try {
-        const { requestedBy } = resetPasswordDetails;
-        const foundAdmin = await findByUserName(db, ADMIN_COLLECTION_NAME, requestedBy);
+        const { adminId } = resetPasswordDetails;
+        const foundAdmin = await findById(db, ADMIN_COLLECTION_NAME, adminId);
 
         if (foundAdmin) {
             const { oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
 
             if (newPassword === confirmNewPassword) {
                 if (foundAdmin?.password === oldPassword) {
-                    if (foundAdmin?.id === requestedBy) {
+                    if (foundAdmin?.id === adminId) {
                         const updatedAdminDetails = {
                             id: foundAdmin?.id,
                             userName: foundAdmin?.userName,
@@ -124,28 +165,28 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
                             createdAt: foundAdmin?.createdAt,
                             modifiedAt: new Date(),
                         };
-                        const result = await updateById(db, ADMIN_COLLECTION_NAME, requestedBy, updatedAdminDetails);
-                        const latestData = await findById(db, ADMIN_COLLECTION_NAME, requestedBy);
+                        const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, updatedAdminDetails);
+                        const latestData = await findById(db, ADMIN_COLLECTION_NAME, adminId);
 
                         delete latestData?._id;
                         delete latestData?.id;
                         delete latestData?.password;
 
                         return result?.modifiedCount
-                            ? generateResponse(latestData, true, 200, `${requestedBy} updated successfully`)
-                            : generateResponse({}, false, 422, `${requestedBy} not updated`);
+                            ? generateResponseData(latestData, true, STATUS_OK, `${adminId} updated successfully`)
+                            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${adminId} not updated`);
 
                     } else {
-                        return generateResponse({}, false, 403, "Forbidden");
+                        return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
                     }
                 } else {
-                    return generateResponse({}, false, 422, "Wrong password");
+                    return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Wrong password");
                 }
             } else {
-                return generateResponse({}, false, 422, "Password did not matched");
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Password did not matched");
             }
         } else {
-            return generateResponse({}, false, 403, "Forbidden");
+            return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
         }
     } catch (error) {
         logger.error(error);
@@ -157,21 +198,21 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
 /**
  * Service to delete a user.
  * @async
- * @param {Object} db - Database instance.
+ * @param {Object} db - DatabaseMiddleware instance.
  * @param deleteAdminDetails
  * @returns {Object} Result object containing status, message and data.
  */
 const deleteUserService = async (db, deleteAdminDetails) => {
     try {
-        const { requestedBy } = deleteAdminDetails;
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        const { adminId } = deleteAdminDetails;
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const result = await deleteById(db, ADMIN_COLLECTION_NAME, requestedBy);
+        const result = await deleteById(db, ADMIN_COLLECTION_NAME, adminId);
 
         return result
-            ? generateResponse({}, true, 200, `${requestedBy} deleted successfully`)
-            : generateResponse({}, false, 422, `${requestedBy} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${adminId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${adminId} could not be deleted`);
 
     } catch (error) {
         logger.error(error);
@@ -189,6 +230,7 @@ const deleteUserService = async (db, deleteAdminDetails) => {
  */
 export const AuthenticationService = {
     loginService,
+    verifyUserService,
     signupService,
     resetPasswordService,
     deleteUserService,

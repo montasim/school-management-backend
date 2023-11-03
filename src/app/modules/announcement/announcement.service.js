@@ -1,37 +1,53 @@
+// Third-party modules
 import { v4 as uuidv4 } from 'uuid';
+
+// Configuration
 import { ANNOUNCEMENT_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+
+// Constants
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./announcement.constants.js";
+
+// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import logger from "../../middlewares/logger.js";
 import deleteById from "../../../shared/deleteById.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 
+// Logger
+import logger from "../../../shared/logger.js";
+
 /**
  * Creates a new announcement entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newAnnouncementDetails - New announcement's details.
  * @returns {Object} - The response after attempting announcement creation.
  * @throws {Error} Throws an error if any.
  */
 const createAnnouncementService = async (db, newAnnouncementDetails) => {
     try {
-        const { name, requestedBy } = newAnnouncementDetails;
+        const { name, adminId } = newAnnouncementDetails;
 
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const announcementDetails = {
             id: `${ID_CONSTANTS?.ANNOUNCEMENT_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
-            createdBy: requestedBy,
+            createdBy: adminId,
             createdAt: new Date(),
         };
 
@@ -42,8 +58,8 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
         delete latestData?.modifiedBy;
 
         return result?.acknowledged
-            ? generateResponse(latestData, true, 200, `${announcementDetails?.id} created successfully`)
-            : generateResponse({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, STATUS_OK, `${announcementDetails?.id} created successfully`)
+            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -57,7 +73,7 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
  * Retrieves a list of all announcement from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of announcement or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -66,8 +82,8 @@ const getAnnouncementListService = async (db) => {
         const announcement = await getAllData(db, ANNOUNCEMENT_COLLECTION_NAME);
 
         return announcement?.length > 0
-            ? generateResponse(announcement, true, 200, `${announcement?.length} announcement found`)
-            : generateResponse({}, false, 404, 'No announcement found');
+            ? generateResponseData(announcement, true, STATUS_OK, `${announcement?.length} announcement found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No announcement found');
     } catch (error) {
         logger.error(error);
 
@@ -79,7 +95,7 @@ const getAnnouncementListService = async (db) => {
  * Retrieves a specific announcement by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} announcementId - The ID of the announcement to retrieve.
  * @returns {Object} - The announcement details or an error message.
  * @throws {Error} Throws an error if any.
@@ -92,8 +108,8 @@ const getAAnnouncementService = async (db, announcementId) => {
         delete announcement?.modifiedBy;
 
         return announcement
-            ? generateResponse(announcement, true, 200, `${announcementId} found successfully`)
-            : generateResponse({}, false, 404, `${announcementId} not found`);
+            ? generateResponseData(announcement, true, STATUS_OK, `${announcementId} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${announcementId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -105,7 +121,7 @@ const getAAnnouncementService = async (db, announcementId) => {
  * Retrieves a specific announcement by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} announcementId - The ID of the announcement to retrieve.
  * @param newAnnouncementDetails
  * @returns {Object} - The announcement details or an error message.
@@ -113,14 +129,14 @@ const getAAnnouncementService = async (db, announcementId) => {
  */
 const updateAAnnouncementService = async (db, announcementId, newAnnouncementDetails) => {
     try {
-        const { name, requestedBy } = newAnnouncementDetails;
+        const { name, adminId } = newAnnouncementDetails;
 
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedAnnouncementDetails = {
             ...(name && { name }),
-            modifiedBy: requestedBy,
+            modifiedBy: adminId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId, updatedAnnouncementDetails);
@@ -130,8 +146,8 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
         delete latestData?.modifiedBy;
 
         return result?.modifiedCount
-            ? generateResponse(latestData, true, 200, `${announcementId} updated successfully`)
-            : generateResponse({}, false, 422, `${announcementId} not updated`);
+            ? generateResponseData(latestData, true, STATUS_OK, `${announcementId} updated successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${announcementId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -144,25 +160,25 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
  * Deletes a specific announcement by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
- * @param {string} requestedBy - The user ID making the request.
+ * @param {Object} db - DatabaseMiddleware connection object.
+ * @param {string} adminId - The user ID making the request.
  * @param {string} announcementId - The ID of the announcement to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteAAnnouncementService = async (db, requestedBy, announcementId) => {
+const deleteAAnnouncementService = async (db, adminId, announcementId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId))
-            return generateResponse({}, false, 404, `${announcementId} not found`);
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${announcementId} not found`);
 
         const result = await deleteById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId);
 
         return result
-            ? generateResponse({}, true, 200, `${announcementId} deleted successfully`)
-            : generateResponse({}, false, 422, `${announcementId} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${announcementId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${announcementId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

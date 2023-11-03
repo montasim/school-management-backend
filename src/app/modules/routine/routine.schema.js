@@ -2,7 +2,7 @@ import Joi from "joi";
 
 /**
  * Joi schema for validating the creation of a new routine.
- * It expects a 'title', 'file', and 'requestedBy' properties in the request body.
+ * It expects a 'title', 'file', and 'adminId' properties in the request body.
  *
  * @type {Joi.ObjectSchema}
  * @constant
@@ -19,7 +19,7 @@ const routineBodySchema = Joi.object({
         path: Joi.string().regex(/^uploads\\[0-9]+\.pdf$/).required(),
         size: Joi.number().max(1024 * 1024 * 5).required(),
     }),
-    requestedBy: Joi.string().min(3).max(20).required(),
+    adminId: Joi.string().min(3).max(20).required(),
 });
 
 /**

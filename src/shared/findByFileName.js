@@ -1,4 +1,4 @@
-import logger from "../app/middlewares/logger.js";
+import logger from "./logger.js";
 
 /**
  * Check if the file name is valid by looking up the requester id in the collection.
@@ -14,7 +14,7 @@ const findByFileName = async (db, collectionName, fileName) => {
     try {
         return await db
             .collection(collectionName)
-            .findOne({fileName: fileName}, { projection: { _id: 0, createdBy: 0 } });
+            .findOne({fileName: fileName}, { projection: { _id: 0, createdBy: 0, modifiedBy: 0 } });
     } catch (error) {
         logger.error(error);
 

@@ -1,11 +1,32 @@
 import express from "express";
+import fs from "fs";
+import swaggerUi from 'swagger-ui-express';
+
+import { API_VERSION } from "../../config/config.js";
+
 import homeRoutes from "../modules/home/home.routes.js";
 import statusRoutes from "../modules/status/status.routes.js";
-import {API_VERSION} from "../../config/config.js";
 import apiRoutes from "./api.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../swagger.json'), 'utf8'));
+
+
 const router = express.Router();
+
+/**
+ * Sets up routing for the home module.
+ * @name /
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 /**
  * Sets up routing for the home module.

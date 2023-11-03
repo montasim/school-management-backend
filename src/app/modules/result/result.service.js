@@ -1,12 +1,19 @@
-/**
- * @module ResultService
- * @description This module provides services related to results such as creating, listing, retrieving, and deleting result entries in the database.
- */
-
-import {v4 as uuidv4} from "uuid";
+// Third-party modules
+import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
+
+// Shared modules
 import isValidRequest from "../../../shared/isValidRequest.js";
-import {RESULT_COLLECTION_NAME} from "../../../config/config.js";
+
+// Configuration and constants
+import { RESULT_COLLECTION_NAME } from "../../../config/config.js";
+import {
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 
 /**
  * Creates a new result entry in the database.
@@ -23,9 +30,9 @@ const createResultService = async (db,  newResultDetails, file) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = newResultDetails;
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const prepareNewResultDetails = {
@@ -33,7 +40,7 @@ const createResultService = async (db,  newResultDetails, file) => {
                 title: title,
                 filename: file?.originalname,
                 path: file?.path,
-                createdBy: requestedBy,
+                createdBy: adminId,
                 createdAt: new Date(),
             };
             const result = await db
@@ -48,14 +55,14 @@ const createResultService = async (db,  newResultDetails, file) => {
                 return {
                     data: fileDetails,
                     success: true,
-                    status: 200,
+                    status: STATUS_OK,
                     message: `${fileDetails?.filename} uploaded successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: false,
-                    status: 422,
+                    status: STATUS_UNPROCESSABLE_ENTITY,
                     message: 'Error while uploading file'
                 };
             }
@@ -63,7 +70,7 @@ const createResultService = async (db,  newResultDetails, file) => {
             return {
                 data: {},
                 success: false,
-                status: 403,
+                status: STATUS_FORBIDDEN,
                 message: 'You do not have necessary permission'
             };
         }
@@ -92,14 +99,14 @@ const getResultListService = async (db) => {
             return {
                 data: classList,
                 success: true,
-                status: 200,
+                status: STATUS_OK,
                 message: `${classList?.length} file found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: 404,
+                status: STATUS_NOT_FOUND,
                 message: 'No file found'
             };
         }
@@ -128,14 +135,14 @@ const getAResultService = async (db, fileName) => {
             return {
                 data: file,
                 success: true,
-                status: 200,
+                status: STATUS_OK,
                 message: 'File fetched successfully'
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: 404,
+                status: STATUS_NOT_FOUND,
                 message: 'File not found'
             };
         }
@@ -150,14 +157,14 @@ const getAResultService = async (db, fileName) => {
  * @async
  * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - Identifier of the requester.
+ * @param {string} adminId - Identifier of the requester.
  * @param {string} fileName - The name of the file to delete.
  * @returns {Promise<object>} A promise that resolves to an object representing the deletion operation's result.
  * @throws Will throw an error if an error occurs.
  */
-const deleteAResultService = async (db, requestedBy, fileName) => {
+const deleteAResultService = async (db, adminId, fileName) => {
     try {
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const fileDetails = await db
@@ -176,14 +183,14 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
                             return {
                                 data: {},
                                 success: false,
-                                status: 500,
+                                status: STATUS_INTERNAL_SERVER_ERROR,
                                 message: 'Internal server error'
                             };
                         } else {
                             return {
                                 data: result,
                                 success: true,
-                                status: 200,
+                                status: STATUS_OK,
                                 message: `${fileName} deleted successfully`
                             };
                         }
@@ -192,7 +199,7 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
                     return {
                         data: {},
                         success: false,
-                        status: 404,
+                        status: STATUS_NOT_FOUND,
                         message: 'File not found'
                     };
                 }
@@ -200,7 +207,7 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
                 return {
                     data: {},
                     success: false,
-                    status: 404,
+                    status: STATUS_NOT_FOUND,
                     message: 'File not found'
                 };
             }
@@ -208,7 +215,7 @@ const deleteAResultService = async (db, requestedBy, fileName) => {
             return {
                 data: {},
                 success: false,
-                status: 403,
+                status: STATUS_FORBIDDEN,
                 message: 'You do not have necessary permission'
             };
         }

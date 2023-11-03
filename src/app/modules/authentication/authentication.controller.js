@@ -19,6 +19,20 @@ const loginController = async (req, res) => {
 
 /**
  * @async
+ * @function loginController
+ * @description Controller for login an admin.
+ *
+ * @param {express.Request} req - Express request object containing login details.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
+const verifyUserController = async (req, res) => {
+    const {adminId, db } = extractFromRequest(req, []);
+
+    await handleServiceResponse(res, AuthenticationService.verifyUserService, db, adminId);
+};
+
+/**
+ * @async
  * @function signupController
  * @description Controller for signup an admin.
  *
@@ -41,8 +55,8 @@ const signupController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const resetPasswordController = async (req, res) => {
-    const { oldPassword, newPassword, confirmNewPassword, requestedBy, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
-    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword, requestedBy };
+    const { oldPassword, newPassword, confirmNewPassword, adminId, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
+    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword, adminId };
 
     await handleServiceResponse(res, AuthenticationService.resetPasswordService, db, resetPasswordDetails);
 };
@@ -56,8 +70,8 @@ const resetPasswordController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteUserController = async (req, res) => {
-    const { password, confirmPassword, requestedBy, db } = extractFromRequest(req, ['password', 'confirmPassword']);
-    const deleteAdminDetails = { password, confirmPassword, requestedBy };
+    const { password, confirmPassword, adminId, db } = extractFromRequest(req, ['password', 'confirmPassword']);
+    const deleteAdminDetails = { password, confirmPassword, adminId };
 
     await handleServiceResponse(res, AuthenticationService.deleteUserService, db, deleteAdminDetails);
 };
@@ -71,6 +85,7 @@ const deleteUserController = async (req, res) => {
  */
 export const AuthenticationController = {
     loginController,
+    verifyUserController,
     signupController,
     resetPasswordController,
     deleteUserController,

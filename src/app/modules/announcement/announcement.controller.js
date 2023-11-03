@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createAnnouncementController = async (req, res) => {
-    const { name, requestedBy, db } = extractFromRequest(req, ['name']);
-    const newAnnouncement = { name, requestedBy };
+    const { name, adminId, db } = extractFromRequest(req, ['name']);
+    const newAnnouncement = { name, adminId };
 
     await handleServiceResponse(res, AnnouncementService.createAnnouncementService, db, newAnnouncement);
 };
@@ -52,8 +52,8 @@ const getAAnnouncementController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAAnnouncementController = async (req, res) => {
-    const { announcementId, name, requestedBy, db } = extractFromRequest(req, ['name'], ['announcementId']);
-    const updatedAnnouncementDetails = { name, requestedBy };
+    const { announcementId, name, adminId, db } = extractFromRequest(req, ['name'], ['announcementId']);
+    const updatedAnnouncementDetails = { name, adminId };
 
     await handleServiceResponse(res, AnnouncementService.updateAAnnouncementService, db, announcementId, updatedAnnouncementDetails);
 };
@@ -67,9 +67,9 @@ const updateAAnnouncementController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAAnnouncementController = async (req, res) => {
-    const { announcementId, requestedBy, db } = extractFromRequest(req, [], ['announcementId']);
+    const { announcementId, adminId, db } = extractFromRequest(req, [], ['announcementId']);
 
-    await handleServiceResponse(res, AnnouncementService.deleteAAnnouncementService, db, requestedBy, announcementId);
+    await handleServiceResponse(res, AnnouncementService.deleteAAnnouncementService, db, adminId, announcementId);
 };
 
 /**

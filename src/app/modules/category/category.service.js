@@ -1,37 +1,55 @@
+// Third-party modules
 import { v4 as uuidv4 } from 'uuid';
+
+// Configurations
 import { CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+
+// Constants
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./category.constants.js";
+
+// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
-import generateResponse from "../../../helpers/generateResponse.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new category entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newCategoryDetails - New category's details.
  * @returns {Object} - The response after attempting category creation.
  * @throws {Error} Throws an error if any.
  */
 const createCategoryService = async (db, newCategoryDetails) => {
     try {
-        const { name, requestedBy } = newCategoryDetails;
+        const { name, adminId } = newCategoryDetails;
 
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (await isAlreadyExistsByName(db, CATEGORY_COLLECTION_NAME, name))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
+
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const categoryDetails = {
             id: `${ID_CONSTANTS?.CATEGORY_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
-            createdBy: requestedBy,
+            createdBy: adminId,
             createdAt: new Date(),
         };
 
@@ -42,8 +60,8 @@ const createCategoryService = async (db, newCategoryDetails) => {
         delete latestData?.modifiedBy;
 
         return result?.acknowledged
-            ? generateResponse(latestData, true, 200, `${categoryDetails?.name} created successfully`)
-            : generateResponse({}, false, 500, 'Failed to create. Please try again');
+            ? generateResponseData(latestData, true, STATUS_OK, `${categoryDetails?.name} created successfully`)
+            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
@@ -57,7 +75,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
  * Retrieves a list of all category from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of category or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -66,8 +84,8 @@ const getCategoryListService = async (db) => {
         const category = await getAllData(db, CATEGORY_COLLECTION_NAME);
 
         return category?.length
-            ? generateResponse(category, true, 200, `${category?.length} category found`)
-            : generateResponse({}, false, 404, 'No category found');
+            ? generateResponseData(category, true, STATUS_OK, `${category?.length} category found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No category found');
     } catch (error) {
         logger.error(error);
 
@@ -79,7 +97,7 @@ const getCategoryListService = async (db) => {
  * Retrieves a specific category by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} categoryId - The ID of the category to retrieve.
  * @returns {Object} - The category details or an error message.
  * @throws {Error} Throws an error if any.
@@ -92,8 +110,8 @@ const getACategoryService = async (db, categoryId) => {
         delete category?.modifiedBy;
 
         return category
-            ? generateResponse(category, true, 200, `${categoryId} found successfully`)
-            : generateResponse({}, false, 404, `${categoryId} not found`);
+            ? generateResponseData(category, true, STATUS_OK, `${categoryId} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${categoryId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -105,7 +123,7 @@ const getACategoryService = async (db, categoryId) => {
  * Retrieves a specific category by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} categoryId - The ID of the category to retrieve.
  * @param newCategoryDetails
  * @returns {Object} - The category details or an error message.
@@ -113,14 +131,14 @@ const getACategoryService = async (db, categoryId) => {
  */
 const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
     try {
-        const { name, requestedBy } = newCategoryDetails;
+        const { name, adminId } = newCategoryDetails;
 
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const updatedCategoryDetails = {
             ...(name && { name }),
-            modifiedBy: requestedBy,
+            modifiedBy: adminId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, CATEGORY_COLLECTION_NAME, categoryId, updatedCategoryDetails);
@@ -130,8 +148,8 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
         delete latestData?.modifiedBy;
 
         return result?.modifiedCount
-            ? generateResponse(latestData, true, 200, `${categoryId} updated successfully`)
-            : generateResponse({}, false, 422, `${categoryId} not updated`);
+            ? generateResponseData(latestData, true, STATUS_OK, `${categoryId} updated successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${categoryId} not updated`);
 
     } catch (error) {
         logger.error(error);
@@ -144,25 +162,25 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
  * Deletes a specific category by ID from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
- * @param {string} requestedBy - The user ID making the request.
+ * @param {Object} db - DatabaseMiddleware connection object.
+ * @param {string} adminId - The user ID making the request.
  * @param {string} categoryId - The ID of the category to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteACategoryService = async (db, requestedBy, categoryId) => {
+const deleteACategoryService = async (db, adminId, categoryId) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (!await isValidById(db, CATEGORY_COLLECTION_NAME, categoryId))
-            return generateResponse({}, false, 404, `${categoryId} not found`);
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${categoryId} not found`);
 
         const result = await deleteById(db, CATEGORY_COLLECTION_NAME, categoryId);
 
         return result
-            ? generateResponse({}, true, 200, `${categoryId} deleted successfully`)
-            : generateResponse({}, false, 422, `${categoryId} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${categoryId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${categoryId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 

@@ -1,4 +1,5 @@
 import { NoticeSchema } from "./notice.schema.js";
+import {STATUS_BAD_REQUEST} from "../../../constants/constants.js";
 
 /**
  * Middleware function to validate the creation of a new notice.
@@ -19,7 +20,7 @@ const noticeBodyValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 
@@ -51,7 +52,7 @@ const noticeParamsValidator = async (req, res, next) => {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 
@@ -77,14 +78,14 @@ const noticeParamsValidator = async (req, res, next) => {
  */
 const deleteNoticeQueryValidator = async (req, res, next) => {
     try {
-        const { error } = NoticeSchema.deleteNoticeQuerySchema.validate(req?.query?.requestedBy);
+        const { error } = NoticeSchema.deleteNoticeQuerySchema.validate(req?.query?.adminId);
         const messages = error?.details?.map(detail => detail?.message);
 
         if (error) {
             const returnData = {
                 data: {},
                 success: false,
-                status: 400,
+                status: STATUS_BAD_REQUEST,
                 message: messages,
             };
 

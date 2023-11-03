@@ -1,14 +1,14 @@
 import express from "express";
 import { AuthenticationValidators } from "./authentication.validator.js";
 import { AuthenticationController } from "./authentication.controller.js";
-import verifyAuthenticationToken from "../../middlewares/verifyAuthenticationToken.js";
+import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
 
 const router = express.Router();
 
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: login an admin.
  *     description: Endpoint to login admin to the system.
  *     parameters:
@@ -30,7 +30,23 @@ router.post(
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
+ *     summary: Verify an admin.
+ *     description: Endpoint to verify the login admin of the system.
+ *     responses:
+ *       200:
+ *         description: Admin verified.
+ */
+router.get(
+    "/verify-user",
+    verifyAuthenticationTokenMiddleware,
+    AuthenticationController.verifyUserController
+);
+
+/**
+ * @swagger
+ * /:
+ *   homePagePost:
  *     summary: Create an admin.
  *     description: Endpoint to add a new admin to the system.
  *     parameters:
@@ -67,7 +83,7 @@ router.post(
  */
 router.put(
     "/reset-password",
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     AuthenticationValidators.resetPasswordValidator,
     AuthenticationController.resetPasswordController
 );
@@ -91,7 +107,7 @@ router.put(
  */
 router.delete(
     "/delete-user",
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     AuthenticationController.deleteUserController
 );
 

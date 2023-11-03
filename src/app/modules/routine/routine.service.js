@@ -1,12 +1,16 @@
-/**
- * @module RoutineService
- * @description This module provides services related to routines such as creating, listing, retrieving, and deleting routine entries in the database.
- */
+import fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 
-import {v4 as uuidv4} from "uuid";
-import fs from "fs";
-import isValidRequest from "../../../shared/isValidRequest.js";
-import {ROUTINE_COLLECTION_NAME} from "../../../config/config.js";
+// Local imports
+import isValidRequest from '../../../shared/isValidRequest.js';
+import { ROUTINE_COLLECTION_NAME } from '../../../config/config.js';
+import {
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
+} from '../../../constants/constants.js';
 
 /**
  * Creates a new routine entry in the database.
@@ -23,9 +27,9 @@ const createRoutineService = async (db,  newRoutineDetails, file) => {
     try {
         const {
             title,
-            requestedBy
+            adminId
         } = newRoutineDetails;
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const prepareNewRoutineDetails = {
@@ -33,7 +37,7 @@ const createRoutineService = async (db,  newRoutineDetails, file) => {
                 title: title,
                 filename: file?.originalname,
                 path: file?.path,
-                createdBy: requestedBy,
+                createdBy: adminId,
                 createdAt: new Date(),
             };
             const routine = await db
@@ -48,14 +52,14 @@ const createRoutineService = async (db,  newRoutineDetails, file) => {
                 return {
                     data: fileDetails,
                     success: true,
-                    status: 200,
+                    status: STATUS_OK,
                     message: `${fileDetails?.filename} uploaded successfully`
                 };
             } else {
                 return {
                     data: {},
                     success: false,
-                    status: 422,
+                    status: STATUS_UNPROCESSABLE_ENTITY,
                     message: 'Error while uploading file'
                 };
             }
@@ -63,7 +67,7 @@ const createRoutineService = async (db,  newRoutineDetails, file) => {
             return {
                 data: {},
                 success: false,
-                status: 403,
+                status: STATUS_FORBIDDEN,
                 message: 'You do not have necessary permission'
             };
         }
@@ -92,14 +96,14 @@ const getRoutineListService = async (db) => {
             return {
                 data: classList,
                 success: true,
-                status: 200,
+                status: STATUS_OK,
                 message: `${classList?.length} file found`
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: 404,
+                status: STATUS_NOT_FOUND,
                 message: 'No file found'
             };
         }
@@ -128,14 +132,14 @@ const getARoutineService = async (db, fileName) => {
             return {
                 data: file,
                 success: true,
-                status: 200,
+                status: STATUS_OK,
                 message: 'File fetched successfully'
             };
         } else {
             return {
                 data: {},
                 success: false,
-                status: 404,
+                status: STATUS_NOT_FOUND,
                 message: 'File not found'
             };
         }
@@ -150,14 +154,14 @@ const getARoutineService = async (db, fileName) => {
  * @async
  * @function
  * @param {object} db - MongoDB database instance.
- * @param {string} requestedBy - Identifier of the requester.
+ * @param {string} adminId - Identifier of the requester.
  * @param {string} fileName - The name of the file to delete.
  * @returns {Promise<object>} A promise that resolves to an object representing the deletion operation's routine.
  * @throws Will throw an error if an error occurs.
  */
-const deleteARoutineService = async (db, requestedBy, fileName) => {
+const deleteARoutineService = async (db, adminId, fileName) => {
     try {
-        const isValidRequester = await isValidRequest(db, requestedBy);
+        const isValidRequester = await isValidRequest(db, adminId);
 
         if (isValidRequester) {
             const fileDetails = await db
@@ -176,14 +180,14 @@ const deleteARoutineService = async (db, requestedBy, fileName) => {
                             return {
                                 data: {},
                                 success: false,
-                                status: 500,
+                                status: STATUS_INTERNAL_SERVER_ERROR,
                                 message: 'Internal server error'
                             };
                         } else {
                             return {
                                 data: routine,
                                 success: true,
-                                status: 200,
+                                status: STATUS_OK,
                                 message: `${fileName} deleted successfully`
                             };
                         }
@@ -192,7 +196,7 @@ const deleteARoutineService = async (db, requestedBy, fileName) => {
                     return {
                         data: {},
                         success: false,
-                        status: 404,
+                        status: STATUS_NOT_FOUND,
                         message: 'File not found'
                     };
                 }
@@ -200,7 +204,7 @@ const deleteARoutineService = async (db, requestedBy, fileName) => {
                 return {
                     data: {},
                     success: false,
-                    status: 404,
+                    status: STATUS_NOT_FOUND,
                     message: 'File not found'
                 };
             }
@@ -208,7 +212,7 @@ const deleteARoutineService = async (db, requestedBy, fileName) => {
             return {
                 data: {},
                 success: false,
-                status: 403,
+                status: STATUS_FORBIDDEN,
                 message: 'You do not have necessary permission'
             };
         }

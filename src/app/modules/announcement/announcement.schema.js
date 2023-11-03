@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './announcement.constants.js';
-import createIdSchema from "../../../helpers/createIdSchema.js";
+import createIdSchema from "../../../shared/createIdSchema.js";
 
 const announcementParamsSchema = Joi.object({
     announcementId: createIdSchema(ID_CONSTANTS?.ANNOUNCEMENT_PREFIX, ID_CONSTANTS).required()
@@ -22,7 +22,7 @@ const announcementBodySchema = Joi.object({
  * @namespace AnnouncementSchema
  * @description Exported Joi validation schemas for announcement data.
  *
- * - `announcementBodySchema`: Validates the body data of a announcement.
+ * - `announcementBodySchema`: Validates the body data of an announcement.
  * - `announcementParamsSchema`: Validates the announcement ID in request parameters.
  * - `deleteAnnouncementQuerySchema`: Validates the admin ID in the query.
  */

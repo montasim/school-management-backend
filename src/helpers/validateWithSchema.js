@@ -1,5 +1,6 @@
 import handleValidationError from "./handleValidationError.js";
-import logger from "../app/middlewares/logger.js";
+import logger from "../shared/logger.js";
+import { STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";
 
 /**
  * Generates a middleware to validate request data against a provided Joi schema.
@@ -11,7 +12,7 @@ import logger from "../app/middlewares/logger.js";
  * @returns {Function} Middleware function for validation.
  * @example
  * // Usage
- * router.post('/path', validateWithSchema(mySchema, 'body'), myController);
+ * router.homePagePost('/path', validateWithSchema(mySchema, 'body'), myController);
  */
 const validateWithSchema = (schema, source) => async (req, res, next) => {
     try {
@@ -25,7 +26,7 @@ const validateWithSchema = (schema, source) => async (req, res, next) => {
     } catch (error) {
         logger.error(error);
 
-        return res.status(500).json(error);
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json(error);
     }
 };
 

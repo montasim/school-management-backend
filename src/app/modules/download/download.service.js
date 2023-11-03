@@ -1,51 +1,69 @@
+// Third-party modules
 import { v4 as uuidv4 } from 'uuid';
+
+// Absolute imports
 import { DOWNLOAD_COLLECTION_NAME } from "../../../config/config.js";
-import { FORBIDDEN_MESSAGE } from "../../../constants/constants.js";
+import {
+    FORBIDDEN_MESSAGE,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_OK,
+    STATUS_UNPROCESSABLE_ENTITY
+} from "../../../constants/constants.js";
+
+// Relative imports
 import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidByFileName from "../../../shared/isValidByFileName.js";
-import generateResponse from "../../../helpers/generateResponse.js";
-import logger from "../../middlewares/logger.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
+import logger from "../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import findById from "../../../shared/findById.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
-import getFileNameAndPathName from "../../../shared/getFileNameAndPathName.js";
 import findByFileName from "../../../shared/findByFileName.js";
+import { HandleGoogleDrive } from "../../../shared/handleGoogleDriveApi.js";
 
 /**
  * Creates a new download entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newDownloadDetails - New download's details.
- * @param file
  * @returns {Object} - The response after attempting download creation.
  * @throws {Error} Throws an error if any.
  */
-const createDownloadService = async (db, newDownloadDetails, file) => {
+const createDownloadService = async (db, newDownloadDetails) => {
     try {
-        const { title, requestedBy } = newDownloadDetails;
+        const { title, uniqueFileName, fileBuffer, mimeType, adminId } = newDownloadDetails;
 
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const getFileNameAndPathNameVariables = await getFileNameAndPathName(file);
+        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, uniqueFileName))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${uniqueFileName} already exists. Please select a different file name`)
+
+        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(uniqueFileName, fileBuffer, mimeType);
+
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
         const downloadDetails = {
             id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
-            fileName: getFileNameAndPathNameVariables?.uniqueFilename,
-            path: getFileNameAndPathNameVariables?.uniquePath,
-            createdBy: requestedBy,
+            fileName: uniqueFileName,
+            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
+            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            createdBy: adminId,
             createdAt: new Date(),
         };
+
         const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
         return result?.acknowledged
-            ? generateResponse(latestData, true, 200, `${title} uploaded successfully`)
-            : generateResponse({}, false, 500, 'Failed to upload. Please try again');
-
+            ? generateResponseData(latestData, true, STATUS_OK, `${title} uploaded successfully`)
+            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
     } catch (error) {
         logger.error(error);
 
@@ -53,12 +71,11 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
     }
 };
 
-
 /**
  * Retrieves a list of all downloads from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @returns {Object} - The list of downloads or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -67,8 +84,8 @@ const getDownloadListService = async (db) => {
         const downloads = await getAllData(db, DOWNLOAD_COLLECTION_NAME);
 
         return downloads?.length
-            ? generateResponse(downloads, true, 200, `${downloads?.length} download found`)
-            : generateResponse({}, false, 404, 'No download found');
+            ? generateResponseData(downloads, true, STATUS_OK, `${downloads?.length} download found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No download found');
     } catch (error) {
         logger.error(error);
 
@@ -80,7 +97,7 @@ const getDownloadListService = async (db) => {
  * Retrieves a specific download by fileName from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
+ * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} fileName - The fileName of the download to retrieve.
  * @returns {Object} - The download details or an error message.
  * @throws {Error} Throws an error if any.
@@ -90,8 +107,8 @@ const getADownloadService = async (db, fileName) => {
         const download = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
         return download
-            ? generateResponse(download, true, 200, `${fileName} found successfully`)
-            : generateResponse({}, false, 404, `${fileName} not found`);
+            ? generateResponseData(download, true, STATUS_OK, `${fileName} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -103,25 +120,29 @@ const getADownloadService = async (db, fileName) => {
  * Deletes a specific download by fileName from the database.
  *
  * @async
- * @param {Object} db - Database connection object.
- * @param {string} requestedBy - The user fileName making the request.
+ * @param {Object} db - DatabaseMiddleware connection object.
+ * @param {string} adminId - The user fileName making the request.
  * @param {string} fileName - The fileName of the download to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteADownloadService = async (db, requestedBy, fileName) => {
+const deleteADownloadService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(db, requestedBy))
-            return generateResponse({}, false, 403, FORBIDDEN_MESSAGE);
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
-            return generateResponse({}, false, 404, `${fileName} not found`);
+        const fileDetails = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
-        const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+        if (fileDetails) {
+            const response = await HandleGoogleDrive.deleteFile(fileDetails?.googleDriveFileId);
+            const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
-        return result
-            ? generateResponse({}, true, 200, `${fileName} deleted successfully`)
-            : generateResponse({}, false, 422, `${fileName} could not be deleted`);
+            return result
+                ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)
+                : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${fileName} could not be deleted`);
+        } else {
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
+        }
     } catch (error) {
         logger.error(error);
 

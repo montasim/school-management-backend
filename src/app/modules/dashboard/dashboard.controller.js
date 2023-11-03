@@ -11,9 +11,9 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getSummaryController = async (req, res) => {
-    const { requestedBy, db } = extractFromRequest(req, [], []);
+    const { adminId, db } = extractFromRequest(req, [], []);
 
-    await handleServiceResponse(res, DashboardService.getSummaryService, db, requestedBy);
+    await handleServiceResponse(res, DashboardService.getSummaryService, db, adminId);
 };
 
 /**

@@ -1,6 +1,5 @@
 import express from "express";
-import verifyAuthenticationToken from "../../middlewares/verifyAuthenticationToken.js";
-import multerConfig from "../../../helpers/multerConfig.js";
+import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
 import { DownloadValidators } from "./download.validator.js";
 import { DownloadController } from "./download.controller.js";
 
@@ -9,7 +8,7 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   post:
+ *   homePagePost:
  *     summary: Create a download.
  *     description: Endpoint to add a new download to the system.
  *     parameters:
@@ -23,8 +22,7 @@ const router = express.Router();
  *         description: Download successfully created.
  */
 router.post("/", [
-    verifyAuthenticationToken,
-    multerConfig.single('file'),
+    verifyAuthenticationTokenMiddleware,
     DownloadValidators.downloadBodyValidator,
     DownloadController.createDownloadController
 ]);
@@ -83,7 +81,7 @@ router.get("/:fileName", [
  *         description: Download successfully deleted.
  */
 router.delete("/:fileName", [
-    verifyAuthenticationToken,
+    verifyAuthenticationTokenMiddleware,
     DownloadValidators.downloadParamsValidator,
     DownloadController.deleteADownloadController
 ]);

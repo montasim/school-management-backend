@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "message": "Data created successfully",
+  "length": 1,
+  "data": [
+    {
+      "name": "কাইয়ুম আহমেদ",
+      "category": ["শিক্ষকবৃন্দ", "পরিচালনা পরিষদ"],
+      "designation": "শিক্ষক",
+      "image": "/image/teacher/teacher1.gif"
+    }
+  ]
+}

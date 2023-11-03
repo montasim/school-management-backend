@@ -1,5 +1,5 @@
-import generateResponse from "../../../helpers/generateResponse.js";
-import logger from "../../middlewares/logger.js";
+import logger from "../../../shared/logger.js";
+import {SERVER_DOWN_MESSAGE, STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../../../constants/constants.js";
 
 /**
  * @async
@@ -11,11 +11,25 @@ import logger from "../../middlewares/logger.js";
  */
 const undefinedController = async (req, res) => {
     try {
-        return generateResponse({}, true, 404, "Route not found");
+        const returnData = {
+            data: "Undefined page of the school management API",
+            success: true,
+            status: STATUS_OK,
+            message: "This route is to test the undefined route 😁",
+        };
+
+        return res.status(returnData?.status).json(returnData);
     } catch (error) {
         logger.error(error);
 
-        return generateResponse({}, false, 500, "An error occurred while processing the request");
+        const returnData = {
+            data: SERVER_DOWN_MESSAGE,
+            success: true,
+            status: STATUS_INTERNAL_SERVER_ERROR,
+            message: error,
+        };
+
+        return res.status(returnData?.status).json(returnData);
     }
 };
 
