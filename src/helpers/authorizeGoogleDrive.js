@@ -1,6 +1,5 @@
 import { google } from "googleapis";
 import logger from "../shared/logger.js";
-import fs from "fs";
 import { GOOGLE_DRIVE_CLIENT_EMAIL, GOOGLE_DRIVE_PRIVATE_KEY } from "../config/config.js";
 
 /**
