@@ -6,7 +6,7 @@ import Joi from "joi";
  * @param {string[]} allowedExtensions - Array of allowed file extensions.
  * @returns {string} Regex pattern for allowed extensions.
  */
-const generateExtensionPattern = ( allowedExtensions ) => {
+const generateExtensionPattern = (allowedExtensions) => {
   return `^[a-zA-Z0-9_\\- ]+\\.(${allowedExtensions})$`;
 };
 
@@ -16,7 +16,7 @@ const generateExtensionPattern = ( allowedExtensions ) => {
  * @param {string[]} allowedExtensions - Array of allowed file extensions.
  * @returns {Joi.StringSchema} Joi schema for validating file names.
  */
-const createFileNameSchema = ( allowedExtensions ) => {
+const createFileNameSchema = (allowedExtensions) => {
   const extensionPattern = generateExtensionPattern(allowedExtensions);
 
   return Joi.string()
@@ -35,29 +35,68 @@ const createFileNameSchema = ( allowedExtensions ) => {
 };
 
 /**
- * Create a Joi schema for validating PDF files.
+ * Create a Joi schema for validating file title.
  *
- * @returns {Joi.ObjectSchema} Joi schema for validating PDF files.
+ * @returns {Joi.StringSchema} Joi schema for validating file title.
  */
-const createFileSchema = ( allowedExtensions ) => {
+const createFileTitleSchema = () => {
+  return Joi.string()
+    .min(1)
+    .max(255)
+    .required()
+    .description('Title of the file, used for identification.');
+};
+
+/**
+ * Create a Joi schema for validating file buffer.
+ *
+ * @returns {Joi.StringSchema} Joi schema for validating file buffer.
+ */
+const createFileBufferSchema = () => {
+  return Joi.string()
+    .base64()
+    .required()
+    .description('The base64 encoded data of the file.');
+};
+
+/**
+ * Create a Joi schema for validating file MIME type.
+ *
+ * @returns {Joi.StringSchema} Joi schema for validating file MIME type.
+ */
+const createFileMimeTypeSchema = () => {
+  return Joi.string()
+    .valid("application/pdf")
+    .required()
+    .description('MIME type of the file.');
+};
+
+/**
+ * Create a Joi schema for validating files.
+ *
+ * @param {string[]} allowedExtensions - Array of allowed file extensions.
+ * @returns {Joi.ObjectSchema} Joi schema for validating files.
+ */
+const createFileSchema = (allowedExtensions) => {
   return Joi.object({
-    title: Joi.string()
-      .min(1)
-      .max(255)
-      .required()
-      .description('Title of the file, used for identification.'),
-
     fileName: createFileNameSchema(allowedExtensions),
+    fileBuffer: createFileBufferSchema(),
+    mimeType: createFileMimeTypeSchema(),
+  }).required();
+};
 
-    fileBuffer: Joi.string()
-      .base64()
-      .required()
-      .description('The base64 encoded data of the file.'),
-
-    mimeType: Joi.string()
-      .valid("application/pdf")
-      .required()
-      .description('MIME type of the file.')
+/**
+ * Create a Joi schema for validating PDF files with a title.
+ *
+ * @param {string[]} allowedExtensions - Array of allowed file extensions.
+ * @returns {Joi.ObjectSchema} Joi schema for validating PDF files with a title.
+ */
+const createFileWithTitleSchema = (allowedExtensions) => {
+  return Joi.object({
+    title: createFileTitleSchema(),
+    fileName: createFileNameSchema(allowedExtensions),
+    fileBuffer: createFileBufferSchema(),
+    mimeType: createFileMimeTypeSchema(),
   }).required();
 };
 
@@ -66,5 +105,6 @@ const createFileSchema = ( allowedExtensions ) => {
  */
 export const SharedSchema = {
   createFileSchema,
-  createFileNameSchema
+  createFileWithTitleSchema,
+  createFileNameSchema,
 };

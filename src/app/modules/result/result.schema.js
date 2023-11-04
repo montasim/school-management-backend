@@ -5,7 +5,7 @@ import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
 /**
  * @description Joi validation schema for result's body data.
  */
-const resultBodySchema = SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_PDF);
+const resultBodySchema = SharedSchema.createFileWithTitleSchema(FILE_EXTENSION_TYPE_PDF);
 
 /**
  * @description Joi validation schema for result's params data.

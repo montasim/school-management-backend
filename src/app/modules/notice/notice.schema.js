@@ -5,7 +5,7 @@ import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
 /**
  * @description Joi validation schema for notice's body data.
  */
-const noticeBodySchema = SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_PDF);
+const noticeBodySchema = SharedSchema.createFileWithTitleSchema(FILE_EXTENSION_TYPE_PDF);
 
 /**
  * @description Joi validation schema for notice's params data.
