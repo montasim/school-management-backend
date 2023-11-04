@@ -5,6 +5,7 @@ import cors from "cors";
 // Middlewares modules
 import logMiddleware from "./app/middlewares/logMiddleware.js";
 import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
+import userRateLimiter from "./app/middlewares/userRateLimiter.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 
 // Routes modules
@@ -44,6 +45,11 @@ app.use(cors(corsConfigurationMiddleware));
  * Use middleware to determine if the request comes from a browser.
  */
 // app.use(isBrowserRequestMiddleware);
+
+/**
+ * Apply the rate limiter to all routes
+ */
+app.use(userRateLimiter);
 
 /**
  * Connect to the database before processing requests.
