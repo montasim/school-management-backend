@@ -10,7 +10,6 @@
  * - `LOG_COLORS`: Specifies the colors corresponding to each log level.
  * - `SERVER_LOG_MESSAGE`: A message indicating that the server is running.
  * - `FORBIDDEN_MESSAGE`: A message indicating that the user does not have the necessary permissions.
- * - `UPLOAD_DIRECTORY_MAP`: Maps upload categories to their respective directories.
  */
 
 // CORS related
@@ -57,13 +56,6 @@ const SERVER_LOG_MESSAGE = "Server running on port";
 const SERVER_DOWN_MESSAGE = "Server is down 🥲🥲🥲";
 const FORBIDDEN_MESSAGE = "You do not have necessary permission";
 
-const UPLOAD_DIRECTORY_MAP = {
-    'download': 'download',
-    'notice': 'notice',
-    'result': 'result',
-    'routine': 'routine'
-};
-
 export {
     ALLOWED_ORIGIN,
     ALLOWED_METHODS,
@@ -82,5 +74,4 @@ export {
     SERVER_LOG_MESSAGE,
     SERVER_DOWN_MESSAGE,
     FORBIDDEN_MESSAGE,
-    UPLOAD_DIRECTORY_MAP,
 };

@@ -1,7 +1,7 @@
 {
   "name": "school-management-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "APIs for providing endpoints for managing school data including students, teachers, courses, and more.",
   "main": "index.js",
   "type": "module",
   "engines": {
@@ -25,7 +25,6 @@
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.2.0",
-    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
     "swagger-ui-express": "^5.0.0",
