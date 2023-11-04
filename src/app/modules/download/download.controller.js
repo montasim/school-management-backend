@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createDownloadController = async (req, res) => {
-    const { title, uniqueFileName, fileBuffer, mimeType, adminId, db } = extractFromRequest(req, ['title', 'uniqueFileName', 'fileBuffer', 'mimeType']);
-    const newDownloadDetails = { title, uniqueFileName, fileBuffer, mimeType, adminId };
+    const { title, fileName, fileBuffer, mimeType, adminId, db } = extractFromRequest(req, ['title', 'fileName', 'fileBuffer', 'mimeType']);
+    const newDownloadDetails = { title, fileName, fileBuffer, mimeType, adminId };
 
     await handleServiceResponse(res, DownloadService.createDownloadService, db, newDownloadDetails);
 };

@@ -35,15 +35,15 @@ import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js";
  */
 const createDownloadService = async (db, newDownloadDetails) => {
     try {
-        const { title, uniqueFileName, fileBuffer, mimeType, adminId } = newDownloadDetails;
+        const { title, fileName, fileBuffer, mimeType, adminId } = newDownloadDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, uniqueFileName))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${uniqueFileName} already exists. Please select a different file name`)
+        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${fileName} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(uniqueFileName, fileBuffer, mimeType);
+        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(fileName, fileBuffer, mimeType);
 
         if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -51,7 +51,7 @@ const createDownloadService = async (db, newDownloadDetails) => {
         const downloadDetails = {
             id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
-            fileName: uniqueFileName,
+            fileName: fileName,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             createdBy: adminId,
@@ -60,6 +60,8 @@ const createDownloadService = async (db, newDownloadDetails) => {
 
         const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
+
+        delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} uploaded successfully`)
@@ -105,6 +107,8 @@ const getDownloadListService = async (db) => {
 const getADownloadService = async (db, fileName) => {
     try {
         const download = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+
+        delete download?.googleDriveFileId;
 
         return download
             ? generateResponseData(download, true, STATUS_OK, `${fileName} found successfully`)

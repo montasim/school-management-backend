@@ -5,6 +5,7 @@
  * @description
  * - `ALLOWED_ORIGIN`: Specifies the allowed origins for CORS.
  * - `ALLOWED_METHODS`: Specifies the allowed HTTP methods for CORS.
+ * - `FILE_EXTENSION_TYPE`: Specifies the allowed file extension type.
  * - `LOG_LEVELS`: Defines the logging levels used in the application.
  * - `LOG_COLORS`: Specifies the colors corresponding to each log level.
  * - `SERVER_LOG_MESSAGE`: A message indicating that the server is running.
@@ -18,6 +19,11 @@ const ALLOWED_ORIGIN = [
     "http://localhost:3000",
 ];
 const ALLOWED_METHODS = "GET,PUT,POST,DELETE";
+
+// File extension related
+const FILE_EXTENSION_TYPE_PDF = "pdf";
+const FILE_EXTENSION_TYPE_JPG = "jpg";
+const FILE_EXTENSION_TYPE_PNG = "png";
 
 // Log related
 const LOG_LEVELS = {
@@ -61,6 +67,9 @@ const UPLOAD_DIRECTORY_MAP = {
 export {
     ALLOWED_ORIGIN,
     ALLOWED_METHODS,
+    FILE_EXTENSION_TYPE_PDF,
+    FILE_EXTENSION_TYPE_JPG,
+    FILE_EXTENSION_TYPE_PNG,
     LOG_LEVELS,
     LOG_COLORS,
     STATUS_OK,
