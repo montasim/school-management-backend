@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { MIME_TYPE_PDF, MIME_TYPE_PNG, MIME_TYPE_JPG } from "../constants/constants";
+import { MIME_TYPE_PDF, MIME_TYPE_PNG, MIME_TYPE_JPG } from "../constants/constants.js";
 
 /**
  * Generate a Joi regex pattern for allowed extensions.
