@@ -1,117 +1,66 @@
 import { ResultService } from "./result.service.js";
+import extractFromRequest from "../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 
 /**
- * @function createResultController
- * Handles the creation of a new result.
  * @async
- * @param {object} req - The request object containing the database instance, file data and body parameters.
- * @param {object} res - The response object.
- * @returns {object} JSON response with data, success, status, and message.
+ * @function createResultController
+ * @description Controller for creating a new result.
+ *
+ * @param {express.Request} req - Express request object containing result details.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const createResultController = async (req, res) => {
-    try {
-        const {
-            title,
-            adminId
-        } = req?.body;
-        const newResultDetails = {
-            title,
-            adminId
-        };
-        const createResultServiceResponse = await ResultService.createResultService(req?.db, newResultDetails, req.file);
+    const { title, fileName, fileBuffer, mimeType, adminId, db } = extractFromRequest(req, ['title', 'fileName', 'fileBuffer', 'mimeType']);
+    const newResultDetails = { title, fileName, fileBuffer, mimeType, adminId };
 
-        const returnData = {
-            data: createResultServiceResponse?.data,
-            success: createResultServiceResponse?.success,
-            status: createResultServiceResponse?.status,
-            message: createResultServiceResponse?.message,
-        };
-
-        return res.status(createResultServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, ResultService.createResultService, db, newResultDetails);
 };
 
 /**
- * @function getResultListController
- * Retrieves a list of results.
  * @async
- * @param {object} req - The request object containing the database instance.
- * @param {object} res - The response object.
- * @returns {object} JSON response with data, success, status, and message.
+ * @function getResultListController
+ * @description Controller for fetching all results.
+ *
+ * @param {express.Request} req - Express request object.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const getResultListController = async (req, res) => {
-    try {
-        const getResultServiceListResponse = await ResultService.getResultListService(req?.db);
-
-        const returnData = {
-            data: getResultServiceListResponse?.data,
-            success: getResultServiceListResponse?.success,
-            status: getResultServiceListResponse?.status,
-            message: getResultServiceListResponse?.message,
-        };
-
-        return res.status(getResultServiceListResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, ResultService.getResultListService, req?.db);
 };
 
 /**
- * @function getAResultController
- * Retrieves a specific result based on the file name.
  * @async
- * @param {object} req - The request object containing the database instance and params.
- * @param {object} res - The response object.
- * @returns {object} JSON response with data, success, status, and message.
+ * @function getAResultController
+ * @description Controller for fetching a specific result by ID.
+ *
+ * @param {express.Request} req - Express request object containing result ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const getAResultController = async (req, res) => {
-    try {
-        const { fileName } = req?.params;
-        const getAResultServiceResponse = await ResultService.getAResultService(req?.db, fileName);
+    const { fileName, db } = extractFromRequest(req, [], ['fileName']);
 
-        const returnData = {
-            data: getAResultServiceResponse?.data,
-            success: getAResultServiceResponse?.success,
-            status: getAResultServiceResponse?.status,
-            message: getAResultServiceResponse?.message,
-        };
-
-        return res.status(getAResultServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, ResultService.getAResultService, db, fileName);
 };
 
 /**
- * @function deleteAResultController
- * Deletes a specific result based on the file name.
  * @async
- * @param {object} req - The request object containing the database instance, query and params.
- * @param {object} res - The response object.
- * @returns {object} JSON response with data, success, status, and message.
+ * @function deleteAResultController
+ * @description Controller for deleting a result by ID.
+ *
+ * @param {express.Request} req - Express request object containing result ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAResultController = async (req, res) => {
-    try {
-        const { fileName } = req?.params;
-        const { adminId } = req?.query;
+    const { fileName, adminId, db } = extractFromRequest(req, [], ['fileName']);
 
-        const deletedResultServiceResponse = await ResultService.deleteAResultService(req?.db, adminId, fileName);
-
-        const returnData = {
-            data: deletedResultServiceResponse?.data,
-            success: deletedResultServiceResponse?.success,
-            status: deletedResultServiceResponse?.status,
-            message: deletedResultServiceResponse?.message,
-        };
-
-        return res.status(deletedResultServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, ResultService.deleteAResultService, db, adminId, fileName);
 };
 
+/**
+ * @namespace ResultController
+ * @description Group of controllers for handling result operations.
+ */
 export const ResultController = {
     createResultController,
     getResultListController,
