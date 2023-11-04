@@ -1,70 +1,89 @@
 import express from "express";
-import {RoutineValidators} from "./routine.validator.js";
-import multerConfig from "../../middlewares/multerConfigurationMiddleware.js";
+import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import { RoutineValidators } from "./routine.validator.js";
 import { RoutineController } from "./routine.controller.js";
 
 const router = express.Router();
 
 /**
- * @route POST /routine
- * @group routine - Operations about noticing
- * @param {file.formData} file.required - The file to upload
- * @returns {object} 200 - An object containing details of the uploaded file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for uploading a file to the server.
- * This route uses `multer` middleware to handle file uploads,
- * and then passes the request to the controller.
+ * @swagger
+ * /:
+ *   homePagePost:
+ *     summary: Create a routine.
+ *     description: Endpoint to add a new routine to the system.
+ *     parameters:
+ *       - in: body
+ *         name: routine
+ *         description: The routine to create.
+ *         schema:
+ *           $ref: '#/definitions/Routine'
+ *     responses:
+ *       200:
+ *         description: Routine successfully created.
  */
-router.post(
-    "/",
-    multerConfig.single('file'),
+router.post("/", [
+    verifyAuthenticationTokenMiddleware,
     RoutineValidators.routineBodyValidator,
     RoutineController.createRoutineController
-);
+]);
 
 /**
- * @route GET /routine
- * @group routine - Operations about noticing
- * @returns {Array.<object>} 200 - An array of available routines
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for retrieving a list of available files for routine.
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Retrieve all routines.
+ *     description: Endpoint to retrieve a list of all routines.
+ *     responses:
+ *       200:
+ *         description: A list of routines.
  */
-router.get(
-    "/",
+router.get("/", [
     RoutineController.getRoutineListController
-);
+]);
 
 /**
- * @route GET /routine/{fileName}
- * @group routine - Operations about noticing
- * @param {string} fileName.path.required - Name of the file to be retrieved
- * @returns {object} 200 - An object containing details of the specified file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for retrieving a specific file based on the provided file name.
+ * @swagger
+ * /{fileName}:
+ *   get:
+ *     summary: Retrieve a specific routine by ID.
+ *     description: Endpoint to get details of a routine by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: fileName
+ *         required: true
+ *         description: ID of the routine to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Routine details.
  */
-router.get(
-    "/:fileName",
+router.get("/:fileName", [
     RoutineValidators.routineParamsValidator,
     RoutineController.getARoutineController
-);
+]);
 
 /**
- * @route DELETE /routine/{fileName}
- * @group routine - Operations about noticing
- * @param {string} fileName.path.required - Name of the file to be deleted
- * @returns {object} 200 - An object confirming the deletion of the specified file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for deleting a specific file based on the provided file name.
+ * @swagger
+ * /{fileName}:
+ *   delete:
+ *     summary: Delete a routine by ID.
+ *     description: Endpoint to delete a routine by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: fileName
+ *         required: true
+ *         description: ID of the routine to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Routine successfully deleted.
  */
-router.delete(
-    "/:fileName",
+router.delete("/:fileName", [
+    verifyAuthenticationTokenMiddleware,
     RoutineValidators.routineParamsValidator,
-    RoutineValidators.deleteRoutineQueryValidator,
     RoutineController.deleteARoutineController
-);
+]);
 
 export default router;
