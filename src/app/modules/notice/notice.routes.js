@@ -1,70 +1,89 @@
 import express from "express";
-import {NoticeValidators} from "./notice.validator.js";
-import multerConfig from "../../middlewares/multerConfigurationMiddleware.js";
+import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import { NoticeValidators } from "./notice.validator.js";
 import { NoticeController } from "./notice.controller.js";
 
 const router = express.Router();
 
 /**
- * @route POST /notice
- * @group notice - Operations about noticing
- * @param {file.formData} file.required - The file to upload
- * @returns {object} 200 - An object containing details of the uploaded file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for uploading a file to the server.
- * This route uses `multer` middleware to handle file uploads,
- * and then passes the request to the controller.
+ * @swagger
+ * /:
+ *   homePagePost:
+ *     summary: Create a notice.
+ *     description: Endpoint to add a new notice to the system.
+ *     parameters:
+ *       - in: body
+ *         name: notice
+ *         description: The notice to create.
+ *         schema:
+ *           $ref: '#/definitions/Notice'
+ *     responses:
+ *       200:
+ *         description: Notice successfully created.
  */
-router.post(
-    "/",
-    multerConfig.single('file'),
+router.post("/", [
+    verifyAuthenticationTokenMiddleware,
     NoticeValidators.noticeBodyValidator,
     NoticeController.createNoticeController
-);
+]);
 
 /**
- * @route GET /notice
- * @group notice - Operations about noticing
- * @returns {Array.<object>} 200 - An array of available notices
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for retrieving a list of available files for notice.
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Retrieve all notices.
+ *     description: Endpoint to retrieve a list of all notices.
+ *     responses:
+ *       200:
+ *         description: A list of notices.
  */
-router.get(
-    "/",
+router.get("/", [
     NoticeController.getNoticeListController
-);
+]);
 
 /**
- * @route GET /notice/{fileName}
- * @group notice - Operations about noticing
- * @param {string} fileName.path.required - Name of the file to be retrieved
- * @returns {object} 200 - An object containing details of the specified file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for retrieving a specific file based on the provided file name.
+ * @swagger
+ * /{fileName}:
+ *   get:
+ *     summary: Retrieve a specific notice by ID.
+ *     description: Endpoint to get details of a notice by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: fileName
+ *         required: true
+ *         description: ID of the notice to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Notice details.
  */
-router.get(
-    "/:fileName",
+router.get("/:fileName", [
     NoticeValidators.noticeParamsValidator,
     NoticeController.getANoticeController
-);
+]);
 
 /**
- * @route DELETE /notice/{fileName}
- * @group notice - Operations about noticing
- * @param {string} fileName.path.required - Name of the file to be deleted
- * @returns {object} 200 - An object confirming the deletion of the specified file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for deleting a specific file based on the provided file name.
+ * @swagger
+ * /{fileName}:
+ *   delete:
+ *     summary: Delete a notice by ID.
+ *     description: Endpoint to delete a notice by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: fileName
+ *         required: true
+ *         description: ID of the notice to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Notice successfully deleted.
  */
-router.delete(
-    "/:fileName",
+router.delete("/:fileName", [
+    verifyAuthenticationTokenMiddleware,
     NoticeValidators.noticeParamsValidator,
-    NoticeValidators.deleteNoticeQueryValidator,
     NoticeController.deleteANoticeController
-);
+]);
 
 export default router;

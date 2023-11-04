@@ -1,111 +1,45 @@
 import { NoticeSchema } from "./notice.schema.js";
-import {STATUS_BAD_REQUEST} from "../../../constants/constants.js";
+import validateWithSchema from "../../../helpers/validateWithSchema.js";
 
 /**
- * Middleware function to validate the creation of a new notice.
- *
- * @async
  * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * @async
+ * @description Middleware validator for notice's body data.
+ *
+ * Uses the noticeBodySchema from the NoticeSchema to validate
+ * the body of the incoming request. This ensures that the notice's
+ * information is in the correct format before processing.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
  * @returns {void}
  */
-const noticeBodyValidator = async (req, res, next) => {
-    try {
-        const { error } = NoticeSchema.noticeBodySchema.validate(req?.body);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: STATUS_BAD_REQUEST,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const noticeBodyValidator = validateWithSchema(NoticeSchema.noticeBodySchema, 'body');
 
 /**
- * Middleware function to validate fetching a notice by its ID.
- *
- * @async
  * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * @async
+ * @description Middleware validator for notice's ID in request parameters.
+ *
+ * Uses the noticeParamsSchema from the NoticeSchema to validate
+ * the notice ID provided in the request parameters. This ensures that
+ * the notice ID is in the correct format for further processing.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
  * @returns {void}
  */
-const noticeParamsValidator = async (req, res, next) => {
-    try {
-        const { error } = NoticeSchema.noticeParamsSchema.validate(req?.params?.fileName);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: STATUS_BAD_REQUEST,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const noticeParamsValidator = validateWithSchema(NoticeSchema.noticeParamsSchema, 'params');
 
 /**
- * Middleware to validate the query parameters for deleting a notice.
- *
- * @async
- * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Callback to the next middleware or route.
- * @throws Will return a 400 BAD_REQUEST if the validation fails.
- * @throws Will return a 500 INTERNAL_SERVER_ERROR if any error occurs during validation.
- */
-const deleteNoticeQueryValidator = async (req, res, next) => {
-    try {
-        const { error } = NoticeSchema.deleteNoticeQuerySchema.validate(req?.query?.adminId);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: STATUS_BAD_REQUEST,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
-
-/**
- * Collection of validator middlewares related to notice operations.
- * @typedef {Object} NoticeValidators
- * @property {function} noticeBodyValidator - Validates creation of new notice.
- * @property {function} noticeParamsValidator - Validates fetching a notice by its ID.
+ * @namespace NoticeValidators
+ * @description Exported notice validators to be used in routes.
  */
 export const NoticeValidators = {
     noticeBodyValidator,
     noticeParamsValidator,
-    deleteNoticeQueryValidator
 };
