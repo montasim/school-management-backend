@@ -1,6 +1,14 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './website.constants.js';
+import { SharedSchema } from "../../../shared/sharedSchema.js";
 import createIdSchema from "../../../shared/createIdSchema.js";
+import { 
+    FILE_EXTENSION_TYPE_PNG, 
+    FILE_EXTENSION_TYPE_ICO,
+    MIME_TYPE_PNG, 
+    MIME_TYPE_JPG,
+    MIME_TYPE_ICO
+ } from "../../../constants/constants.js";
 
 /**
  * Schema to validate the 'websiteId' parameter in request.
@@ -150,6 +158,8 @@ const websiteBodySchema = Joi.object({
         'string.max': 'Slogan must not exceed 150 characters.',
         'any.required': 'Slogan is required.'
     }),
+    websiteLogo: SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_PNG, [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+    websiteFavIcon: SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_ICO, [MIME_TYPE_ICO]),
     contact: contactSchema,
     socialMediaLinks: socialMediaLinksSchema,
     officialLinks: Joi.array().items(officialLinksSchema).min(1).messages({

@@ -1,11 +1,11 @@
 import Joi from "joi";
 import { SharedSchema } from "../../../shared/sharedSchema.js";
-import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
+import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../constants/constants.js";
 
 /**
  * @description Joi validation schema for download's body data.
  */
-const downloadBodySchema = SharedSchema.createFileWithTitleSchema(FILE_EXTENSION_TYPE_PDF);
+const downloadBodySchema = SharedSchema.createFileWithTitleSchema(FILE_EXTENSION_TYPE_PDF, [MIME_TYPE_PDF]);
 
 /**
  * @description Joi validation schema for download's params data.
