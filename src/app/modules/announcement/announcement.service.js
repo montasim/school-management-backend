@@ -64,7 +64,7 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -87,7 +87,7 @@ const getAnnouncementListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -113,7 +113,7 @@ const getAAnnouncementService = async (db, announcementId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -152,7 +152,7 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -182,7 +182,7 @@ const deleteAAnnouncementService = async (db, adminId, announcementId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

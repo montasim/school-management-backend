@@ -66,7 +66,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -89,7 +89,7 @@ const getCategoryListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -115,7 +115,7 @@ const getACategoryService = async (db, categoryId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -154,7 +154,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -184,7 +184,7 @@ const deleteACategoryService = async (db, adminId, categoryId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

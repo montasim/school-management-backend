@@ -63,7 +63,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails) => 
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -86,7 +86,7 @@ const getHomePageCarouselListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -112,7 +112,7 @@ const getAHomePageCarouselService = async (db, homePageCarouselId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -152,7 +152,7 @@ const updateAHomePageCarouselService = async (db, homePageCarouselId, newHomePag
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -182,7 +182,7 @@ const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) =
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

@@ -69,7 +69,7 @@ const createRoutineService = async (db, newRoutineDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -91,7 +91,7 @@ const getRoutineListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -116,7 +116,7 @@ const getARoutineService = async (db, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -150,7 +150,7 @@ const deleteARoutineService = async (db, adminId, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

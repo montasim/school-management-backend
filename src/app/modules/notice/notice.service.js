@@ -69,7 +69,7 @@ const createNoticeService = async (db, newNoticeDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -91,7 +91,7 @@ const getNoticeListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -116,7 +116,7 @@ const getANoticeService = async (db, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -150,7 +150,7 @@ const deleteANoticeService = async (db, adminId, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

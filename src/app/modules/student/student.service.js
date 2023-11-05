@@ -60,7 +60,7 @@ const createStudentService = async (db, newStudentDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -83,7 +83,7 @@ const getStudentListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -106,7 +106,7 @@ const getAStudentService = async (db, studentId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -144,7 +144,7 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -174,7 +174,7 @@ const deleteAStudentService = async (db, adminId, studentId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

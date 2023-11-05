@@ -66,7 +66,7 @@ const createOthersInformationCategory = async (db, newOthersInformationCategoryD
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -89,7 +89,7 @@ const getOthersInformationCategoryList = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -115,7 +115,7 @@ const getAOthersInformationCategory = async (db, othersInformationCategoryId) =>
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -154,7 +154,7 @@ const updateAOthersInformationCategory = async (db, othersInformationCategoryId,
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -184,7 +184,7 @@ const deleteAOthersInformationCategory = async (db, adminId, othersInformationCa
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

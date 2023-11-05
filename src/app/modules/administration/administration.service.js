@@ -62,7 +62,7 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -85,7 +85,7 @@ const getAdministrationListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -108,7 +108,7 @@ const getAAdministrationService = async (db, administrationId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -147,7 +147,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -177,7 +177,7 @@ const deleteAAdministrationService = async (db, adminId, administrationId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

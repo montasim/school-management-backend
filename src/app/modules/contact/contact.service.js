@@ -64,7 +64,7 @@ const sendEmailService = async ( emailDetails ) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 }
 
