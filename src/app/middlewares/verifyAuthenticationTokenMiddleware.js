@@ -18,7 +18,7 @@ const extractToken = (header) => {
 };
 
 // Verifies the validity of the token
-const verifyToken = (token) => {
+const verifyToken = ( token ) => {
     try {
         return jwt.verify(token, SECRET_TOKEN);
     } catch (error) {

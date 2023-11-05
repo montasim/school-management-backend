@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createWebsite = async (req, res) => {
-    const { name, slogan, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks']);
-    const websiteDetails = { name, slogan, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
+    const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks']);
+    const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
 
     await handleServiceResponse(res, WebsiteService.createWebsite, db, websiteDetails);
 };
@@ -38,8 +38,8 @@ const getWebsite = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAWebsite = async (req, res) => {
-    const { name, slogan, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks'], []);
-    const websiteDetails = { name, slogan, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
+    const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks'], []);
+    const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
 
     await handleServiceResponse(res, WebsiteService.updateAWebsite, db, websiteDetails);
 };

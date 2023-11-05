@@ -1,12 +1,20 @@
+import Joi from "joi";
 import { SharedSchema } from "../../../shared/sharedSchema.js";
+import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../constants/constants.js";
 
 /**
  * @description Joi validation schema for download's body data.
- * Validates the title, file object fields which include fieldname,
- * originalname, encoding, mimetype, destination, filename, path, and size.
  */
-const downloadBodySchema = SharedSchema.pdfFileSchema;
-const downloadParamsSchema = SharedSchema.downloadParamsSchema;
+const downloadBodySchema = SharedSchema.createFileWithTitleSchema(FILE_EXTENSION_TYPE_PDF, [MIME_TYPE_PDF]);
+
+/**
+ * @description Joi validation schema for download's params data.
+ */
+
+const downloadParamsSchema = Joi.object({
+    // The unique filename with a valid extension
+    fileName: SharedSchema.createFileNameSchema(FILE_EXTENSION_TYPE_PDF),
+}).required();
 
 /**
  * @namespace DownloadSchema

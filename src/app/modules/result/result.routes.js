@@ -1,70 +1,89 @@
 import express from "express";
-import {ResultValidators} from "./result.validator.js";
-import multerConfig from "../../middlewares/multerConfigurationMiddleware.js";
+import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import { ResultValidators } from "./result.validator.js";
 import { ResultController } from "./result.controller.js";
 
 const router = express.Router();
 
 /**
- * @route POST /result
- * @group result - Operations about noticing
- * @param {file.formData} file.required - The file to upload
- * @returns {object} 200 - An object containing details of the uploaded file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for uploading a file to the server.
- * This route uses `multer` middleware to handle file uploads,
- * and then passes the request to the controller.
+ * @swagger
+ * /:
+ *   homePagePost:
+ *     summary: Create a result.
+ *     description: Endpoint to add a new result to the system.
+ *     parameters:
+ *       - in: body
+ *         name: result
+ *         description: The result to create.
+ *         schema:
+ *           $ref: '#/definitions/Result'
+ *     responses:
+ *       200:
+ *         description: Result successfully created.
  */
-router.post(
-    "/",
-    multerConfig.single('file'),
+router.post("/", [
+    verifyAuthenticationTokenMiddleware,
     ResultValidators.resultBodyValidator,
     ResultController.createResultController
-);
+]);
 
 /**
- * @route GET /result
- * @group result - Operations about noticing
- * @returns {Array.<object>} 200 - An array of available results
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for retrieving a list of available files for result.
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Retrieve all results.
+ *     description: Endpoint to retrieve a list of all results.
+ *     responses:
+ *       200:
+ *         description: A list of results.
  */
-router.get(
-    "/",
+router.get("/", [
     ResultController.getResultListController
-);
+]);
 
 /**
- * @route GET /result/{fileName}
- * @group result - Operations about noticing
- * @param {string} fileName.path.required - Name of the file to be retrieved
- * @returns {object} 200 - An object containing details of the specified file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for retrieving a specific file based on the provided file name.
+ * @swagger
+ * /{fileName}:
+ *   get:
+ *     summary: Retrieve a specific result by ID.
+ *     description: Endpoint to get details of a result by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: fileName
+ *         required: true
+ *         description: ID of the result to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Result details.
  */
-router.get(
-    "/:fileName",
+router.get("/:fileName", [
     ResultValidators.resultParamsValidator,
     ResultController.getAResultController
-);
+]);
 
 /**
- * @route DELETE /result/{fileName}
- * @group result - Operations about noticing
- * @param {string} fileName.path.required - Name of the file to be deleted
- * @returns {object} 200 - An object confirming the deletion of the specified file
- * @returns {Error}  default - Unexpected error
- *
- * @description Route for deleting a specific file based on the provided file name.
+ * @swagger
+ * /{fileName}:
+ *   delete:
+ *     summary: Delete a result by ID.
+ *     description: Endpoint to delete a result by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: fileName
+ *         required: true
+ *         description: ID of the result to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Result successfully deleted.
  */
-router.delete(
-    "/:fileName",
+router.delete("/:fileName", [
+    verifyAuthenticationTokenMiddleware,
     ResultValidators.resultParamsValidator,
-    ResultValidators.deleteResultQueryValidator,
     ResultController.deleteAResultController
-);
+]);
 
 export default router;

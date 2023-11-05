@@ -1,7 +1,7 @@
 {
   "name": "school-management-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "APIs for providing endpoints for managing school data including students, teachers, courses, and more.",
   "main": "index.js",
   "type": "module",
   "engines": {
@@ -17,24 +17,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-rate-limit": "^7.1.3",
     "fs": "^0.0.1-security",
     "googleapis": "^128.0.0",
-    "gridfs-stream": "^1.1.1",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.2.0",
-    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
+    "rate-limit-mongo": "^2.3.2",
     "swagger-ui-express": "^5.0.0",
-    "useragent": "^2.3.0",
     "uuid": "^9.0.1",
-    "winston": "^3.11.0",
-    "yamljs": "^0.3.0"
+    "winston": "^3.11.0"
   }
 }

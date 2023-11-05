@@ -19,7 +19,7 @@ const updateById = async (db, collectionName, id, details) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

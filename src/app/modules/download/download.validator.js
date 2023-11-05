@@ -33,7 +33,7 @@ const downloadBodyValidator = validateWithSchema(DownloadSchema.downloadBodySche
  *
  * @returns {void}
  */
-const downloadParamsValidator = await validateWithSchema(DownloadSchema.downloadParamsSchema, 'params');
+const downloadParamsValidator = validateWithSchema(DownloadSchema.downloadParamsSchema, 'params');
 
 /**
  * @namespace DownloadValidators

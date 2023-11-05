@@ -17,6 +17,8 @@ import { ID_CONSTANTS } from "./website.constants.js";
 
 // Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
+import setMimeTypeFromExtension from "../../../helpers/setMimeTypeFromExtension.js";
+import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js"
 import logger from "../../../shared/logger.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
@@ -34,18 +36,34 @@ import getAllData from "../../../shared/getAllData.js";
  */
 const createWebsite = async (db, websiteDetails) => {
     try {
-        const { name, slogan, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId } = websiteDetails;
+        const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId } = websiteDetails;
         const existingDetails = await getAllData(db, WEBSITE_COLLECTION_NAME);
 
         if (existingDetails?.length > 0)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website details already exists");
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website details already exists. Please update website details");
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        const websiteLogoMimeType = setMimeTypeFromExtension(websiteLogo?.fileName);
+        const uploadLogoResponse = await HandleGoogleDrive.uploadFile(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogoMimeType);
+
+        if (!uploadLogoResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        
+        const websiteFavIconMimeType = setMimeTypeFromExtension(websiteFavIcon?.fileName);
+        const uploadFavIconResponse = await HandleGoogleDrive.uploadFile(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIconMimeType);
+
+        if (!uploadFavIconResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        
         const prepareWebsiteDetails = {
             id: `${ID_CONSTANTS?.WEBSITE_PREFIX}-${uuidv4().substr(0, 6)}`,
             name: name,
+            googleDriveLogoId: uploadLogoResponse?.fileId,
+            websiteLogo: uploadLogoResponse?.shareableLink,
+            googleDriveFavIconId: uploadFavIconResponse?.fileId,
+            websiteFavIcon: uploadFavIconResponse?.shareableLink,
             slogan: slogan,
             contact: contact,
             socialMediaLinks: socialMediaLinks,
@@ -60,6 +78,8 @@ const createWebsite = async (db, websiteDetails) => {
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
+        delete latestData.googleDriveLogoId;
+        delete latestData.googleDriveFavIconId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, "Website details added successfully")
@@ -106,14 +126,33 @@ const getWebsite = async (db) => {
  */
 const updateAWebsite = async (db, websiteDetails) => {
     try {
-        const { adminId, name, slogan, contact, socialMediaLinks, officialLinks, importantInformationLinks } = websiteDetails;
+        const { adminId, name, websiteLogo, websiteFavIcon, slogan, contact, socialMediaLinks, officialLinks, importantInformationLinks } = websiteDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        const oldWebsiteDetails = await db.collection(WEBSITE_COLLECTION_NAME).findOne({});
+        
+        console.log(oldWebsiteDetails)
+
+        await HandleGoogleDrive.deleteFile(oldWebsiteDetails?.googleDriveLogoId);
+        await HandleGoogleDrive.deleteFile(oldWebsiteDetails?.googleDriveFavIconId);
+
+        const uploadLogoResponse = await HandleGoogleDrive.uploadFile(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogo?.mimeType);
+
+        if (!uploadLogoResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            
+        const uploadFavIconResponse = await HandleGoogleDrive.uploadFile(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIcon?.mimeType);
+
+        if (!uploadFavIconResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
         const updatedWebsiteDetails = {
             ...(name && { name }),
             ...(slogan && { slogan }),
+            websiteLogo: uploadLogoResponse?.shareableLink,
+            googleDriveFavIconId: uploadFavIconResponse?.fileId,
             ...(contact && { contact }),
             ...(socialMediaLinks && { socialMediaLinks }),
             ...(officialLinks && { officialLinks }),
@@ -136,6 +175,8 @@ const updateAWebsite = async (db, websiteDetails) => {
         delete result.id;
         delete result.createdBy;
         delete result.modifiedBy;
+        delete result.googleDriveLogoId;
+        delete result.googleDriveFavIconId;
 
         return generateResponseData(result, true, STATUS_OK, `Website details updated successfully`);
     } catch (error) {
@@ -157,6 +198,11 @@ const deleteAWebsite = async (db, adminId) => {
     try {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        
+        const websiteDetails = await db.collection(WEBSITE_COLLECTION_NAME).findOne({});
+        
+        await HandleGoogleDrive.deleteFile(websiteDetails?.googleDriveLogoId);
+        await HandleGoogleDrive.deleteFile(websiteDetails?.googleDriveFavIconId);
 
         // Deletes all documents in the collection without deleting the collection itself
         const result = await db.collection(WEBSITE_COLLECTION_NAME).deleteMany({});

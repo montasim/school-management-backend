@@ -20,7 +20,7 @@ const createIdSchema = (prefix, ID_CONSTANTS) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

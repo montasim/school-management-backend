@@ -1,117 +1,66 @@
 import { RoutineService } from "./routine.service.js";
+import extractFromRequest from "../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 
 /**
- * @function createRoutineController
- * Handles the creation of a new routine.
  * @async
- * @param {object} req - The request object containing the database instance, file data and body parameters.
- * @param {object} res - The response object.
- * @returns {object} JSON response with data, success, status, and message.
+ * @function createRoutineController
+ * @description Controller for creating a new routine.
+ *
+ * @param {express.Request} req - Express request object containing routine details.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const createRoutineController = async (req, res) => {
-    try {
-        const {
-            title,
-            adminId
-        } = req?.body;
-        const newRoutineDetails = {
-            title,
-            adminId
-        };
-        const createRoutineServiceResponse = await RoutineService.createRoutineService(req?.db, newRoutineDetails, req.file);
+    const { title, fileName, fileBuffer, mimeType, adminId, db } = extractFromRequest(req, ['title', 'fileName', 'fileBuffer', 'mimeType']);
+    const newRoutineDetails = { title, fileName, fileBuffer, mimeType, adminId };
 
-        const returnData = {
-            data: createRoutineServiceResponse?.data,
-            success: createRoutineServiceResponse?.success,
-            status: createRoutineServiceResponse?.status,
-            message: createRoutineServiceResponse?.message,
-        };
-
-        return res.status(createRoutineServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, RoutineService.createRoutineService, db, newRoutineDetails);
 };
 
 /**
- * @function getRoutineListController
- * Retrieves a list of routines.
  * @async
- * @param {object} req - The request object containing the database instance.
- * @param {object} res - The response object.
- * @returns {object} JSON response with data, success, status, and message.
+ * @function getRoutineListController
+ * @description Controller for fetching all routines.
+ *
+ * @param {express.Request} req - Express request object.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const getRoutineListController = async (req, res) => {
-    try {
-        const getRoutineServiceListResponse = await RoutineService.getRoutineListService(req?.db);
-
-        const returnData = {
-            data: getRoutineServiceListResponse?.data,
-            success: getRoutineServiceListResponse?.success,
-            status: getRoutineServiceListResponse?.status,
-            message: getRoutineServiceListResponse?.message,
-        };
-
-        return res.status(getRoutineServiceListResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, RoutineService.getRoutineListService, req?.db);
 };
 
 /**
- * @function getARoutineController
- * Retrieves a specific routine based on the file name.
  * @async
- * @param {object} req - The request object containing the database instance and params.
- * @param {object} res - The response object.
- * @returns {object} JSON response with data, success, status, and message.
+ * @function getARoutineController
+ * @description Controller for fetching a specific routine by ID.
+ *
+ * @param {express.Request} req - Express request object containing routine ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const getARoutineController = async (req, res) => {
-    try {
-        const { fileName } = req?.params;
-        const getARoutineServiceResponse = await RoutineService.getARoutineService(req?.db, fileName);
+    const { fileName, db } = extractFromRequest(req, [], ['fileName']);
 
-        const returnData = {
-            data: getARoutineServiceResponse?.data,
-            success: getARoutineServiceResponse?.success,
-            status: getARoutineServiceResponse?.status,
-            message: getARoutineServiceResponse?.message,
-        };
-
-        return res.status(getARoutineServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, RoutineService.getARoutineService, db, fileName);
 };
 
 /**
- * @function deleteARoutineController
- * Deletes a specific routine based on the file name.
  * @async
- * @param {object} req - The request object containing the database instance, query and params.
- * @param {object} res - The response object.
- * @returns {object} JSON response with data, success, status, and message.
+ * @function deleteARoutineController
+ * @description Controller for deleting a routine by ID.
+ *
+ * @param {express.Request} req - Express request object containing routine ID in parameters.
+ * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteARoutineController = async (req, res) => {
-    try {
-        const { fileName } = req?.params;
-        const { adminId } = req?.query;
+    const { fileName, adminId, db } = extractFromRequest(req, [], ['fileName']);
 
-        const deletedRoutineServiceResponse = await RoutineService.deleteARoutineService(req?.db, adminId, fileName);
-
-        const returnData = {
-            data: deletedRoutineServiceResponse?.data,
-            success: deletedRoutineServiceResponse?.success,
-            status: deletedRoutineServiceResponse?.status,
-            message: deletedRoutineServiceResponse?.message,
-        };
-
-        return res.status(deletedRoutineServiceResponse?.status).json(returnData);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    await handleServiceResponse(res, RoutineService.deleteARoutineService, db, adminId, fileName);
 };
 
+/**
+ * @namespace RoutineController
+ * @description Group of controllers for handling routine operations.
+ */
 export const RoutineController = {
     createRoutineController,
     getRoutineListController,

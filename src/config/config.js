@@ -88,6 +88,7 @@ export const {
 // Email service configurations
 export const {
     EMAIL_SERVICE,
+    EMAIL_SERVICE_DESTINATION_OWNER_NAME,
     EMAIL_SERVICE_DESTINATION_EMAIL,
     EMAIL_SERVICE_PASSWORD,
     EMAIL_SERVICE_PORT,
@@ -107,7 +108,7 @@ export const {
 // Google Drive configurations
 export const {
     GOOGLE_DRIVE_CLIENT_EMAIL,
-    GOOGLE_DRIVE_PARENTS,
+    GOOGLE_DRIVE_FOLDER_KEY,
     GOOGLE_DRIVE_PRIVATE_KEY,
     GOOGLE_DRIVE_SCOPE,
 } = process.env;

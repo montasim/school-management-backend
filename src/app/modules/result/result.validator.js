@@ -1,111 +1,45 @@
 import { ResultSchema } from "./result.schema.js";
-import {STATUS_BAD_REQUEST} from "../../../constants/constants.js";
+import validateWithSchema from "../../../helpers/validateWithSchema.js";
 
 /**
- * Middleware function to validate the creation of a new result.
- *
- * @async
  * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * @async
+ * @description Middleware validator for result's body data.
+ *
+ * Uses the resultBodySchema from the ResultSchema to validate
+ * the body of the incoming request. This ensures that the result's
+ * information is in the correct format before processing.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
  * @returns {void}
  */
-const resultBodyValidator = async (req, res, next) => {
-    try {
-        const { error } = ResultSchema.resultBodySchema.validate(req?.body);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: STATUS_BAD_REQUEST,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const resultBodyValidator = validateWithSchema(ResultSchema.resultBodySchema, 'body');
 
 /**
- * Middleware function to validate fetching a result by its ID.
- *
- * @async
  * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * @async
+ * @description Middleware validator for result's ID in request parameters.
+ *
+ * Uses the resultParamsSchema from the ResultSchema to validate
+ * the result ID provided in the request parameters. This ensures that
+ * the result ID is in the correct format for further processing.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ *
  * @returns {void}
  */
-const resultParamsValidator = async (req, res, next) => {
-    try {
-        const { error } = ResultSchema.resultParamsSchema.validate(req?.params?.fileName);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: STATUS_BAD_REQUEST,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
+const resultParamsValidator = validateWithSchema(ResultSchema.resultParamsSchema, 'params');
 
 /**
- * Middleware to validate the query parameters for deleting a result.
- *
- * @async
- * @function
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Callback to the next middleware or route.
- * @throws Will return a 400 BAD_REQUEST if the validation fails.
- * @throws Will return a 500 INTERNAL_SERVER_ERROR if any error occurs during validation.
- */
-const deleteResultQueryValidator = async (req, res, next) => {
-    try {
-        const { error } = ResultSchema.deleteResultQuerySchema.validate(req?.query?.adminId);
-        const messages = error?.details?.map(detail => detail?.message);
-
-        if (error) {
-            const returnData = {
-                data: {},
-                success: false,
-                status: STATUS_BAD_REQUEST,
-                message: messages,
-            };
-
-            res.status(returnData?.status).json(returnData);
-        } else {
-            next();
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-};
-
-/**
- * Collection of validator middlewares related to result operations.
- * @typedef {Object} ResultValidators
- * @property {function} resultBodyValidator - Validates creation of new result.
- * @property {function} resultParamsValidator - Validates fetching a result by its ID.
+ * @namespace ResultValidators
+ * @description Exported result validators to be used in routes.
  */
 export const ResultValidators = {
     resultBodyValidator,
     resultParamsValidator,
-    deleteResultQueryValidator
 };

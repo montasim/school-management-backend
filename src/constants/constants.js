@@ -5,11 +5,12 @@
  * @description
  * - `ALLOWED_ORIGIN`: Specifies the allowed origins for CORS.
  * - `ALLOWED_METHODS`: Specifies the allowed HTTP methods for CORS.
+ * - `FILE_EXTENSION_TYPE`: Specifies the allowed file extension type.
  * - `LOG_LEVELS`: Defines the logging levels used in the application.
  * - `LOG_COLORS`: Specifies the colors corresponding to each log level.
+ * - `MIME_TYPE`: Specifies the mime type for the file.
  * - `SERVER_LOG_MESSAGE`: A message indicating that the server is running.
  * - `FORBIDDEN_MESSAGE`: A message indicating that the user does not have the necessary permissions.
- * - `UPLOAD_DIRECTORY_MAP`: Maps upload categories to their respective directories.
  */
 
 // CORS related
@@ -18,6 +19,12 @@ const ALLOWED_ORIGIN = [
     "http://localhost:3000",
 ];
 const ALLOWED_METHODS = "GET,PUT,POST,DELETE";
+
+// File extension related
+const FILE_EXTENSION_TYPE_PDF = "pdf";
+const FILE_EXTENSION_TYPE_JPG = "jpg";
+const FILE_EXTENSION_TYPE_PNG = "png";
+const FILE_EXTENSION_TYPE_ICO = "ico";
 
 // Log related
 const LOG_LEVELS = {
@@ -37,6 +44,13 @@ const LOG_COLORS = {
     debug: 'blue',
 };
 
+// MIME types
+const MIME_TYPE_PDF = "application/pdf";
+const MIME_TYPE_JPG = "image/jpeg";
+const MIME_TYPE_PNG = "image/png";
+const MIME_TYPE_ICO = "image/x-icon";
+
+
 // Status code
 const STATUS_OK = 200;
 const STATUS_BAD_REQUEST = 400;
@@ -51,18 +65,19 @@ const SERVER_LOG_MESSAGE = "Server running on port";
 const SERVER_DOWN_MESSAGE = "Server is down 🥲🥲🥲";
 const FORBIDDEN_MESSAGE = "You do not have necessary permission";
 
-const UPLOAD_DIRECTORY_MAP = {
-    'download': 'download',
-    'notice': 'notice',
-    'result': 'result',
-    'routine': 'routine'
-};
-
 export {
     ALLOWED_ORIGIN,
     ALLOWED_METHODS,
+    FILE_EXTENSION_TYPE_PDF,
+    FILE_EXTENSION_TYPE_JPG,
+    FILE_EXTENSION_TYPE_PNG,
+    FILE_EXTENSION_TYPE_ICO,
     LOG_LEVELS,
     LOG_COLORS,
+    MIME_TYPE_PDF,
+    MIME_TYPE_JPG,
+    MIME_TYPE_PNG,
+    MIME_TYPE_ICO,
     STATUS_OK,
     STATUS_BAD_REQUEST,
     STATUS_UNAUTHORIZED,
@@ -73,5 +88,4 @@ export {
     SERVER_LOG_MESSAGE,
     SERVER_DOWN_MESSAGE,
     FORBIDDEN_MESSAGE,
-    UPLOAD_DIRECTORY_MAP,
 };

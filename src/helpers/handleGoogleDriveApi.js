@@ -1,18 +1,19 @@
 import { google } from 'googleapis';
-import logger from "./logger.js";
-import authorizeGoogleDrive from "../helpers/authorizeGoogleDrive.js";
+import logger from "../shared/logger.js";
+import authorizeGoogleDrive from "./authorizeGoogleDrive.js";
+import { GOOGLE_DRIVE_FOLDER_KEY } from "../config/config.js";
 
 /**
  * Uploads a file to Google Drive.
  *
  * @async
  * @function
- * @param uniqueFileName
+ * @param fileName
  * @param fileBuffer
  * @param mimeType
  * @returns {Promise<Object>} Returns an object containing the file ID and shareable link.
  */
-const uploadFile = async (uniqueFileName, fileBuffer, mimeType) => {
+const uploadFile = async ( fileName, fileBuffer, mimeType ) => {
     try {
         const authorizationClient = await authorizeGoogleDrive();
         const drive = google.drive({
@@ -20,8 +21,8 @@ const uploadFile = async (uniqueFileName, fileBuffer, mimeType) => {
             auth: authorizationClient
         });
         const fileMetaData = {
-            name: uniqueFileName,
-            parents: ['1de6FsdZyPYHh4tjqPbf4NCE9cpKWHAB6'],
+            name: fileName,
+            parents: [GOOGLE_DRIVE_FOLDER_KEY],
         };
 
         // Upload the file
@@ -68,7 +69,7 @@ const uploadFile = async (uniqueFileName, fileBuffer, mimeType) => {
  * @param {string} fileId - The ID of the file to be deleted.
  * @returns {Promise<Object>} Returns the response from Google Drive API.
  */
-const deleteFile = async (fileId) => {
+const deleteFile = async ( fileId ) => {
     try {
         const authorizationClient = await authorizeGoogleDrive();
         const drive = google.drive({

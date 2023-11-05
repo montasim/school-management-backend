@@ -197,3 +197,24 @@ Give credit to any individuals, projects, or resources that helped or inspired y
 - `.vercel.json`
     - Configurations for deploying on [Vercel](https://vercel.com).
 
+
+## Important notes
+
+<details>
+    <summary>
+        Why need mimeType in the req body?
+    </summary>
+
+    In many cases, it's not possible to accurately determine the MIME type of binary data solely based on the data itself, especially when you don't have additional context or metadata. The MIME type is typically determined by examining the file extension, content, or other contextual information.
+
+    In your example, you have a base64-encoded PDF file, but without any additional information or context, it's challenging to determine the MIME type definitively. The MIME type "application/pdf" is a common type for PDF files, but it's not the only possible MIME type.
+
+    To accurately determine the MIME type, you would typically rely on metadata provided by the sender or an external source. If the sender of this data does not provide the MIME type separately, you may need to make assumptions based on the context in which you are using the data. However, these assumptions may not always be accurate.
+
+    In summary, while you can make educated guesses based on the content and structure of the data, there's no foolproof way to determine the MIME type of binary data without additional information or context.
+</details>
+
+## Tutorials
+
+1. [The Ultimate Guide: Uploading Files to Google Drive with NodeJS using Google Drive APIs](https://www.youtube.com/watch?v=bkaQTLCBBeo&t=600s)
+2. [How I can upload file to google drive with google drive api?](https://stackoverflow.com/questions/65181932/how-i-can-upload-file-to-google-drive-with-google-drive-api)

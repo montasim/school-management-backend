@@ -18,11 +18,9 @@ const isValidById = async (db, collectionName, requestedId) => {
 
         return !!requestedIdValidity;
     } catch (error) {
-        // Log the error using the logger
         logger.error(error);
 
-        // Propagate the error to the calling function
-        throw error;
+        return error;
     }
 };
 
