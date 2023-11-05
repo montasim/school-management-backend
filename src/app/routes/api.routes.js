@@ -3,6 +3,7 @@ import express from "express";
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import announcementRoutes from "../modules/announcement/announcement.routes.js";
 import authenticationRoutes from "../modules/authentication/authentication.routes.js";
+import blogRoutes from "../modules/blog/blog.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
 import contactRoutes from "../modules/contact/contact.routes.js";
 import dashboardRoutes from "../modules/dashboard/dashboard.routes.js";
@@ -53,7 +54,7 @@ router.use(`/authentication`, authenticationRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use(`/blog`, blogRoutes);
+router.use(`/blog`, blogRoutes);
 
 /**
  * Sets up versioned routing for the category module.
