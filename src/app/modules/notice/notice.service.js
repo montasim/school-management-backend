@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 // Absolute imports
-import { DOWNLOAD_COLLECTION_NAME } from "../../../config/config.js";
+import { NOTICE_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -40,7 +40,7 @@ const createNoticeService = async (db, newNoticeDetails) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
+        if (await findByFileName(db, NOTICE_COLLECTION_NAME, fileName))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${fileName} already exists. Please select a different file name`)
 
         const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(fileName, fileBuffer, mimeType);
@@ -58,8 +58,8 @@ const createNoticeService = async (db, newNoticeDetails) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, noticeDetails);
-        const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, noticeDetails?.id);
+        const result = await addANewEntryToDatabase(db, NOTICE_COLLECTION_NAME, noticeDetails);
+        const latestData = await findById(db, NOTICE_COLLECTION_NAME, noticeDetails?.id);
 
         delete latestData?.googleDriveFileId;
 
@@ -83,7 +83,7 @@ const createNoticeService = async (db, newNoticeDetails) => {
  */
 const getNoticeListService = async (db) => {
     try {
-        const notices = await getAllData(db, DOWNLOAD_COLLECTION_NAME);
+        const notices = await getAllData(db, NOTICE_COLLECTION_NAME);
 
         return notices?.length
             ? generateResponseData(notices, true, STATUS_OK, `${notices?.length} notice found`)
@@ -106,7 +106,7 @@ const getNoticeListService = async (db) => {
  */
 const getANoticeService = async (db, fileName) => {
     try {
-        const notice = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+        const notice = await findByFileName(db, NOTICE_COLLECTION_NAME, fileName);
 
         delete notice?.googleDriveFileId;
 
@@ -135,11 +135,11 @@ const deleteANoticeService = async (db, adminId, fileName) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const fileDetails = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+        const fileDetails = await findByFileName(db, NOTICE_COLLECTION_NAME, fileName);
 
         if (fileDetails) {
             const response = await HandleGoogleDrive.deleteFile(fileDetails?.googleDriveFileId);
-            const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+            const result = await deleteByFileName(db, NOTICE_COLLECTION_NAME, fileName);
 
             return result
                 ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)
