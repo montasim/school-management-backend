@@ -18,7 +18,7 @@ import {
  * @throws {Error} Throws an error if there is an issue with sending the email.
  * @returns {Promise<void>} Returns a promise that resolves when the email is sent successfully.
  */
-const sendEmailToDefaultEmailAddress = async (subject, html) => {
+const sendEmailToDefaultEmailAddress = async (emailAddress = EMAIL_SERVICE_DESTINATION_EMAIL, subject, html) => {
     try {
         // Create a transporter object using the configuration from environment variables
         const transporter = nodemailer.createTransport({
@@ -34,7 +34,7 @@ const sendEmailToDefaultEmailAddress = async (subject, html) => {
         // Send the email using the transporter
         return await transporter.sendMail({
             from: EMAIL_SERVICE_USER, // Sender's email address
-            to: EMAIL_SERVICE_DESTINATION_EMAIL, // Receiver's email address
+            to: emailAddress, // Receiver's email address
             subject: subject, // Subject of the email
             html: html, // HTML content of the email
         });

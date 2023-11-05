@@ -88,6 +88,7 @@ export const {
 // Email service configurations
 export const {
     EMAIL_SERVICE,
+    EMAIL_SERVICE_DESTINATION_OWNER_NAME,
     EMAIL_SERVICE_DESTINATION_EMAIL,
     EMAIL_SERVICE_PASSWORD,
     EMAIL_SERVICE_PORT,
