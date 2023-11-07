@@ -69,7 +69,7 @@ const createDownloadService = async (db, newDownloadDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -91,7 +91,7 @@ const getDownloadListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -116,7 +116,7 @@ const getADownloadService = async (db, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -150,7 +150,7 @@ const deleteADownloadService = async (db, adminId, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

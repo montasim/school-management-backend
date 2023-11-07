@@ -88,7 +88,7 @@ const createWebsite = async (db, websiteDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -111,7 +111,7 @@ const getWebsite = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -132,22 +132,22 @@ const updateAWebsite = async (db, websiteDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const oldWebsiteDetails = await db.collection(WEBSITE_COLLECTION_NAME).findOne({});
-        
-        console.log(oldWebsiteDetails)
 
         await HandleGoogleDrive.deleteFile(oldWebsiteDetails?.googleDriveLogoId);
         await HandleGoogleDrive.deleteFile(oldWebsiteDetails?.googleDriveFavIconId);
 
-        const uploadLogoResponse = await HandleGoogleDrive.uploadFile(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogo?.mimeType);
+        const websiteLogoMimeType = setMimeTypeFromExtension(websiteLogo?.fileName);
+        const uploadLogoResponse = await HandleGoogleDrive.uploadFile(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogoMimeType);
 
         if (!uploadLogoResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-            
-        const uploadFavIconResponse = await HandleGoogleDrive.uploadFile(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIcon?.mimeType);
+        
+        const websiteFavIconMimeType = setMimeTypeFromExtension(websiteFavIcon?.fileName);
+        const uploadFavIconResponse = await HandleGoogleDrive.uploadFile(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIconMimeType);
 
         if (!uploadFavIconResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
+       
         const updatedWebsiteDetails = {
             ...(name && { name }),
             ...(slogan && { slogan }),
@@ -181,7 +181,7 @@ const updateAWebsite = async (db, websiteDetails) => {
         return generateResponseData(result, true, STATUS_OK, `Website details updated successfully`);
     } catch (error) {
         logger.error(error);
-        throw error;
+        return error;
     }
 };
 
@@ -212,7 +212,8 @@ const deleteAWebsite = async (db, adminId) => {
             : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `No website details were found to delete`);
     } catch (error) {
         logger.error(error);
-        throw error;
+
+        return error;
     }
 };
 

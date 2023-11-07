@@ -17,7 +17,8 @@ import { ID_CONSTANTS } from "./homePageCarousel.constants.js";
 
 // Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
+import setMimeTypeFromExtension from "../../../helpers/setMimeTypeFromExtension.js";
+import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js"
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -37,15 +38,22 @@ import getAllData from "../../../shared/getAllData.js";
  */
 const createHomePageCarouselService = async (db, newHomePageCarouselDetails) => {
     try {
-        const { imageDescription, imageLink, adminId } = newHomePageCarouselDetails;
+        const { carouselImageDescription, carouselImage, adminId } = newHomePageCarouselDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        const carouselImageMimeType = setMimeTypeFromExtension(carouselImage?.fileName);
+        const uploadCarouselImageResponse = await HandleGoogleDrive.uploadFile(carouselImage?.fileName, carouselImage?.fileBuffer, carouselImageMimeType);
+
+        if (!uploadCarouselImageResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            
         const homePageCarouselDetails = {
             id: `${ID_CONSTANTS?.HOME_PAGE_CAROUSEL_PREFIX}-${uuidv4().substr(0, 6)}`,
-            imageDescription,
-            imageLink,
+            carouselImageDescription,
+            googleDriveImageId: uploadCarouselImageResponse?.fileId,
+            carouselImage: uploadCarouselImageResponse?.shareableLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -55,15 +63,16 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails) => 
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
+        delete latestData.googleDriveImageId;
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, "Carousel created successfully")
+            ? generateResponseData(latestData, true, STATUS_OK, "Carousel added successfully")
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -86,7 +95,7 @@ const getHomePageCarouselListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -105,6 +114,7 @@ const getAHomePageCarouselService = async (db, homePageCarouselId) => {
 
         delete homePageCarousel?.createdBy;
         delete homePageCarousel?.modifiedBy;
+        delete homePageCarousel?.googleDriveImageId;
 
         return homePageCarousel
             ? generateResponseData(homePageCarousel, true, STATUS_OK, `${homePageCarouselId} found successfully`)
@@ -112,7 +122,7 @@ const getAHomePageCarouselService = async (db, homePageCarouselId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -128,14 +138,28 @@ const getAHomePageCarouselService = async (db, homePageCarouselId) => {
  */
 const updateAHomePageCarouselService = async (db, homePageCarouselId, newHomePageCarouselDetails) => {
     try {
-        const { imageDescription, imageLink, adminId } = newHomePageCarouselDetails;
+        const { carouselImageDescription, carouselImage, adminId } = newHomePageCarouselDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        const oldDetails = await findById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId);
+
+        if (!oldDetails)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageCarouselId} not found`);
+
+        await HandleGoogleDrive.deleteFile(oldDetails?.googleDriveImageId);
+
+        const carouselImageMimeType = setMimeTypeFromExtension(carouselImage?.fileName);
+        const uploadCarouselImageResponse = await HandleGoogleDrive.uploadFile(carouselImage?.fileName, carouselImage?.fileBuffer, carouselImageMimeType);
+
+        if (!uploadCarouselImageResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+           
         const updatedHomePageCarouselDetails = {
-            ...(imageDescription && { imageDescription }),
-            ...(imageLink && { imageLink }),
+            ...(carouselImageDescription && { carouselImageDescription }),
+            googleDriveImageId: uploadCarouselImageResponse?.fileId,
+            carouselImage: uploadCarouselImageResponse?.shareableLink,
             modifiedBy: adminId,
             modifiedAt: new Date(),
         };
@@ -152,7 +176,7 @@ const updateAHomePageCarouselService = async (db, homePageCarouselId, newHomePag
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -171,9 +195,13 @@ const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) =
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId))
+        const oldDetails = await findById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId);
+
+        if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageCarouselId} not found`);
 
+        await HandleGoogleDrive.deleteFile(oldDetails?.googleDriveImageId);
+        
         const result = await deleteById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId);
 
         return result
@@ -182,7 +210,7 @@ const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) =
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

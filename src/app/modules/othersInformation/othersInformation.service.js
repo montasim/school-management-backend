@@ -61,7 +61,7 @@ const createOthersInformationService = async (db, newOthersInformationDetails) =
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -84,7 +84,7 @@ const getOthersInformationListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -107,7 +107,7 @@ const getAOthersInformationService = async (db, othersInformationId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -145,7 +145,7 @@ const updateAOthersInformationService = async (db, othersInformationId, newOther
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -175,7 +175,7 @@ const deleteAOthersInformationService = async (db, adminId, othersInformationId)
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

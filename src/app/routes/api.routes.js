@@ -3,9 +3,11 @@ import express from "express";
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import announcementRoutes from "../modules/announcement/announcement.routes.js";
 import authenticationRoutes from "../modules/authentication/authentication.routes.js";
+import blogRoutes from "../modules/blog/blog.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
 import contactRoutes from "../modules/contact/contact.routes.js";
 import dashboardRoutes from "../modules/dashboard/dashboard.routes.js";
+import designationRoutes from "../modules/designation/designation.routes.js";
 import downloadRoutes from "../modules/download/download.routes.js";
 import levelRoutes from "../modules/level/level.routes.js";
 import homePageRoutes from "./homePage.routes.js";
@@ -53,7 +55,7 @@ router.use(`/authentication`, authenticationRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use(`/blog`, blogRoutes);
+router.use(`/blog`, blogRoutes);
 
 /**
  * Sets up versioned routing for the category module.
@@ -81,6 +83,16 @@ router.use("/contact", contactRoutes);
  * @memberof module:routes
  */
 router.use(`/dashboard`, dashboardRoutes);
+router.use("/contact", contactRoutes);
+
+/**
+ * Sets up routing for the designation module.
+ * @name /designation
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use(`/designation`, designationRoutes);
 
 /**
  * Sets up versioned routing for the download module.

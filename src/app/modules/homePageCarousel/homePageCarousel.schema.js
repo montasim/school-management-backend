@@ -1,6 +1,12 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './homePageCarousel.constants.js';
+import { SharedSchema } from "../../../shared/sharedSchema.js";
 import createIdSchema from "../../../shared/createIdSchema.js";
+import { 
+    FILE_EXTENSION_TYPE_PNG, 
+    MIME_TYPE_PNG, 
+    MIME_TYPE_JPG,
+ } from "../../../constants/constants.js";
 
 const homePageCarouselParamsSchema = Joi.object({
     homePageCarouselId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_CAROUSEL_PREFIX, ID_CONSTANTS).required()
@@ -15,16 +21,18 @@ const homePageCarouselParamsSchema = Joi.object({
  * - `image`: Should be a string that matches the IMAGE_PATTERN.
  */
 const homePageCarouselBodySchema = Joi.object({
-    imageDescription: Joi.string().min(1).max(100).required().messages({
-        'string.base': 'Image description must be a string.',
-        'string.min': 'Image description must be at least 1 character long.',
-        'string.max': 'Image description must not exceed 100 characters.',
-        'any.required': 'Image description is required.'
+    carouselImageDescription: Joi
+        .string()
+        .min(1)
+        .max(100)
+        .required()
+        .messages({
+            'string.base': 'Image description must be a string.',
+            'string.min': 'Image description must be at least 1 character long.',
+            'string.max': 'Image description must not exceed 100 characters.',
+            'any.required': 'Image description is required.'
     }),
-    imageLink: Joi.string().uri().required().messages({
-        'string.uri': 'Image link must be a valid URI.',
-        'any.required': 'Image link is required.'
-    }),
+    carouselImage: SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_PNG, [MIME_TYPE_PNG, MIME_TYPE_JPG]),
 });
 
 /**

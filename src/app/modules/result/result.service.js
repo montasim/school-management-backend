@@ -69,7 +69,7 @@ const createResultService = async (db, newResultDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -91,7 +91,7 @@ const getResultListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -116,7 +116,7 @@ const getAResultService = async (db, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -150,7 +150,7 @@ const deleteAResultService = async (db, adminId, fileName) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

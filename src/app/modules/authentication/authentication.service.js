@@ -66,7 +66,7 @@ const loginService = async (db,  loginDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -89,7 +89,7 @@ const verifyUserService = async (db,  adminId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -136,7 +136,7 @@ const signupService = async (db, signupDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -191,7 +191,7 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -217,7 +217,7 @@ const deleteUserService = async (db, deleteAdminDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

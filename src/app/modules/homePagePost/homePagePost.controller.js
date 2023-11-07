@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createHomePagePost = async (req, res) => {
-    const { title, category, imageLink, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'imageLink', 'description']);
-    const newHomePagePost = { title, category, imageLink, description, adminId };
+    const { title, category, postImage, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'postImage', 'description']);
+    const newHomePagePost = { title, category, postImage, description, adminId };
 
     await handleServiceResponse(res, HomePagePostService.createHomePagePost, db, newHomePagePost);
 };
@@ -52,8 +52,8 @@ const getAHomePagePost = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAHomePagePost = async (req, res) => {
-    const { homePagePostId, title, category, imageLink, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'imageLink', 'description'], ['homePagePostId']);
-    const updatedHomePagePostDetails = { title, category, imageLink, description, adminId };
+    const { homePagePostId, title, category, postImage, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'postImage', 'description'], ['homePagePostId']);
+    const updatedHomePagePostDetails = { title, category, postImage, description, adminId };
 
     await handleServiceResponse(res, HomePagePostService.updateAHomePagePost, db, homePagePostId, updatedHomePagePostDetails);
 };

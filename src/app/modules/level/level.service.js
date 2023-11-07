@@ -64,7 +64,7 @@ const createLevelService = async (db, newLevelDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -87,7 +87,7 @@ const getLevelListService = async (db) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -113,7 +113,7 @@ const getALevelService = async (db, levelId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -152,7 +152,7 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 
@@ -182,7 +182,7 @@ const deleteALevelService = async (db, adminId, levelId) => {
     } catch (error) {
         logger.error(error);
 
-        throw error;
+        return error;
     }
 };
 

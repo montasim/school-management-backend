@@ -11,8 +11,8 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createHomePageCarouselController = async (req, res) => {
-    const { imageDescription, imageLink, adminId, db } = extractFromRequest(req, ['imageDescription', 'imageLink']);
-    const newHomePageCarousel = { imageDescription, imageLink, adminId };
+    const { carouselImageDescription, carouselImage, adminId, db } = extractFromRequest(req, ['carouselImageDescription', 'carouselImage']);
+    const newHomePageCarousel = { carouselImageDescription, carouselImage, adminId };
 
     await handleServiceResponse(res, HomePageCarouselService.createHomePageCarouselService, db, newHomePageCarousel);
 };
@@ -52,8 +52,8 @@ const getAHomePageCarouselController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAHomePageCarouselController = async (req, res) => {
-    const { homePageCarouselId, imageDescription, imageLink, adminId, db } = extractFromRequest(req, ['imageDescription', 'imageLink'], ['homePageCarouselId']);
-    const updatedHomePageCarouselDetails = { imageDescription, imageLink, adminId };
+    const { homePageCarouselId, carouselImageDescription, carouselImage, adminId, db } = extractFromRequest(req, ['carouselImageDescription', 'carouselImage'], ['homePageCarouselId']);
+    const updatedHomePageCarouselDetails = { carouselImageDescription, carouselImage, adminId };
 
     await handleServiceResponse(res, HomePageCarouselService.updateAHomePageCarouselService, db, homePageCarouselId, updatedHomePageCarouselDetails);
 };

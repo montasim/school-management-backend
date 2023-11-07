@@ -106,7 +106,8 @@ const getSummaryService = async (db, adminId) => {
         return generateResponseData(returnData, true, STATUS_OK, "Summary fetched successfully");
     } catch (error) {
         logger.error(error);
-        throw error;
+        
+        return error;
     }
 };
 
