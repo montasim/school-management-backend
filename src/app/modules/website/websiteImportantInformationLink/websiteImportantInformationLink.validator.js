@@ -1,5 +1,5 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
-import { WebsiteSchema } from "./website.schema.js";
+import validateWithSchema from "../../../../helpers/validateWithSchema.js";
+import { WebsiteImportantInformationLinkSchema } from "./websiteImportantInformationLink.schema.js";
 
 /**
  * @function
@@ -16,7 +16,7 @@ import { WebsiteSchema } from "./website.schema.js";
  *
  * @returns {void}
  */
-const websiteBodyValidator = validateWithSchema(WebsiteSchema.websiteBodySchema, 'body');
+const websiteBodyValidator = validateWithSchema(WebsiteImportantInformationLinkSchema.websiteBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const websiteBodyValidator = validateWithSchema(WebsiteSchema.websiteBodySchema,
  *
  * @returns {void}
  */
-const websiteParamsValidator = await validateWithSchema(WebsiteSchema.websiteParamsSchema, 'params');
+const websiteParamsValidator = await validateWithSchema(WebsiteImportantInformationLinkSchema.websiteParamsSchema, 'params');
 
 /**
  * @namespace WebsiteValidators

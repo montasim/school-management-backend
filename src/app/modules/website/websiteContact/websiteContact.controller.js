@@ -1,6 +1,6 @@
-import { WebsiteService } from "./website.service.js";
-import extractFromRequest from "../../../helpers/extractFromRequest.js";
-import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+import { WebsiteContactService } from "./websiteContact.service.js";
+import extractFromRequest from "../../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../../helpers/handleServiceResponse.js";
 
 /**
  * @async
@@ -14,7 +14,7 @@ const createWebsite = async (req, res) => {
     const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks']);
     const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
 
-    await handleServiceResponse(res, WebsiteService.createWebsite, db, websiteDetails);
+    await handleServiceResponse(res, WebsiteContactService.createWebsite, db, websiteDetails);
 };
 
 /**
@@ -26,7 +26,7 @@ const createWebsite = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getWebsite = async (req, res) => {
-    await handleServiceResponse(res, WebsiteService.getWebsite, req?.db);
+    await handleServiceResponse(res, WebsiteContactService.getWebsite, req?.db);
 };
 
 /**
@@ -41,7 +41,7 @@ const updateAWebsite = async (req, res) => {
     const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks'], []);
     const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
 
-    await handleServiceResponse(res, WebsiteService.updateAWebsite, db, websiteDetails);
+    await handleServiceResponse(res, WebsiteContactService.updateAWebsite, db, websiteDetails);
 };
 
 /**
@@ -55,14 +55,14 @@ const updateAWebsite = async (req, res) => {
 const deleteAWebsite = async (req, res) => {
     const { websiteId, adminId, db } = extractFromRequest(req, [], ['websiteId']);
 
-    await handleServiceResponse(res, WebsiteService.deleteAWebsite, db, adminId, websiteId);
+    await handleServiceResponse(res, WebsiteContactService.deleteAWebsite, db, adminId, websiteId);
 };
 
 /**
  * @namespace WebsiteController
  * @description Group of controllers for handling website operations.
  */
-export const WebsiteController = {
+export const WebsiteContactController = {
     createWebsite,
     getWebsite,
     updateAWebsite,

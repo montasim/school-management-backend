@@ -1,7 +1,7 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
-import { WebsiteValidators } from "./website.validator.js";
-import { WebsiteController } from "./website.controller.js";
+import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import { WebsiteValidators } from "./websiteImportantInformationLink.validator.js";
+import { WebsiteImportantInformationLinkController } from "./websiteImportantInformationLink.controller.js";
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ const router = express.Router();
 router.post("/", [
     verifyAuthenticationTokenMiddleware,
     WebsiteValidators.websiteBodyValidator,
-    WebsiteController.createWebsite
+    WebsiteImportantInformationLinkController.createWebsite
 ]);
 
 /**
@@ -38,7 +38,7 @@ router.post("/", [
  *         description: Website details.
  */
 router.get("/", [
-    WebsiteController.getWebsite
+    WebsiteImportantInformationLinkController.getWebsite
 ]);
 
 /**
@@ -66,7 +66,7 @@ router.get("/", [
 router.put("/", [
     verifyAuthenticationTokenMiddleware,
     WebsiteValidators.websiteBodyValidator,
-    WebsiteController.updateAWebsite
+    WebsiteImportantInformationLinkController.updateAWebsite
 ]);
 
 /**
@@ -88,7 +88,7 @@ router.put("/", [
  */
 router.delete("/", [
     verifyAuthenticationTokenMiddleware,
-    WebsiteController.deleteAWebsite
+    WebsiteImportantInformationLinkController.deleteAWebsite
 ]);
 
 export default router;

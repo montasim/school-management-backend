@@ -17,7 +17,7 @@ import othersInformationCategoryRoutes from "../modules/othersInformationCategor
 import resultRoutes from "../modules/result/result.routes.js";
 import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
-import websiteRoutes from "../modules/website/website.routes.js";
+import websiteRoutes from "../routes/website.routes.js";
 
 const router = express.Router();
 

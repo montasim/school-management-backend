@@ -1,14 +1,14 @@
 import Joi from "joi";
-import { ID_CONSTANTS } from './website.constants.js';
-import { SharedSchema } from "../../../shared/sharedSchema.js";
-import createIdSchema from "../../../shared/createIdSchema.js";
+import { ID_CONSTANTS } from './websiteImportantInformationLink.constants.js';
+import { SharedSchema } from "../../../../shared/sharedSchema.js";
+import createIdSchema from "../../../../shared/createIdSchema.js";
 import { 
     FILE_EXTENSION_TYPE_PNG, 
     FILE_EXTENSION_TYPE_ICO,
     MIME_TYPE_PNG, 
     MIME_TYPE_JPG,
     MIME_TYPE_ICO
- } from "../../../constants/constants.js";
+ } from "../../../../constants/constants.js";
 
 /**
  * Schema to validate the 'websiteId' parameter in request.
@@ -179,7 +179,7 @@ const websiteBodySchema = Joi.object({
  * - `websiteBodySchema`: Validates the body data of a website.
  * - `websiteParamsSchema`: Validates the website ID in request parameters.
  */
-export const WebsiteSchema = {
+export const WebsiteImportantInformationLinkSchema = {
     websiteBodySchema,
     websiteParamsSchema,
 };
