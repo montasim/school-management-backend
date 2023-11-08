@@ -4,10 +4,10 @@ import { WebsiteContactSchema } from "./websiteContact.schema.js";
 /**
  * @function
  * @async
- * @description Middleware validator for website configuration body data.
+ * @description Middleware validator for website contact body data.
  *
- * Uses the websiteConfigurationBodySchema from the WebsiteConfigurationBodySchema to validate
- * the body of the incoming request. This ensures that the website configuration
+ * Uses the websiteContactBodySchema from the WebsiteContactBodySchema to validate
+ * the body of the incoming request. This ensures that the website contact
  * information is in the correct format before processing.
  *
  * @param {Object} req - Express request object.
@@ -16,12 +16,12 @@ import { WebsiteContactSchema } from "./websiteContact.schema.js";
  *
  * @returns {void}
  */
-const websiteConfigurationBodyValidator = validateWithSchema(WebsiteContactSchema.websiteBodySchema, 'body');
+const websiteContactBodyValidator = validateWithSchema(WebsiteContactSchema.websiteContactBodySchema, 'body');
 
 /**
  * @namespace WebsiteValidators
- * @description Exported website configuration validators to be used in routes.
+ * @description Exported website contact validators to be used in routes.
  */
-export const WebsiteConfigurationValidators = {
-    websiteConfigurationBodyValidator
+export const WebsiteContactValidators = {
+    websiteContactBodyValidator
 };

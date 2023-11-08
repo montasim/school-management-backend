@@ -16,7 +16,7 @@ import { WebsiteConfigurationSchema } from "./websiteConfiguration.schema.js";
  *
  * @returns {void}
  */
-const websiteConfigurationBodyValidator = validateWithSchema(WebsiteConfigurationSchema.websiteBodySchema, 'body');
+const websiteConfigurationBodyValidator = validateWithSchema(WebsiteConfigurationSchema.websiteConfigurationBodySchema, 'body');
 
 /**
  * @namespace WebsiteValidators

@@ -1,5 +1,6 @@
 import express from "express";
 import websiteConfigurationRoutes from "../modules/website/websiteConfiguration/websiteConfiguration.routes.js";
+import websiteContactRoutes from "../modules/website/websiteContact/websiteContact.routes.js";
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.use("/configuration", websiteConfigurationRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use("/contact", websiteContactRoutes);
+router.use("/contact", websiteContactRoutes);
 
 /**
  * Sets up versioned routing for the social media module.

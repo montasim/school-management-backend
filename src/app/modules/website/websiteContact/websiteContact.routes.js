@@ -1,6 +1,6 @@
 import express from "express";
 import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
-import { WebsiteConfigurationValidators } from "./websiteContact.validator.js";
+import { WebsiteContactValidators } from "./websiteContact.validator.js";
 import { WebsiteContactController } from "./websiteContact.controller.js";
 
 const router = express.Router();
@@ -8,74 +8,74 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   websiteConfiguration:
- *     summary: Create a website configuration.
- *     description: Endpoint to add a website configuration to the system.
+ *   websiteContact:
+ *     summary: Create a website contact.
+ *     description: Endpoint to add a website contact to the system.
  *     parameters:
  *       - in: body
- *         name: websiteConfiguration
- *         description: The website configuration to create.
+ *         name: websiteContact
+ *         description: The website contact to create.
  *         schema:
- *           $ref: '#/definitions/WebsiteConfiguration'
+ *           $ref: '#/definitions/WebsiteContact'
  *     responses:
  *       200:
- *         description: Website configuration successfully created.
+ *         description: Website contact successfully created.
  */
 router.post("/", [
     verifyAuthenticationTokenMiddleware,
-    WebsiteConfigurationValidators.websiteConfigurationBodyValidator,
-    WebsiteContactController.createConfigurationWebsite
+    WebsiteContactValidators.websiteContactBodyValidator,
+    WebsiteContactController.createWebsiteContact
 ]);
 
 /**
  * @swagger
  * /:
  *   get:
- *     summary: Retrieve a website configuration.
+ *     summary: Retrieve a website contact.
  *     description: Endpoint to get details of a website.
  *     responses:
  *       200:
- *         description: Website configuration.
+ *         description: Website contact.
  */
 router.get("/", [
-    WebsiteContactController.getConfigurationWebsite
+    WebsiteContactController.getWebsiteContact
 ]);
 
 /**
  * @swagger
  * /:
  *   put:
- *     summary: Update a website configuration.
+ *     summary: Update a website contact.
  *     description: Endpoint to update the details of a website.
  *     parameters:
  *       - in: body
  *         name: website
  *         description: Updated details of the website.
  *         schema:
- *           $ref: '#/definitions/WebsiteConfiguration'
+ *           $ref: '#/definitions/WebsiteContact'
  *     responses:
  *       200:
- *         description: Website configuration successfully updated.
+ *         description: Website contact successfully updated.
  */
 router.put("/", [
     verifyAuthenticationTokenMiddleware,
-    WebsiteConfigurationValidators.websiteConfigurationBodyValidator,
-    WebsiteContactController.updateWebsiteConfiguration
+    WebsiteContactValidators.websiteContactBodyValidator,
+    WebsiteContactController.updateWebsiteContact
 ]);
 
 /**
  * @swagger
  * /:
  *   delete:
- *     summary: Delete a website configuration.
- *     description: Endpoint to delete a website configuration.
+ *     summary: Delete a website contact.
+ *     description: Endpoint to delete a website contact.
  *     responses:
  *       200:
- *         description: Website configuration successfully deleted.
+ *         description: Website contact successfully deleted.
  */
 router.delete("/", [
     verifyAuthenticationTokenMiddleware,
-    WebsiteContactController.deleteWebsiteConfiguration
+    WebsiteContactController.deleteWebsiteContact
 ]);
 
 export default router;

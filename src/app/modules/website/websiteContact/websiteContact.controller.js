@@ -4,58 +4,58 @@ import handleServiceResponse from "../../../../helpers/handleServiceResponse.js"
 
 /**
  * @async
- * @function createWebsiteController
+ * @function createWebsiteContact
  * @description Controller for creating a new website.
  *
  * @param {express.Request} req - Express request object containing website details.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const createWebsite = async (req, res) => {
-    const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks']);
-    const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
+const createWebsiteContact = async (req, res) => {
+    const { address, googleMapLocation, mobile, phone, email, website, adminId, db } = extractFromRequest(req, ['address', 'googleMapLocation', 'mobile', 'phone', 'email', 'website']);
+    const websiteContactDetails = { address, googleMapLocation, mobile, phone, email, website, adminId };
 
-    await handleServiceResponse(res, WebsiteContactService.createWebsite, db, websiteDetails);
+    await handleServiceResponse(res, WebsiteContactService.createWebsiteContact, db, websiteContactDetails);
 };
 
 /**
  * @async
- * @function getWebsiteListController
+ * @function getWebsiteContact
  * @description Controller for fetching all website.
  *
  * @param {express.Request} req - Express request object.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const getWebsite = async (req, res) => {
-    await handleServiceResponse(res, WebsiteContactService.getWebsite, req?.db);
+const getWebsiteContact = async (req, res) => {
+    await handleServiceResponse(res, WebsiteContactService.getWebsiteContact, req?.db);
 };
 
 /**
  * @async
- * @function updateAWebsiteController
+ * @function updateWebsiteContact
  * @description Controller for updating a specific website by ID.
  *
  * @param {express.Request} req - Express request object containing website ID in parameters.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const updateAWebsite = async (req, res) => {
-    const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks'], []);
-    const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
+const updateWebsiteContact = async (req, res) => {
+    const { address, googleMapLocation, mobile, phone, email, website, adminId, db } = extractFromRequest(req, ['address', 'googleMapLocation', 'mobile', 'phone', 'email', 'website'], []);
+    const websiteContactDetails = { address, googleMapLocation, mobile, phone, email, website, adminId };
 
-    await handleServiceResponse(res, WebsiteContactService.updateAWebsite, db, websiteDetails);
+    await handleServiceResponse(res, WebsiteContactService.updateWebsiteContact, db, websiteContactDetails);
 };
 
 /**
  * @async
- * @function deleteAWebsiteController
+ * @function deleteWebsiteContact
  * @description Controller for deleting a website by ID.
  *
  * @param {express.Request} req - Express request object containing website ID in parameters.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const deleteAWebsite = async (req, res) => {
+const deleteWebsiteContact = async (req, res) => {
     const { websiteId, adminId, db } = extractFromRequest(req, [], ['websiteId']);
 
-    await handleServiceResponse(res, WebsiteContactService.deleteAWebsite, db, adminId, websiteId);
+    await handleServiceResponse(res, WebsiteContactService.deleteWebsiteContact, db, adminId, websiteId);
 };
 
 /**
@@ -63,8 +63,8 @@ const deleteAWebsite = async (req, res) => {
  * @description Group of controllers for handling website operations.
  */
 export const WebsiteContactController = {
-    createWebsite,
-    getWebsite,
-    updateAWebsite,
-    deleteAWebsite
+    createWebsiteContact,
+    getWebsiteContact,
+    updateWebsiteContact,
+    deleteWebsiteContact
 };

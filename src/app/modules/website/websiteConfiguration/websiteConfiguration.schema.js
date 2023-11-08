@@ -15,7 +15,7 @@ import {
  * @property {string} websiteLogo - The logo of the website.
  * @property {string} websiteFavIcon - The favIcon of the website.
  */
-const websiteBodySchema = Joi.object({
+const websiteConfigurationBodySchema = Joi.object({
     name: Joi.string().min(1).max(100).required().messages({
         'string.base': 'Name must be a string.',
         'string.min': 'Name must be at least 1 character long.',
@@ -40,5 +40,5 @@ const websiteBodySchema = Joi.object({
  * - `websiteParamsSchema`: Validates the website ID in request parameters.
  */
 export const WebsiteConfigurationSchema = {
-    websiteBodySchema,
+    websiteConfigurationBodySchema,
 };

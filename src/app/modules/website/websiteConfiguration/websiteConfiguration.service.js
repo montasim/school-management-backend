@@ -146,7 +146,6 @@ const updateWebsiteConfiguration = async (db, websiteDetails) => {
             modifiedBy: adminId,
             modifiedAt: new Date(),
         };
-
         const result = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOneAndUpdate(
             {}, // Assuming you are updating a single document without a filter.
             { $set: updatedWebsiteDetails },
