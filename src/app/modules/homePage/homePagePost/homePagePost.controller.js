@@ -1,6 +1,6 @@
 import { HomePagePostService } from "./homePagePost.service.js";
-import extractFromRequest from "../../../helpers/extractFromRequest.js";
-import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+import extractFromRequest from "../../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../../helpers/handleServiceResponse.js";
 
 /**
  * @async

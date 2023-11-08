@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateWithSchema from "../../../../helpers/validateWithSchema.js";
 import { HomePagePostSchema } from "./homePagePost.schema.js";
 
 /**

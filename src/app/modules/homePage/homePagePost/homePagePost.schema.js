@@ -1,12 +1,12 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './homePagePost.constants.js';
-import { SharedSchema } from "../../../shared/sharedSchema.js";
-import createIdSchema from "../../../shared/createIdSchema.js";
+import { SharedSchema } from "../../../../shared/sharedSchema.js";
+import createIdSchema from "../../../../shared/createIdSchema.js";
 import { 
     FILE_EXTENSION_TYPE_PNG, 
     MIME_TYPE_PNG, 
     MIME_TYPE_JPG,
- } from "../../../constants/constants.js";
+ } from "../../../../constants/constants.js";
 
 const homePagePostParams = Joi.object({
     homePagePostId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX, ID_CONSTANTS).required()

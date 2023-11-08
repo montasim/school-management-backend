@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 // Configurations
-import { HOME_PAGE_CAROUSEL_COLLECTION_NAME } from "../../../config/config.js";
+import { HOME_PAGE_CAROUSEL_COLLECTION_NAME } from "../../../../config/config.js";
 
 // Constants
 import {
@@ -12,20 +12,20 @@ import {
     STATUS_NOT_FOUND,
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
-} from "../../../constants/constants.js";
+} from "../../../../constants/constants.js";
 import { ID_CONSTANTS } from "./homePageCarousel.constants.js";
 
 // Shared utilities
-import isValidRequest from "../../../shared/isValidRequest.js";
-import setMimeTypeFromExtension from "../../../helpers/setMimeTypeFromExtension.js";
-import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js"
-import logger from "../../../shared/logger.js";
-import deleteById from "../../../shared/deleteById.js";
-import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
-import updateById from "../../../shared/updateById.js";
-import getAllData from "../../../shared/getAllData.js";
+import isValidRequest from "../../../../shared/isValidRequest.js";
+import setMimeTypeFromExtension from "../../../../helpers/setMimeTypeFromExtension.js";
+import { HandleGoogleDrive } from "../../../../helpers/handleGoogleDriveApi.js"
+import logger from "../../../../shared/logger.js";
+import deleteById from "../../../../shared/deleteById.js";
+import generateResponseData from "../../../../shared/generateResponseData.js";
+import findById from "../../../../shared/findById.js";
+import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import updateById from "../../../../shared/updateById.js";
+import getAllData from "../../../../shared/getAllData.js";
 
 /**
  * Creates a new homePageCarousel entry in the database.

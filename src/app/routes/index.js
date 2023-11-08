@@ -4,7 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 
 import { API_VERSION } from "../../config/config.js";
 
-import homeRoutes from "../modules/home/home.routes.js";
+import indexRoutes from "../modules/index/index.routes.js";
 import statusRoutes from "../modules/status/status.routes.js";
 import apiRoutes from "./api.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
@@ -20,7 +20,7 @@ const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../.
 const router = express.Router();
 
 /**
- * Sets up routing for the home module.
+ * Sets up routing for the index module.
  * @name /
  * @function
  * @inner
@@ -29,13 +29,13 @@ const router = express.Router();
 router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 /**
- * Sets up routing for the home module.
+ * Sets up routing for the index module.
  * @name /
  * @function
  * @inner
  * @memberof module:routes
  */
-router.use(`/`, homeRoutes);
+router.use(`/`, indexRoutes);
 
 /**
  * Sets up routing for the status module.

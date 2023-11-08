@@ -26,7 +26,7 @@ import {STATUS_OK} from "../../../constants/constants.js";
  * @property {string} endpoints.contact - Path for the contact endpoint.
  * @property {string} endpoints.dashboard - Path for the dashboard endpoint.
  * @property {string} endpoints.download - Path for the download endpoint.
- * @property {string} endpoints.homePage - Path for the home page endpoint.
+ * @property {string} endpoints.homePage - Path for the index page endpoint.
  * @property {string} endpoints.level - Path for the level endpoint.
  * @property {string} endpoints.notice - Path for the notice endpoint.
  * @property {string} endpoints.othersInformation - Path for the others information endpoint.
@@ -82,6 +82,7 @@ const returnData = {
         category: "/api/v1/category",
         contact: "/api/v1/contact",
         dashboard: "/api/v1/dashboard",
+        designation: "/api/v1/designation",
         download: "/api/v1/download",
         homePage: "/api/v1/homePage",
         level: "/api/v1/level",

@@ -1,12 +1,12 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './homePageCarousel.constants.js';
-import { SharedSchema } from "../../../shared/sharedSchema.js";
-import createIdSchema from "../../../shared/createIdSchema.js";
+import { SharedSchema } from "../../../../shared/sharedSchema.js";
+import createIdSchema from "../../../../shared/createIdSchema.js";
 import { 
     FILE_EXTENSION_TYPE_PNG, 
     MIME_TYPE_PNG, 
     MIME_TYPE_JPG,
- } from "../../../constants/constants.js";
+ } from "../../../../constants/constants.js";
 
 const homePageCarouselParamsSchema = Joi.object({
     homePageCarouselId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_CAROUSEL_PREFIX, ID_CONSTANTS).required()

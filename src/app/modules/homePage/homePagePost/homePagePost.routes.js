@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
 import { HomePagePostValidators } from "./homePagePost.validator.js";
 import { HomePageHomePagePostController } from "./homePagePost.controller.js";
 

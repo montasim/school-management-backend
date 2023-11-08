@@ -1,5 +1,5 @@
 import express from "express";
-import homeController from "./home.controller.js";
+import indexController from "./index.controller.js";
 
 const router = express.Router();
 
@@ -15,6 +15,6 @@ const router = express.Router();
  *       500:
  *         description: Server is down.
  */
-router.all("/", homeController);
+router.all("/", indexController);
 
 export default router;

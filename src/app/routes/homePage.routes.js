@@ -1,6 +1,6 @@
 import express from "express";
-import homePagePostRoutes from "../modules/homePagePost/homePagePost.routes.js";
-import homePageCarouselRoutes from "../modules/homePageCarousel/homePageCarousel.routes.js";
+import homePagePostRoutes from "../modules/homePage/homePagePost/homePagePost.routes.js";
+import homePageCarouselRoutes from "../modules/homePage/homePageCarousel/homePageCarousel.routes.js";
 
 const router = express.Router();
 
@@ -23,7 +23,7 @@ router.use("/homePagePost", homePagePostRoutes);
 router.use("/homePageCarousel", homePageCarouselRoutes);
 
 /**
- * The main router object that combines the home page route modules.
+ * The main router object that combines the index page route modules.
  * @type {Router}
  * @namespace module:routes
  */

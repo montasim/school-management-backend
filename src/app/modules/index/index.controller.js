@@ -1,8 +1,8 @@
 import logger from "../../../shared/logger.js";
 import { SERVER_DOWN_MESSAGE, STATUS_INTERNAL_SERVER_ERROR } from "../../../constants/constants.js";
-import returnData from "./home.constants.js";
+import returnData from "./index.constants.js";
 
-const homeController = async (req, res) => {
+const indexController = async (req, res) => {
     try {
         return res.status(returnData?.status).json(returnData);
     } catch (error) {
@@ -19,4 +19,4 @@ const homeController = async (req, res) => {
     }
 };
 
-export default homeController;
+export default indexController;
