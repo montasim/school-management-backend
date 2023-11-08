@@ -2,6 +2,7 @@ import express from "express";
 import websiteConfigurationRoutes from "../modules/website/websiteConfiguration/websiteConfiguration.routes.js";
 import websiteContactRoutes from "../modules/website/websiteContact/websiteContact.routes.js";
 import websiteImportantInformationLinkRoutes from "../modules/website/websiteImportantInformationLink/websiteImportantInformationLink.routes.js";
+import websiteOfficialLinkRoutes from "../modules/website/websiteOfficialLink/websiteOfficialLink.routes.js";
 
 const router = express.Router();
 
@@ -39,7 +40,7 @@ router.use("/contact", websiteContactRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use("/official-link", websiteOfficialLinkRoutes);
+router.use("/official-link", websiteOfficialLinkRoutes);
 
 /**
  * Sets up versioned routing for the important information link module.
