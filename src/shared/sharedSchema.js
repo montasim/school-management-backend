@@ -76,6 +76,7 @@ const createFileMimeTypeSchema = ( validMimeType = [MIME_TYPE_PDF] ) => {
  * Create a Joi schema for validating files.
  *
  * @param {string[]} allowedExtensions - Array of allowed file extensions.
+ * @param validMimeType
  * @returns {Joi.ObjectSchema} Joi schema for validating files.
  */
 const createFileSchema = ( allowedExtensions, validMimeType = [MIME_TYPE_PNG, MIME_TYPE_JPG] ) => {
@@ -90,6 +91,7 @@ const createFileSchema = ( allowedExtensions, validMimeType = [MIME_TYPE_PNG, MI
  * Create a Joi schema for validating PDF files with a title.
  *
  * @param {string[]} allowedExtensions - Array of allowed file extensions.
+ * @param validMimeType
  * @returns {Joi.ObjectSchema} Joi schema for validating PDF files with a title.
  */
 const createFileWithTitleSchema = ( allowedExtensions, validMimeType = [MIME_TYPE_PDF] ) => {
@@ -102,10 +104,36 @@ const createFileWithTitleSchema = ( allowedExtensions, validMimeType = [MIME_TYP
 };
 
 /**
+ * @typedef {Object} Title
+ * @property {string} title - The title of the link.
+ */
+const titleSchema = () => {
+    return Joi.string().min(1).max(100).required().messages({
+        'string.base': 'Title must be a string.',
+        'string.min': 'Title must be at least 1 character long.',
+        'string.max': 'Title must not exceed 100 characters.',
+        'any.required': 'Title is required.'
+    });
+};
+
+/**
+ * @typedef {Object} LinkSchema
+ * @property {string} linkSchema - The schema of the link.
+ */
+const linkSchema = () => {
+    return Joi.string().uri().required().messages({
+        'string.uri': 'Link must be a valid URI.',
+        'any.required': 'Link is required.'
+    });
+}
+
+/**
  * Shared Joi schemas for file validation.
  */
 export const SharedSchema = {
   createFileSchema,
   createFileWithTitleSchema,
   createFileNameSchema,
+  titleSchema,
+  linkSchema
 };

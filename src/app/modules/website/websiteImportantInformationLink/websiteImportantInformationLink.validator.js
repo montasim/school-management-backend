@@ -4,10 +4,10 @@ import { WebsiteImportantInformationLinkSchema } from "./websiteImportantInforma
 /**
  * @function
  * @async
- * @description Middleware validator for website's body data.
+ * @description Middleware validator for website important information link body data.
  *
- * Uses the websiteBodySchema from the DashboardSchema to validate
- * the body of the incoming request. This ensures that the website's
+ * Uses the websiteImportantInformationLinkBodySchema from the WebsiteImportantInformationLinkBodySchema to validate
+ * the body of the incoming request. This ensures that the website important information link
  * information is in the correct format before processing.
  *
  * @param {Object} req - Express request object.
@@ -16,30 +16,12 @@ import { WebsiteImportantInformationLinkSchema } from "./websiteImportantInforma
  *
  * @returns {void}
  */
-const websiteBodyValidator = validateWithSchema(WebsiteImportantInformationLinkSchema.websiteBodySchema, 'body');
-
-/**
- * @function
- * @async
- * @description Middleware validator for website's ID in request parameters.
- *
- * Uses the websiteParamsSchema from the DashboardSchema to validate
- * the website ID provided in the request parameters. This ensures that
- * the website ID is in the correct format for further processing.
- *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- *
- * @returns {void}
- */
-const websiteParamsValidator = await validateWithSchema(WebsiteImportantInformationLinkSchema.websiteParamsSchema, 'params');
+const websiteImportantInformationLinkBodyValidator = validateWithSchema(WebsiteImportantInformationLinkSchema.websiteImportantInformationLinkBodySchema, 'body');
 
 /**
  * @namespace WebsiteValidators
- * @description Exported website validators to be used in routes.
+ * @description Exported website important information link validators to be used in routes.
  */
-export const WebsiteValidators = {
-    websiteBodyValidator,
-    websiteParamsValidator,
+export const WebsiteImportantInformationLinkValidators = {
+    websiteImportantInformationLinkBodyValidator
 };

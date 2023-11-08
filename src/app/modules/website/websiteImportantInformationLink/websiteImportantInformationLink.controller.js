@@ -4,67 +4,67 @@ import handleServiceResponse from "../../../../helpers/handleServiceResponse.js"
 
 /**
  * @async
- * @function createWebsiteController
- * @description Controller for creating a new website.
+ * @function createWebsiteImportantInformationLink
+ * @description Controller for creating website important information link.
  *
- * @param {express.Request} req - Express request object containing website details.
+ * @param {express.Request} req - Express request object containing website important information link details.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const createWebsite = async (req, res) => {
-    const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks']);
-    const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
+const createWebsiteImportantInformationLink = async (req, res) => {
+    const { importantInformationLinks, adminId, db } = extractFromRequest(req, ['importantInformationLinks']);
+    const websiteImportantInformationLinkDetails = { importantInformationLinks, adminId };
 
-    await handleServiceResponse(res, WebsiteImportantInformationLinkService.createWebsite, db, websiteDetails);
+    await handleServiceResponse(res, WebsiteImportantInformationLinkService.createWebsiteImportantInformationLink, db, websiteImportantInformationLinkDetails);
 };
 
 /**
  * @async
- * @function getWebsiteListController
- * @description Controller for fetching all website.
+ * @function getWebsiteImportantInformationLink
+ * @description Controller for fetching website important information link.
  *
  * @param {express.Request} req - Express request object.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const getWebsite = async (req, res) => {
-    await handleServiceResponse(res, WebsiteImportantInformationLinkService.getWebsite, req?.db);
+const getWebsiteImportantInformationLink = async (req, res) => {
+    await handleServiceResponse(res, WebsiteImportantInformationLinkService.getWebsiteImportantInformationLink, req?.db);
 };
 
 /**
  * @async
- * @function updateAWebsiteController
- * @description Controller for updating a specific website by ID.
+ * @function updateWebsiteImportantInformationLink
+ * @description Controller for updating website important information link.
  *
- * @param {express.Request} req - Express request object containing website ID in parameters.
+ * @param {express.Request} req - Express request object containing website important information link details in the body.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const updateAWebsite = async (req, res) => {
-    const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks'], []);
-    const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
+const updateWebsiteImportantInformationLink = async (req, res) => {
+    const { importantInformationLinks, adminId, db } = extractFromRequest(req, ['importantInformationLinks'], []);
+    const websiteImportantInformationLinkDetails = { importantInformationLinks, adminId };
 
-    await handleServiceResponse(res, WebsiteImportantInformationLinkService.updateAWebsite, db, websiteDetails);
+    await handleServiceResponse(res, WebsiteImportantInformationLinkService.updateWebsiteImportantInformationLink, db, websiteImportantInformationLinkDetails);
 };
 
 /**
  * @async
- * @function deleteAWebsiteController
- * @description Controller for deleting a website by ID.
+ * @function deleteWebsiteImportantInformationLink
+ * @description Controller for deleting website important information link.
  *
- * @param {express.Request} req - Express request object containing website ID in parameters.
+ * @param {express.Request} req - Express request.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const deleteAWebsite = async (req, res) => {
+const deleteWebsiteImportantInformationLink = async (req, res) => {
     const { websiteId, adminId, db } = extractFromRequest(req, [], ['websiteId']);
 
-    await handleServiceResponse(res, WebsiteImportantInformationLinkService.deleteAWebsite, db, adminId, websiteId);
+    await handleServiceResponse(res, WebsiteImportantInformationLinkService.deleteWebsiteImportantInformationLink, db, adminId, websiteId);
 };
 
 /**
- * @namespace WebsiteController
+ * @namespace WebsiteImportantInformationLinkController
  * @description Group of controllers for handling website operations.
  */
 export const WebsiteImportantInformationLinkController = {
-    createWebsite,
-    getWebsite,
-    updateAWebsite,
-    deleteAWebsite
+    createWebsiteImportantInformationLink,
+    getWebsiteImportantInformationLink,
+    updateWebsiteImportantInformationLink,
+    deleteWebsiteImportantInformationLink
 };

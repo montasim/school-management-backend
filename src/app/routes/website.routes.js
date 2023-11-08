@@ -1,6 +1,7 @@
 import express from "express";
 import websiteConfigurationRoutes from "../modules/website/websiteConfiguration/websiteConfiguration.routes.js";
 import websiteContactRoutes from "../modules/website/websiteContact/websiteContact.routes.js";
+import websiteImportantInformationLinkRoutes from "../modules/website/websiteImportantInformationLink/websiteImportantInformationLink.routes.js";
 
 const router = express.Router();
 
@@ -47,7 +48,7 @@ router.use("/contact", websiteContactRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use("/important-information-link", websiteImportantInformationLinkRoutes);
+router.use("/important-information-link", websiteImportantInformationLinkRoutes);
 
 /**
  * The main router object that combines the index page route modules.

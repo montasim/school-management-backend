@@ -5,9 +5,9 @@ import handleServiceResponse from "../../../../helpers/handleServiceResponse.js"
 /**
  * @async
  * @function createWebsiteContact
- * @description Controller for creating a new website.
+ * @description Controller for creating website contact.
  *
- * @param {express.Request} req - Express request object containing website details.
+ * @param {express.Request} req - Express request object containing website contact details.
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createWebsiteContact = async (req, res) => {
@@ -20,7 +20,7 @@ const createWebsiteContact = async (req, res) => {
 /**
  * @async
  * @function getWebsiteContact
- * @description Controller for fetching all website.
+ * @description Controller for fetching website contact.
  *
  * @param {express.Request} req - Express request object.
  * @param {express.Response} res - Express response object to send data back to client.
@@ -32,9 +32,9 @@ const getWebsiteContact = async (req, res) => {
 /**
  * @async
  * @function updateWebsiteContact
- * @description Controller for updating a specific website by ID.
+ * @description Controller for updating website contact.
  *
- * @param {express.Request} req - Express request object containing website ID in parameters.
+ * @param {express.Request} req - Express request object containing website contact details in the body.
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateWebsiteContact = async (req, res) => {
@@ -47,9 +47,9 @@ const updateWebsiteContact = async (req, res) => {
 /**
  * @async
  * @function deleteWebsiteContact
- * @description Controller for deleting a website by ID.
+ * @description Controller for deleting website contact.
  *
- * @param {express.Request} req - Express request object containing website ID in parameters.
+ * @param {express.Request} req - Express request.
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteWebsiteContact = async (req, res) => {
@@ -59,7 +59,7 @@ const deleteWebsiteContact = async (req, res) => {
 };
 
 /**
- * @namespace WebsiteController
+ * @namespace WebsiteContactController
  * @description Group of controllers for handling website operations.
  */
 export const WebsiteContactController = {
