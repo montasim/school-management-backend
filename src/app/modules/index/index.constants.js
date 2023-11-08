@@ -93,7 +93,11 @@ const returnData = {
         routine: "/api/v1/routine",
         students: "/api/v1/students",
         teachers: "/api/v1/teachers",
-        website: "/api/v1/website",
+        websiteConfiguration: "/api/v1/website/configuration",
+        websiteContact: "/api/v1/website/contact",
+        websiteImportantInformationLink: "/api/v1/website/important-information-link",
+        websiteOfficialLink: "/api/v1/website/official-link",
+        websiteSocialMediaLink: "/api/v1/website/social-media-link",
     },
     authentication: {
         info: "To authenticate requests, include your token in the headers.",
