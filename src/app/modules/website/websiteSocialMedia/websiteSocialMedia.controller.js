@@ -4,67 +4,67 @@ import handleServiceResponse from "../../../../helpers/handleServiceResponse.js"
 
 /**
  * @async
- * @function createWebsiteController
- * @description Controller for creating a new website.
+ * @function createWebsiteSocialMedia
+ * @description Controller for creating website important information link.
  *
- * @param {express.Request} req - Express request object containing website details.
+ * @param {express.Request} req - Express request object containing website important information link details.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const createWebsite = async (req, res) => {
-    const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks']);
-    const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
+const createWebsiteSocialMedia = async (req, res) => {
+    const { socialMediaLinks, adminId, db } = extractFromRequest(req, ['socialMediaLinks']);
+    const websiteSocialMediaDetails = { socialMediaLinks, adminId };
 
-    await handleServiceResponse(res, WebsiteSocialMediaService.createWebsite, db, websiteDetails);
+    await handleServiceResponse(res, WebsiteSocialMediaService.createWebsiteSocialMedia, db, websiteSocialMediaDetails);
 };
 
 /**
  * @async
- * @function getWebsiteListController
- * @description Controller for fetching all website.
+ * @function getWebsiteSocialMedia
+ * @description Controller for fetching website important information link.
  *
  * @param {express.Request} req - Express request object.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const getWebsite = async (req, res) => {
-    await handleServiceResponse(res, WebsiteSocialMediaService.getWebsite, req?.db);
+const getWebsiteSocialMedia = async (req, res) => {
+    await handleServiceResponse(res, WebsiteSocialMediaService.getWebsiteSocialMedia, req?.db);
 };
 
 /**
  * @async
- * @function updateAWebsiteController
- * @description Controller for updating a specific website by ID.
+ * @function updateWebsiteSocialMedia
+ * @description Controller for updating website important information link.
  *
- * @param {express.Request} req - Express request object containing website ID in parameters.
+ * @param {express.Request} req - Express request object containing website important information link details in the body.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const updateAWebsite = async (req, res) => {
-    const { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId, db } = extractFromRequest(req, ['name', 'slogan', 'websiteLogo', 'websiteFavIcon', 'contact', 'socialMediaLinks', 'officialLinks', 'importantInformationLinks'], []);
-    const websiteDetails = { name, slogan, websiteLogo, websiteFavIcon, contact, socialMediaLinks, officialLinks, importantInformationLinks, adminId };
+const updateWebsiteSocialMedia = async (req, res) => {
+    const { socialMediaLinks, adminId, db } = extractFromRequest(req, ['socialMediaLinks'], []);
+    const websiteSocialMediaDetails = { socialMediaLinks, adminId };
 
-    await handleServiceResponse(res, WebsiteSocialMediaService.updateAWebsite, db, websiteDetails);
+    await handleServiceResponse(res, WebsiteSocialMediaService.updateWebsiteSocialMedia, db, websiteSocialMediaDetails);
 };
 
 /**
  * @async
- * @function deleteAWebsiteController
- * @description Controller for deleting a website by ID.
+ * @function deleteWebsiteSocialMedia
+ * @description Controller for deleting website important information link.
  *
- * @param {express.Request} req - Express request object containing website ID in parameters.
+ * @param {express.Request} req - Express request.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const deleteAWebsite = async (req, res) => {
+const deleteWebsiteSocialMedia = async (req, res) => {
     const { websiteId, adminId, db } = extractFromRequest(req, [], ['websiteId']);
 
-    await handleServiceResponse(res, WebsiteSocialMediaService.deleteAWebsite, db, adminId, websiteId);
+    await handleServiceResponse(res, WebsiteSocialMediaService.deleteWebsiteSocialMedia, db, adminId, websiteId);
 };
 
 /**
- * @namespace WebsiteController
+ * @namespace WebsiteSocialMediaController
  * @description Group of controllers for handling website operations.
  */
 export const WebsiteSocialMediaController = {
-    createWebsite,
-    getWebsite,
-    updateAWebsite,
-    deleteAWebsite
+    createWebsiteSocialMedia,
+    getWebsiteSocialMedia,
+    updateWebsiteSocialMedia,
+    deleteWebsiteSocialMedia
 };

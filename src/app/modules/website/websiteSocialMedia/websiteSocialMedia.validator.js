@@ -4,10 +4,10 @@ import { WebsiteSocialMediaSchema } from "./websiteSocialMedia.schema.js";
 /**
  * @function
  * @async
- * @description Middleware validator for website configuration body data.
+ * @description Middleware validator for website important information link body data.
  *
- * Uses the websiteConfigurationBodySchema from the WebsiteConfigurationBodySchema to validate
- * the body of the incoming request. This ensures that the website configuration
+ * Uses the websiteSocialMediaBodySchema from the WebsiteSocialMediaBodySchema to validate
+ * the body of the incoming request. This ensures that the website important information link
  * information is in the correct format before processing.
  *
  * @param {Object} req - Express request object.
@@ -16,12 +16,12 @@ import { WebsiteSocialMediaSchema } from "./websiteSocialMedia.schema.js";
  *
  * @returns {void}
  */
-const websiteConfigurationBodyValidator = validateWithSchema(WebsiteSocialMediaSchema.websiteBodySchema, 'body');
+const websiteSocialMediaBodyValidator = validateWithSchema(WebsiteSocialMediaSchema.websiteSocialMediaBodySchema, 'body');
 
 /**
  * @namespace WebsiteValidators
- * @description Exported website configuration validators to be used in routes.
+ * @description Exported website important information link validators to be used in routes.
  */
-export const WebsiteConfigurationValidators = {
-    websiteConfigurationBodyValidator
+export const WebsiteSocialMediaValidators = {
+    websiteSocialMediaBodyValidator
 };

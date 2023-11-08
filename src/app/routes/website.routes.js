@@ -3,6 +3,7 @@ import websiteConfigurationRoutes from "../modules/website/websiteConfiguration/
 import websiteContactRoutes from "../modules/website/websiteContact/websiteContact.routes.js";
 import websiteImportantInformationLinkRoutes from "../modules/website/websiteImportantInformationLink/websiteImportantInformationLink.routes.js";
 import websiteOfficialLinkRoutes from "../modules/website/websiteOfficialLink/websiteOfficialLink.routes.js";
+import websiteSocialMediaRoutes from "../modules/website/websiteSocialMedia/websiteSocialMedia.routes.js";
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.use("/contact", websiteContactRoutes);
  * @inner
  * @memberof module:routes
  */
-// router.use("/social-media", websiteSocialMediaRoutes);
+router.use("/social-media-link", websiteSocialMediaRoutes);
 
 /**
  * Sets up versioned routing for the official link module.

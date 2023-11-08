@@ -1,6 +1,6 @@
 import express from "express";
 import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
-import { WebsiteConfigurationValidators } from "./websiteSocialMedia.validator.js";
+import { WebsiteSocialMediaValidators } from "./websiteSocialMedia.validator.js";
 import { WebsiteSocialMediaController } from "./websiteSocialMedia.controller.js";
 
 const router = express.Router();
@@ -8,74 +8,74 @@ const router = express.Router();
 /**
  * @swagger
  * /:
- *   websiteConfiguration:
- *     summary: Create a website configuration.
- *     description: Endpoint to add a website configuration to the system.
+ *   websiteSocialMedia:
+ *     summary: Create a website important information link.
+ *     description: Endpoint to add a website important information link to the system.
  *     parameters:
  *       - in: body
- *         name: websiteConfiguration
- *         description: The website configuration to create.
+ *         name: websiteSocialMedia
+ *         description: The website important information link to create.
  *         schema:
- *           $ref: '#/definitions/WebsiteConfiguration'
+ *           $ref: '#/definitions/WebsiteSocialMedia'
  *     responses:
  *       200:
- *         description: Website configuration successfully created.
+ *         description: Website important information link successfully created.
  */
 router.post("/", [
     verifyAuthenticationTokenMiddleware,
-    WebsiteConfigurationValidators.websiteConfigurationBodyValidator,
-    WebsiteSocialMediaController.createConfigurationWebsite
+    WebsiteSocialMediaValidators.websiteSocialMediaBodyValidator,
+    WebsiteSocialMediaController.createWebsiteSocialMedia
 ]);
 
 /**
  * @swagger
  * /:
  *   get:
- *     summary: Retrieve a website configuration.
+ *     summary: Retrieve a website important information link.
  *     description: Endpoint to get details of a website.
  *     responses:
  *       200:
- *         description: Website configuration.
+ *         description: Website important information link.
  */
 router.get("/", [
-    WebsiteSocialMediaController.getConfigurationWebsite
+    WebsiteSocialMediaController.getWebsiteSocialMedia
 ]);
 
 /**
  * @swagger
  * /:
  *   put:
- *     summary: Update a website configuration.
+ *     summary: Update a website important information link.
  *     description: Endpoint to update the details of a website.
  *     parameters:
  *       - in: body
  *         name: website
  *         description: Updated details of the website.
  *         schema:
- *           $ref: '#/definitions/WebsiteConfiguration'
+ *           $ref: '#/definitions/WebsiteSocialMedia'
  *     responses:
  *       200:
- *         description: Website configuration successfully updated.
+ *         description: Website important information link successfully updated.
  */
 router.put("/", [
     verifyAuthenticationTokenMiddleware,
-    WebsiteConfigurationValidators.websiteConfigurationBodyValidator,
-    WebsiteSocialMediaController.updateWebsiteConfiguration
+    WebsiteSocialMediaValidators.websiteSocialMediaBodyValidator,
+    WebsiteSocialMediaController.updateWebsiteSocialMedia
 ]);
 
 /**
  * @swagger
  * /:
  *   delete:
- *     summary: Delete a website configuration.
- *     description: Endpoint to delete a website configuration.
+ *     summary: Delete a website important information link.
+ *     description: Endpoint to delete a website important information link.
  *     responses:
  *       200:
- *         description: Website configuration successfully deleted.
+ *         description: Website important information link successfully deleted.
  */
 router.delete("/", [
     verifyAuthenticationTokenMiddleware,
-    WebsiteSocialMediaController.deleteWebsiteConfiguration
+    WebsiteSocialMediaController.deleteWebsiteSocialMedia
 ]);
 
 export default router;
