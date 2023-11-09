@@ -25,7 +25,6 @@ const router = express.Router();
 router.post("/", [
     verifyAuthenticationTokenMiddleware,
     multerConfig.single('file'),
-    DownloadValidators.downloadBodyValidator,
     DownloadController.createDownloadController
 ]);
 
