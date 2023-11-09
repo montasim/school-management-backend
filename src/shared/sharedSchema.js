@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { MIME_TYPE_PDF, MIME_TYPE_PNG, MIME_TYPE_JPG } from "../constants/constants.js";
+import {MIME_TYPE_PDF, MIME_TYPE_PNG, MIME_TYPE_JPG, FILE_EXTENSION_TYPE_PDF} from "../constants/constants.js";
 
 /**
  * Generate a Joi regex pattern for allowed extensions.
@@ -94,13 +94,17 @@ const createFileSchema = ( allowedExtensions, validMimeType = [MIME_TYPE_PNG, MI
  * @param validMimeType
  * @returns {Joi.ObjectSchema} Joi schema for validating PDF files with a title.
  */
-const createFileWithTitleSchema = ( allowedExtensions, validMimeType = [MIME_TYPE_PDF] ) => {
-  return Joi.object({
-    title: createFileTitleSchema(),
-    fileName: createFileNameSchema(allowedExtensions),
-    fileBuffer: createFileBufferSchema(),
-    mimeType: createFileMimeTypeSchema(validMimeType),
-  }).required();
+const createFileWithTitleSchema = (allowedExtensions = [FILE_EXTENSION_TYPE_PDF], validMimeType = [MIME_TYPE_PDF]) => {
+    return Joi.object({
+        title: createFileTitleSchema(),
+        file: Joi.object({
+            fieldname: Joi.string().valid('file').required(),
+            originalname: createFileNameSchema(allowedExtensions),
+            encoding: Joi.string().valid('7bit').required(),
+            mimetype: Joi.string().valid(...validMimeType).required(),
+            size: Joi.number().max(1024 * 1024 * 25).required() // Size limit set to 25MB as an example
+        }).description('File to be uploaded with validated MIME type and size.')
+    }).required();
 };
 
 /**
