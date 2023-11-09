@@ -1,19 +1,18 @@
 import { google } from 'googleapis';
 import logger from "../shared/logger.js";
 import authorizeGoogleDrive from "./authorizeGoogleDrive.js";
+import bufferToStream from "./bufferToStream.js";
 import { GOOGLE_DRIVE_FOLDER_KEY } from "../config/config.js";
 
 /**
- * Uploads a file to Google Drive.
+ * Uploads a file to Google Drive and sets its permissions to be readable by anyone with the link.
  *
  * @async
- * @function
- * @param fileName
- * @param fileBuffer
- * @param mimeType
- * @returns {Promise<Object>} Returns an object containing the file ID and shareable link.
+ * @function uploadFile
+ * @param {Express.Multer.File} file - An object representing the file to be uploaded, as provided by Multer.
+ * @returns {Promise<{fileId: string, shareableLink: string}>} An object containing the file ID and shareable link from Google Drive.
  */
-const uploadFile = async ( fileName, fileBuffer, mimeType ) => {
+const uploadFile = async (file) => {
     try {
         const authorizationClient = await authorizeGoogleDrive();
         const drive = google.drive({
@@ -21,16 +20,18 @@ const uploadFile = async ( fileName, fileBuffer, mimeType ) => {
             auth: authorizationClient
         });
         const fileMetaData = {
-            name: fileName,
+            name: file?.originalname,
             parents: [GOOGLE_DRIVE_FOLDER_KEY],
         };
+
+        const fileStream = bufferToStream(file.buffer);
 
         // Upload the file
         const { data: fileData } = await drive.files.create({
             requestBody: fileMetaData,
             media: {
-                body: fileBuffer, // Directly use the file buffer
-                mimeType: mimeType,
+                body: fileStream,
+                mimeType: file?.mimetype,
             },
             fields: 'id',
         });
@@ -65,11 +66,11 @@ const uploadFile = async ( fileName, fileBuffer, mimeType ) => {
  * Deletes a file from Google Drive.
  *
  * @async
- * @function
+ * @function deleteFile
  * @param {string} fileId - The ID of the file to be deleted.
- * @returns {Promise<Object>} Returns the response from Google Drive API.
+ * @returns {Promise<GoogleApis.Common.Schema$Empty>} The response from the Google Drive API.
  */
-const deleteFile = async ( fileId ) => {
+const deleteFile = async (fileId) => {
     try {
         const authorizationClient = await authorizeGoogleDrive();
         const drive = google.drive({
@@ -86,10 +87,9 @@ const deleteFile = async ( fileId ) => {
 };
 
 /**
- * Object to handle Google Drive operations.
+ * Provides an interface for Google Drive file operations, including uploading and deleting files.
+ *
  * @namespace HandleGoogleDrive
- * @property {function} uploadFile - Function to upload a file to Google Drive.
- * @property {function} deleteFile - Function to delete a file from Google Drive.
  */
 export const HandleGoogleDrive = {
     uploadFile,

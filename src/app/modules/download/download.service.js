@@ -1,7 +1,4 @@
-// Third-party modules
 import { v4 as uuidv4 } from 'uuid';
-
-// Absolute imports
 import { DOWNLOAD_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -11,8 +8,6 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-
-// Relative imports
 import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -30,20 +25,21 @@ import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js";
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newDownloadDetails - New download's details.
+ * @param file
  * @returns {Object} - The response after attempting download creation.
  * @throws {Error} Throws an error if any.
  */
-const createDownloadService = async (db, newDownloadDetails) => {
+const createDownloadService = async (db, newDownloadDetails, file) => {
     try {
-        const { title, fileName, fileBuffer, mimeType, adminId } = newDownloadDetails;
+        const { title, adminId } = newDownloadDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${fileName} already exists. Please select a different file name`)
+        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, file?.originalname))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(fileName, fileBuffer, mimeType);
+        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(file);
 
         if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -51,7 +47,7 @@ const createDownloadService = async (db, newDownloadDetails) => {
         const downloadDetails = {
             id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
-            fileName: fileName,
+            fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             createdBy: adminId,
@@ -61,6 +57,8 @@ const createDownloadService = async (db, newDownloadDetails) => {
         const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
+        delete latestData?.id;
+        delete latestData?.createdBy;
         delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
