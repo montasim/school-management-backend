@@ -62,7 +62,7 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
         delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${title} uploaded successfully`)
+            ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
     } catch (error) {
         logger.error(error);
