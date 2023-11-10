@@ -19,14 +19,8 @@ import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
 
 /**
- * @description Joi validation schema for result's body data.
- */
-const resultBodyValidationSchema = JoiSchemaGenerators.fileTitleValidationSchema();
-
-/**
  * @description Joi validation schema for result's params data.
  */
-
 const resultParamsValidationSchema = Joi.object({
     fileName: JoiSchemaGenerators.createFileNameSchema([FILE_EXTENSION_TYPE_PDF]),
 }).required();
@@ -39,6 +33,5 @@ const resultParamsValidationSchema = Joi.object({
  * - `resultParamsSchema`: Validates the result ID in request parameters.
  */
 export const ResultValidationSchemas = {
-    resultBodyValidationSchema,
     resultParamsValidationSchema,
 };

@@ -19,14 +19,8 @@ import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
 
 /**
- * @description Joi validation schema for notice's body data.
- */
-const noticeBodyValidationSchema = JoiSchemaGenerators.fileTitleValidationSchema();
-
-/**
  * @description Joi validation schema for notice's params data.
  */
-
 const noticeParamsValidationSchema = Joi.object({
     fileName: JoiSchemaGenerators.createFileNameSchema([FILE_EXTENSION_TYPE_PDF]),
 }).required();
@@ -39,6 +33,5 @@ const noticeParamsValidationSchema = Joi.object({
  * - `noticeParamsSchema`: Validates the notice ID in request parameters.
  */
 export const NoticeValidationSchemas = {
-    noticeBodyValidationSchema,
     noticeParamsValidationSchema,
 };

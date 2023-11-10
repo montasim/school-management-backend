@@ -19,23 +19,6 @@ import validateWithSchema from "../../../helpers/validateWithSchema.js";
 /**
  * @function
  * @async
- * @description Middleware validator for notice's body data.
- *
- * Uses the noticeBodySchema from the NoticeSchema to validate
- * the body of the incoming request. This ensures that the notice's
- * information is in the correct format before processing.
- *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- *
- * @returns {void}
- */
-const validateNoticeBody = validateWithSchema(NoticeValidationSchemas.noticeBodyValidationSchema, 'body');
-
-/**
- * @function
- * @async
  * @description Middleware validator for notice's ID in request parameters.
  *
  * Uses the noticeParamsSchema from the NoticeSchema to validate
@@ -55,6 +38,5 @@ const validateNoticeParams = validateWithSchema(NoticeValidationSchemas.noticePa
  * @description Exported notice validators to be used in routes.
  */
 export const NoticeValidationService = {
-    validateNoticeBody,
     validateNoticeParams,
 };

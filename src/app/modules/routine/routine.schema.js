@@ -21,7 +21,6 @@ import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
 /**
  * @description Joi validation schema for routine's params data.
  */
-
 const routineParamsValidationSchema = Joi.object({
     fileName: JoiSchemaGenerators.createFileNameSchema([FILE_EXTENSION_TYPE_PDF]),
 }).required();
