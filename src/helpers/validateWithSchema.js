@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Middleware Generator for Joi Schema Validation.
+ *
+ * This module exports a function that generates Express middleware for validating request data against a provided Joi schema.
+ * The function takes a Joi schema and a source indicator (such as 'body', 'query', or 'params') to determine where to
+ * look for the data in the request object. If validation fails, it sends a standardized error response; otherwise, it
+ * allows the request to proceed to the next middleware. This utility simplifies adding validation logic to routes,
+ * ensuring that incoming data adheres to the expected structure and types before being processed by the route handlers.
+ *
+ * @requires handleValidationError - Function to handle and respond to validation errors.
+ * @requires logger - Shared logging utility for error logging.
+ * @requires constants - Application constants, including HTTP status codes.
+ * @module validateWithSchema - Generates middleware for Joi schema validation in Express routes.
+ */
+
 import handleValidationError from "./handleValidationError.js";
 import logger from "../shared/logger.js";
 import { STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";

@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Joi Schema Generators for Various Data Types.
+ *
+ * This module contains a collection of functions that generate Joi validation schemas. These schemas are used
+ * throughout the application to validate different types of data, including file names, file titles, URIs, and
+ * file buffers. The module leverages the Joi library to create detailed and specific validation rules, ensuring
+ * data integrity and adherence to expected formats. It includes schemas for validating file properties like
+ * MIME types and extensions, and general data like titles and URIs. By centralizing these schema generators,
+ * the application can maintain consistent validation logic across various routes and modules.
+ *
+ * @requires Joi - Library for schema description and data validation.
+ * @requires constants - Application constants for MIME types and file extensions.
+ * @module JoiSchemaGenerators - Exported functions for generating Joi validation schemas.
+ */
+
 import Joi from "joi";
 import {
     MIME_TYPE_PDF,

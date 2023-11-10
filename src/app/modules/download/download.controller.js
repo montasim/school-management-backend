@@ -22,7 +22,6 @@ import validateUploadedFile from "../../../helpers/validateUploadedFile.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 import logger from "../../../shared/logger.js";
 import {
-    FILE_EXTENSION_TYPE_PDF,
     MAX_PDF_FILE_SIZE,
     MIME_TYPE_PDF,
 } from "../../../constants/constants.js";
