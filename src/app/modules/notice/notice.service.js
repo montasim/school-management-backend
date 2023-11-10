@@ -82,7 +82,6 @@ const createNoticeService = async (db, newNoticeDetails, file) => {
         const result = await addANewEntryToDatabase(db, NOTICE_COLLECTION_NAME, noticeDetails);
         const latestData = await findById(db, NOTICE_COLLECTION_NAME, noticeDetails?.id);
 
-        delete latestData?.id;
         delete latestData?.createdBy;
         delete latestData?.googleDriveFileId;
 

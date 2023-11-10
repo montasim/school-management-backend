@@ -8,7 +8,7 @@
  * handle interactions with external storage services, like Google Drive, for file uploads and deletions.
  *
  * @requires uuid - Module to generate unique identifiers.
- * @requires NOTICE_COLLECTION_NAME - Configured collection name for routines in the database.
+ * @requires ROUTINE_COLLECTION_NAME - Configured collection name for routines in the database.
  * @requires constants - Application constants for various status codes and messages.
  * @requires ID_CONSTANTS - Constants for prefixing identifiers in the routine module.
  * @requires isValidRequest - Utility function to validate request authenticity.
@@ -24,7 +24,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { NOTICE_COLLECTION_NAME } from "../../../config/config.js";
+import { ROUTINE_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -61,7 +61,7 @@ const createRoutineService = async (db, newRoutineDetails, file) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (await findByFileName(db, NOTICE_COLLECTION_NAME, file?.originalname))
+        if (await findByFileName(db, ROUTINE_COLLECTION_NAME, file?.originalname))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
         const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(file);
@@ -79,10 +79,9 @@ const createRoutineService = async (db, newRoutineDetails, file) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, NOTICE_COLLECTION_NAME, routineDetails);
-        const latestData = await findById(db, NOTICE_COLLECTION_NAME, routineDetails?.id);
+        const result = await addANewEntryToDatabase(db, ROUTINE_COLLECTION_NAME, routineDetails);
+        const latestData = await findById(db, ROUTINE_COLLECTION_NAME, routineDetails?.id);
 
-        delete latestData?.id;
         delete latestData?.createdBy;
         delete latestData?.googleDriveFileId;
 
@@ -106,7 +105,7 @@ const createRoutineService = async (db, newRoutineDetails, file) => {
  */
 const getRoutineListService = async (db) => {
     try {
-        const routines = await getAllData(db, NOTICE_COLLECTION_NAME);
+        const routines = await getAllData(db, ROUTINE_COLLECTION_NAME);
 
         return routines?.length
             ? generateResponseData(routines, true, STATUS_OK, `${routines?.length} routine found`)
@@ -129,7 +128,7 @@ const getRoutineListService = async (db) => {
  */
 const getARoutineService = async (db, fileName) => {
     try {
-        const routine = await findByFileName(db, NOTICE_COLLECTION_NAME, fileName);
+        const routine = await findByFileName(db, ROUTINE_COLLECTION_NAME, fileName);
 
         delete routine?.googleDriveFileId;
 
@@ -158,11 +157,11 @@ const deleteARoutineService = async (db, adminId, fileName) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const fileDetails = await findByFileName(db, NOTICE_COLLECTION_NAME, fileName);
+        const fileDetails = await findByFileName(db, ROUTINE_COLLECTION_NAME, fileName);
 
         if (fileDetails) {
             const response = await HandleGoogleDrive.deleteFile(fileDetails?.googleDriveFileId);
-            const result = await deleteByFileName(db, NOTICE_COLLECTION_NAME, fileName);
+            const result = await deleteByFileName(db, ROUTINE_COLLECTION_NAME, fileName);
 
             return result
                 ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)

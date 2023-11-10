@@ -82,7 +82,6 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
         const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
-        delete latestData?.id;
         delete latestData?.createdBy;
         delete latestData?.googleDriveFileId;
 
