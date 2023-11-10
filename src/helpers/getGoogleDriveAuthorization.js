@@ -9,7 +9,7 @@ import { GOOGLE_DRIVE_CLIENT_EMAIL, GOOGLE_DRIVE_PRIVATE_KEY, GOOGLE_DRIVE_SCOPE
  * @returns {google.auth.JWT} A JWT client instance, authenticated and ready to make requests.
  * @throws Will throw an error if the authentication fails.
  */
-const authorizeGoogleDrive = async () => {
+const getGoogleDriveAuthorization = async () => {
     try {
         // Define the scope of access required by the application.
         const SCOPE = [GOOGLE_DRIVE_SCOPE];
@@ -35,4 +35,4 @@ const authorizeGoogleDrive = async () => {
     }
 };
 
-export default authorizeGoogleDrive;
+export default getGoogleDriveAuthorization;

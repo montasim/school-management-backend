@@ -19,7 +19,7 @@
  * @requires getAllData - Utility for retrieving all records from a database collection.
  * @requires deleteByFileName - Utility for deleting records by filename.
  * @requires findByFileName - Utility for finding a record by its filename.
- * @requires HandleGoogleDrive - Helper for interacting with the Google Drive API.
+ * @requires GoogleDriveFileOperations - Helper for interacting with the Google Drive API.
  * @module RoutineService - Exported object containing routine-related service functions.
  */
 
@@ -42,7 +42,7 @@ import findById from "../../../shared/findById.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
 import findByFileName from "../../../shared/findByFileName.js";
-import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js";
+import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 
 /**
  * Creates a new routine entry in the database.
@@ -64,7 +64,7 @@ const createRoutineService = async (db, newRoutineDetails, file) => {
         if (await findByFileName(db, ROUTINE_COLLECTION_NAME, file?.originalname))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(file);
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
         if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -160,7 +160,8 @@ const deleteARoutineService = async (db, adminId, fileName) => {
         const fileDetails = await findByFileName(db, ROUTINE_COLLECTION_NAME, fileName);
 
         if (fileDetails) {
-            const response = await HandleGoogleDrive.deleteFile(fileDetails?.googleDriveFileId);
+            await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
+
             const result = await deleteByFileName(db, ROUTINE_COLLECTION_NAME, fileName);
 
             return result

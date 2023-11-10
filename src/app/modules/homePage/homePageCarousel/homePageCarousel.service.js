@@ -18,7 +18,7 @@ import { ID_CONSTANTS } from "./homePageCarousel.constants.js";
 // Shared utilities
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import setMimeTypeFromExtension from "../../../../helpers/setMimeTypeFromExtension.js";
-import { HandleGoogleDrive } from "../../../../helpers/handleGoogleDriveApi.js"
+import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
 import deleteById from "../../../../shared/deleteById.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
@@ -44,7 +44,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails) => 
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const carouselImageMimeType = setMimeTypeFromExtension(carouselImage?.fileName);
-        const uploadCarouselImageResponse = await HandleGoogleDrive.uploadFile(carouselImage?.fileName, carouselImage?.fileBuffer, carouselImageMimeType);
+        const uploadCarouselImageResponse = await GoogleDriveFileOperations.uploadFileToDrive(carouselImage?.fileName, carouselImage?.fileBuffer, carouselImageMimeType);
 
         if (!uploadCarouselImageResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -148,10 +148,10 @@ const updateAHomePageCarouselService = async (db, homePageCarouselId, newHomePag
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageCarouselId} not found`);
 
-        await HandleGoogleDrive.deleteFile(oldDetails?.googleDriveImageId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveImageId);
 
         const carouselImageMimeType = setMimeTypeFromExtension(carouselImage?.fileName);
-        const uploadCarouselImageResponse = await HandleGoogleDrive.uploadFile(carouselImage?.fileName, carouselImage?.fileBuffer, carouselImageMimeType);
+        const uploadCarouselImageResponse = await GoogleDriveFileOperations.uploadFileToDrive(carouselImage?.fileName, carouselImage?.fileBuffer, carouselImageMimeType);
 
         if (!uploadCarouselImageResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -200,7 +200,7 @@ const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) =
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageCarouselId} not found`);
 
-        await HandleGoogleDrive.deleteFile(oldDetails?.googleDriveImageId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveImageId);
         
         const result = await deleteById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId);
 

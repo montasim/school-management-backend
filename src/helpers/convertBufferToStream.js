@@ -12,7 +12,7 @@ import logger from "../shared/logger.js";
  * @param {Buffer} buffer - The buffer to convert into a stream.
  * @returns {Readable} A Readable stream containing the data from the buffer.
  */
-const bufferToStream = (buffer) => {
+const convertBufferToStream = (buffer) => {
     try {
         const stream = new Readable();
 
@@ -27,4 +27,4 @@ const bufferToStream = (buffer) => {
     }
 };
 
-export default bufferToStream;
+export default convertBufferToStream;

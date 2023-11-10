@@ -18,7 +18,7 @@ import { ID_CONSTANTS } from "./blog.constants.js";
 // Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import setMimeTypeFromExtension from "../../../helpers/setMimeTypeFromExtension.js";
-import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js"
+import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -44,7 +44,7 @@ const createBlogPost = async (db, newBlogPostDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const postImageMimeType = setMimeTypeFromExtension(postImage?.fileName);
-        const uploadPostImageResponse = await HandleGoogleDrive.uploadFile(postImage?.fileName, postImage?.fileBuffer, postImageMimeType);
+        const uploadPostImageResponse = await GoogleDriveFileOperations.uploadFileToDrive(postImage?.fileName, postImage?.fileBuffer, postImageMimeType);
 
         if (!uploadPostImageResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -150,10 +150,10 @@ const updateABlogPost = async (db, blogPostId, newBlogPostDetails) => {
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogPostId} not found`);
 
-        await HandleGoogleDrive.deleteFile(oldDetails?.googleDriveImageId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveImageId);
 
         const postImageMimeType = setMimeTypeFromExtension(postImage?.fileName);
-        const uploadPostImageResponse = await HandleGoogleDrive.uploadFile(postImage?.fileName, postImage?.fileBuffer, postImageMimeType);
+        const uploadPostImageResponse = await GoogleDriveFileOperations.uploadFileToDrive(postImage?.fileName, postImage?.fileBuffer, postImageMimeType);
 
         if (!uploadPostImageResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -201,7 +201,7 @@ const deleteABlogPost = async (db, adminId, blogPostId) => {
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogPostId} not found`);
 
-        await HandleGoogleDrive.deleteFile(oldDetails?.googleDriveImageId);    
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveImageId);
         
         const result = await deleteById(db, BLOG_COLLECTION_NAME, blogPostId);
 

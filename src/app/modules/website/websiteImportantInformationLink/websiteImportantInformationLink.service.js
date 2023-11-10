@@ -10,8 +10,6 @@ import {
 } from "../../../../constants/constants.js";
 import { ID_CONSTANTS } from "./websiteImportantInformationLink.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
-import setMimeTypeFromExtension from "../../../../helpers/setMimeTypeFromExtension.js";
-import { HandleGoogleDrive } from "../../../../helpers/handleGoogleDriveApi.js"
 import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findById from "../../../../shared/findById.js";

@@ -11,7 +11,7 @@ import {
 import { ID_CONSTANTS } from "./websiteConfiguration.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import setMimeTypeFromExtension from "../../../../helpers/setMimeTypeFromExtension.js";
-import { HandleGoogleDrive } from "../../../../helpers/handleGoogleDriveApi.js"
+import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findById from "../../../../shared/findById.js";
@@ -39,13 +39,13 @@ const createWebsiteConfiguration = async (db, websiteDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const websiteLogoMimeType = setMimeTypeFromExtension(websiteLogo?.fileName);
-        const uploadLogoResponse = await HandleGoogleDrive.uploadFile(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogoMimeType);
+        const uploadLogoResponse = await GoogleDriveFileOperations.uploadFileToDrive(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogoMimeType);
 
         if (!uploadLogoResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
         
         const websiteFavIconMimeType = setMimeTypeFromExtension(websiteFavIcon?.fileName);
-        const uploadFavIconResponse = await HandleGoogleDrive.uploadFile(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIconMimeType);
+        const uploadFavIconResponse = await GoogleDriveFileOperations.uploadFileToDrive(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIconMimeType);
 
         if (!uploadFavIconResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -121,17 +121,17 @@ const updateWebsiteConfiguration = async (db, websiteDetails) => {
 
         const oldWebsiteDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
 
-        await HandleGoogleDrive.deleteFile(oldWebsiteDetails?.googleDriveLogoId);
-        await HandleGoogleDrive.deleteFile(oldWebsiteDetails?.googleDriveFavIconId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails?.googleDriveLogoId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails?.googleDriveFavIconId);
 
         const websiteLogoMimeType = setMimeTypeFromExtension(websiteLogo?.fileName);
-        const uploadLogoResponse = await HandleGoogleDrive.uploadFile(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogoMimeType);
+        const uploadLogoResponse = await GoogleDriveFileOperations.uploadFileToDrive(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogoMimeType);
 
         if (!uploadLogoResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
         
         const websiteFavIconMimeType = setMimeTypeFromExtension(websiteFavIcon?.fileName);
-        const uploadFavIconResponse = await HandleGoogleDrive.uploadFile(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIconMimeType);
+        const uploadFavIconResponse = await GoogleDriveFileOperations.uploadFileToDrive(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIconMimeType);
 
         if (!uploadFavIconResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -187,8 +187,8 @@ const deleteWebsiteConfiguration = async (db, adminId) => {
         
         const websiteDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
         
-        await HandleGoogleDrive.deleteFile(websiteDetails?.googleDriveLogoId);
-        await HandleGoogleDrive.deleteFile(websiteDetails?.googleDriveFavIconId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(websiteDetails?.googleDriveLogoId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(websiteDetails?.googleDriveFavIconId);
 
         // Deletes all documents in the collection without deleting the collection itself
         const result = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).deleteMany({});

@@ -10,29 +10,29 @@
  *
  * @requires google - Google APIs client library.
  * @requires logger - Shared logging utility for error logging.
- * @requires authorizeGoogleDrive - Function to authorize the application to access Google Drive.
- * @requires bufferToStream - Utility function to convert a buffer to a stream.
+ * @requires getGoogleDriveAuthorization - Function to authorize the application to access Google Drive.
+ * @requires convertBufferToStream - Utility function to convert a buffer to a stream.
  * @requires GOOGLE_DRIVE_FOLDER_KEY - Folder key for Google Drive uploads, defined in the application's configuration.
- * @module HandleGoogleDrive - Exports functions for uploading and deleting files on Google Drive.
+ * @module GoogleDriveFileOperations - Exports functions for uploading and deleting files on Google Drive.
  */
 
 import { google } from 'googleapis';
 import logger from "../shared/logger.js";
-import authorizeGoogleDrive from "./authorizeGoogleDrive.js";
-import bufferToStream from "./bufferToStream.js";
+import getGoogleDriveAuthorization from "./getGoogleDriveAuthorization.js";
+import convertBufferToStream from "./convertBufferToStream.js";
 import { GOOGLE_DRIVE_FOLDER_KEY } from "../config/config.js";
 
 /**
  * Uploads a file to Google Drive and sets its permissions to be readable by anyone with the link.
  *
  * @async
- * @function uploadFile
+ * @function uploadFileToDrive
  * @param {Express.Multer.File} file - An object representing the file to be uploaded, as provided by Multer.
  * @returns {Promise<{fileId: string, shareableLink: string}>} An object containing the file ID and shareable link from Google Drive.
  */
-const uploadFile = async (file) => {
+const uploadFileToDrive = async (file) => {
     try {
-        const authorizationClient = await authorizeGoogleDrive();
+        const authorizationClient = await getGoogleDriveAuthorization();
         const drive = google.drive({
             version: 'v3',
             auth: authorizationClient
@@ -42,7 +42,7 @@ const uploadFile = async (file) => {
             parents: [GOOGLE_DRIVE_FOLDER_KEY],
         };
 
-        const fileStream = bufferToStream(file.buffer);
+        const fileStream = convertBufferToStream(file.buffer);
 
         // Upload the file
         const { data: fileData } = await drive.files.create({
@@ -84,13 +84,13 @@ const uploadFile = async (file) => {
  * Deletes a file from Google Drive.
  *
  * @async
- * @function deleteFile
+ * @function deleteFileFromDrive
  * @param {string} fileId - The ID of the file to be deleted.
  * @returns {Promise<GoogleApis.Common.Schema$Empty>} The response from the Google Drive API.
  */
-const deleteFile = async (fileId) => {
+const deleteFileFromDrive = async (fileId) => {
     try {
-        const authorizationClient = await authorizeGoogleDrive();
+        const authorizationClient = await getGoogleDriveAuthorization();
         const drive = google.drive({
             version: 'v3',
             auth: authorizationClient
@@ -107,9 +107,9 @@ const deleteFile = async (fileId) => {
 /**
  * Provides an interface for Google Drive file operations, including uploading and deleting files.
  *
- * @namespace HandleGoogleDrive
+ * @namespace GoogleDriveFileOperations
  */
-export const HandleGoogleDrive = {
-    uploadFile,
-    deleteFile
+export const GoogleDriveFileOperations = {
+    uploadFileToDrive,
+    deleteFileFromDrive
 };
