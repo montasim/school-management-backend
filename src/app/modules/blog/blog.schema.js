@@ -43,7 +43,7 @@ const blogPostBody = Joi.object({
             'string.max': '"category" should have a maximum length of {#limit}',
             'any.required': '"category" is a required field'
         }),
-    postImage: JoiSchemaGenerators.fileValidationSchema(FILE_EXTENSION_TYPE_PNG, [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+    postImage: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_PNG], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
     description: Joi.string()
         .min(3)
         .max(5000)

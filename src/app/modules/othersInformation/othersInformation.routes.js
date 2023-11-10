@@ -31,11 +31,11 @@ router.post("/", [
  * @swagger
  * /:
  *   get:
- *     summary: Retrieve all othersInformations.
- *     description: Endpoint to retrieve a list of all othersInformations.
+ *     summary: Retrieve all other information.
+ *     description: Endpoint to retrieve a list of all other information.
  *     responses:
  *       200:
- *         description: A list of othersInformations.
+ *         description: A list of others information.
  */
 router.get("/", [
     OthersInformationController.getOthersInformationListController

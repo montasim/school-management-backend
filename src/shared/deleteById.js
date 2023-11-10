@@ -1,7 +1,7 @@
 import logger from "./logger.js";
 
 /**
- * Delete the requester by looking up the requester's ID in the collection.
+ * Delete the requester by looking up the requester ID in the collection.
  *
  * @async
  * @function

@@ -1,10 +1,5 @@
-// Third-party modules
 import { v4 as uuidv4 } from 'uuid';
-
-// Configurations
-import {CATEGORY_COLLECTION_NAME, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME} from "../../../config/config.js";
-
-// Constants
+import { OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -14,8 +9,6 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./othersInformationCategory.constants.js";
-
-// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
