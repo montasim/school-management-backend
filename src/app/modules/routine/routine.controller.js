@@ -9,6 +9,7 @@
  *
  * @requires RoutineService - Service for handling routine-related business logic.
  * @requires extractFromRequest - Helper function for extracting data from the request object.
+ * @requires validateFileTitle - Helper function for validating file title.
  * @requires validateUploadedFile - Helper function for validating uploaded files.
  * @requires handleServiceResponse - Helper function for handling responses from services.
  * @requires logger - Shared logging utility.
@@ -18,6 +19,7 @@
 
 import { RoutineService } from "./routine.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
+import validateFileTitle from "../../../helpers/validateFileTitle.js";
 import validateUploadedFile from "../../../helpers/validateUploadedFile.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 import logger from "../../../shared/logger.js";
@@ -43,6 +45,7 @@ const createRoutineController = async (req, res) => {
         const { title, adminId, db } = extractFromRequest(req, ['title']);
         const newRoutineDetails = { title, adminId };
 
+        await validateFileTitle(res, title);
         await validateUploadedFile(res, req.file, MAX_PDF_FILE_SIZE, [MIME_TYPE_PDF]);
         await handleServiceResponse(res, RoutineService.createRoutineService, db, newRoutineDetails, req?.file);
     } catch (error) {

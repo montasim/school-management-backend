@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import logMiddleware from "./app/middlewares/logMiddleware.js";
+import requestLoggingMiddleware from "./app/middlewares/requestLoggingMiddleware.js";
 import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
 import userRateLimiter from "./app/middlewares/userRateLimiter.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
@@ -23,7 +23,7 @@ app.use(express.json());
 /**
  * Use the log middleware to log incoming requests.
  */
-app.use(logMiddleware);
+app.use(requestLoggingMiddleware);
 
 /**
  * Use the CORS middleware with a custom configuration.

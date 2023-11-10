@@ -19,11 +19,6 @@ import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
 
 /**
- * @description Joi validation schema for routine's body data.
- */
-const routineBodyValidationSchema = JoiSchemaGenerators.fileTitleValidationSchema();
-
-/**
  * @description Joi validation schema for routine's params data.
  */
 
@@ -39,6 +34,5 @@ const routineParamsValidationSchema = Joi.object({
  * - `routineParamsSchema`: Validates the routine ID in request parameters.
  */
 export const RoutineValidationSchemas = {
-    routineBodyValidationSchema,
     routineParamsValidationSchema,
 };
