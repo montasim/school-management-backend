@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { SharedSchema } from "../../../../shared/sharedSchema.js";
+import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 
 /**
  * @typedef {Object} Link
@@ -7,8 +7,8 @@ import { SharedSchema } from "../../../../shared/sharedSchema.js";
  * @property {string} link - The URL of the link.
  */
 const websiteImportantInformationLinkSchema = Joi.object({
-    importantInformationLinkTitle: SharedSchema.titleSchema,
-    importantInformationLink: SharedSchema.linkSchema
+    importantInformationLinkTitle: JoiSchemaGenerators.titleValidationSchema,
+    importantInformationLink: JoiSchemaGenerators.uriValidationSchema
 });
 
 const websiteImportantInformation = Joi.array().items(websiteImportantInformationLinkSchema).messages({

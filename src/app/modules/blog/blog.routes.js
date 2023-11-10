@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { BlogPostValidators } from "./blog.validator.js";
 import { HomePageBlogPostController } from "./blog.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: BlogPost successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     BlogPostValidators.blogPostBody,
     HomePageBlogPostController.createBlogPost
 ]);
@@ -86,7 +86,7 @@ router.get("/:blogPostId", [
  *         description: BlogPost successfully updated.
  */
 router.put("/:blogPostId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     BlogPostValidators.blogPostParams,
     BlogPostValidators.blogPostBody,
     HomePageBlogPostController.updateABlogPost
@@ -110,7 +110,7 @@ router.put("/:blogPostId", [
  *         description: BlogPost successfully deleted.
  */
 router.delete("/:blogPostId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     BlogPostValidators.blogPostParams,
     HomePageBlogPostController.deleteABlogPost
 ]);

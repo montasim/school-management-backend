@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { HomePageCarouselValidators } from "./homePageCarousel.validator.js";
 import { HomePageCarouselController } from "./homePageCarousel.controller.js";
 
@@ -24,7 +24,7 @@ const router = express.Router();
  *         description: HomePageCarousel successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     HomePageCarouselValidators.homePageCarouselBodyValidator,
     HomePageCarouselController.createHomePageCarouselController
 ]);
@@ -90,7 +90,7 @@ router.get("/:homePageCarouselId", [
  *         description: HomePageCarousel successfully updated.
  */
 router.put("/:homePageCarouselId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     HomePageCarouselValidators.homePageCarouselParamsValidator,
     HomePageCarouselValidators.homePageCarouselBodyValidator,
     HomePageCarouselController.updateAHomePageCarouselController
@@ -114,7 +114,7 @@ router.put("/:homePageCarouselId", [
  *         description: HomePageCarousel successfully deleted.
  */
 router.delete("/:homePageCarouselId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     HomePageCarouselValidators.homePageCarouselParamsValidator,
     HomePageCarouselController.deleteAHomePageCarouselController
 ]);

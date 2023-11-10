@@ -1,11 +1,11 @@
 import Joi from "joi";
-import { SharedSchema } from "../../../shared/sharedSchema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../constants/constants.js";
 
 /**
  * @description Joi validation schema for result's body data.
  */
-const resultBodySchema = SharedSchema.createFileWithTitleSchema(FILE_EXTENSION_TYPE_PDF, [MIME_TYPE_PDF]);
+const resultBodySchema = JoiSchemaGenerators.fileWithTitleValidationSchema(FILE_EXTENSION_TYPE_PDF, [MIME_TYPE_PDF]);
 
 /**
  * @description Joi validation schema for result's params data.
@@ -13,7 +13,7 @@ const resultBodySchema = SharedSchema.createFileWithTitleSchema(FILE_EXTENSION_T
 
 const resultParamsSchema = Joi.object({
     // The unique filename with a valid extension
-    fileName: SharedSchema.createFileNameSchema(FILE_EXTENSION_TYPE_PDF),
+    fileName: JoiSchemaGenerators.createFileNameSchema(FILE_EXTENSION_TYPE_PDF),
 }).required();
 
 /**

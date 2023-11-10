@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Logger Configuration and Creation.
+ *
+ * This module configures and creates a logger instance using the Winston library. It sets up logging to
+ * both the console and multiple log files, categorizing logs based on their severity levels such as error, warn,
+ * info, http, verbose, and debug. The module also ensures the existence of a log directory, creating it if it
+ * doesn't exist. The configured logger is used throughout the application for consistent logging practices,
+ * facilitating easier debugging and monitoring of the application's behavior.
+ *
+ * @requires winston - A versatile logging library for Node.js.
+ * @requires path - Core Node.js module for handling and transforming file paths.
+ * @requires constants - Application constants for configuring log levels and colors.
+ * @requires createFolderIfNotExists - Utility to ensure the existence of a directory.
+ * @module logger - Configured Winston logger instance for application-wide logging.
+ */
+
 import winston from 'winston';
 import path from "path";
 import { LOG_LEVELS, LOG_COLORS } from "../constants/constants.js";
@@ -28,6 +44,7 @@ const logFormat = winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     winston.format.printf(({ timestamp, level, message, meta }) => {
         const { req, res, error, url } = meta || {};
+
         return `${timestamp} [${level}] URL: ${url} Req: ${JSON.stringify(req)} Res: ${JSON.stringify(res)} Error: ${error} Message: ${message}`;
     })
 );

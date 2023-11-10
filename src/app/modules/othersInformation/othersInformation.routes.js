@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { OthersInformationValidators } from "./othersInformation.validator.js";
 import { OthersInformationController } from "./othersInformation.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: OthersInformation successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     OthersInformationValidators.othersInformationBodyValidator,
     OthersInformationController.createOthersInformationController
 ]);
@@ -86,7 +86,7 @@ router.get("/:othersInformationId", [
  *         description: OthersInformation successfully updated.
  */
 router.put("/:othersInformationId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     OthersInformationValidators.othersInformationParamsValidator,
     OthersInformationValidators.othersInformationBodyValidator,
     OthersInformationController.updateAOthersInformationController
@@ -110,7 +110,7 @@ router.put("/:othersInformationId", [
  *         description: OthersInformation successfully deleted.
  */
 router.delete("/:othersInformationId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     OthersInformationValidators.othersInformationParamsValidator,
     OthersInformationController.deleteAOthersInformationController
 ]);

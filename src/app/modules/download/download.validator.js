@@ -1,4 +1,4 @@
-import { DownloadSchema } from "./download.schema.js";
+import { DownloadValidationSchemas } from "./download.schema.js";
 import validateWithSchema from "../../../helpers/validateWithSchema.js";
 
 /**
@@ -16,7 +16,7 @@ import validateWithSchema from "../../../helpers/validateWithSchema.js";
  *
  * @returns {void}
  */
-const downloadBodyValidator = validateWithSchema(DownloadSchema.downloadBodySchema, 'body');
+const validateDownloadBody = validateWithSchema(DownloadValidationSchemas.downloadBodyValidationSchema, 'body');
 
 /**
  * @function
@@ -33,13 +33,13 @@ const downloadBodyValidator = validateWithSchema(DownloadSchema.downloadBodySche
  *
  * @returns {void}
  */
-const downloadParamsValidator = validateWithSchema(DownloadSchema.downloadParamsSchema, 'params');
+const validateDownloadParams = validateWithSchema(DownloadValidationSchemas.downloadParamsValidationSchema, 'params');
 
 /**
- * @namespace DownloadValidators
+ * @namespace DownloadValidationService
  * @description Exported download validators to be used in routes.
  */
-export const DownloadValidators = {
-    downloadBodyValidator,
-    downloadParamsValidator,
+export const DownloadValidationService = {
+    validateDownloadBody,
+    validateDownloadParams,
 };

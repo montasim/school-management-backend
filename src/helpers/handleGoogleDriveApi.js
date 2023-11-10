@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Interface for Google Drive File Operations.
+ *
+ * This module provides functionality to interact with Google Drive for file operations.
+ * It includes functions to upload files to Google Drive and set appropriate permissions for shared access,
+ * as well as to delete files from Google Drive. These functions use the Google Drive API and are built on
+ * top of the googleapis library. The module handles authorization, file stream creation, and API interactions,
+ * and returns relevant information such as file IDs and shareable links. Errors encountered during these
+ * operations are logged using a shared logger utility.
+ *
+ * @requires google - Google APIs client library.
+ * @requires logger - Shared logging utility for error logging.
+ * @requires authorizeGoogleDrive - Function to authorize the application to access Google Drive.
+ * @requires bufferToStream - Utility function to convert a buffer to a stream.
+ * @requires GOOGLE_DRIVE_FOLDER_KEY - Folder key for Google Drive uploads, defined in the application's configuration.
+ * @module HandleGoogleDrive - Exports functions for uploading and deleting files on Google Drive.
+ */
+
 import { google } from 'googleapis';
 import logger from "../shared/logger.js";
 import authorizeGoogleDrive from "./authorizeGoogleDrive.js";

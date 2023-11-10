@@ -1,21 +1,10 @@
-// Third-party modules
 import express from "express";
 import cors from "cors";
-
-// Middlewares modules
 import logMiddleware from "./app/middlewares/logMiddleware.js";
 import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
 import userRateLimiter from "./app/middlewares/userRateLimiter.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
-
-// Routes modules
 import appRoutes from "./app/routes/index.js";
-
-/**
- * This module is responsible for setting up and configuring the Express application.
- *
- * @module app
- */
 
 /**
  * Create an instance of an Express application.

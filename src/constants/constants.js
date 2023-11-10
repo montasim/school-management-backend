@@ -1,16 +1,16 @@
 /**
- * @file
- * This file defines various constants related to CORS settings, logging levels, logging colors, server messages, and upload directories.
+ * @fileoverview Application-wide Constants.
  *
- * @description
- * - `ALLOWED_ORIGIN`: Specifies the allowed origins for CORS.
- * - `ALLOWED_METHODS`: Specifies the allowed HTTP methods for CORS.
- * - `FILE_EXTENSION_TYPE`: Specifies the allowed file extension type.
- * - `LOG_LEVELS`: Defines the logging levels used in the application.
- * - `LOG_COLORS`: Specifies the colors corresponding to each log level.
- * - `MIME_TYPE`: Specifies the mime type for the file.
- * - `SERVER_LOG_MESSAGE`: A message indicating that the server is running.
- * - `FORBIDDEN_MESSAGE`: A message indicating that the user does not have the necessary permissions.
+ * This module defines a variety of constants used throughout the application.
+ * These constants include configurations for CORS (Cross-Origin Resource Sharing),
+ * file extension types, maximum file sizes, MIME types, logging levels and colors,
+ * standard HTTP status codes, and common server messages.
+ *
+ * By centralizing these constants, the application ensures consistent usage and
+ * easy maintenance of these key values, which are integral to various functionalities
+ * such as file handling, logging, response formatting, and security checks.
+ *
+ * @module constants - Exports constants for CORS, file types, logging, MIME types, and standard messages.
  */
 
 // CORS related
@@ -25,6 +25,15 @@ const FILE_EXTENSION_TYPE_PDF = "pdf";
 const FILE_EXTENSION_TYPE_JPG = "jpg";
 const FILE_EXTENSION_TYPE_PNG = "png";
 const FILE_EXTENSION_TYPE_ICO = "ico";
+
+// File size
+const MAX_PDF_FILE_SIZE = 25 * 1024 * 1024;
+
+// MIME types
+const MIME_TYPE_PDF = "application/pdf";
+const MIME_TYPE_JPG = "image/jpeg";
+const MIME_TYPE_PNG = "image/png";
+const MIME_TYPE_ICO = "image/x-icon";
 
 // Log related
 const LOG_LEVELS = {
@@ -43,12 +52,6 @@ const LOG_COLORS = {
     verbose: 'magenta',
     debug: 'blue',
 };
-
-// MIME types
-const MIME_TYPE_PDF = "application/pdf";
-const MIME_TYPE_JPG = "image/jpeg";
-const MIME_TYPE_PNG = "image/png";
-const MIME_TYPE_ICO = "image/x-icon";
 
 
 // Status code
@@ -72,6 +75,7 @@ export {
     FILE_EXTENSION_TYPE_JPG,
     FILE_EXTENSION_TYPE_PNG,
     FILE_EXTENSION_TYPE_ICO,
+    MAX_PDF_FILE_SIZE,
     LOG_LEVELS,
     LOG_COLORS,
     MIME_TYPE_PDF,

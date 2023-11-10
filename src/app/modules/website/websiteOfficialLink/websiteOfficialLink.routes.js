@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteOfficialLinkValidators } from "./websiteOfficialLink.validator.js";
 import { WebsiteOfficialLinkController } from "./websiteOfficialLink.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Website important information link successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteOfficialLinkValidators.websiteOfficialLinkBodyValidator,
     WebsiteOfficialLinkController.createWebsiteOfficialLink
 ]);
@@ -58,7 +58,7 @@ router.get("/", [
  *         description: Website important information link successfully updated.
  */
 router.put("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteOfficialLinkValidators.websiteOfficialLinkBodyValidator,
     WebsiteOfficialLinkController.updateWebsiteOfficialLink
 ]);
@@ -74,7 +74,7 @@ router.put("/", [
  *         description: Website important information link successfully deleted.
  */
 router.delete("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteOfficialLinkController.deleteWebsiteOfficialLink
 ]);
 

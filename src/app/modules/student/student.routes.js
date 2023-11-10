@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { StudentValidators } from "./student.validator.js";
 import { StudentController } from "./student.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Student successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     StudentValidators.studentBodyValidator,
     StudentController.createStudentController
 ]);
@@ -86,7 +86,7 @@ router.get("/:studentId", [
  *         description: Student successfully updated.
  */
 router.put("/:studentId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     StudentValidators.studentParamsValidator,
     StudentValidators.studentBodyValidator,
     StudentController.updateAStudentController
@@ -110,7 +110,7 @@ router.put("/:studentId", [
  *         description: Student successfully deleted.
  */
 router.delete("/:studentId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     StudentValidators.studentParamsValidator,
     StudentController.deleteAStudentController
 ]);

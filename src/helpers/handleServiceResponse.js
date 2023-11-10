@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Middleware utility for handling responses from service functions in Express routes.
+ *
+ * This module exports a utility function that abstracts the process of executing service functions,
+ * handling their responses, and sending back the result to the client. It streamlines error handling
+ * by catching exceptions and sending a standardized response with a 500 internal server error status.
+ * The function is designed to be used in Express route handlers to manage service execution and
+ * response handling in a consistent and centralized manner.
+ *
+ * @requires logger - Shared logging utility for error logging.
+ * @requires STATUS_INTERNAL_SERVER_ERROR - Constant representing the internal server error HTTP status code.
+ * @module handleServiceResponse - Function to execute service functions and handle their responses in Express routes.
+ */
+
 import logger from "../shared/logger.js";
 import {STATUS_INTERNAL_SERVER_ERROR} from "../constants/constants.js";
 

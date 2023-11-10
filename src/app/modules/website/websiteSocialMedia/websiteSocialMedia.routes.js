@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteSocialMediaValidators } from "./websiteSocialMedia.validator.js";
 import { WebsiteSocialMediaController } from "./websiteSocialMedia.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Website important information link successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteSocialMediaValidators.websiteSocialMediaBodyValidator,
     WebsiteSocialMediaController.createWebsiteSocialMedia
 ]);
@@ -58,7 +58,7 @@ router.get("/", [
  *         description: Website important information link successfully updated.
  */
 router.put("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteSocialMediaValidators.websiteSocialMediaBodyValidator,
     WebsiteSocialMediaController.updateWebsiteSocialMedia
 ]);
@@ -74,7 +74,7 @@ router.put("/", [
  *         description: Website important information link successfully deleted.
  */
 router.delete("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteSocialMediaController.deleteWebsiteSocialMedia
 ]);
 

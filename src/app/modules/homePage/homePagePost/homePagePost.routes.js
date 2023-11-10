@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { HomePagePostValidators } from "./homePagePost.validator.js";
 import { HomePageHomePagePostController } from "./homePagePost.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: HomePagePost successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     HomePagePostValidators.homePagePostBody,
     HomePageHomePagePostController.createHomePagePost
 ]);
@@ -86,7 +86,7 @@ router.get("/:homePagePostId", [
  *         description: HomePagePost successfully updated.
  */
 router.put("/:homePagePostId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     HomePagePostValidators.homePagePostParams,
     HomePagePostValidators.homePagePostBody,
     HomePageHomePagePostController.updateAHomePagePost
@@ -110,7 +110,7 @@ router.put("/:homePagePostId", [
  *         description: HomePagePost successfully deleted.
  */
 router.delete("/:homePagePostId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     HomePagePostValidators.homePagePostParams,
     HomePageHomePagePostController.deleteAHomePagePost
 ]);

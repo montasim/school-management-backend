@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { ResultValidators } from "./result.validator.js";
 import { ResultController } from "./result.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Result successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     ResultValidators.resultBodyValidator,
     ResultController.createResultController
 ]);
@@ -81,7 +81,7 @@ router.get("/:fileName", [
  *         description: Result successfully deleted.
  */
 router.delete("/:fileName", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     ResultValidators.resultParamsValidator,
     ResultController.deleteAResultController
 ]);

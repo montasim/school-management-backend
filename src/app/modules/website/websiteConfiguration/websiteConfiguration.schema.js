@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { SharedSchema } from "../../../../shared/sharedSchema.js";
+import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 import { 
     FILE_EXTENSION_TYPE_PNG, 
     FILE_EXTENSION_TYPE_ICO,
@@ -28,8 +28,8 @@ const websiteConfigurationBodySchema = Joi.object({
         'string.max': 'Slogan must not exceed 150 characters.',
         'any.required': 'Slogan is required.'
     }),
-    websiteLogo: SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_PNG, [MIME_TYPE_PNG, MIME_TYPE_JPG]),
-    websiteFavIcon: SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_ICO, [MIME_TYPE_ICO]),
+    websiteLogo: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_PNG], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+    websiteFavIcon: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_ICO], [MIME_TYPE_ICO]),
 });
 
 /**

@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { NoticeValidators } from "./notice.validator.js";
 import { NoticeController } from "./notice.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Notice successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     NoticeValidators.noticeBodyValidator,
     NoticeController.createNoticeController
 ]);
@@ -81,7 +81,7 @@ router.get("/:fileName", [
  *         description: Notice successfully deleted.
  */
 router.delete("/:fileName", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     NoticeValidators.noticeParamsValidator,
     NoticeController.deleteANoticeController
 ]);

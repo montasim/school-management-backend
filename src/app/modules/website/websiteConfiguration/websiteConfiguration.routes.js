@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteConfigurationValidators } from "./websiteConfiguration.validator.js";
 import { WebsiteConfigurationController } from "./websiteConfiguration.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Website configuration successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteConfigurationValidators.websiteConfigurationBodyValidator,
     WebsiteConfigurationController.createWebsiteConfiguration
 ]);
@@ -58,7 +58,7 @@ router.get("/", [
  *         description: Website configuration successfully updated.
  */
 router.put("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteConfigurationValidators.websiteConfigurationBodyValidator,
     WebsiteConfigurationController.updateWebsiteConfiguration
 ]);
@@ -74,7 +74,7 @@ router.put("/", [
  *         description: Website configuration successfully deleted.
  */
 router.delete("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteConfigurationController.deleteWebsiteConfiguration
 ]);
 

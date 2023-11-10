@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Utility function for retrieving all entries from a database collection.
+ *
+ * This module exports a function that queries a given database collection and retrieves all
+ * the entries within it. The function is designed to abstract the process of querying entire
+ * collections from the database, making it reusable across different parts of the application.
+ * It takes a database connection object and the name of the collection as parameters. The
+ * retrieved entries exclude certain fields, such as IDs and creator information, for privacy
+ * or convenience. In the event of an error during the database operation, it is logged using
+ * a shared logging utility.
+ *
+ * @requires logger - Shared logging utility for error handling.
+ * @module getAllData - Function to retrieve all entries from a specific database collection.
+ */
+
 import logger from "./logger.js";
 
 /**

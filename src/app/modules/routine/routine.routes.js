@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { RoutineValidators } from "./routine.validator.js";
 import { RoutineController } from "./routine.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Routine successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     RoutineValidators.routineBodyValidator,
     RoutineController.createRoutineController
 ]);
@@ -81,7 +81,7 @@ router.get("/:fileName", [
  *         description: Routine successfully deleted.
  */
 router.delete("/:fileName", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     RoutineValidators.routineParamsValidator,
     RoutineController.deleteARoutineController
 ]);

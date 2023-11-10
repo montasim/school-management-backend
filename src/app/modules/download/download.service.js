@@ -1,3 +1,28 @@
+/**
+ * @fileoverview Services for managing download operations.
+ *
+ * This module contains services related to download operations within the application. It includes functions for
+ * creating new download records, fetching a list of all downloads, retrieving specific downloads by filename, and
+ * deleting downloads. Each service function interfaces with the application's database and performs specific
+ * business logic operations, ensuring proper management and retrieval of download data. Additionally, these services
+ * handle interactions with external storage services, like Google Drive, for file uploads and deletions.
+ *
+ * @requires uuid - Module to generate unique identifiers.
+ * @requires DOWNLOAD_COLLECTION_NAME - Configured collection name for downloads in the database.
+ * @requires constants - Application constants for various status codes and messages.
+ * @requires ID_CONSTANTS - Constants for prefixing identifiers in the download module.
+ * @requires isValidRequest - Utility function to validate request authenticity.
+ * @requires generateResponseData - Utility function for generating standardized response data.
+ * @requires logger - Shared logging utility for error handling.
+ * @requires addANewEntryToDatabase - Utility for adding new entries to the database.
+ * @requires findById - Utility for finding a record by its identifier.
+ * @requires getAllData - Utility for retrieving all records from a database collection.
+ * @requires deleteByFileName - Utility for deleting records by filename.
+ * @requires findByFileName - Utility for finding a record by its filename.
+ * @requires HandleGoogleDrive - Helper for interacting with the Google Drive API.
+ * @module DownloadService - Exported object containing download-related service functions.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
 import { DOWNLOAD_COLLECTION_NAME } from "../../../config/config.js";
 import {

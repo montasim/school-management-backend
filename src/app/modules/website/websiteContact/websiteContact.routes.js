@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteContactValidators } from "./websiteContact.validator.js";
 import { WebsiteContactController } from "./websiteContact.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Website contact successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteContactValidators.websiteContactBodyValidator,
     WebsiteContactController.createWebsiteContact
 ]);
@@ -58,7 +58,7 @@ router.get("/", [
  *         description: Website contact successfully updated.
  */
 router.put("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteContactValidators.websiteContactBodyValidator,
     WebsiteContactController.updateWebsiteContact
 ]);
@@ -74,7 +74,7 @@ router.put("/", [
  *         description: Website contact successfully deleted.
  */
 router.delete("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     WebsiteContactController.deleteWebsiteContact
 ]);
 

@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './homePagePost.constants.js';
-import { SharedSchema } from "../../../../shared/sharedSchema.js";
+import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 import createIdSchema from "../../../../shared/createIdSchema.js";
 import { 
     FILE_EXTENSION_TYPE_PNG, 
@@ -43,7 +43,7 @@ const homePagePostBody = Joi.object({
             'string.max': '"category" should have a maximum length of {#limit}',
             'any.required': '"category" is a required field'
         }),
-    postImage: SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_PNG, [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+    postImage: JoiSchemaGenerators.fileValidationSchema(FILE_EXTENSION_TYPE_PNG, [MIME_TYPE_PNG, MIME_TYPE_JPG]),
     description: Joi.string()
         .min(3)
         .max(5000)

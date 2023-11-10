@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { ID_CONSTANTS } from './homePageCarousel.constants.js';
-import { SharedSchema } from "../../../../shared/sharedSchema.js";
+import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 import createIdSchema from "../../../../shared/createIdSchema.js";
 import { 
     FILE_EXTENSION_TYPE_PNG, 
@@ -32,7 +32,7 @@ const homePageCarouselBodySchema = Joi.object({
             'string.max': 'Image description must not exceed 100 characters.',
             'any.required': 'Image description is required.'
     }),
-    carouselImage: SharedSchema.createFileSchema(FILE_EXTENSION_TYPE_PNG, [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+    carouselImage: JoiSchemaGenerators.fileValidationSchema(FILE_EXTENSION_TYPE_PNG, [MIME_TYPE_PNG, MIME_TYPE_JPG]),
 });
 
 /**
