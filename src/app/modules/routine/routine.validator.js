@@ -1,4 +1,19 @@
-import { RoutineSchema } from "./routine.schema.js";
+/**
+ * @fileoverview Middleware Validators for Routine Data.
+ *
+ * This module contains middleware functions for validating routine-related data in Express routes.
+ * It leverages Joi schemas defined in the RoutineValidationSchemas module to validate the format and content
+ * of request bodies and parameters specific to routine operations. These validators ensure that incoming
+ * data for routines adheres to the expected structure and types before further processing. Each validator
+ * function is designed to be used as Express middleware, checking the validity of the data and passing control
+ * to the next middleware if validation succeeds, or sending an error response if it fails.
+ *
+ * @requires RoutineValidationSchemas - Schemas for validating routine data.
+ * @requires validateWithSchema - Generic utility to validate data with a Joi schema.
+ * @module RoutineValidationService - Exported validators for routine route handling.
+ */
+
+import { RoutineValidationSchemas } from "./routine.schema.js";
 import validateWithSchema from "../../../helpers/validateWithSchema.js";
 
 /**
@@ -16,7 +31,7 @@ import validateWithSchema from "../../../helpers/validateWithSchema.js";
  *
  * @returns {void}
  */
-const routineBodyValidator = validateWithSchema(RoutineSchema.routineBodySchema, 'body');
+const validateRoutineBody = validateWithSchema(RoutineValidationSchemas.routineBodyValidationSchema, 'body');
 
 /**
  * @function
@@ -33,13 +48,13 @@ const routineBodyValidator = validateWithSchema(RoutineSchema.routineBodySchema,
  *
  * @returns {void}
  */
-const routineParamsValidator = validateWithSchema(RoutineSchema.routineParamsSchema, 'params');
+const validateRoutineParams = validateWithSchema(RoutineValidationSchemas.routineParamsValidationSchema, 'params');
 
 /**
- * @namespace RoutineValidators
+ * @namespace RoutineValidationService
  * @description Exported routine validators to be used in routes.
  */
-export const RoutineValidators = {
-    routineBodyValidator,
-    routineParamsValidator,
+export const RoutineValidationService = {
+    validateRoutineBody,
+    validateRoutineParams,
 };
