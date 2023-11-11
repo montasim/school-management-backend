@@ -1,29 +1,74 @@
+/**
+ * @fileoverview Student Routes for Express Application.
+ *
+ * This module defines the routes for student-related operations in the Express application.
+ * It includes endpoints for creating, retrieving, updating, and deleting student posts.
+ * The routes are configured with necessary middleware for authentication, file uploading,
+ * and validation. Swagger documentation annotations are also included to describe each
+ * endpoint, its expected parameters, and responses. This setup facilitates clear and
+ * organized handling of student-related requests, ensuring proper authentication, data validation,
+ * and response structuring.
+ *
+ * @requires express - Express framework to define routes.
+ * @requires authTokenMiddleware - Middleware for authenticating tokens in requests.
+ * @requires fileUploadMiddleware - Middleware for handling file uploads.
+ * @requires StudentValidationService - Validators for student post request data.
+ * @requires StudentController - Controllers for handling student post operations.
+ * @module studentRouter - Express router with defined routes for student operations.
+ */
+
 import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
-import { StudentValidators } from "./student.validator.js";
+import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
+import { StudentValidationService } from "./student.validator.js";
 import { StudentController } from "./student.controller.js";
 
-const router = express.Router();
+const studentRouter = express.Router();
 
 /**
  * @swagger
  * /:
- *   homePagePost:
+ *   post:
  *     summary: Create a student.
  *     description: Endpoint to add a new student to the system.
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
- *       - in: body
- *         name: student
- *         description: The student to create.
- *         schema:
- *           $ref: '#/definitions/Student'
+ *       - in: formData
+ *         name: title
+ *         type: string
+ *         description: Title of the student.
+ *       - in: formData
+ *         name: category
+ *         type: string
+ *         description: Category of the student.
+ *       - in: formData
+ *         name: description
+ *         type: string
+ *         description: Description of the student.
+ *       - in: formData
+ *         name: postImage
+ *         type: file
+ *         description: The student post image file to upload.
  *     responses:
  *       200:
  *         description: Student successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles POST request for creating a new student.
+ * Applies authentication and file upload middleware.
+ * @route POST /
  */
-router.post("/", [
+studentRouter.post("/", [
     authTokenMiddleware,
-    StudentValidators.studentBodyValidator,
+    fileUploadMiddleware.single('image'),
+    StudentValidationService.validateStudentDetails,
+    StudentValidationService.validateStudentFile,
     StudentController.createStudentController
 ]);
 
@@ -36,8 +81,15 @@ router.post("/", [
  *     responses:
  *       200:
  *         description: A list of students.
+ *       404:
+ *         description: Student not found.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles GET request for retrieving a list of all students.
+ * @route GET /
  */
-router.get("/", [
+studentRouter.get("/", [
     StudentController.getStudentListController
 ]);
 
@@ -52,14 +104,19 @@ router.get("/", [
  *         name: studentId
  *         required: true
  *         description: ID of the student to retrieve.
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: Student details.
+ *       404:
+ *         description: Student not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles GET request for retrieving details of a specific student.
+ * @route GET /{studentId}
  */
-router.get("/:studentId", [
-    StudentValidators.studentParamsValidator,
+studentRouter.get("/:studentId", [
+    StudentValidationService.validateStudentParams,
     StudentController.getAStudentController
 ]);
 
@@ -67,28 +124,51 @@ router.get("/:studentId", [
  * @swagger
  * /{studentId}:
  *   put:
- *     summary: Update a student by ID.
- *     description: Endpoint to update the details of a student by their ID.
+ *     summary: Update a student.
+ *     description: Endpoint to update an existing student to the system.
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
  *       - in: path
  *         name: studentId
  *         required: true
  *         description: ID of the student to update.
- *         schema:
- *           type: string
- *       - in: body
- *         name: student
- *         description: Updated details of the student.
- *         schema:
- *           $ref: '#/definitions/Student'
+ *       - in: formData
+ *         name: title
+ *         type: string
+ *         description: Title of the student.
+ *       - in: formData
+ *         name: category
+ *         type: string
+ *         description: Category of the student.
+ *       - in: formData
+ *         name: description
+ *         type: string
+ *         description: Description of the student.
+ *       - in: formData
+ *         name: postImage
+ *         type: file
+ *         description: The student post image file to upload.
  *     responses:
  *       200:
  *         description: Student successfully updated.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles POST request for creating a new student.
+ * Applies authentication and file upload middleware.
+ * @route POST /
  */
-router.put("/:studentId", [
+studentRouter.put("/:studentId", [
     authTokenMiddleware,
-    StudentValidators.studentParamsValidator,
-    StudentValidators.studentBodyValidator,
+    fileUploadMiddleware.single('image'),
+    StudentValidationService.validateStudentParams,
+    StudentValidationService.validateStudentDetails,
+    StudentValidationService.validateStudentFile,
     StudentController.updateAStudentController
 ]);
 
@@ -103,16 +183,24 @@ router.put("/:studentId", [
  *         name: studentId
  *         required: true
  *         description: ID of the student to delete.
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: Student successfully deleted.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       404:
+ *         description: Student not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles DELETE request for deleting a specific student.
+ * Requires authentication.
+ * @route DELETE /{studentId}
  */
-router.delete("/:studentId", [
+studentRouter.delete("/:studentId", [
     authTokenMiddleware,
-    StudentValidators.studentParamsValidator,
+    StudentValidationService.validateStudentParams,
     StudentController.deleteAStudentController
 ]);
 
-export default router;
+export default studentRouter;

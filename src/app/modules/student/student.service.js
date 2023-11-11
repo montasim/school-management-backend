@@ -1,10 +1,23 @@
-// External modules
+/**
+ * @fileoverview Student Service for Handling Student Data Operations.
+ *
+ * This module provides services for managing student-related operations in the application.
+ * It includes functions for creating, retrieving, updating, and deleting student posts,
+ * along with interactions with the Google Drive API for file management.
+ * These services abstract the database and file system interactions, providing a
+ * clean interface for the controller layer to perform CRUD operations on student data.
+ *
+ * @requires uuid - Module for generating unique identifiers.
+ * @requires config - Configuration file for application settings.
+ * @requires constants - Application constants for status messages and codes.
+ * @requires isValidRequest - Utility function to validate requests.
+ * @requires GoogleDriveFileOperations - Helper module for Google Drive file operations.
+ * @requires logger - Shared logging utility for error handling.
+ * @module StudentService - Exported services for student operations.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
-
-// Configurations
 import { STUDENT_COLLECTION_NAME } from "../../../config/config.js";
-
-// Constants
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -14,47 +27,57 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./student.constants.js";
-
-// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
-import generateResponseData from "../../../shared/generateResponseData.js";
+import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
-import findById from "../../../shared/findById.js";
-import getAllData from "../../../shared/getAllData.js";
-import updateById from "../../../shared/updateById.js";
 import deleteById from "../../../shared/deleteById.js";
+import generateResponseData from "../../../shared/generateResponseData.js";
+import findById from "../../../shared/findById.js";
+import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import updateById from "../../../shared/updateById.js";
+import getAllData from "../../../shared/getAllData.js";
 
 /**
  * Creates a new student entry in the database.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {Object} newStudentDetails - New student's details.
- * @returns {Object} - The response after attempting student creation.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {Object} newStudentDetails - Object containing details of the new student.
+ * @param {Object} file - The file object for the student's associated image or content.
+ * @returns {Promise<Object>} A promise that resolves to the response object after creating the student.
  */
-const createStudentService = async (db, newStudentDetails) => {
+const createStudentService = async (db, newStudentDetails, file) => {
     try {
-        const { name, level, image, adminId } = newStudentDetails;
+        const { name, level, adminId } = newStudentDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
         const studentDetails = {
             id: `${ID_CONSTANTS?.STUDENT_PREFIX}-${uuidv4().substr(0, 6)}`,
-            name,
-            level,
-            image,
+            name: name,
+            level: level,
+            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
+            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
+
         const result = await addANewEntryToDatabase(db, STUDENT_COLLECTION_NAME, studentDetails);
         const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentDetails?.id);
 
+        delete latestData?._id;
+        delete latestData?.createdBy;
+        delete latestData?.modifiedBy;
+        delete latestData.googleDriveFileId;
+
         return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${studentDetails.name} created successfully`)
+            ? generateResponseData(latestData, true, STATUS_OK, `${name} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
@@ -64,22 +87,21 @@ const createStudentService = async (db, newStudentDetails) => {
     }
 };
 
-
 /**
- * Retrieves a list of all students from the database.
+ * Retrieves a list of all homePageStudent from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of students or an error message.
+ * @returns {Object} - The list of homePageStudent or an error message.
  * @throws {Error} Throws an error if any.
  */
 const getStudentListService = async (db) => {
     try {
-        const students = await getAllData(db, STUDENT_COLLECTION_NAME);
+        const student = await getAllData(db, STUDENT_COLLECTION_NAME);
 
-        return students?.length
-            ? generateResponseData(students, true, STATUS_OK, `${students?.length} student found`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No student found');
+        return student?.length
+            ? generateResponseData(student, true, STATUS_OK, `${student?.length} student found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No homePageStudent found');
     } catch (error) {
         logger.error(error);
 
@@ -88,17 +110,22 @@ const getStudentListService = async (db) => {
 };
 
 /**
- * Retrieves a specific student by ID from the database.
+ * Retrieves a specific homePageStudent by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} studentId - The ID of the student to retrieve.
- * @returns {Object} - The student details or an error message.
+ * @param {string} studentId - The ID of the homePageStudent to retrieve.
+ * @returns {Object} - The homePageStudent details or an error message.
  * @throws {Error} Throws an error if any.
  */
 const getAStudentService = async (db, studentId) => {
     try {
         const student = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+
+        delete student?._id;
+        delete student?.createdBy;
+        delete student?.modifiedBy;
+        delete student.googleDriveFileId;
 
         return student
             ? generateResponseData(student, true, STATUS_OK, `${studentId} found successfully`)
@@ -111,31 +138,49 @@ const getAStudentService = async (db, studentId) => {
 };
 
 /**
- * Retrieves a specific student by ID from the database.
+ * Retrieves a specific homePageStudent by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} studentId - The ID of the student to retrieve.
- * @param updateStudentDetails
- * @returns {Object} - The student details or an error message.
+ * @param {string} studentId - The ID of the homePageStudent to retrieve.
+ * @param newStudentDetails
+ * @param {Object} file - The file object for the student's associated image or content.
+ * @returns {Object} - The homePageStudent details or an error message.
  * @throws {Error} Throws an error if any.
  */
-const updateAStudentService = async (db, studentId, updateStudentDetails) => {
+const updateAStudentService = async (db, studentId, newStudentDetails, file) => {
     try {
-        const { name, level, image, adminId } = updateStudentDetails;
+        const { name, level, adminId } = newStudentDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const updatedStudent = {
+        const oldDetails = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+
+        if (!oldDetails)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${studentId} not found`);
+
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
+        const updatedStudentDetails = {
             ...(name && { name }),
             ...(level && { level }),
-            ...(image && { image }),
+            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
+            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             modifiedBy: adminId,
             modifiedAt: new Date(),
         };
-        const result = await updateById(db, STUDENT_COLLECTION_NAME, studentId, updatedStudent);
+        const result = await updateById(db, STUDENT_COLLECTION_NAME, studentId, updatedStudentDetails);
         const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+
+        delete latestData.createdBy;
+        delete latestData.modifiedBy;
+        delete latestData.googleDriveFileId;
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${studentId} updated successfully`)
@@ -149,12 +194,12 @@ const updateAStudentService = async (db, studentId, updateStudentDetails) => {
 };
 
 /**
- * Deletes a specific student by ID from the database.
+ * Deletes a specific homePageStudent by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} adminId - The user ID making the request.
- * @param {string} studentId - The ID of the student to delete.
+ * @param {string} studentId - The ID of the homePageStudent to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -163,8 +208,12 @@ const deleteAStudentService = async (db, adminId, studentId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, STUDENT_COLLECTION_NAME, studentId))
+        const oldDetails = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+
+        if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${studentId} not found`);
+
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
         const result = await deleteById(db, STUDENT_COLLECTION_NAME, studentId);
 
@@ -179,8 +228,8 @@ const deleteAStudentService = async (db, adminId, studentId) => {
 };
 
 /**
- * @namespace StudentService
- * @description Group of services related to student operations.
+ * @namespace HomePageStudentService
+ * @description Group of services related to homePageStudent operations.
  */
 export const StudentService = {
     createStudentService,
