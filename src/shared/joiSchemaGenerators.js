@@ -169,6 +169,20 @@ const postBodyValidationSchema = () => {
 }
 
 /**
+ * @description Joi validation schema for blogPost body data.
+ * Validates the title, category, and description fields.
+ *
+ * - `title`: Should be a string with a minimum length of 3 and a maximum length of 1000.
+ * - `category`: Should be a string with a minimum length of 3 and a maximum length of 100.
+ * - `description`: Should be a string with a minimum length of 3 and a maximum length of 5000.
+ */
+const carouselBodyValidationSchema = () => {
+    return Joi.object({
+        title: JoiSchemaGenerators.createStringSchema('title', 3, 200),
+    });
+}
+
+/**
  * @typedef {Object} UriValidationSchema
  * @property {string} uriValidationSchema - The schema of the link.
  */
@@ -205,6 +219,7 @@ const createStringSchema = (fieldName, minLength, maxLength) => {
  * Shared Joi schemas for file validation.
  */
 export const JoiSchemaGenerators = {
+  carouselBodyValidationSchema,
   fileValidationSchema,
   fileWithTitleValidationSchema,
   createFileNameSchema,

@@ -1,61 +1,79 @@
+/**
+ * @fileoverview HomePageCarousel Controller for Express Application.
+ *
+ * This module provides controller functions for handling homePageCarousel-related routes in the application.
+ * Each controller function is responsible for processing incoming requests related to homePageCarousels,
+ * interacting with the HomePageCarouselService to perform CRUD operations, and sending appropriate responses back to the client.
+ * This centralizes the homePageCarousel-related request handling logic, ensuring consistency and separation of concerns.
+ *
+ * @requires HomePageCarouselService - Service layer handling business logic related to homePageCarousels.
+ * @requires extractFromRequest - Helper function to extract data from request objects.
+ * @requires handleServiceResponse - Helper function to handle responses from service layer.
+ * @requires logger - Shared logging utility for error handling.
+ * @module HomePageCarouselController - Exported homePageCarousel controller functions.
+ */
+
 import { HomePageCarouselService } from "./homePageCarousel.service.js";
 import extractFromRequest from "../../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../../helpers/handleServiceResponse.js";
+import logger from "../../../../shared/logger.js";
 
 /**
  * @async
  * @function createHomePageCarouselController
  * @description Controller for creating a new homePageCarousel.
- *
  * @param {express.Request} req - Express request object containing homePageCarousel details.
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createHomePageCarouselController = async (req, res) => {
-    const { carouselImageDescription, carouselImage, adminId, db } = extractFromRequest(req, ['carouselImageDescription', 'carouselImage']);
-    const newHomePageCarousel = { carouselImageDescription, carouselImage, adminId };
+    try {
+        const { title, adminId, db } = extractFromRequest(req, ['title']);
+        const newHomePageCarouselDetails = { title, adminId };
 
-    await handleServiceResponse(res, HomePageCarouselService.createHomePageCarouselService, db, newHomePageCarousel);
+        await handleServiceResponse(res, HomePageCarouselService.createHomePageCarouselService, db, newHomePageCarouselDetails, req?.file);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
  * @async
- * @function getHomePageCarouselListController
- * @description Controller for fetching all homePageCarousel.
+ * @function getHomePageCarouselList
+ * @description Controller for fetching all other information.
  *
  * @param {express.Request} req - Express request object.
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getHomePageCarouselListController = async (req, res) => {
-    await handleServiceResponse(res, HomePageCarouselService.getHomePageCarouselListService, req?.db);
+    try {
+        await handleServiceResponse(res, HomePageCarouselService.getHomePageCarouselListService, req?.db);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
  * @async
- * @function getAHomePageCarouselController
+ * @function getAHomePageCarousel
  * @description Controller for fetching a specific homePageCarousel by ID.
  *
  * @param {express.Request} req - Express request object containing homePageCarousel ID in parameters.
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getAHomePageCarouselController = async (req, res) => {
-    const { homePageCarouselId, db } = extractFromRequest(req, [], ['homePageCarouselId']);
+    try {
+        const { homePageCarouselId, db } = extractFromRequest(req, [], ['homePageCarouselId']);
 
-    await handleServiceResponse(res, HomePageCarouselService.getAHomePageCarouselService, db, homePageCarouselId);
-};
+        await handleServiceResponse(res, HomePageCarouselService.getAHomePageCarouselService, db, homePageCarouselId);
+    } catch (error) {
+        logger.error(error);
 
-/**
- * @async
- * @function updateAHomePageCarouselController
- * @description Controller for updating a specific homePageCarousel by ID.
- *
- * @param {express.Request} req - Express request object containing homePageCarousel ID in parameters.
- * @param {express.Response} res - Express response object to send data back to client.
- */
-const updateAHomePageCarouselController = async (req, res) => {
-    const { homePageCarouselId, carouselImageDescription, carouselImage, adminId, db } = extractFromRequest(req, ['carouselImageDescription', 'carouselImage'], ['homePageCarouselId']);
-    const updatedHomePageCarouselDetails = { carouselImageDescription, carouselImage, adminId };
-
-    await handleServiceResponse(res, HomePageCarouselService.updateAHomePageCarouselService, db, homePageCarouselId, updatedHomePageCarouselDetails);
+        return error;
+    }
 };
 
 /**
@@ -67,9 +85,15 @@ const updateAHomePageCarouselController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAHomePageCarouselController = async (req, res) => {
-    const { homePageCarouselId, adminId, db } = extractFromRequest(req, [], ['homePageCarouselId']);
+    try {
+        const { homePageCarouselId, adminId, db } = extractFromRequest(req, [], ['homePageCarouselId']);
 
-    await handleServiceResponse(res, HomePageCarouselService.deleteAHomePageCarouselService, db, adminId, homePageCarouselId);
+        await handleServiceResponse(res, HomePageCarouselService.deleteAHomePageCarouselService, db, adminId, homePageCarouselId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -80,6 +104,5 @@ export const HomePageCarouselController = {
     createHomePageCarouselController,
     getHomePageCarouselListController,
     getAHomePageCarouselController,
-    updateAHomePageCarouselController,
     deleteAHomePageCarouselController
 };
