@@ -1,3 +1,24 @@
+/**
+ * @fileoverview Services for Website Important Information Link Operations.
+ *
+ * This module contains service functions for managing website important information links. These services
+ * handle the database interactions and business logic for creating, retrieving, updating, and deleting
+ * important information links on a website. Each service function is tailored to process specific data
+ * and execute corresponding database operations. This module is integral to managing the data layer of
+ * the application, ensuring that website important information links are handled consistently and reliably.
+ *
+ * @requires DatabaseMiddleware - Middleware for database interactions.
+ * @requires ID_CONSTANTS - Constants related to ID generation and validation.
+ * @requires generateResponseData - Helper function for generating standardized response data.
+ * @requires logger - Utility for logging errors.
+ * @requires addANewEntryToDatabase - Helper function for adding new entries to the database.
+ * @requires findById - Helper function for finding database entries by ID.
+ * @requires getAllData - Helper function for retrieving all data from a database collection.
+ * @requires updateById - Helper function for updating database entries by ID.
+ * @requires deleteById - Helper function for deleting database entries by ID.
+ * @module WebsiteImportantInformationLinkService - Exported services for website important information link operations.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
 import { WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME } from "../../../../config/config.js";
 import {
@@ -10,47 +31,46 @@ import {
 } from "../../../../constants/constants.js";
 import { ID_CONSTANTS } from "./websiteImportantInformationLink.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
-import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
-import findById from "../../../../shared/findById.js";
+import logger from "../../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import findById from "../../../../shared/findById.js";
 import getAllData from "../../../../shared/getAllData.js";
+import updateById from "../../../../shared/updateById.js";
+import deleteById from "../../../../shared/deleteById.js";
 
 /**
- * Creates a new website details entry in the database.
+ * Creates a new entry for a website important information link in the database.
+ * Processes the provided link details and adds them to the database. It ensures that the admin ID is valid
+ * and then constructs a new entry with the provided link details. The function returns a response indicating
+ * successful creation or an error.
  *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param websiteImportantInformationLinkDetails
- * @returns {Object} - The response after attempting website creation.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {Object} newWebsiteImportantInformationLinkDetails - Details of the new link to be created.
+ * @returns {Object} Response indicating the outcome of the operation.
  */
-const createWebsiteImportantInformationLink = async (db, websiteImportantInformationLinkDetails) => {
+const createWebsiteImportantInformationLinkService = async (db, newWebsiteImportantInformationLinkDetails) => {
     try {
-        const { importantInformationLinks, adminId } = websiteImportantInformationLinkDetails;
-        const existingDetails = await getAllData(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME);
-
-        if (existingDetails?.length > 0)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website details already exists. Please update website details");
+        const { importantInformationLinkTitle, importantInformationLink, adminId } = newWebsiteImportantInformationLinkDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const prepareWebsiteDetails = {
+        const websiteImportantInformationLinkDetails = {
             id: `${ID_CONSTANTS?.WEBSITE_PREFIX}-${uuidv4().substr(0, 6)}`,
-            importantInformationLinks: importantInformationLinks,
+            importantInformationLinkTitle: importantInformationLinkTitle,
+            importantInformationLink: importantInformationLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
+        const result = await addANewEntryToDatabase(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkDetails);
+        const latestData = await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkDetails?.id);
 
-        const result = await addANewEntryToDatabase(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, prepareWebsiteDetails);
-        const latestData = await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, prepareWebsiteDetails?.id);
-
+        delete latestData?._id;
         delete latestData?.createdBy;
-        delete latestData?.modifiedBy;
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, "Website details added successfully")
+            ? generateResponseData(latestData, true, STATUS_OK, `${latestData?.importantInformationLinkTitle} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
@@ -61,20 +81,19 @@ const createWebsiteImportantInformationLink = async (db, websiteImportantInforma
 };
 
 /**
- * Retrieves website details from the database.
+ * Retrieves all existing website important information links from the database.
+ * Queries the database for all links and returns them, or a message if no links are found.
  *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of website or an error message.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @returns {Object} List of links or a message indicating no links found.
  */
-const getWebsiteImportantInformationLink = async (db) => {
+const getWebsiteImportantInformationLinkListService = async (db) => {
     try {
-        const website = await getAllData(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME);
+        const websiteImportantInformationLinks = await getAllData(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME);
 
-        return website?.length
-            ? generateResponseData(website, true, STATUS_OK, "Website details found successfully")
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No website found');
+        return websiteImportantInformationLinks?.length
+            ? generateResponseData(websiteImportantInformationLinks, true, STATUS_OK, `${websiteImportantInformationLinks?.length} websiteImportantInformationLink found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No websiteImportantInformationLink found');
     } catch (error) {
         logger.error(error);
 
@@ -83,69 +102,90 @@ const getWebsiteImportantInformationLink = async (db) => {
 };
 
 /**
- * Update website details to the database.
+ * Fetches a specific website important information link by its ID.
+ * Looks for a link with the provided ID in the database and returns its details, or a message if not found.
  *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param websiteImportantInformationLinkDetails
- * @returns {Object} - The website details or an error message.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {string} websiteImportantInformationLinkId - ID of the link to be retrieved.
+ * @returns {Object} Link details or a message indicating link not found.
  */
-const updateWebsiteImportantInformationLink = async (db, websiteImportantInformationLinkDetails) => {
+const getAWebsiteImportantInformationLinkService = async (db, websiteImportantInformationLinkId) => {
     try {
-        const { importantInformationLinks, adminId } = websiteImportantInformationLinkDetails;
+        const websiteImportantInformationLink = await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId);
+
+        return websiteImportantInformationLink
+            ? generateResponseData(websiteImportantInformationLink, true, STATUS_OK, `${websiteImportantInformationLinkId} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteImportantInformationLinkId} not found`);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
+};
+
+/**
+ * Updates an existing website important information link in the database.
+ * Processes the updated link details and applies the changes to the corresponding entry in the database.
+ * Returns a response indicating the outcome of the update operation.
+ *
+ * @param {Object} db - Database connection object.
+ * @param {string} websiteImportantInformationLinkId - ID of the link to be updated.
+ * @param {Object} updateWebsiteImportantInformationLinkDetails - Updated link details.
+ * @returns {Object} Response indicating the outcome of the update operation.
+ */
+const updateAWebsiteImportantInformationLinkService = async (db, websiteImportantInformationLinkId, updateWebsiteImportantInformationLinkDetails) => {
+    try {
+        const { importantInformationLinkTitle, importantInformationLink, adminId } = updateWebsiteImportantInformationLinkDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const updatedWebsiteDetails = {
-            ...(importantInformationLinks && { importantInformationLinks }),
+        if (!await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId))
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteImportantInformationLinkId} not found`);
+
+        const updatedWebsiteImportantInformationLink = {
+            ...(importantInformationLinkTitle && { importantInformationLinkTitle }),
+            ...(importantInformationLink && { importantInformationLink }),
             modifiedBy: adminId,
             modifiedAt: new Date(),
         };
+        const result = await updateById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId, updatedWebsiteImportantInformationLink);
+        const latestData = await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId);
 
-        const result = await db.collection(WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME).findOneAndUpdate(
-            {}, // Assuming you are updating a single document without a filter.
-            { $set: updatedWebsiteDetails },
-            { returnDocument: 'after' } // Returns the updated document
-        );
+        return result?.modifiedCount
+            ? generateResponseData(latestData, true, STATUS_OK, `${websiteImportantInformationLinkId} updated successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${websiteImportantInformationLinkId} not updated`);
 
-        if (!result) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Website details not updated`);
-        }
-
-        delete result._id;
-        delete result.id;
-        delete result.createdBy;
-        delete result.modifiedBy;
-
-        return generateResponseData(result, true, STATUS_OK, `Website details updated successfully`);
     } catch (error) {
         logger.error(error);
+
         return error;
     }
 };
 
 /**
- * Deletes a website details from the database.
+ * Deletes a specific website important information link from the database.
+ * Verifies the admin authority and the existence of the link, then proceeds to delete the link from the database.
+ * Returns a response indicating the outcome of the deletion operation.
  *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} adminId - The user ID making the request.
- * @returns {Object} - A confirmation message or an error message.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {string} adminId - Admin ID performing the operation.
+ * @param {string} websiteImportantInformationLinkId - ID of the link to be deleted.
+ * @returns {Object} Response indicating the outcome of the deletion operation.
  */
-const deleteWebsiteImportantInformationLink = async (db, adminId) => {
+const deleteAWebsiteImportantInformationLinkService = async (db, adminId, websiteImportantInformationLinkId) => {
     try {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        // Deletes all documents in the collection without deleting the collection itself
-        const result = await db.collection(WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME).deleteMany({});
+        if (!await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId))
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteImportantInformationLinkId} not found`);
 
-        return result.deletedCount > 0
-            ? generateResponseData({}, true, STATUS_OK, `Website details deleted successfully`)
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `No website details were found to delete`);
+        const result = await deleteById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId);
+
+        return result
+            ? generateResponseData({}, true, STATUS_OK, `${websiteImportantInformationLinkId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${websiteImportantInformationLinkId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 
@@ -155,11 +195,12 @@ const deleteWebsiteImportantInformationLink = async (db, adminId) => {
 
 /**
  * @namespace WebsiteImportantInformationLinkService
- * @description Group of services related to website important information link operations.
+ * @description Group of services related to websiteImportantInformationLink operations.
  */
 export const WebsiteImportantInformationLinkService = {
-    createWebsiteImportantInformationLink,
-    getWebsiteImportantInformationLink,
-    updateWebsiteImportantInformationLink,
-    deleteWebsiteImportantInformationLink
+    createWebsiteImportantInformationLinkService,
+    getWebsiteImportantInformationLinkListService,
+    getAWebsiteImportantInformationLinkService,
+    updateAWebsiteImportantInformationLinkService,
+    deleteAWebsiteImportantInformationLinkService
 };

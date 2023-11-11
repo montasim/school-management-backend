@@ -14,8 +14,6 @@
 
 import { ADMIN_COLLECTION_NAME } from "../config/config.js";
 import logger from "./logger.js";
-import generateResponseData from "./generateResponseData.js";
-import { STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";
 
 /**
  * Check if the requester is valid by looking up the requester ID in the admin collection.

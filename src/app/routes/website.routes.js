@@ -44,30 +44,30 @@ websiteRouter.use("/contact", websiteContactRoutes);
 
 /**
  * Sets up versioned routing for the social media module.
- * @name /social-media
+ * @name /socialMediaLink
  * @function
  * @inner
  * @memberof module:routes
  */
-websiteRouter.use("/social-media-link", websiteSocialMediaRoutes);
+websiteRouter.use("/socialMediaLink", websiteSocialMediaRoutes);
 
 /**
  * Sets up versioned routing for the official link module.
- * @name /official-link
+ * @name /officialLink
  * @function
  * @inner
  * @memberof module:routes
  */
-websiteRouter.use("/official-link", websiteOfficialLinkRoutes);
+websiteRouter.use("/officialLink", websiteOfficialLinkRoutes);
 
 /**
  * Sets up versioned routing for the important information link module.
- * @name /important-information-link
+ * @name /importantInformationLink
  * @function
  * @inner
  * @memberof module:routes
  */
-websiteRouter.use("/important-information-link", websiteImportantInformationLinkRoutes);
+websiteRouter.use("/importantInformationLink", websiteImportantInformationLinkRoutes);
 
 /**
  * The main router object that combines the index page route modules.

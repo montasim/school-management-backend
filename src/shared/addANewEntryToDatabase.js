@@ -12,7 +12,6 @@
  */
 
 import logger from "./logger.js";
-import {ADMIN_COLLECTION_NAME} from "../config/config.js";
 
 /**
  * Add a new entry in the collection.

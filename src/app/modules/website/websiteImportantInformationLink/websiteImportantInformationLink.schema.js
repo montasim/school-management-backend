@@ -1,30 +1,59 @@
+/**
+ * @fileoverview Website Important Information Link Schema Definitions.
+ *
+ * This file provides schema definitions for validating website important information link data.
+ * It utilizes the Joi library to create validation schemas for both the body and parameters of
+ * incoming requests related to important information links on a website. The schemas ensure that
+ * the data conforms to specific standards, such as the format of link titles and the structure
+ * of the link IDs. These schemas are used by validator functions in corresponding routes to
+ * maintain data integrity and consistency.
+ *
+ * @requires Joi - Library for schema description and data validation.
+ * @requires JoiSchemaGenerators - Functions for generating commonly used Joi validation schemas.
+ * @requires ID_CONSTANTS - Constants related to ID generation and validation.
+ * @requires createIdSchema - Function to create a schema for validating IDs.
+ * @module WebsiteImportantInformationLinkSchema - Exported Joi validation schemas for website important information links.
+ */
+
 import Joi from "joi";
 import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
+import { ID_CONSTANTS } from "./websiteImportantInformationLink.constants.js";
+import createIdSchema from "../../../../shared/createIdSchema.js";
 
 /**
- * @typedef {Object} Link
- * @property {string} title - The title of the link.
- * @property {string} link - The URL of the link.
+ * Schema for Validating Website Important Information Link Body Data.
+ *
+ * Defines the Joi schema to validate the body data of requests for website important information links.
+ * This schema checks for the presence and format of the link title and the link itself, ensuring they
+ * meet the specified criteria for length and URI format. It's utilized in middleware validators to pre-process
+ * and verify incoming request data for adding or updating important information links on the website.
  */
-const websiteImportantInformationLinkSchema = Joi.object({
-    importantInformationLinkTitle: JoiSchemaGenerators.createStringSchema('title', 3, 200),
+const websiteImportantInformationLinkBodySchema = Joi.object({
+    importantInformationLinkTitle: JoiSchemaGenerators.createStringSchema('importantInformationLinkTitle', 3, 200),
     importantInformationLink: JoiSchemaGenerators.uriValidationSchema
 });
 
-const websiteImportantInformation = Joi.array().items(websiteImportantInformationLinkSchema).messages({
-    'array.base': 'importantInformationLinks must be an array.'
+/**
+ * Schema for Validating Website Important Information Link ID in Request Parameters.
+ *
+ * Provides the Joi schema to validate the ID of a website important information link included in request parameters.
+ * This schema ensures that the ID adheres to a specific format and structure as defined in ID_CONSTANTS.
+ * It's essential for operations that target specific important information links, like updates or deletions,
+ * ensuring that the correct link is identified and processed.
+ */
+const websiteImportantInformationLinkParamsSchema = Joi.object({
+    websiteImportantInformationLinkId: createIdSchema(ID_CONSTANTS?.WEBSITE_PREFIX, ID_CONSTANTS).required()
 });
 
-const websiteImportantInformationLinkBodySchema = Joi.object({
-    importantInformationLinks: websiteImportantInformation
-});
 
 /**
  * @namespace WebsiteImportantInformationLinkSchema
  * @description Exported Joi validation schemas for website data.
  *
  * - `websiteImportantInformationLinkBodySchema`: Validates the body data of a website.
+ * - `websiteImportantInformationLinkParamsSchema`: Validates the websiteImportantInformationLinkId in request parameters.
  */
 export const WebsiteImportantInformationLinkSchema = {
     websiteImportantInformationLinkBodySchema,
+    websiteImportantInformationLinkParamsSchema,
 };
