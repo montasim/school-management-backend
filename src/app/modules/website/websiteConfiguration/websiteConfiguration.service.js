@@ -11,7 +11,7 @@
  * @requires config - Application configuration settings.
  * @requires constants - Application-wide constants.
  * @requires GoogleDriveFileOperations - Helper functions for interacting with Google Drive.
- * @requires shared/helpers - Shared helper functions like isValidRequest and generateResponseData.
+ * @requires shared - Shared helper functions like isValidRequest and generateResponseData.
  * @module WebsiteConfigurationService - Exports service functions for website configurations.
  */
 
@@ -106,11 +106,17 @@ const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
  */
 const getWebsiteConfigurationService = async (db) => {
     try {
-        const website = await getAllData(db, WEBSITE_CONFIGURATION_COLLECTION_NAME);
+        const website = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
 
-        return website?.length
+        delete website?._id;
+        delete website?._id;
+        delete website?.createdBy;
+        delete website?.modifiedBy;
+        delete website.googleDriveWebsiteLogoFileId;
+
+        return website?.id
             ? generateResponseData(website, true, STATUS_OK, "Website configuration found successfully")
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No website found');
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found');
     } catch (error) {
         logger.error(error);
 
@@ -139,6 +145,9 @@ const updateWebsiteConfigurationService = async (db, websiteDetails, file) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const oldWebsiteDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
+
+        if (!oldWebsiteDetails?.id)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found. Please add website configuration to update');
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails?.googleDriveWebsiteLogoFileId);
 
@@ -198,7 +207,7 @@ const deleteWebsiteConfigurationService = async (db, adminId) => {
         
         const oldDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
 
-        if (!oldDetails)
+        if (!oldDetails?.id)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `Website configuration not found`);
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveWebsiteLogoFileId);
