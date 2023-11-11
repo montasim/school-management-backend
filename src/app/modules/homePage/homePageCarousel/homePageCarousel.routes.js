@@ -15,7 +15,7 @@ const router = express.Router();
  *       - in: body
  *         imageDescription: The description of the image
  *         description: The homePageCarousel to create.
- *         imageLink: image imageLink
+ *         googleDriveShareableLink: image googleDriveShareableLink
  *         description: The link of the image.
  *         schema:
  *           $ref: '#/definitions/HomePageCarousel'
@@ -81,7 +81,7 @@ router.get("/:homePageCarouselId", [
  *       - in: body
  *         imageDescription: The description of the image
  *         description: The homePageCarousel to create.
- *         imageLink: image imageLink
+ *         googleDriveShareableLink: image googleDriveShareableLink
  *         description: The link of the image.
  *         schema:
  *           $ref: '#/definitions/HomePageCarousel'

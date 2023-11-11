@@ -52,7 +52,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails) => 
         const homePageCarouselDetails = {
             id: `${ID_CONSTANTS?.HOME_PAGE_CAROUSEL_PREFIX}-${uuidv4().substr(0, 6)}`,
             carouselImageDescription,
-            googleDriveImageId: uploadCarouselImageResponse?.fileId,
+            googleDriveFileId: uploadCarouselImageResponse?.fileId,
             carouselImage: uploadCarouselImageResponse?.shareableLink,
             createdBy: adminId,
             createdAt: new Date(),
@@ -63,7 +63,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails) => 
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveImageId;
+        delete latestData.googleDriveFileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, "Carousel added successfully")
@@ -114,7 +114,7 @@ const getAHomePageCarouselService = async (db, homePageCarouselId) => {
 
         delete homePageCarousel?.createdBy;
         delete homePageCarousel?.modifiedBy;
-        delete homePageCarousel?.googleDriveImageId;
+        delete homePageCarousel?.googleDriveFileId;
 
         return homePageCarousel
             ? generateResponseData(homePageCarousel, true, STATUS_OK, `${homePageCarouselId} found successfully`)
@@ -148,7 +148,7 @@ const updateAHomePageCarouselService = async (db, homePageCarouselId, newHomePag
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageCarouselId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveImageId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
         const carouselImageMimeType = setMimeTypeFromExtension(carouselImage?.fileName);
         const uploadCarouselImageResponse = await GoogleDriveFileOperations.uploadFileToDrive(carouselImage?.fileName, carouselImage?.fileBuffer, carouselImageMimeType);
@@ -158,7 +158,7 @@ const updateAHomePageCarouselService = async (db, homePageCarouselId, newHomePag
            
         const updatedHomePageCarouselDetails = {
             ...(carouselImageDescription && { carouselImageDescription }),
-            googleDriveImageId: uploadCarouselImageResponse?.fileId,
+            googleDriveFileId: uploadCarouselImageResponse?.fileId,
             carouselImage: uploadCarouselImageResponse?.shareableLink,
             modifiedBy: adminId,
             modifiedAt: new Date(),
@@ -200,7 +200,7 @@ const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) =
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageCarouselId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveImageId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
         
         const result = await deleteById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId);
 

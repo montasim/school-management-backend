@@ -1,44 +1,96 @@
+/**
+ * @fileoverview HomePagePost Routes for Express Application.
+ *
+ * This module defines the routes for homePagePost-related operations in the Express application.
+ * It includes endpoints for creating, retrieving, updating, and deleting homePagePost posts.
+ * The routes are configured with necessary middleware for authentication, file uploading,
+ * and validation. Swagger documentation annotations are also included to describe each
+ * endpoint, its expected parameters, and responses. This setup facilitates clear and
+ * organized handling of homePagePost-related requests, ensuring proper authentication, data validation,
+ * and response structuring.
+ *
+ * @requires express - Express framework to define routes.
+ * @requires authTokenMiddleware - Middleware for authenticating tokens in requests.
+ * @requires fileUploadMiddleware - Middleware for handling file uploads.
+ * @requires HomePagePostValidationService - Validators for homePagePost post request data.
+ * @requires HomePagePostController - Controllers for handling homePagePost post operations.
+ * @module homePagePostRouter - Express router with defined routes for homePagePost operations.
+ */
+
 import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
-import { HomePagePostValidators } from "./homePagePost.validator.js";
-import { HomePageHomePagePostController } from "./homePagePost.controller.js";
+import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
+import { HomePagePostValidationService } from "./homePagePost.validator.js";
+import { HomePagePostController } from "./homePagePost.controller.js";
 
-const router = express.Router();
+const homePagePostRouter = express.Router();
 
 /**
  * @swagger
  * /:
- *   homePagePost:
- *     summary: Create an homePagePost.
+ *   post:
+ *     summary: Create a homePagePost.
  *     description: Endpoint to add a new homePagePost to the system.
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
- *       - in: body
- *         name: homePagePost
- *         description: The homePagePost to create.
- *         schema:
- *           $ref: '#/definitions/HomePagePost'
+ *       - in: formData
+ *         name: title
+ *         type: string
+ *         description: Title of the homePagePost.
+ *       - in: formData
+ *         name: category
+ *         type: string
+ *         description: Category of the homePagePost.
+ *       - in: formData
+ *         name: description
+ *         type: string
+ *         description: Description of the homePagePost.
+ *       - in: formData
+ *         name: postImage
+ *         type: file
+ *         description: The homePagePost post image file to upload.
  *     responses:
  *       200:
  *         description: HomePagePost successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles POST request for creating a new homePagePost.
+ * Applies authentication and file upload middleware.
+ * @route POST /
  */
-router.post("/", [
+homePagePostRouter.post("/", [
     authTokenMiddleware,
-    HomePagePostValidators.homePagePostBody,
-    HomePageHomePagePostController.createHomePagePost
+    fileUploadMiddleware.single('postImage'),
+    HomePagePostValidationService.validateHomePagePostDetails,
+    HomePagePostValidationService.validateHomePagePostFile,
+    HomePagePostController.createHomePagePostController
 ]);
 
 /**
  * @swagger
  * /:
  *   get:
- *     summary: Retrieve all homePagePost.
- *     description: Endpoint to retrieve a list of all homePagePost.
+ *     summary: Retrieve all homePagePosts.
+ *     description: Endpoint to retrieve a list of all homePagePosts.
  *     responses:
  *       200:
- *         description: A list of homePagePost.
+ *         description: A list of homePagePosts.
+ *       404:
+ *         description: HomePagePost not found.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles GET request for retrieving a list of all homePagePosts.
+ * @route GET /
  */
-router.get("/", [
-    HomePageHomePagePostController.getHomePagePostList
+homePagePostRouter.get("/", [
+    HomePagePostController.getHomePagePostListController
 ]);
 
 /**
@@ -52,44 +104,72 @@ router.get("/", [
  *         name: homePagePostId
  *         required: true
  *         description: ID of the homePagePost to retrieve.
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: HomePagePost details.
+ *       404:
+ *         description: HomePagePost not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles GET request for retrieving details of a specific homePagePost.
+ * @route GET /{homePagePostId}
  */
-router.get("/:homePagePostId", [
-    HomePagePostValidators.homePagePostParams,
-    HomePageHomePagePostController.getAHomePagePost
+homePagePostRouter.get("/:homePagePostId", [
+    HomePagePostValidationService.validateHomePagePostParams,
+    HomePagePostController.getAHomePagePostController
 ]);
 
 /**
  * @swagger
  * /{homePagePostId}:
  *   put:
- *     summary: Update a homePagePost by ID.
- *     description: Endpoint to update the details of a homePagePost by their ID.
+ *     summary: Update a homePagePost.
+ *     description: Endpoint to update an existing homePagePost to the system.
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
  *       - in: path
  *         name: homePagePostId
  *         required: true
  *         description: ID of the homePagePost to update.
- *         schema:
- *           type: string
- *       - in: body
- *         name: homePagePost
- *         description: Updated details of the homePagePost.
- *         schema:
- *           $ref: '#/definitions/HomePagePost'
+ *       - in: formData
+ *         name: title
+ *         type: string
+ *         description: Title of the homePagePost.
+ *       - in: formData
+ *         name: category
+ *         type: string
+ *         description: Category of the homePagePost.
+ *       - in: formData
+ *         name: description
+ *         type: string
+ *         description: Description of the homePagePost.
+ *       - in: formData
+ *         name: postImage
+ *         type: file
+ *         description: The homePagePost post image file to upload.
  *     responses:
  *       200:
  *         description: HomePagePost successfully updated.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles POST request for creating a new homePagePost.
+ * Applies authentication and file upload middleware.
+ * @route POST /
  */
-router.put("/:homePagePostId", [
+homePagePostRouter.put("/:homePagePostId", [
     authTokenMiddleware,
-    HomePagePostValidators.homePagePostParams,
-    HomePagePostValidators.homePagePostBody,
-    HomePageHomePagePostController.updateAHomePagePost
+    fileUploadMiddleware.single('postImage'),
+    HomePagePostValidationService.validateHomePagePostParams,
+    HomePagePostValidationService.validateHomePagePostDetails,
+    HomePagePostValidationService.validateHomePagePostFile,
+    HomePagePostController.updateAHomePagePostController
 ]);
 
 /**
@@ -103,16 +183,24 @@ router.put("/:homePagePostId", [
  *         name: homePagePostId
  *         required: true
  *         description: ID of the homePagePost to delete.
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: HomePagePost successfully deleted.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       404:
+ *         description: HomePagePost not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles DELETE request for deleting a specific homePagePost.
+ * Requires authentication.
+ * @route DELETE /{homePagePostId}
  */
-router.delete("/:homePagePostId", [
+homePagePostRouter.delete("/:homePagePostId", [
     authTokenMiddleware,
-    HomePagePostValidators.homePagePostParams,
-    HomePageHomePagePostController.deleteAHomePagePost
+    HomePagePostValidationService.validateHomePagePostParams,
+    HomePagePostController.deleteAHomePagePostController
 ]);
 
-export default router;
+export default homePagePostRouter;
