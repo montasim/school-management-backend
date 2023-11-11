@@ -3,12 +3,12 @@
  * @namespace ID_CONSTANTS
  * @description Constants related to ID generation and validation.
  * @property {string} ADMIN_PREFIX - Prefix for admin IDs.
- * @property {string} STUDENT_PREFIX - Prefix for gallery IDs.
+ * @property {string} STUDENT_PREFIX - Prefix for homePageGallery IDs.
  * @property {number} MIN_LENGTH - Minimum allowed length for IDs.
  * @property {number} MAX_LENGTH - Maximum allowed length for IDs.
  */
 export const ID_CONSTANTS = {
-    HOME_PAGE_GALLERY_PREFIX: "gallery",
+    HOME_PAGE_GALLERY_PREFIX: "homePageGallery",
     MIN_LENGTH: 9,
     MAX_LENGTH: 30
 };
