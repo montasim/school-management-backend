@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Utility function for finding entries by file name in a database collection.
+ *
+ * This module exports a function that provides the capability to search for a specific
+ * entry in a database collection using its file name. It is designed to abstract and
+ * standardize the process of querying database collections based on a file name. The function
+ * takes a database connection object, the name of the collection, and the file name of the entry
+ * to be found. It then returns a promise that resolves to the found entry, excluding some fields
+ * for privacy or convenience. In case of errors during the search operation, they are logged
+ * using a shared logger utility.
+ *
+ * @requires logger - Shared logging utility for error logging.
+ * @module findByFileName - Function to find a database entry by file name in a specific collection.
+ */
+
 import logger from "./logger.js";
 
 /**

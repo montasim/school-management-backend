@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { ContactSchema } from "./contact.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { ContactSchema } from "./contact.schema.js";
  *
  * @returns {void}
  */
-const sendEmailBodyValidator = validateWithSchema(ContactSchema.sendEmailBodySchema, 'body');
+const sendEmailBodyValidator = validateDataWithSchema(ContactSchema.sendEmailBodySchema, 'body');
 
 /**
  * @namespace CategoryValidators

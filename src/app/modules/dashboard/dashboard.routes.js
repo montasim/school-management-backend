@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { DashboardController } from "./dashboard.controller.js";
 
 const router = express.Router();
@@ -15,7 +15,7 @@ const router = express.Router();
  *         description: Summary fetched successfully.
  */
 router.get("/summary", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     DashboardController.getSummaryController
 ]);
 

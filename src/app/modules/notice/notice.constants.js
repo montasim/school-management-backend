@@ -1,4 +1,14 @@
 /**
+ * @fileoverview Constants for ID generation and image filename validation.
+ *
+ * This module defines constants and patterns used across the application for generating
+ * and validating identifiers, as well as for validating image file names. These constants
+ * ensure consistent ID structure and adherence to expected file naming conventions.
+ *
+ * @module constants - Exports constants for ID generation and image filename validation.
+ */
+
+/**
  * @constant
  * @namespace ID_CONSTANTS
  * @description Constants related to ID generation and validation.

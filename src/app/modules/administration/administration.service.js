@@ -1,10 +1,23 @@
-// Third-party modules
+/**
+ * @fileoverview Administration Service for Handling Administration Data Operations.
+ *
+ * This module provides services for managing administration-related operations in the application.
+ * It includes functions for creating, retrieving, updating, and deleting administration posts,
+ * along with interactions with the Google Drive API for file management.
+ * These services abstract the database and file system interactions, providing a
+ * clean interface for the controller layer to perform CRUD operations on administration data.
+ *
+ * @requires uuid - Module for generating unique identifiers.
+ * @requires config - Configuration file for application settings.
+ * @requires constants - Application constants for status messages and codes.
+ * @requires isValidRequest - Utility function to validate requests.
+ * @requires GoogleDriveFileOperations - Helper module for Google Drive file operations.
+ * @requires logger - Shared logging utility for error handling.
+ * @module AdministrationService - Exported services for administration operations.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
-
-// Configurations
 import { ADMINISTRATION_COLLECTION_NAME } from "../../../config/config.js";
-
-// Constants
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -14,10 +27,8 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./administration.constants.js";
-
-// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
+import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -30,24 +41,30 @@ import getAllData from "../../../shared/getAllData.js";
  * Creates a new administration entry in the database.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {Object} newAdministrationDetails - New administration's details.
- * @returns {Object} - The response after attempting administration creation.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {Object} newAdministrationDetails - Object containing details of the new administration.
+ * @param {Object} file - The file object for the administration's associated image or content.
+ * @returns {Promise<Object>} A promise that resolves to the response object after creating the administration.
  */
-const createAdministrationService = async (db, newAdministrationDetails) => {
+const createAdministrationService = async (db, newAdministrationDetails, file) => {
     try {
-        const { name, category, designation, image, adminId } = newAdministrationDetails;
+        const { name, category, designation, adminId } = newAdministrationDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
         const administrationDetails = {
             id: `${ID_CONSTANTS?.ADMINISTRATION_PREFIX}-${uuidv4().substr(0, 6)}`,
-            name,
-            category,
-            designation,
-            image,
+            name: name,
+            category: category,
+            designation: designation,
+            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
+            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -55,8 +72,13 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
         const result = await addANewEntryToDatabase(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails);
         const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails?.id);
 
+        delete latestData?._id;
+        delete latestData?.createdBy;
+        delete latestData?.modifiedBy;
+        delete latestData.googleDriveFileId;
+
         return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${administrationDetails?.name} created successfully`)
+            ? generateResponseData(latestData, true, STATUS_OK, `${name} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
     } catch (error) {
@@ -66,22 +88,21 @@ const createAdministrationService = async (db, newAdministrationDetails) => {
     }
 };
 
-
 /**
- * Retrieves a list of all administrations from the database.
+ * Retrieves a list of all homePageAdministration from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of administrations or an error message.
+ * @returns {Object} - The list of homePageAdministration or an error message.
  * @throws {Error} Throws an error if any.
  */
 const getAdministrationListService = async (db) => {
     try {
-        const administrations = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
+        const administration = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
 
-        return administrations?.length
-            ? generateResponseData(administrations, true, STATUS_OK, `${administrations?.length} administration found`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No administration found');
+        return administration?.length
+            ? generateResponseData(administration, true, STATUS_OK, `${administration?.length} administration found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No homePageAdministration found');
     } catch (error) {
         logger.error(error);
 
@@ -90,17 +111,22 @@ const getAdministrationListService = async (db) => {
 };
 
 /**
- * Retrieves a specific administration by ID from the database.
+ * Retrieves a specific homePageAdministration by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} administrationId - The ID of the administration to retrieve.
- * @returns {Object} - The administration details or an error message.
+ * @param {string} administrationId - The ID of the homePageAdministration to retrieve.
+ * @returns {Object} - The homePageAdministration details or an error message.
  * @throws {Error} Throws an error if any.
  */
 const getAAdministrationService = async (db, administrationId) => {
     try {
         const administration = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
+
+        delete administration?._id;
+        delete administration?.createdBy;
+        delete administration?.modifiedBy;
+        delete administration.googleDriveFileId;
 
         return administration
             ? generateResponseData(administration, true, STATUS_OK, `${administrationId} found successfully`)
@@ -113,32 +139,50 @@ const getAAdministrationService = async (db, administrationId) => {
 };
 
 /**
- * Retrieves a specific administration by ID from the database.
+ * Retrieves a specific homePageAdministration by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} administrationId - The ID of the administration to retrieve.
+ * @param {string} administrationId - The ID of the homePageAdministration to retrieve.
  * @param newAdministrationDetails
- * @returns {Object} - The administration details or an error message.
+ * @param {Object} file - The file object for the administration's associated image or content.
+ * @returns {Object} - The homePageAdministration details or an error message.
  * @throws {Error} Throws an error if any.
  */
-const updateAAdministrationService = async (db, administrationId, newAdministrationDetails) => {
+const updateAAdministrationService = async (db, administrationId, newAdministrationDetails, file) => {
     try {
-        const { name, category, designation, image, adminId } = newAdministrationDetails;
+        const { name, category, designation, adminId } = newAdministrationDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+
+        const oldDetails = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
+
+        if (!oldDetails)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
+
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const updatedAdministrationDetails = {
             ...(name && { name }),
             ...(category && { category }),
             ...(designation && { designation }),
-            ...(image && { image }),
+            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
+            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             modifiedBy: adminId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, ADMINISTRATION_COLLECTION_NAME, administrationId, updatedAdministrationDetails);
         const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
+
+        delete latestData.createdBy;
+        delete latestData.modifiedBy;
+        delete latestData.googleDriveFileId;
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${administrationId} updated successfully`)
@@ -152,12 +196,12 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
 };
 
 /**
- * Deletes a specific administration by ID from the database.
+ * Deletes a specific homePageAdministration by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} adminId - The user ID making the request.
- * @param {string} administrationId - The ID of the administration to delete.
+ * @param {string} administrationId - The ID of the homePageAdministration to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -166,8 +210,12 @@ const deleteAAdministrationService = async (db, adminId, administrationId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, ADMINISTRATION_COLLECTION_NAME, administrationId))
+        const oldDetails = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
+
+        if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
+
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
         const result = await deleteById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
@@ -182,8 +230,8 @@ const deleteAAdministrationService = async (db, adminId, administrationId) => {
 };
 
 /**
- * @namespace AdministrationService
- * @description Group of services related to administration operations.
+ * @namespace HomePageAdministrationService
+ * @description Group of services related to homePageAdministration operations.
  */
 export const AdministrationService = {
     createAdministrationService,

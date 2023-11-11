@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { OthersInformationSchema } from "./othersInformation.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { OthersInformationSchema } from "./othersInformation.schema.js";
  *
  * @returns {void}
  */
-const othersInformationBodyValidator = validateWithSchema(OthersInformationSchema.othersInformationBodySchema, 'body');
+const othersInformationBodyValidator = validateDataWithSchema(OthersInformationSchema.othersInformationBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const othersInformationBodyValidator = validateWithSchema(OthersInformationSchem
  *
  * @returns {void}
  */
-const othersInformationParamsValidator = await validateWithSchema(OthersInformationSchema.othersInformationParamsSchema, 'params');
+const othersInformationParamsValidator = await validateDataWithSchema(OthersInformationSchema.othersInformationParamsSchema, 'params');
 
 /**
  * @namespace OthersInformationValidators

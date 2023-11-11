@@ -1,8 +1,23 @@
-import express from "express";
-import homePagePostRoutes from "../modules/homePagePost/homePagePost.routes.js";
-import homePageCarouselRoutes from "../modules/homePageCarousel/homePageCarousel.routes.js";
+/**
+ * @fileoverview Main router for the homepage-related features.
+ *
+ * This module combines route modules related to the homepage of the application,
+ * including routes for homepage posts and homepage carousels. It acts as a central
+ * point for aggregating all homepage-related routes and exposes them under a unified
+ * namespace. This organization helps in maintaining a clean structure and easy navigation
+ * of homepage functionalities.
+ *
+ * @requires express - The Express framework for handling HTTP requests.
+ * @requires homePagePostRoutes - Routes for the homepage posts feature.
+ * @requires homePageCarouselRoutes - Routes for the homepage carousel feature.
+ * @module homePageRouter - Aggregated routes for homepage-related features.
+ */
 
-const router = express.Router();
+import express from "express";
+import homePagePostRoutes from "../modules/homePage/homePagePost/homePagePost.routes.js";
+import homePageCarouselRoutes from "../modules/homePage/homePageCarousel/homePageCarousel.routes.js";
+
+const homePageRouter = express.Router();
 
 /**
  * Sets up versioned routing for the homePagePost module.
@@ -11,7 +26,7 @@ const router = express.Router();
  * @inner
  * @memberof module:routes
  */
-router.use("/homePagePost", homePagePostRoutes);
+homePageRouter.use("/homePagePost", homePagePostRoutes);
 
 /**
  * Sets up versioned routing for the homePageCarousel module.
@@ -20,11 +35,11 @@ router.use("/homePagePost", homePagePostRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/homePageCarousel", homePageCarouselRoutes);
+homePageRouter.use("/homePageCarousel", homePageCarouselRoutes);
 
 /**
- * The main router object that combines the home page route modules.
+ * The main router object that combines the index page route modules.
  * @type {Router}
  * @namespace module:routes
  */
-export default router;
+export default homePageRouter;

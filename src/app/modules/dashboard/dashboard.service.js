@@ -1,4 +1,3 @@
-// Config Imports
 import {
     ANNOUNCEMENT_COLLECTION_NAME,
     ADMIN_COLLECTION_NAME,
@@ -11,19 +10,14 @@ import {
     ROUTINE_COLLECTION_NAME,
     STUDENT_COLLECTION_NAME,
 } from "../../../config/config.js";
-
-// Constants Imports
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
     STATUS_OK
 } from "../../../constants/constants.js";
-
-// Shared Utilities Imports
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import getAllData from "../../../shared/getAllData.js";
 
 /**
  * Retrieves summary from the database.

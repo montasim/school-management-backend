@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { AnnouncementValidators } from "./announcement.validator.js";
 import { AnnouncementController } from "./announcement.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Announcement successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     AnnouncementValidators.announcementBodyValidator,
     AnnouncementController.createAnnouncementController
 ]);
@@ -86,7 +86,7 @@ router.get("/:announcementId", [
  *         description: Announcement successfully updated.
  */
 router.put("/:announcementId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     AnnouncementValidators.announcementParamsValidator,
     AnnouncementValidators.announcementBodyValidator,
     AnnouncementController.updateAAnnouncementController
@@ -110,7 +110,7 @@ router.put("/:announcementId", [
  *         description: Announcement successfully deleted.
  */
 router.delete("/:announcementId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     AnnouncementValidators.announcementParamsValidator,
     AnnouncementController.deleteAAnnouncementController
 ]);
