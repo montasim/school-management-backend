@@ -30,7 +30,7 @@ import {
  * @returns {string} Regex pattern for allowed extensions.
  */
 const generateExtensionRegexPattern = ( allowedExtensions ) => {
-  return `^[a-zA-Z0-9_\\- ]+\\.(${allowedExtensions})$`;
+  return `(${allowedExtensions.join('|')})$`;
 };
 
 /**
@@ -58,55 +58,70 @@ const createFileNameSchema = ( allowedExtensions ) => {
 };
 
 /**
- * Create a Joi schema for validating file title.
- *
- * @returns {Joi.StringSchema} Joi schema for validating file title.
- */
-const fileTitleValidationSchema = () => {
-  return Joi.string()
-    .min(1)
-    .max(255)
-    .required()
-    .description('Title of the file, used for identification.');
-};
-
-/**
  * Create a Joi schema for validating file buffer.
  *
  * @returns {Joi.StringSchema} Joi schema for validating file buffer.
  */
 const fileBufferValidationSchema = () => {
-  return Joi.string()
-    .base64()
-    .required()
-    .description('The base64 encoded data of the file.');
-};
-
-/**
- * Create a Joi schema for validating file MIME type.
- *
- * @returns {Joi.StringSchema} Joi schema for validating file MIME type.
- */
-const fileMimeTypeValidationSchema = ( validMimeType = [MIME_TYPE_PDF] ) => {
-  return Joi.string()
-    .valid(...validMimeType)
-    .required()
-    .description('MIME type of the file.');
+  return Joi.binary()
+      .max(1024 * 1024 * 25) // Example size limit of 25MB
+      .required()
+      .messages({
+          'binary.base': 'Buffer must be a valid binary buffer',
+          'binary.max': 'Buffer size must not exceed 25MB',
+          'any.required': 'Buffer is a required field'
+      })
 };
 
 /**
  * Create a Joi schema for validating files.
  *
+ * @param allowedFieldname
  * @param {string[]} allowedExtensions - Array of allowed file extensions.
- * @param validMimeType
+ * @param validMimeTypes
  * @returns {Joi.ObjectSchema} Joi schema for validating files.
  */
-const fileValidationSchema = (allowedExtensions = [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], validMimeType = [MIME_TYPE_PNG, MIME_TYPE_JPG] ) => {
+const fileValidationSchema = (allowedFieldname, allowedExtensions = [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], validMimeTypes = [MIME_TYPE_PNG, MIME_TYPE_JPG] ) => {
   return Joi.object({
-    fileName: createFileNameSchema(allowedExtensions),
-    fileBuffer: fileBufferValidationSchema(),
-    mimeType: fileMimeTypeValidationSchema(validMimeType),
-  }).required();
+      fieldname: Joi.string()
+          .valid(allowedFieldname)
+          .required()
+          .messages({
+              'string.base': `"fieldname" should be a type of 'text'`,
+              'any.only': `"fieldname" should be one of [${allowedFieldname}]`,
+              'any.required': `"fieldname" is a required field`
+          }),
+      originalname: createFileNameSchema(allowedExtensions)
+          .messages({
+              'string.pattern.base': `"originalname" should have one of the following extensions: ${allowedExtensions.join(', ')}`,
+              'any.required': `"originalname" is a required field`
+          }),
+      encoding: Joi.string()
+          .valid('7bit')
+          .required()
+          .messages({
+              'string.base': `"encoding" should be a type of 'text'`,
+              'any.only': `"encoding" should be '7bit'`,
+              'any.required': `"encoding" is a required field`
+          }),
+      mimetype: Joi.string()
+          .valid(...validMimeTypes)
+          .required()
+          .messages({
+              'string.base': `"mimetype" should be a type of 'text'`,
+              'any.only': `"mimetype" should be one of [${validMimeTypes.join(', ')}]`,
+              'any.required': `"mimetype" is a required field`
+          }),
+      buffer: fileBufferValidationSchema(),
+      size: Joi.number()
+          .max(1024 * 1024 * 25)
+          .required()
+          .messages({
+              'number.base': `"size" should be a number`,
+              'number.max': `"size" must not exceed 25MB`,
+              'any.required': `"size" is a required field`
+          })
+  }).description('File to be uploaded with validated MIME type and size.')
 };
 
 /**
@@ -118,29 +133,26 @@ const fileValidationSchema = (allowedExtensions = [FILE_EXTENSION_TYPE_PNG, FILE
  */
 const fileWithTitleValidationSchema = (allowedFileExtensions = [FILE_EXTENSION_TYPE_PDF], validMimeTypes = [MIME_TYPE_PDF]) => {
     return Joi.object({
-        title: fileTitleValidationSchema(),
-        file: Joi.object({
-            fieldname: Joi.string().valid('file').required(),
-            originalname: createFileNameSchema(allowedFileExtensions),
-            encoding: Joi.string().valid('7bit').required(),
-            mimetype: Joi.string().valid(...validMimeTypes).required(),
-            size: Joi.number().max(1024 * 1024 * 25).required() // Size limit set to 25MB as an example
-        }).description('File to be uploaded with validated MIME type and size.')
+        title: JoiSchemaGenerators.createStringSchema('title', 3, 200),
+        file: fileValidationSchema("postImage", [...allowedFileExtensions], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
     }).required();
 };
 
 /**
- * @typedef {Object} Title
- * @property {string} title - The title of the link.
+ * @description Joi validation schema for blogPost body data.
+ * Validates the title, category, and description fields.
+ *
+ * - `title`: Should be a string with a minimum length of 3 and a maximum length of 1000.
+ * - `category`: Should be a string with a minimum length of 3 and a maximum length of 100.
+ * - `description`: Should be a string with a minimum length of 3 and a maximum length of 5000.
  */
-const titleValidationSchema = () => {
-    return Joi.string().min(1).max(100).required().messages({
-        'string.base': 'Title must be a string.',
-        'string.min': 'Title must be at least 1 character long.',
-        'string.max': 'Title must not exceed 100 characters.',
-        'any.required': 'Title is required.'
+const postBodyValidationSchema = () => {
+    return Joi.object({
+        title: JoiSchemaGenerators.createStringSchema('title', 3, 200),
+        category: JoiSchemaGenerators.createStringSchema('category', 3, 100),
+        description: JoiSchemaGenerators.createStringSchema('description', 3, 5000),
     });
-};
+}
 
 /**
  * @typedef {Object} UriValidationSchema
@@ -154,13 +166,35 @@ const uriValidationSchema = () => {
 }
 
 /**
+ * Creates a Joi string schema with provided specifications.
+ *
+ * @param {string} fieldName - The name of the field to be validated.
+ * @param {number} minLength - The minimum length of the string.
+ * @param {number} maxLength - The maximum length of the string.
+ * @returns {Joi.StringSchema} - The Joi string schema.
+ */
+const createStringSchema = (fieldName, minLength, maxLength) => {
+    return Joi.string()
+        .min(minLength)
+        .max(maxLength)
+        .required()
+        .messages({
+            'string.base': `"${fieldName}" should be a type of "text"`,
+            'string.empty': `"${fieldName}" cannot be an empty field`,
+            'string.min': `"${fieldName}" should have a minimum length of {#limit}`,
+            'string.max': `"${fieldName}" should have a maximum length of {#limit}`,
+            'any.required': `"${fieldName}" is a required field`
+        });
+};
+
+/**
  * Shared Joi schemas for file validation.
  */
 export const JoiSchemaGenerators = {
   fileValidationSchema,
   fileWithTitleValidationSchema,
   createFileNameSchema,
-  titleValidationSchema,
+  postBodyValidationSchema,
   uriValidationSchema,
-  fileTitleValidationSchema,
+  createStringSchema,
 };

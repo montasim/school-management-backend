@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
 import { WebsiteSocialMediaSchema } from "./websiteSocialMedia.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { WebsiteSocialMediaSchema } from "./websiteSocialMedia.schema.js";
  *
  * @returns {void}
  */
-const websiteSocialMediaBodyValidator = validateWithSchema(WebsiteSocialMediaSchema.websiteSocialMediaBodySchema, 'body');
+const websiteSocialMediaBodyValidator = validateDataWithSchema(WebsiteSocialMediaSchema.websiteSocialMediaBodySchema, 'body');
 
 /**
  * @namespace WebsiteValidators

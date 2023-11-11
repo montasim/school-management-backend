@@ -1,118 +1,206 @@
+/**
+ * @fileoverview Blog Routes for Express Application.
+ *
+ * This module defines the routes for blog-related operations in the Express application.
+ * It includes endpoints for creating, retrieving, updating, and deleting blog posts.
+ * The routes are configured with necessary middleware for authentication, file uploading,
+ * and validation. Swagger documentation annotations are also included to describe each
+ * endpoint, its expected parameters, and responses. This setup facilitates clear and
+ * organized handling of blog-related requests, ensuring proper authentication, data validation,
+ * and response structuring.
+ *
+ * @requires express - Express framework to define routes.
+ * @requires authTokenMiddleware - Middleware for authenticating tokens in requests.
+ * @requires fileUploadMiddleware - Middleware for handling file uploads.
+ * @requires BlogValidationService - Validators for blog post request data.
+ * @requires BlogController - Controllers for handling blog post operations.
+ * @module blogRouter - Express router with defined routes for blog operations.
+ */
+
 import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
-import { BlogPostValidators } from "./blog.validator.js";
-import { HomePageBlogPostController } from "./blog.controller.js";
+import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
+import { BlogValidationService } from "./blog.validator.js";
+import { BlogController } from "./blog.controller.js";
 
-const router = express.Router();
+const blogRouter = express.Router();
 
 /**
  * @swagger
  * /:
- *   blogPost:
- *     summary: Create an blogPost.
- *     description: Endpoint to add a new blogPost to the system.
+ *   post:
+ *     summary: Create a blog.
+ *     description: Endpoint to add a new blog to the system.
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
- *       - in: body
- *         name: blogPost
- *         description: The blogPost to create.
- *         schema:
- *           $ref: '#/definitions/BlogPost'
+ *       - in: formData
+ *         name: title
+ *         type: string
+ *         description: Title of the blog.
+ *       - in: formData
+ *         name: category
+ *         type: string
+ *         description: Category of the blog.
+ *       - in: formData
+ *         name: description
+ *         type: string
+ *         description: Description of the blog.
+ *       - in: formData
+ *         name: postImage
+ *         type: file
+ *         description: The blog post image file to upload.
  *     responses:
  *       200:
- *         description: BlogPost successfully created.
+ *         description: Blog successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles POST request for creating a new blog.
+ * Applies authentication and file upload middleware.
+ * @route POST /
  */
-router.post("/", [
+blogRouter.post("/", [
     authTokenMiddleware,
-    BlogPostValidators.blogPostBody,
-    HomePageBlogPostController.createBlogPost
+    fileUploadMiddleware.single('postImage'),
+    BlogValidationService.validateBlogDetails,
+    BlogValidationService.validateBlogFile,
+    BlogController.createBlogController
 ]);
 
 /**
  * @swagger
  * /:
  *   get:
- *     summary: Retrieve all blogPost.
- *     description: Endpoint to retrieve a list of all blogPost.
+ *     summary: Retrieve all blogs.
+ *     description: Endpoint to retrieve a list of all blogs.
  *     responses:
  *       200:
- *         description: A list of blogPost.
+ *         description: A list of blogs.
+ *       404:
+ *         description: Blog not found.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles GET request for retrieving a list of all blogs.
+ * @route GET /
  */
-router.get("/", [
-    HomePageBlogPostController.getBlogPostList
+blogRouter.get("/", [
+    BlogController.getBlogListController
 ]);
 
 /**
  * @swagger
- * /{blogPostId}:
+ * /{blogId}:
  *   get:
- *     summary: Retrieve a specific blogPost by ID.
- *     description: Endpoint to get details of a blogPost by their ID.
+ *     summary: Retrieve a specific blog by ID.
+ *     description: Endpoint to get details of a blog by their ID.
  *     parameters:
  *       - in: path
- *         name: blogPostId
+ *         name: blogId
  *         required: true
- *         description: ID of the blogPost to retrieve.
- *         schema:
- *           type: string
+ *         description: ID of the blog to retrieve.
  *     responses:
  *       200:
- *         description: BlogPost details.
+ *         description: Blog details.
+ *       404:
+ *         description: Blog not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles GET request for retrieving details of a specific blog.
+ * @route GET /{blogId}
  */
-router.get("/:blogPostId", [
-    BlogPostValidators.blogPostParams,
-    HomePageBlogPostController.getABlogPost
+blogRouter.get("/:blogId", [
+    BlogValidationService.validateBlogParams,
+    BlogController.getABlogController
 ]);
 
 /**
  * @swagger
- * /{blogPostId}:
+ * /{blogId}:
  *   put:
- *     summary: Update a blogPost by ID.
- *     description: Endpoint to update the details of a blogPost by their ID.
+ *     summary: Update a blog.
+ *     description: Endpoint to update an existing blog to the system.
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
  *       - in: path
- *         name: blogPostId
+ *         name: blogId
  *         required: true
- *         description: ID of the blogPost to update.
- *         schema:
- *           type: string
- *       - in: body
- *         name: blogPost
- *         description: Updated details of the blogPost.
- *         schema:
- *           $ref: '#/definitions/BlogPost'
+ *         description: ID of the blog to update.
+ *       - in: formData
+ *         name: title
+ *         type: string
+ *         description: Title of the blog.
+ *       - in: formData
+ *         name: category
+ *         type: string
+ *         description: Category of the blog.
+ *       - in: formData
+ *         name: description
+ *         type: string
+ *         description: Description of the blog.
+ *       - in: formData
+ *         name: postImage
+ *         type: file
+ *         description: The blog post image file to upload.
  *     responses:
  *       200:
- *         description: BlogPost successfully updated.
+ *         description: Blog successfully updated.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles POST request for creating a new blog.
+ * Applies authentication and file upload middleware.
+ * @route POST /
  */
-router.put("/:blogPostId", [
+blogRouter.put("/:blogId", [
     authTokenMiddleware,
-    BlogPostValidators.blogPostParams,
-    BlogPostValidators.blogPostBody,
-    HomePageBlogPostController.updateABlogPost
+    fileUploadMiddleware.single('postImage'),
+    BlogValidationService.validateBlogParams,
+    BlogValidationService.validateBlogDetails,
+    BlogValidationService.validateBlogFile,
+    BlogController.updateABlogController
 ]);
 
 /**
  * @swagger
- * /{blogPostId}:
+ * /{blogId}:
  *   delete:
- *     summary: Delete a blogPost by ID.
- *     description: Endpoint to delete a blogPost by their ID.
+ *     summary: Delete a blog by ID.
+ *     description: Endpoint to delete a blog by their ID.
  *     parameters:
  *       - in: path
- *         name: blogPostId
+ *         name: blogId
  *         required: true
- *         description: ID of the blogPost to delete.
- *         schema:
- *           type: string
+ *         description: ID of the blog to delete.
  *     responses:
  *       200:
- *         description: BlogPost successfully deleted.
+ *         description: Blog successfully deleted.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       404:
+ *         description: Blog not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles DELETE request for deleting a specific blog.
+ * Requires authentication.
+ * @route DELETE /{blogId}
  */
-router.delete("/:blogPostId", [
+blogRouter.delete("/:blogId", [
     authTokenMiddleware,
-    BlogPostValidators.blogPostParams,
-    HomePageBlogPostController.deleteABlogPost
+    BlogValidationService.validateBlogParams,
+    BlogController.deleteABlogController
 ]);
 
-export default router;
+export default blogRouter;

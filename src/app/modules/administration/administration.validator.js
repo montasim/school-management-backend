@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { AdministrationSchema } from "./administration.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { AdministrationSchema } from "./administration.schema.js";
  *
  * @returns {void}
  */
-const administrationBodyValidator = validateWithSchema(AdministrationSchema.administrationBodySchema, 'body');
+const administrationBodyValidator = validateDataWithSchema(AdministrationSchema.administrationBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const administrationBodyValidator = validateWithSchema(AdministrationSchema.admi
  *
  * @returns {void}
  */
-const administrationParamsValidator = await validateWithSchema(AdministrationSchema.administrationParamsSchema, 'params');
+const administrationParamsValidator = await validateDataWithSchema(AdministrationSchema.administrationParamsSchema, 'params');
 
 /**
  * @namespace AdministrationValidators

@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Buffer to Readable Stream Converter.
+ *
+ * This module contains a utility function that converts a Buffer into a Readable Stream.
+ * Such conversion is particularly useful in scenarios where streaming data is required,
+ * such as handling file uploads, streaming large data sets, or processing data in a
+ * stream-based manner. The function encapsulates the logic for stream creation and
+ * management, ensuring that the buffer data is correctly converted into a stream format.
+ * This utility helps in abstracting the complexities of stream handling from the main
+ * application logic, thereby enhancing code readability and maintainability.
+ *
+ * @requires stream - Node.js core module for handling streaming data.
+ * @requires logger - Shared logging utility for error handling.
+ * @module convertBufferToStream - Function to convert a Buffer into a Readable Stream.
+ */
+
 import { Readable } from "stream";
 import logger from "../shared/logger.js";
 

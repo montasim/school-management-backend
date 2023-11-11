@@ -32,7 +32,7 @@ const homePageCarouselBodySchema = Joi.object({
             'string.max': 'Image description must not exceed 100 characters.',
             'any.required': 'Image description is required.'
     }),
-    carouselImage: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_PNG], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+    // carouselImage: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_PNG], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
 });
 
 /**

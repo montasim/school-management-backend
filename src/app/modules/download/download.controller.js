@@ -9,7 +9,7 @@
  *
  * @requires DownloadService - Service for handling download-related business logic.
  * @requires extractFromRequest - Helper function for extracting data from the request object.
- * @requires validateFileTitle - Helper function for validating file title.
+ * @requires validateStringField - Helper function for validating file title.
  * @requires validateUploadedFile - Helper function for validating uploaded files.
  * @requires handleServiceResponse - Helper function for handling responses from services.
  * @requires logger - Shared logging utility.
@@ -19,14 +19,11 @@
 
 import { DownloadService } from "./download.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
-import validateFileTitle from "../../../helpers/validateFileTitle.js";
+import validateStringField from "../../../helpers/validateStringField.js";
 import validateUploadedFile from "../../../helpers/validateUploadedFile.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 import logger from "../../../shared/logger.js";
-import {
-    MAX_PDF_FILE_SIZE,
-    MIME_TYPE_PDF,
-} from "../../../constants/constants.js";
+import { MAX_PDF_FILE_SIZE, MIME_TYPE_PDF } from "../../../constants/constants.js";
 
 /**
  * Asynchronously handles the creation of a new download. This controller extracts download details from the request,
@@ -45,8 +42,9 @@ const createDownloadController = async (req, res) => {
         const { title, adminId, db } = extractFromRequest(req, ['title']);
         const newDownloadDetails = { title, adminId };
 
-        await validateFileTitle(res, title);
-        await validateUploadedFile(res, req.file, MAX_PDF_FILE_SIZE, [MIME_TYPE_PDF]);
+        validateStringField(res, 'title', title, 3, 1000);
+        validateUploadedFile(res, req.file, MAX_PDF_FILE_SIZE, [MIME_TYPE_PDF]);
+
         await handleServiceResponse(res, DownloadService.createDownloadService, db, newDownloadDetails, req?.file);
     } catch (error) {
         logger.error(error);

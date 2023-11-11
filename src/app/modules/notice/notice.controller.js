@@ -9,7 +9,7 @@
  *
  * @requires NoticeService - Service for handling notice-related business logic.
  * @requires extractFromRequest - Helper function for extracting data from the request object.
- * @requires validateFileTitle - Helper function for validating file title.
+ * @requires validateTitle - Helper function for validating file title.
  * @requires validateUploadedFile - Helper function for validating uploaded files.
  * @requires handleServiceResponse - Helper function for handling responses from services.
  * @requires logger - Shared logging utility.
@@ -19,7 +19,7 @@
 
 import { NoticeService } from "./notice.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
-import validateFileTitle from "../../../helpers/validateFileTitle.js";
+import validateTitle from "../../../helpers/validateStringField.js";
 import validateUploadedFile from "../../../helpers/validateUploadedFile.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
 import logger from "../../../shared/logger.js";
@@ -45,7 +45,7 @@ const createNoticeController = async (req, res) => {
         const { title, adminId, db } = extractFromRequest(req, ['title']);
         const newNoticeDetails = { title, adminId };
 
-        await validateFileTitle(res, title);
+        await validateTitle(res, title);
         await validateUploadedFile(res, req.file, MAX_PDF_FILE_SIZE, [MIME_TYPE_PDF]);
         await handleServiceResponse(res, NoticeService.createNoticeService, db, newNoticeDetails, req?.file);
     } catch (error) {

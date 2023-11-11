@@ -9,12 +9,12 @@
  * to the next middleware if validation succeeds, or sending an error response if it fails.
  *
  * @requires NoticeValidationSchemas - Schemas for validating notice data.
- * @requires validateWithSchema - Generic utility to validate data with a Joi schema.
+ * @requires validateDataWithSchema - Generic utility to validate data with a Joi schema.
  * @module NoticeValidationService - Exported validators for notice route handling.
  */
 
 import { NoticeValidationSchemas } from "./notice.schema.js";
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 
 /**
  * @function
@@ -31,7 +31,7 @@ import validateWithSchema from "../../../helpers/validateWithSchema.js";
  *
  * @returns {void}
  */
-const validateNoticeParams = validateWithSchema(NoticeValidationSchemas.noticeParamsValidationSchema, 'params');
+const validateNoticeParams = validateDataWithSchema(NoticeValidationSchemas.noticeParamsValidationSchema, 'params');
 
 /**
  * @namespace NoticeValidationService

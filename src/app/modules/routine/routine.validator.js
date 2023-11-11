@@ -9,12 +9,12 @@
  * to the next middleware if validation succeeds, or sending an error response if it fails.
  *
  * @requires RoutineValidationSchemas - Schemas for validating routine data.
- * @requires validateWithSchema - Generic utility to validate data with a Joi schema.
+ * @requires validateDataWithSchema - Generic utility to validate data with a Joi schema.
  * @module RoutineValidationService - Exported validators for routine route handling.
  */
 
 import { RoutineValidationSchemas } from "./routine.schema.js";
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 
 /**
  * @function
@@ -31,7 +31,7 @@ import validateWithSchema from "../../../helpers/validateWithSchema.js";
  *
  * @returns {void}
  */
-const validateRoutineParams = validateWithSchema(RoutineValidationSchemas.routineParamsValidationSchema, 'params');
+const validateRoutineParams = validateDataWithSchema(RoutineValidationSchemas.routineParamsValidationSchema, 'params');
 
 /**
  * @namespace RoutineValidationService

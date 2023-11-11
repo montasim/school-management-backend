@@ -1,45 +1,71 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
-import { BlogPostSchema } from "./blog.schema.js";
+/**
+ * @fileoverview Middleware Validators for Blog Post Data.
+ *
+ * This module contains middleware functions for validating blog post data in Express routes.
+ * It leverages Joi schemas defined in the BlogSchema module to validate the format and content
+ * of blog post-related data, such as blog post IDs in request parameters. These validators ensure
+ * that incoming data for blog posts adheres to the expected structure and types before further processing.
+ * Each validator function is designed to be used as Express middleware, checking the validity of the
+ * data and passing control to the next middleware if validation succeeds, or sending an error response
+ * if it fails.
+ *
+ * @requires validateDataWithSchema - Generic utility to validate data with a Joi schema.
+ * @requires BlogValidationSchemas - Schemas for validating blog post data.
+ * @module BlogValidationService - Exported validators for blog post route handling.
+ */
+
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
+import { BlogValidationSchemas } from "./blog.schema.js";
+import { JoiSchemaGenerators}  from "../../../shared/joiSchemaGenerators.js";
+import {
+    FILE_EXTENSION_TYPE_JPG,
+    FILE_EXTENSION_TYPE_PNG,
+    MIME_TYPE_JPG,
+    MIME_TYPE_PNG
+} from "../../../constants/constants.js";
 
 /**
- * @function
+ * Validates the details of a blog post against a predefined schema.
+ *
  * @async
- * @description Middleware validator for blogPost body data.
- *
- * Uses the blogPostBodySchema from the BlogPostSchema to validate
- * the body of the incoming request. This ensures that the blogPost
- * information is in the correct format before processing.
- *
- * @param {Object} req - Express request object.
+ * @function validateBlogDetails
+ * @description Middleware to validate the blog post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the blog post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
- *
- * @returns {void}
  */
-const blogPostBody = validateWithSchema(BlogPostSchema.blogPostBody, 'body');
+const validateBlogDetails = await validateDataWithSchema(JoiSchemaGenerators.postBodyValidationSchema(), 'body');
 
 /**
- * @function
+ * Validates the details of a blog post against a predefined schema.
+ *
  * @async
- * @description Middleware validator for blogPost ID in request parameters.
- *
- * Uses the blogPostParamsSchema from the BlogPostSchema to validate
- * the blogPost ID provided in the request parameters. This ensures that
- * the blogPost ID is in the correct format for further processing.
- *
- * @param {Object} req - Express request object.
+ * @function validateBlogDetails
+ * @description Middleware to validate the blog post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the blog post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
- *
- * @returns {void}
  */
-const blogPostParams = await validateWithSchema(BlogPostSchema.blogPostParams, 'params');
+const validateBlogFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema("postImage", [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], [MIME_TYPE_PNG, MIME_TYPE_JPG]), "file");
 
 /**
- * @namespace BlogPostValidators
- * @description Exported blogPost validators to be used in routes.
+ * Validates the blog post ID in request parameters.
+ *
+ * @async
+ * @function validateBlogParams
+ * @description Middleware to validate the blog post's ID in the request parameters.
+ * @param {Object} req - Express request object containing the blog post ID.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
  */
-export const BlogPostValidators = {
-    blogPostBody,
-    blogPostParams,
+const validateBlogParams = await validateDataWithSchema(BlogValidationSchemas.blogParamsValidationSchema, 'params');
+
+/**
+ * @namespace BlogValidationService
+ * @description Provides validation services for blog-related data in routes. This includes validation for blog details, blog files, and blog parameters.
+ */
+export const BlogValidationService = {
+    validateBlogDetails,
+    validateBlogFile,
+    validateBlogParams,
 };

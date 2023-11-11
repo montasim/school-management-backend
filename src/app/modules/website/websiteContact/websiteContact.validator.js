@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
 import { WebsiteContactSchema } from "./websiteContact.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { WebsiteContactSchema } from "./websiteContact.schema.js";
  *
  * @returns {void}
  */
-const websiteContactBodyValidator = validateWithSchema(WebsiteContactSchema.websiteContactBodySchema, 'body');
+const websiteContactBodyValidator = validateDataWithSchema(WebsiteContactSchema.websiteContactBodySchema, 'body');
 
 /**
  * @namespace WebsiteValidators

@@ -9,12 +9,12 @@
  * to the next middleware if validation succeeds, or sending an error response if it fails.
  *
  * @requires DownloadValidationSchemas - Schemas for validating download data.
- * @requires validateWithSchema - Generic utility to validate data with a Joi schema.
+ * @requires validateDataWithSchema - Generic utility to validate data with a Joi schema.
  * @module DownloadValidationService - Exported validators for download route handling.
  */
 
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { DownloadValidationSchemas } from "./download.schema.js";
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
 
 /**
  * @function
@@ -31,7 +31,7 @@ import validateWithSchema from "../../../helpers/validateWithSchema.js";
  *
  * @returns {void}
  */
-const validateDownloadParams = validateWithSchema(DownloadValidationSchemas.downloadParamsValidationSchema, 'params');
+const validateDownloadParams = validateDataWithSchema(DownloadValidationSchemas.downloadParamsValidationSchema, 'params');
 
 /**
  * @namespace DownloadValidationService

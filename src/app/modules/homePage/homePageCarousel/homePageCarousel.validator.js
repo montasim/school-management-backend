@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
 import { HomePageCarouselSchema } from "./homePageCarousel.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { HomePageCarouselSchema } from "./homePageCarousel.schema.js";
  *
  * @returns {void}
  */
-const homePageCarouselBodyValidator = validateWithSchema(HomePageCarouselSchema.homePageCarouselBodySchema, 'body');
+const homePageCarouselBodyValidator = validateDataWithSchema(HomePageCarouselSchema.homePageCarouselBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const homePageCarouselBodyValidator = validateWithSchema(HomePageCarouselSchema.
  *
  * @returns {void}
  */
-const homePageCarouselParamsValidator = await validateWithSchema(HomePageCarouselSchema.homePageCarouselParamsSchema, 'params');
+const homePageCarouselParamsValidator = await validateDataWithSchema(HomePageCarouselSchema.homePageCarouselParamsSchema, 'params');
 
 /**
  * @namespace HomePageCarouselValidators

@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
 import { WebsiteOfficialLinkSchema } from "./websiteOfficialLink.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { WebsiteOfficialLinkSchema } from "./websiteOfficialLink.schema.js";
  *
  * @returns {void}
  */
-const websiteOfficialLinkBodyValidator = validateWithSchema(WebsiteOfficialLinkSchema.websiteOfficialLinkBodySchema, 'body');
+const websiteOfficialLinkBodyValidator = validateDataWithSchema(WebsiteOfficialLinkSchema.websiteOfficialLinkBodySchema, 'body');
 
 /**
  * @namespace WebsiteValidators

@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
 import { WebsiteImportantInformationLinkSchema } from "./websiteImportantInformationLink.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { WebsiteImportantInformationLinkSchema } from "./websiteImportantInforma
  *
  * @returns {void}
  */
-const websiteImportantInformationLinkBodyValidator = validateWithSchema(WebsiteImportantInformationLinkSchema.websiteImportantInformationLinkBodySchema, 'body');
+const websiteImportantInformationLinkBodyValidator = validateDataWithSchema(WebsiteImportantInformationLinkSchema.websiteImportantInformationLinkBodySchema, 'body');
 
 /**
  * @namespace WebsiteValidators

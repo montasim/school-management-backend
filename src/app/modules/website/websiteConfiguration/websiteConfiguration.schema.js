@@ -28,8 +28,8 @@ const websiteConfigurationBodySchema = Joi.object({
         'string.max': 'Slogan must not exceed 150 characters.',
         'any.required': 'Slogan is required.'
     }),
-    websiteLogo: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_PNG], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
-    websiteFavIcon: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_ICO], [MIME_TYPE_ICO]),
+    // websiteLogo: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_PNG], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+    // websiteFavIcon: JoiSchemaGenerators.fileValidationSchema([FILE_EXTENSION_TYPE_ICO], [MIME_TYPE_ICO]),
 });
 
 /**

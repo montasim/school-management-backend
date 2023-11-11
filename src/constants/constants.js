@@ -28,6 +28,7 @@ const FILE_EXTENSION_TYPE_ICO = "ico";
 
 // File size
 const MAX_PDF_FILE_SIZE = 25 * 1024 * 1024;
+const MAX_IMAGE_FILE_SIZE = 2 * 1024 * 1024;
 
 // MIME types
 const MIME_TYPE_PDF = "application/pdf";
@@ -76,6 +77,7 @@ export {
     FILE_EXTENSION_TYPE_PNG,
     FILE_EXTENSION_TYPE_ICO,
     MAX_PDF_FILE_SIZE,
+    MAX_IMAGE_FILE_SIZE,
     LOG_LEVELS,
     LOG_COLORS,
     MIME_TYPE_PDF,

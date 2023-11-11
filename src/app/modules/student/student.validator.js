@@ -1,5 +1,5 @@
 import { StudentSchema } from "./student.schema.js";
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 
 /**
  * @function
@@ -16,7 +16,7 @@ import validateWithSchema from "../../../helpers/validateWithSchema.js";
  *
  * @returns {void}
  */
-const studentBodyValidator = validateWithSchema(StudentSchema.studentBodySchema, 'body');
+const studentBodyValidator = validateDataWithSchema(StudentSchema.studentBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const studentBodyValidator = validateWithSchema(StudentSchema.studentBodySchema,
  *
  * @returns {void}
  */
-const studentParamsValidator = await validateWithSchema(StudentSchema.studentParamsSchema, 'params');
+const studentParamsValidator = await validateDataWithSchema(StudentSchema.studentParamsSchema, 'params');
 
 /**
  * @namespace StudentValidators

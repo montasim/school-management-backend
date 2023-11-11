@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
 import { HomePagePostSchema } from "./homePagePost.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { HomePagePostSchema } from "./homePagePost.schema.js";
  *
  * @returns {void}
  */
-const homePagePostBody = validateWithSchema(HomePagePostSchema.homePagePostBody, 'body');
+const homePagePostBody = validateDataWithSchema(HomePagePostSchema.homePagePostBody, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const homePagePostBody = validateWithSchema(HomePagePostSchema.homePagePostBody,
  *
  * @returns {void}
  */
-const homePagePostParams = await validateWithSchema(HomePagePostSchema.homePagePostParams, 'params');
+const homePagePostParams = await validateDataWithSchema(HomePagePostSchema.homePagePostParams, 'params');
 
 /**
  * @namespace HomePagePostValidators

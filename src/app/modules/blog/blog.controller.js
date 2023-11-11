@@ -1,85 +1,130 @@
-import { BlogPostService } from "./blog.service.js";
+/**
+ * @fileoverview Blog Controller for Express Application.
+ *
+ * This module provides controller functions for handling blog-related routes in the application.
+ * Each controller function is responsible for processing incoming requests related to blogs,
+ * interacting with the BlogService to perform CRUD operations, and sending appropriate responses back to the client.
+ * This centralizes the blog-related request handling logic, ensuring consistency and separation of concerns.
+ *
+ * @requires BlogService - Service layer handling business logic related to blogs.
+ * @requires extractFromRequest - Helper function to extract data from request objects.
+ * @requires handleServiceResponse - Helper function to handle responses from service layer.
+ * @requires logger - Shared logging utility for error handling.
+ * @module BlogController - Exported blog controller functions.
+ */
+
+import { BlogService } from "./blog.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+import logger from "../../../shared/logger.js";
 
 /**
  * @async
- * @function createBlogPost
- * @description Controller for creating a new homePageBlogPost.
- *
- * @param {express.Request} req - Express request object containing homePageBlogPost details.
+ * @function createBlogController
+ * @description Controller for creating a new blog.
+ * @param {express.Request} req - Express request object containing blog details.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const createBlogPost = async (req, res) => {
-    const { title, category, postImage, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'postImage', 'description']);
-    const newBlogPost = { title, category, postImage, description, adminId };
+const createBlogController = async (req, res) => {
+    try {
+        const { title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description']);
+        const newBlogDetails = { title, category, description, adminId };
 
-    await handleServiceResponse(res, BlogPostService.createBlogPost, db, newBlogPost);
+        await handleServiceResponse(res, BlogService.createBlogService, db, newBlogDetails, req?.file);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
  * @async
- * @function getBlogPostList
+ * @function getBlogList
  * @description Controller for fetching all other information.
  *
  * @param {express.Request} req - Express request object.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const getBlogPostList = async (req, res) => {
-    await handleServiceResponse(res, BlogPostService.getBlogPostList, req?.db);
+const getBlogListController = async (req, res) => {
+    try {
+        await handleServiceResponse(res, BlogService.getBlogListService, req?.db);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
  * @async
- * @function getABlogPost
- * @description Controller for fetching a specific homePageBlogPost by ID.
+ * @function getABlog
+ * @description Controller for fetching a specific blog by ID.
  *
- * @param {express.Request} req - Express request object containing homePageBlogPost ID in parameters.
+ * @param {express.Request} req - Express request object containing blog ID in parameters.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const getABlogPost = async (req, res) => {
-    const { blogPostId, db } = extractFromRequest(req, [], ['blogPostId']);
+const getABlogController = async (req, res) => {
+    try {
+        const { blogId, db } = extractFromRequest(req, [], ['blogId']);
 
-    await handleServiceResponse(res, BlogPostService.getABlogPost, db, blogPostId);
+        await handleServiceResponse(res, BlogService.getABlogService, db, blogId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
  * @async
- * @function updateABlogPost
- * @description Controller for updating a specific homePageBlogPost by ID.
+ * @function updateABlog
+ * @description Controller for updating a specific blog by ID.
  *
- * @param {express.Request} req - Express request object containing homePageBlogPost ID in parameters.
+ * @param {express.Request} req - Express request object containing blog ID in parameters.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const updateABlogPost = async (req, res) => {
-    const { blogPostId, title, category, postImage, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'postImage', 'description'], ['blogPostId']);
-    const updatedBlogPostDetails = { title, category, postImage, description, adminId };
+const updateABlogController = async (req, res) => {
+    try {
+        const { blogId, title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description'], ['blogId']);
+        const updatedBlogDetails = { title, category, description, adminId };
 
-    await handleServiceResponse(res, BlogPostService.updateABlogPost, db, blogPostId, updatedBlogPostDetails);
+        await handleServiceResponse(res, BlogService.updateABlogService, db, blogId, updatedBlogDetails, req?.file);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
  * @async
- * @function deleteABlogPostController
- * @description Controller for deleting a homePageBlogPost by ID.
+ * @function deleteABlogController
+ * @description Controller for deleting a blog by ID.
  *
- * @param {express.Request} req - Express request object containing homePageBlogPost ID in parameters.
+ * @param {express.Request} req - Express request object containing blog ID in parameters.
  * @param {express.Response} res - Express response object to send data back to client.
  */
-const deleteABlogPost = async (req, res) => {
-    const { blogPostId, adminId, db } = extractFromRequest(req, [], ['blogPostId']);
+const deleteABlogController = async (req, res) => {
+    try {
+        const { blogId, adminId, db } = extractFromRequest(req, [], ['blogId']);
 
-    await handleServiceResponse(res, BlogPostService.deleteABlogPost, db, adminId, blogPostId);
+        await handleServiceResponse(res, BlogService.deleteABlogService, db, adminId, blogId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
- * @namespace HomePageBlogPostController
- * @description Group of controllers for handling homePageBlogPost operations.
+ * @namespace BlogController
+ * @description Group of controllers for handling blog operations.
  */
-export const HomePageBlogPostController = {
-    createBlogPost,
-    getBlogPostList,
-    getABlogPost,
-    updateABlogPost,
-    deleteABlogPost
+export const BlogController = {
+    createBlogController,
+    getBlogListController,
+    getABlogController,
+    updateABlogController,
+    deleteABlogController
 };

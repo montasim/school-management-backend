@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { AnnouncementSchema } from "./announcement.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { AnnouncementSchema } from "./announcement.schema.js";
  *
  * @returns {void}
  */
-const announcementBodyValidator = validateWithSchema(AnnouncementSchema.announcementBodySchema, 'body');
+const announcementBodyValidator = validateDataWithSchema(AnnouncementSchema.announcementBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const announcementBodyValidator = validateWithSchema(AnnouncementSchema.announce
  *
  * @returns {void}
  */
-const announcementParamsValidator = await validateWithSchema(AnnouncementSchema.announcementParamsSchema, 'params');
+const announcementParamsValidator = await validateDataWithSchema(AnnouncementSchema.announcementParamsSchema, 'params');
 
 /**
  * @namespace AnnouncementValidators

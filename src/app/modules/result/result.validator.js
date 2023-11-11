@@ -9,12 +9,12 @@
  * to the next middleware if validation succeeds, or sending an error response if it fails.
  *
  * @requires ResultValidationSchemas - Schemas for validating result data.
- * @requires validateWithSchema - Generic utility to validate data with a Joi schema.
+ * @requires validateDataWithSchema - Generic utility to validate data with a Joi schema.
  * @module ResultValidationService - Exported validators for result route handling.
  */
 
 import { ResultValidationSchemas } from "./result.schema.js";
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 
 /**
  * @function
@@ -31,7 +31,7 @@ import validateWithSchema from "../../../helpers/validateWithSchema.js";
  *
  * @returns {void}
  */
-const validateResultParams = validateWithSchema(ResultValidationSchemas.resultParamsValidationSchema, 'params');
+const validateResultParams = validateDataWithSchema(ResultValidationSchemas.resultParamsValidationSchema, 'params');
 
 /**
  * @namespace ResultValidationService

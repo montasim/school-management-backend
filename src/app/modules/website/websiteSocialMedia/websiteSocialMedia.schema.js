@@ -7,7 +7,7 @@ import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
  * @property {string} link - The URL of the link.
  */
 const websiteSocialMediaSchema = Joi.object({
-    socialMediaTitle: JoiSchemaGenerators.titleValidationSchema,
+    socialMediaTitle: JoiSchemaGenerators.createStringSchema('title', 3, 200),
     socialMediaLink: JoiSchemaGenerators.uriValidationSchema
 });
 

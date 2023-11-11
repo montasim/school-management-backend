@@ -7,7 +7,7 @@ import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
  * @property {string} link - The URL of the link.
  */
 const websiteOfficialLinkSchema = Joi.object({
-    officialLinkTitle: JoiSchemaGenerators.titleValidationSchema,
+    officialLinkTitle: JoiSchemaGenerators.createStringSchema('title', 3, 200),
     officialLink: JoiSchemaGenerators.uriValidationSchema
 });
 

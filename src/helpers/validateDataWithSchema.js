@@ -18,20 +18,16 @@ import logger from "../shared/logger.js";
 import { STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";
 
 /**
- * Generates a middleware to validate request data against a provided Joi schema.
+ * Validates request data against a provided Joi schema.
  *
- * @function
- * @async
  * @param {Object} schema - The Joi schema to validate against.
- * @param {string} source - The location of the data on the request object. E.g., 'body', 'query', 'params'.
+ * @param {string} source - The location of the data on the request object ('body' or 'file').
  * @returns {Function} Middleware function for validation.
- * @example
- * // Usage
- * router.homePagePost('/path', validateWithSchema(mySchema, 'body'), myController);
  */
-const validateWithSchema = (schema, source) => async (req, res, next) => {
+const validateDataWithSchema = (schema, source = 'body') => async (req, res, next) => {
     try {
-        const { error } = schema.validate(req[source]);
+        const dataToValidate = source === 'file' ? req?.file : req[source];
+        const { error } = schema?.validate(dataToValidate);
 
         if (error) {
             return handleValidationError(res, error);
@@ -45,4 +41,4 @@ const validateWithSchema = (schema, source) => async (req, res, next) => {
     }
 };
 
-export default validateWithSchema;
+export default validateDataWithSchema;
