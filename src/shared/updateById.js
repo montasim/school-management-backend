@@ -13,6 +13,12 @@ import logger from "./logger.js";
  */
 const updateById = async (db, collectionName, id, details) => {
     try {
+        if (!collectionName) {
+            logger.error("COLLECTION_NAME is not defined");
+
+            return false;
+        }
+
         return await db
             .collection(collectionName)
             .updateOne({ id: id }, { $set: details });

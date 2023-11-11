@@ -26,6 +26,12 @@ import logger from "./logger.js";
  */
 const getAllData = async (db, collectionName) => {
     try {
+        if (!collectionName) {
+            logger.error("COLLECTION_NAME is not defined");
+
+            return false;
+        }
+
         return await db
             .collection(collectionName)
             .find({}, { projection: { _id: 0, createdBy: 0, modifiedBy: 0, googleDriveFileId: 0, googleDriveLogoId: 0, googleDriveFavIconId: 0 }}).toArray();

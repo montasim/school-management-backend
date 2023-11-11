@@ -36,7 +36,6 @@ import findById from "../../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../../shared/updateById.js";
 import getAllData from "../../../../shared/getAllData.js";
-import findByFileName from "../../../../shared/findByFileName.js";
 
 /**
  * Creates a new homePagePost entry in the database.
@@ -53,9 +52,6 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
-
-        if (await findByFileName(db, HOME_PAGE_POST_COLLECTION_NAME, file?.originalname))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 

@@ -14,6 +14,8 @@
 
 import { ADMIN_COLLECTION_NAME } from "../config/config.js";
 import logger from "./logger.js";
+import generateResponseData from "./generateResponseData.js";
+import { STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";
 
 /**
  * Check if the requester is valid by looking up the requester ID in the admin collection.
@@ -26,11 +28,20 @@ import logger from "./logger.js";
  */
 const isValidRequest = async (db, adminId) => {
     try {
+        if (!ADMIN_COLLECTION_NAME) {
+            logger.error("COLLECTION_NAME is not defined");
+
+            return false;
+        }
+
         const requesterValidity = await db
             .collection(ADMIN_COLLECTION_NAME)
             .findOne({ id: adminId });
 
-        return !!requesterValidity;
+        console.log(requesterValidity?.id)
+
+        if (requesterValidity?.id)
+            return true;
     } catch (error) {
         logger.error(error);
 

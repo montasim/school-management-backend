@@ -36,7 +36,6 @@ import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
-import findByFileName from "../../../shared/findByFileName.js";
 
 /**
  * Creates a new blog entry in the database.
@@ -53,9 +52,6 @@ const createBlogService = async (db, newBlogDetails, file) => {
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
-
-        if (await findByFileName(db, BLOG_COLLECTION_NAME, file?.originalname))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
@@ -92,11 +88,11 @@ const createBlogService = async (db, newBlogDetails, file) => {
 };
 
 /**
- * Retrieves a list of all homePageBlog from the database.
+ * Retrieves a list of all blog from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of homePageBlog or an error message.
+ * @returns {Object} - The list of blog or an error message.
  * @throws {Error} Throws an error if any.
  */
 const getBlogListService = async (db) => {
@@ -105,7 +101,7 @@ const getBlogListService = async (db) => {
 
         return blog?.length
             ? generateResponseData(blog, true, STATUS_OK, `${blog?.length} blog found`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No homePageBlog found');
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No blog found');
     } catch (error) {
         logger.error(error);
 
@@ -114,12 +110,12 @@ const getBlogListService = async (db) => {
 };
 
 /**
- * Retrieves a specific homePageBlog by ID from the database.
+ * Retrieves a specific blog by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} blogId - The ID of the homePageBlog to retrieve.
- * @returns {Object} - The homePageBlog details or an error message.
+ * @param {string} blogId - The ID of the blog to retrieve.
+ * @returns {Object} - The blog details or an error message.
  * @throws {Error} Throws an error if any.
  */
 const getABlogService = async (db, blogId) => {
@@ -141,14 +137,14 @@ const getABlogService = async (db, blogId) => {
 };
 
 /**
- * Retrieves a specific homePageBlog by ID from the database.
+ * Retrieves a specific blog by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} blogId - The ID of the homePageBlog to retrieve.
+ * @param {string} blogId - The ID of the blog to retrieve.
  * @param newBlogDetails
  * @param {Object} file - The file object for the blog's associated image or content.
- * @returns {Object} - The homePageBlog details or an error message.
+ * @returns {Object} - The blog details or an error message.
  * @throws {Error} Throws an error if any.
  */
 const updateABlogService = async (db, blogId, newBlogDetails, file) => {
@@ -159,7 +155,7 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const oldDetails = await findById(db, BLOG_COLLECTION_NAME, blogId);
-        
+
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);
 
@@ -181,7 +177,11 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
         };
         const result = await updateById(db, BLOG_COLLECTION_NAME, blogId, updatedBlogDetails);
         const latestData = await findById(db, BLOG_COLLECTION_NAME, blogId);
-        
+
+        delete latestData.createdBy;
+        delete latestData.modifiedBy;
+        delete latestData.googleDriveFileId;
+
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${blogId} updated successfully`)
             : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${blogId} not updated`);
@@ -194,12 +194,12 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
 };
 
 /**
- * Deletes a specific homePageBlog by ID from the database.
+ * Deletes a specific blog by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} adminId - The user ID making the request.
- * @param {string} blogId - The ID of the homePageBlog to delete.
+ * @param {string} blogId - The ID of the blog to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
@@ -214,7 +214,7 @@ const deleteABlogService = async (db, adminId, blogId) => {
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
-        
+
         const result = await deleteById(db, BLOG_COLLECTION_NAME, blogId);
 
         return result
@@ -228,8 +228,8 @@ const deleteABlogService = async (db, adminId, blogId) => {
 };
 
 /**
- * @namespace HomePageBlogService
- * @description Group of services related to homePageBlog operations.
+ * @namespace BlogService
+ * @description Group of services related to blog operations.
  */
 export const BlogService = {
     createBlogService,

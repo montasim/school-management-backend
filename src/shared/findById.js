@@ -27,6 +27,12 @@ import logger from "./logger.js";
  */
 const findById = async (db, collectionName, id) => {
     try {
+        if (!collectionName) {
+            logger.error("COLLECTION_NAME is not defined");
+
+            return false;
+        }
+
         return await db
             .collection(collectionName)
             .findOne({id: id}, { projection: { _id: 0, createdBy: 0, modifiedBy: 0 } });

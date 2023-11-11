@@ -12,6 +12,7 @@
  */
 
 import logger from "./logger.js";
+import {ADMIN_COLLECTION_NAME} from "../config/config.js";
 
 /**
  * Add a new entry in the collection.
@@ -25,6 +26,12 @@ import logger from "./logger.js";
  */
 const addANewEntryToDatabase = async (db, collectionName, details) => {
     try {
+        if (!collectionName) {
+            logger.error("COLLECTION_NAME is not defined");
+
+            return false;
+        }
+
         return await db
             .collection(collectionName)
             .insertOne(details);
