@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Website Contact Services.
+ *
+ * This file contains the service functions for handling operations related
+ * to website contact information. These operations include creating, retrieving,
+ * updating, and deleting website contact details. The services interact directly
+ * with the database to perform these operations, providing a layer of abstraction
+ * between the database and the controllers. Each service function is tailored to
+ * handle specific types of operations, ensuring efficient and effective management
+ * of website contact data.
+ *
+ * @requires isValidRequest - Helper function to validate the requester authority.
+ * @requires generateResponseData - Utility to format the response data.
+ * @requires findById, addANewEntryToDatabase - Database utility functions.
+ * @requires logger - Logger utility for logging information.
+ * @module WebsiteContactService - Exports service functions for website contact operations.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
 import { WEBSITE_CONTACT_COLLECTION_NAME } from "../../../../config/config.js";
 import {
@@ -17,15 +35,13 @@ import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
- * Creates a new website contact entry in the database.
+ * Service Function for Creating Website Contact.
  *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {Object} websiteContactDetails - New website contact.
- * @returns {Object} - The response after attempting website creation.
- * @throws {Error} Returns an error if any.
+ * Manages the creation of new website contact details in the database. Validates
+ * if similar contact already exists and if the request is valid before creating
+ * new contact details. Returns the created contact information or an error message.
  */
-const createWebsiteContact = async (db, websiteContactDetails) => {
+const createWebsiteContactService = async (db, websiteContactDetails) => {
     try {
         const { address, googleMapLocation, mobile, phone, email, website, adminId } = websiteContactDetails;
         const existingDetails = await getAllData(db, WEBSITE_CONTACT_COLLECTION_NAME);
@@ -51,6 +67,8 @@ const createWebsiteContact = async (db, websiteContactDetails) => {
         const result = await addANewEntryToDatabase(db, WEBSITE_CONTACT_COLLECTION_NAME, prepareWebsiteDetails);
         const latestData = await findById(db, WEBSITE_CONTACT_COLLECTION_NAME, prepareWebsiteDetails?.id);
 
+        delete latestData?._id;
+        delete latestData?.id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
 
@@ -66,18 +84,21 @@ const createWebsiteContact = async (db, websiteContactDetails) => {
 };
 
 /**
- * Retrieves website contact from the database.
+ * Service Function for Retrieving Website Contact.
  *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The website contact or an error message.
- * @throws {Error} Returns an error if any.
+ * Retrieves the existing website contact details from the database. Formats and
+ * returns the contact information or a message indicating if no contact is found.
  */
-const getWebsiteContact = async (db) => {
+const getWebsiteContactService = async (db) => {
     try {
-        const website = await getAllData(db, WEBSITE_CONTACT_COLLECTION_NAME);
+        const website = await db.collection(WEBSITE_CONTACT_COLLECTION_NAME).findOne({});
 
-        return website?.length
+        delete website?._id;
+        delete website?.id;
+        delete website?.createdBy;
+        delete website?.modifiedBy;
+
+        return website
             ? generateResponseData(website, true, STATUS_OK, "Website contact found successfully")
             : generateResponseData({}, false, STATUS_NOT_FOUND, 'No website found');
     } catch (error) {
@@ -88,15 +109,13 @@ const getWebsiteContact = async (db) => {
 };
 
 /**
- * Update website contact to the database.
+ * Service Function for Updating Website Contact.
  *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param websiteContactDetails
- * @returns {Object} - The website contact or an error message.
- * @throws {Error} Returns an error if any.
+ * Handles the updating of existing website contact details in the database.
+ * Verifies request validity and updates the contact information based on provided
+ * details, returning the updated information or an error response.
  */
-const updateWebsiteContact = async (db, websiteContactDetails) => {
+const updateWebsiteContactService = async (db, websiteContactDetails) => {
     try {
         const { address, googleMapLocation, mobile, phone, email, website, adminId } = websiteContactDetails;
 
@@ -136,15 +155,13 @@ const updateWebsiteContact = async (db, websiteContactDetails) => {
 };
 
 /**
- * Deletes a website contact from the database.
+ * Service Function for Deleting Website Contact.
  *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} adminId - The user ID making the request.
- * @returns {Object} - A confirmation message or an error message.
- * @throws {Error} Returns an error if any.
+ * Manages the deletion of website contact details from the database. Validates the
+ * request authority and deletes the contact, providing confirmation or an error
+ * message upon completion.
  */
-const deleteWebsiteContact = async (db, adminId) => {
+const deleteWebsiteContactService = async (db, adminId) => {
     try {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -167,8 +184,8 @@ const deleteWebsiteContact = async (db, adminId) => {
  * @description Group of services related to website operations.
  */
 export const WebsiteContactService = {
-    createWebsiteContact,
-    getWebsiteContact,
-    updateWebsiteContact,
-    deleteWebsiteContact
+    createWebsiteContactService,
+    getWebsiteContactService,
+    updateWebsiteContactService,
+    deleteWebsiteContactService
 };

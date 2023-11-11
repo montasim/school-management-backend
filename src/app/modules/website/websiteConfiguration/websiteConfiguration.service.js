@@ -114,7 +114,7 @@ const getWebsiteConfigurationService = async (db) => {
         delete website?.modifiedBy;
         delete website.googleDriveWebsiteLogoFileId;
 
-        return website?.id
+        return website
             ? generateResponseData(website, true, STATUS_OK, "Website configuration found successfully")
             : generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found');
     } catch (error) {
