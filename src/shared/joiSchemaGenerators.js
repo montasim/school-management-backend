@@ -139,6 +139,20 @@ const fileWithTitleValidationSchema = (allowedFileExtensions = [FILE_EXTENSION_T
 };
 
 /**
+ * @description Joi validation schema for website configuration body data.
+ * Validates the name and slogan fields.
+ *
+ * - `name`: Should be a string with a minimum length of 3 and a maximum length of 100.
+ * - `slogan`: Should be a string with a minimum length of 3 and a maximum length of 100.
+ */
+const websiteConfigurationBodyValidationSchema = () => {
+    return Joi.object({
+        name: JoiSchemaGenerators.createStringSchema('name', 3, 100),
+        slogan: JoiSchemaGenerators.createStringSchema('slogan', 3, 100),
+    });
+}
+
+/**
  * @description Joi validation schema for blogPost body data.
  * Validates the title, category, and description fields.
  *
@@ -197,4 +211,5 @@ export const JoiSchemaGenerators = {
   postBodyValidationSchema,
   uriValidationSchema,
   createStringSchema,
+  websiteConfigurationBodyValidationSchema,
 };

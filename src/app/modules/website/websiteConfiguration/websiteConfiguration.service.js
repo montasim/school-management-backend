@@ -1,3 +1,20 @@
+/**
+ * @fileoverview Service Functions for Website Configuration Management.
+ *
+ * This module provides a set of functions that interact with the database to perform
+ * create, read, update, and delete (CRUD) operations on website configuration data.
+ * It includes services for adding new configurations, retrieving existing configurations,
+ * updating configurations, and deleting configurations. These functions are used by the
+ * controllers to handle requests related to website configurations.
+ *
+ * @requires uuid - For generating unique identifiers.
+ * @requires config - Application configuration settings.
+ * @requires constants - Application-wide constants.
+ * @requires GoogleDriveFileOperations - Helper functions for interacting with Google Drive.
+ * @requires shared/helpers - Shared helper functions like isValidRequest and generateResponseData.
+ * @module WebsiteConfigurationService - Exports service functions for website configurations.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
 import { WEBSITE_CONFIGURATION_COLLECTION_NAME } from "../../../../config/config.js";
 import {
@@ -10,7 +27,6 @@ import {
 } from "../../../../constants/constants.js";
 import { ID_CONSTANTS } from "./websiteConfiguration.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
-import setMimeTypeFromExtension from "../../../../helpers/setMimeTypeFromExtension.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
@@ -19,17 +35,22 @@ import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
- * Creates a new website configuration entry in the database.
+ * Service function to create a new website configuration.
+ *
+ * Handles the logic of adding a new website configuration to the database.
+ * If a configuration already exists, it denies the creation process.
+ * It also involves uploading the website logo to Google Drive and storing the
+ * shareable link in the database.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {Object} websiteDetails - New website configuration.
- * @returns {Object} - The response after attempting website creation.
- * @throws {Error} Returns an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {Object} websiteDetails - The details of the website to be added.
+ * @param {Object} file - The file object representing the website logo.
+ * @returns {Object} - The response data including success status and message.
  */
-const createWebsiteConfiguration = async (db, websiteDetails) => {
+const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
     try {
-        const { name, slogan, websiteLogo, websiteFavIcon, adminId } = websiteDetails;
+        const { name, slogan, adminId } = websiteDetails;
         const existingDetails = await getAllData(db, WEBSITE_CONFIGURATION_COLLECTION_NAME);
 
         if (existingDetails?.length > 0)
@@ -38,26 +59,17 @@ const createWebsiteConfiguration = async (db, websiteDetails) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const websiteLogoMimeType = setMimeTypeFromExtension(websiteLogo?.fileName);
-        const uploadLogoResponse = await GoogleDriveFileOperations.uploadFileToDrive(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogoMimeType);
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
-        if (!uploadLogoResponse?.shareableLink)
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-        
-        const websiteFavIconMimeType = setMimeTypeFromExtension(websiteFavIcon?.fileName);
-        const uploadFavIconResponse = await GoogleDriveFileOperations.uploadFileToDrive(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIconMimeType);
 
-        if (!uploadFavIconResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-        
         const prepareWebsiteDetails = {
             id: `${ID_CONSTANTS?.WEBSITE_PREFIX}-${uuidv4().substr(0, 6)}`,
             name: name,
             slogan: slogan,
-            googleDriveLogoId: uploadLogoResponse?.fileId,
-            websiteLogo: uploadLogoResponse?.shareableLink,
-            googleDriveFavIconId: uploadFavIconResponse?.fileId,
-            websiteFavIcon: uploadFavIconResponse?.shareableLink,
+            googleDriveWebsiteLogoFileId: uploadGoogleDriveFileResponse?.fileId,
+            googleDriveWebsiteLogoShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -65,10 +77,11 @@ const createWebsiteConfiguration = async (db, websiteDetails) => {
         const result = await addANewEntryToDatabase(db, WEBSITE_CONFIGURATION_COLLECTION_NAME, prepareWebsiteDetails);
         const latestData = await findById(db, WEBSITE_CONFIGURATION_COLLECTION_NAME, prepareWebsiteDetails?.id);
 
+        delete latestData._id;
+        delete latestData.id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveLogoId;
-        delete latestData.googleDriveFavIconId;
+        delete latestData.googleDriveWebsiteLogoFileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, "Website configuration added successfully")
@@ -82,14 +95,16 @@ const createWebsiteConfiguration = async (db, websiteDetails) => {
 };
 
 /**
- * Retrieves website configuration from the database.
+ * Service function to retrieve the current website configuration.
+ *
+ * Fetches the website configuration details from the database. If no configuration
+ * is found, it returns a not found response.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The website configuration or an error message.
- * @throws {Error} Returns an error if any.
+ * @param {Object} db - Database connection object.
+ * @returns {Object} - The retrieved website configuration or an error message.
  */
-const getWebsiteConfiguration = async (db) => {
+const getWebsiteConfigurationService = async (db) => {
     try {
         const website = await getAllData(db, WEBSITE_CONFIGURATION_COLLECTION_NAME);
 
@@ -104,45 +119,39 @@ const getWebsiteConfiguration = async (db) => {
 };
 
 /**
- * Update website configuration to the database.
+ * Service function to update an existing website configuration.
+ *
+ * Updates the website configuration details in the database, including uploading a new
+ * website logo to Google Drive if provided. It ensures that the request is made by an
+ * authorized admin and that the configuration to be updated exists.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param websiteDetails
- * @returns {Object} - The website configuration or an error message.
- * @throws {Error} Returns an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {Object} websiteDetails - New details for updating the website configuration.
+ * @param {Object} file - The new file object for the website logo.
+ * @returns {Object} - The response data including success status and updated configuration.
  */
-const updateWebsiteConfiguration = async (db, websiteDetails) => {
+const updateWebsiteConfigurationService = async (db, websiteDetails, file) => {
     try {
-        const { adminId, name, websiteLogo, websiteFavIcon, slogan, contact, socialMediaLinks, officialLinks, importantInformationLinks } = websiteDetails;
+        const { adminId, name, slogan} = websiteDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const oldWebsiteDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails?.googleDriveLogoId);
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails?.googleDriveFavIconId);
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails?.googleDriveWebsiteLogoFileId);
 
-        const websiteLogoMimeType = setMimeTypeFromExtension(websiteLogo?.fileName);
-        const uploadLogoResponse = await GoogleDriveFileOperations.uploadFileToDrive(websiteLogo?.fileName, websiteLogo?.fileBuffer, websiteLogoMimeType);
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
-        if (!uploadLogoResponse?.shareableLink)
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-        
-        const websiteFavIconMimeType = setMimeTypeFromExtension(websiteFavIcon?.fileName);
-        const uploadFavIconResponse = await GoogleDriveFileOperations.uploadFileToDrive(websiteFavIcon?.fileName, websiteFavIcon?.fileBuffer, websiteFavIconMimeType);
 
-        if (!uploadFavIconResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-       
         const updatedWebsiteDetails = {
             ...(name && { name }),
             ...(slogan && { slogan }),
-            googleDriveLogoId: uploadLogoResponse?.fileId,
-            websiteLogo: uploadLogoResponse?.shareableLink,
-            googleDriveFavIconId: uploadFavIconResponse?.fileId,
-            websiteFavIcon: uploadFavIconResponse?.shareableLink,
+            googleDriveWebsiteLogoFileId: uploadGoogleDriveFileResponse?.fileId,
+            googleDriveWebsiteLogoShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             modifiedBy: adminId,
             modifiedAt: new Date(),
         };
@@ -160,8 +169,7 @@ const updateWebsiteConfiguration = async (db, websiteDetails) => {
         delete result.id;
         delete result.createdBy;
         delete result.modifiedBy;
-        delete result.googleDriveLogoId;
-        delete result.googleDriveFavIconId;
+        delete result.googleDriveWebsiteLogoFileId;
 
         return generateResponseData(result, true, STATUS_OK, `Website configuration updated successfully`);
     } catch (error) {
@@ -172,23 +180,28 @@ const updateWebsiteConfiguration = async (db, websiteDetails) => {
 };
 
 /**
- * Deletes a website configuration from the database.
+ * Service function to delete the existing website configuration.
+ *
+ * Removes the website configuration from the database. It also ensures the deletion
+ * of the associated Google Drive file for the website logo. The function checks for
+ * valid admin authorization and confirms the existence of the configuration before deletion.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} adminId - The user ID making the request.
- * @returns {Object} - A confirmation message or an error message.
- * @throws {Error} Returns an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {string} adminId - The identifier of the admin requesting the deletion.
+ * @returns {Object} - The response data including success status and deletion confirmation.
  */
-const deleteWebsiteConfiguration = async (db, adminId) => {
+const deleteWebsiteConfigurationService = async (db, adminId) => {
     try {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         
-        const websiteDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
-        
-        await GoogleDriveFileOperations.deleteFileFromDrive(websiteDetails?.googleDriveLogoId);
-        await GoogleDriveFileOperations.deleteFileFromDrive(websiteDetails?.googleDriveFavIconId);
+        const oldDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
+
+        if (!oldDetails)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `Website configuration not found`);
+
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveWebsiteLogoFileId);
 
         // Deletes all documents in the collection without deleting the collection itself
         const result = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).deleteMany({});
@@ -208,8 +221,8 @@ const deleteWebsiteConfiguration = async (db, adminId) => {
  * @description Group of services related to website operations.
  */
 export const WebsiteConfigurationService = {
-    createWebsiteConfiguration,
-    getWebsiteConfiguration,
-    updateWebsiteConfiguration,
-    deleteWebsiteConfiguration
+    createWebsiteConfigurationService,
+    getWebsiteConfigurationService,
+    updateWebsiteConfigurationService,
+    deleteWebsiteConfigurationService
 };

@@ -38,10 +38,7 @@ const isValidRequest = async (db, adminId) => {
             .collection(ADMIN_COLLECTION_NAME)
             .findOne({ id: adminId });
 
-        console.log(requesterValidity?.id)
-
-        if (requesterValidity?.id)
-            return true;
+        return requesterValidity?.id === adminId;
     } catch (error) {
         logger.error(error);
 
