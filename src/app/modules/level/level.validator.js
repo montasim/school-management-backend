@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { LevelSchema } from "./level.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { LevelSchema } from "./level.schema.js";
  *
  * @returns {void}
  */
-const levelBodyValidator = validateWithSchema(LevelSchema.levelBodySchema, 'body');
+const levelBodyValidator = validateDataWithSchema(LevelSchema.levelBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const levelBodyValidator = validateWithSchema(LevelSchema.levelBodySchema, 'body
  *
  * @returns {void}
  */
-const levelParamsValidator = await validateWithSchema(LevelSchema.levelParamsSchema, 'params');
+const levelParamsValidator = await validateDataWithSchema(LevelSchema.levelParamsSchema, 'params');
 
 /**
  * @namespace LevelValidators

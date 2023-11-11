@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { OthersInformationCategorySchema } from "./othersInformationCategory.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { OthersInformationCategorySchema } from "./othersInformationCategory.sch
  *
  * @returns {void}
  */
-const othersInformationCategoryBodyValidator = validateWithSchema(OthersInformationCategorySchema.othersInformationCategoryBodySchema, 'body');
+const othersInformationCategoryBodyValidator = validateDataWithSchema(OthersInformationCategorySchema.othersInformationCategoryBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const othersInformationCategoryBodyValidator = validateWithSchema(OthersInformat
  *
  * @returns {void}
  */
-const othersInformationCategoryParamsValidator = await validateWithSchema(OthersInformationCategorySchema.othersInformationCategoryParamsSchema, 'params');
+const othersInformationCategoryParamsValidator = await validateDataWithSchema(OthersInformationCategorySchema.othersInformationCategoryParamsSchema, 'params');
 
 /**
  * @namespace CategoryValidators

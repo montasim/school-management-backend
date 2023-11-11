@@ -13,6 +13,7 @@ import {
  *
  * @async
  * @function
+ * @param emailAddress
  * @param {string} subject - The subject of the email.
  * @param {string} html - The HTML content of the email.
  * @throws {Error} Throws an error if there is an issue with sending the email.

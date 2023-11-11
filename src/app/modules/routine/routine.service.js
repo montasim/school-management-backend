@@ -1,7 +1,29 @@
-// Third-party modules
-import { v4 as uuidv4 } from 'uuid';
+/**
+ * @fileoverview Services for managing routine operations.
+ *
+ * This module contains services related to routine operations within the application. It includes functions for
+ * creating new routine records, fetching a list of all routines, retrieving specific routines by filename, and
+ * deleting routines. Each service function interfaces with the application's database and performs specific
+ * business logic operations, ensuring proper management and retrieval of routine data. Additionally, these services
+ * handle interactions with external storage services, like Google Drive, for file uploads and deletions.
+ *
+ * @requires uuid - Module to generate unique identifiers.
+ * @requires ROUTINE_COLLECTION_NAME - Configured collection name for routines in the database.
+ * @requires constants - Application constants for various status codes and messages.
+ * @requires ID_CONSTANTS - Constants for prefixing identifiers in the routine module.
+ * @requires isValidRequest - Utility function to validate request authenticity.
+ * @requires generateResponseData - Utility function for generating standardized response data.
+ * @requires logger - Shared logging utility for error handling.
+ * @requires addANewEntryToDatabase - Utility for adding new entries to the database.
+ * @requires findById - Utility for finding a record by its identifier.
+ * @requires getAllData - Utility for retrieving all records from a database collection.
+ * @requires deleteByFileName - Utility for deleting records by filename.
+ * @requires findByFileName - Utility for finding a record by its filename.
+ * @requires GoogleDriveFileOperations - Helper for interacting with the Google Drive API.
+ * @module RoutineService - Exported object containing routine-related service functions.
+ */
 
-// Absolute imports
+import { v4 as uuidv4 } from 'uuid';
 import { ROUTINE_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -11,8 +33,6 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-
-// Relative imports
 import { ID_CONSTANTS } from "./routine.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -22,7 +42,7 @@ import findById from "../../../shared/findById.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
 import findByFileName from "../../../shared/findByFileName.js";
-import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js";
+import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 
 /**
  * Creates a new routine entry in the database.
@@ -30,20 +50,21 @@ import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js";
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newRoutineDetails - New routine's details.
+ * @param file
  * @returns {Object} - The response after attempting routine creation.
  * @throws {Error} Throws an error if any.
  */
-const createRoutineService = async (db, newRoutineDetails) => {
+const createRoutineService = async (db, newRoutineDetails, file) => {
     try {
-        const { title, fileName, fileBuffer, mimeType, adminId } = newRoutineDetails;
+        const { title, adminId } = newRoutineDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (await findByFileName(db, ROUTINE_COLLECTION_NAME, fileName))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${fileName} already exists. Please select a different file name`)
+        if (await findByFileName(db, ROUTINE_COLLECTION_NAME, file?.originalname))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(fileName, fileBuffer, mimeType);
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
         if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -51,7 +72,7 @@ const createRoutineService = async (db, newRoutineDetails) => {
         const routineDetails = {
             id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
-            fileName: fileName,
+            fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             createdBy: adminId,
@@ -61,10 +82,11 @@ const createRoutineService = async (db, newRoutineDetails) => {
         const result = await addANewEntryToDatabase(db, ROUTINE_COLLECTION_NAME, routineDetails);
         const latestData = await findById(db, ROUTINE_COLLECTION_NAME, routineDetails?.id);
 
+        delete latestData?.createdBy;
         delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${title} uploaded successfully`)
+            ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
     } catch (error) {
         logger.error(error);
@@ -138,7 +160,8 @@ const deleteARoutineService = async (db, adminId, fileName) => {
         const fileDetails = await findByFileName(db, ROUTINE_COLLECTION_NAME, fileName);
 
         if (fileDetails) {
-            const response = await HandleGoogleDrive.deleteFile(fileDetails?.googleDriveFileId);
+            await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
+
             const result = await deleteByFileName(db, ROUTINE_COLLECTION_NAME, fileName);
 
             return result

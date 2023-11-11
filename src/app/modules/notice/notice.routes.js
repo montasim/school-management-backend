@@ -1,29 +1,61 @@
+/**
+ * @fileoverview Express router providing notice-related routes.
+ *
+ * This module defines routes for creating, retrieving, and deleting notices.
+ * It includes middleware for authentication, file upload handling, and specific validations
+ * related to notice operations. Each route is documented using Swagger annotations for API
+ * specification and JSDoc comments for internal code documentation.
+ *
+ * @requires express Express - Express framework for building web applications
+ * @requires authTokenMiddleware - Middleware for authenticating tokens
+ * @requires fileUploadMiddleware - Middleware for handling file uploads
+ * @requires NoticeValidationService - Service for validating notice-related parameters
+ * @requires NoticeController - Controller for handling notice-related operations
+ * @module noticeRouter - Express router for notice routes
+ */
+
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
-import { NoticeValidators } from "./notice.validator.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
+import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
+import { NoticeValidationService } from "./notice.validator.js";
 import { NoticeController } from "./notice.controller.js";
 
-const router = express.Router();
+const noticeRouter = express.Router();
 
 /**
  * @swagger
  * /:
- *   homePagePost:
+ *   post:
  *     summary: Create a notice.
  *     description: Endpoint to add a new notice to the system.
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
- *       - in: body
- *         name: notice
- *         description: The notice to create.
- *         schema:
- *           $ref: '#/definitions/Notice'
+ *       - in: formData
+ *         name: file
+ *         type: file
+ *         description: The file to upload.
+ *       - in: formData
+ *         name: title
+ *         type: string
+ *         description: Title of the notice.
  *     responses:
  *       200:
  *         description: Notice successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles POST request for creating a new notice.
+ * Applies authentication and file upload middleware.
+ * @route POST /
  */
-router.post("/", [
-    verifyAuthenticationTokenMiddleware,
-    NoticeValidators.noticeBodyValidator,
+noticeRouter.post("/", [
+    authTokenMiddleware,
+    fileUploadMiddleware.single('file'),
     NoticeController.createNoticeController
 ]);
 
@@ -36,8 +68,15 @@ router.post("/", [
  *     responses:
  *       200:
  *         description: A list of notices.
+ *       404:
+ *         description: Notice not found.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles GET request for retrieving a list of all notices.
+ * @route GET /
  */
-router.get("/", [
+noticeRouter.get("/", [
     NoticeController.getNoticeListController
 ]);
 
@@ -52,14 +91,19 @@ router.get("/", [
  *         name: fileName
  *         required: true
  *         description: ID of the notice to retrieve.
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: Notice details.
+ *       404:
+ *         description: Notice not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles GET request for retrieving details of a specific notice.
+ * @route GET /{fileName}
  */
-router.get("/:fileName", [
-    NoticeValidators.noticeParamsValidator,
+noticeRouter.get("/:fileName", [
+    NoticeValidationService.validateNoticeParams,
     NoticeController.getANoticeController
 ]);
 
@@ -74,16 +118,24 @@ router.get("/:fileName", [
  *         name: fileName
  *         required: true
  *         description: ID of the notice to delete.
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: Notice successfully deleted.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       404:
+ *         description: Notice not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles DELETE request for deleting a specific notice.
+ * Requires authentication.
+ * @route DELETE /{fileName}
  */
-router.delete("/:fileName", [
-    verifyAuthenticationTokenMiddleware,
-    NoticeValidators.noticeParamsValidator,
+noticeRouter.delete("/:fileName", [
+    authTokenMiddleware,
+    NoticeValidationService.validateNoticeParams,
     NoticeController.deleteANoticeController
 ]);
 
-export default router;
+export default noticeRouter;

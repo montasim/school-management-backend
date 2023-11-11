@@ -1,5 +1,34 @@
-import express from "express";
+/**
+ * @fileoverview API router for the application.
+ *
+ * This module combines all individual route modules and sets up their respective paths.
+ * It acts as a central point for importing and using all the defined routes in the application.
+ * Each route is associated with a specific module, handling different aspects of the application like
+ * announcements, authentication, blogs, categories, contacts, etc.
+ *
+ * @requires express - Express framework to create route handlers.
+ * @requires administrationRoutes - Routes for administration module.
+ * @requires announcementRoutes - Routes for announcement module.
+ * @requires authenticationRoutes - Routes for authentication module.
+ * @requires blogRoutes - Routes for blog module.
+ * @requires categoryRoutes - Routes for category module.
+ * @requires contactRoutes - Routes for contact module.
+ * @requires dashboardRoutes - Routes for dashboard module.
+ * @requires designationRoutes - Routes for designation module.
+ * @requires downloadRoutes - Routes for download module.
+ * @requires levelRoutes - Routes for level module.
+ * @requires homePageRoutes - Routes for home page module.
+ * @requires noticeRoutes - Routes for notice module.
+ * @requires othersInformationRoutes - Routes for others information module.
+ * @requires othersInformationCategoryRoutes - Routes for others information category module.
+ * @requires resultRoutes - Routes for result module.
+ * @requires routineRoutes - Routes for routine module.
+ * @requires studentRoutes - Routes for student module.
+ * @requires websiteRoutes - Routes for website module.
+ * @module routes - Aggregated routes for the application.
+ */
 
+import express from "express";
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import announcementRoutes from "../modules/announcement/announcement.routes.js";
 import authenticationRoutes from "../modules/authentication/authentication.routes.js";
@@ -17,9 +46,9 @@ import othersInformationCategoryRoutes from "../modules/othersInformationCategor
 import resultRoutes from "../modules/result/result.routes.js";
 import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
-import websiteRoutes from "../modules/website/website.routes.js";
+import websiteRoutes from "../routes/website.routes.js";
 
-const router = express.Router();
+const apiRouter = express.Router();
 
 /**
  * Sets up routing for the announcement module.
@@ -28,7 +57,7 @@ const router = express.Router();
  * @inner
  * @memberof module:routes
  */
-router.use(`/announcement`, announcementRoutes);
+apiRouter.use(`/announcement`, announcementRoutes);
 
 /**
  * Sets up versioned routing for the administration module.
@@ -37,7 +66,7 @@ router.use(`/announcement`, announcementRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/administration", administrationRoutes);
+apiRouter.use("/administration", administrationRoutes);
 
 /**
  * Sets up routing for the authentication module.
@@ -46,7 +75,7 @@ router.use("/administration", administrationRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use(`/authentication`, authenticationRoutes);
+apiRouter.use(`/authentication`, authenticationRoutes);
 
 /**
  * Sets up versioned routing for the blog module.
@@ -55,7 +84,7 @@ router.use(`/authentication`, authenticationRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use(`/blog`, blogRoutes);
+apiRouter.use(`/blog`, blogRoutes);
 
 /**
  * Sets up versioned routing for the category module.
@@ -64,7 +93,7 @@ router.use(`/blog`, blogRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/category", categoryRoutes);
+apiRouter.use("/category", categoryRoutes);
 
 /**
  * Sets up versioned routing for the contact module.
@@ -73,7 +102,7 @@ router.use("/category", categoryRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/contact", contactRoutes);
+apiRouter.use("/contact", contactRoutes);
 
 /**
  * Sets up routing for the dashboard module.
@@ -82,8 +111,8 @@ router.use("/contact", contactRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use(`/dashboard`, dashboardRoutes);
-router.use("/contact", contactRoutes);
+apiRouter.use(`/dashboard`, dashboardRoutes);
+apiRouter.use("/contact", contactRoutes);
 
 /**
  * Sets up routing for the designation module.
@@ -92,7 +121,7 @@ router.use("/contact", contactRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use(`/designation`, designationRoutes);
+apiRouter.use(`/designation`, designationRoutes);
 
 /**
  * Sets up versioned routing for the download module.
@@ -101,7 +130,7 @@ router.use(`/designation`, designationRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/download", downloadRoutes);
+apiRouter.use("/download", downloadRoutes);
 
 /**
  * Sets up versioned routing for the level module.
@@ -110,7 +139,7 @@ router.use("/download", downloadRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/level", levelRoutes);
+apiRouter.use("/level", levelRoutes);
 
 /**
  * Sets up versioned routing for the homePagePost module.
@@ -119,7 +148,7 @@ router.use("/level", levelRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/homePage", homePageRoutes);
+apiRouter.use("/homePage", homePageRoutes);
 
 /**
  * Sets up routing for the notice module.
@@ -128,7 +157,7 @@ router.use("/homePage", homePageRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/notice", noticeRoutes);
+apiRouter.use("/notice", noticeRoutes);
 
 /**
  * Sets up routing for the othersInformation module.
@@ -137,7 +166,7 @@ router.use("/notice", noticeRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use(`/othersInformation`, othersInformationRoutes);
+apiRouter.use(`/othersInformation`, othersInformationRoutes);
 
 /**
  * Sets up routing for the othersInformationCategory module.
@@ -146,7 +175,7 @@ router.use(`/othersInformation`, othersInformationRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use(`/othersInformationCategory`, othersInformationCategoryRoutes);
+apiRouter.use(`/othersInformationCategory`, othersInformationCategoryRoutes);
 
 /**
  * Sets up versioned routing for the result module.
@@ -155,7 +184,7 @@ router.use(`/othersInformationCategory`, othersInformationCategoryRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/result", resultRoutes);
+apiRouter.use("/result", resultRoutes);
 
 /**
  * Sets up versioned routing for the routine module.
@@ -164,7 +193,7 @@ router.use("/result", resultRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/routine", routineRoutes);
+apiRouter.use("/routine", routineRoutes);
 
 /**
  * Sets up versioned routing for the student module.
@@ -173,7 +202,7 @@ router.use("/routine", routineRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use("/student", studentRoutes);
+apiRouter.use("/student", studentRoutes);
 
 /**
  * Sets up routing for the website module.
@@ -182,11 +211,11 @@ router.use("/student", studentRoutes);
  * @inner
  * @memberof module:routes
  */
-router.use(`/website`, websiteRoutes);
+apiRouter.use(`/website`, websiteRoutes);
 
 /**
  * The main router object that combines all route modules.
  * @type {Router}
  * @namespace module:routes
  */
-export default router;
+export default apiRouter;

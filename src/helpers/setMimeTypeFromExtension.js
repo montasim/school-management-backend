@@ -1,10 +1,12 @@
+import logger from "../shared/logger.js";
+
 /**
- * Set the MIME type of a file based on its file extension.
+ * Set the MIME type of file based on its file extension.
  *
  * @param {string} fileName - The name of the file including the extension.
  * @returns {string} The MIME type of the file or 'application/octet-stream' if the extension is not recognized.
  */
-const setMimeTypeFromExtension = ( fileName ) => {
+const setMimeTypeFromExtension = ( fileName = "" ) => {
     try {
         // Define a mapping of file extensions to MIME types
         const extensionToMimeType = {
@@ -20,9 +22,7 @@ const setMimeTypeFromExtension = ( fileName ) => {
         const fileExtension = fileName.split('.').pop().toLowerCase();
         
         // Look up the MIME type based on the file extension
-        const mimeType = extensionToMimeType[fileExtension] || 'application/octet-stream';
-        
-        return mimeType;
+        return extensionToMimeType[fileExtension] || 'application/octet-stream';
     } catch (error) {
         logger.error(error);
 

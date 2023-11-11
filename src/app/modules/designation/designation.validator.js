@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { DesignationSchema } from "./designation.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { DesignationSchema } from "./designation.schema.js";
  *
  * @returns {void}
  */
-const designationBodyValidator = validateWithSchema(DesignationSchema.designationBodySchema, 'body');
+const designationBodyValidator = validateDataWithSchema(DesignationSchema.designationBodySchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const designationBodyValidator = validateWithSchema(DesignationSchema.designatio
  *
  * @returns {void}
  */
-const designationParamsValidator = await validateWithSchema(DesignationSchema.designationParamsSchema, 'params');
+const designationParamsValidator = await validateDataWithSchema(DesignationSchema.designationParamsSchema, 'params');
 
 /**
  * @namespace DesignationValidators

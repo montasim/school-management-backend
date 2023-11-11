@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Configuration loader and environment variable definitions.
+ *
+ * This module is responsible for initializing and configuring the dotenv package to manage environment variables.
+ * It loads different sets of environment variables based on the NODE_ENV value, supporting distinct configurations
+ * for development, staging, and production environments. The module defines and exports various configuration
+ * objects used throughout the application, such as server settings, security parameters, MongoDB settings, email
+ * service configurations, and Google Drive API credentials. These configurations are extracted from environment
+ * variables for centralized management and easy access.
+ *
+ * @requires dotenv - Module to load environment variables from a .env file into process.env.
+ * @module config - Exports configuration objects derived from environment variables.
+ */
+
 import dotenv from "dotenv";
 
 // Initialize dotenv configuration
@@ -73,7 +87,11 @@ export const {
     RESULT_COLLECTION_NAME,
     ROUTINE_COLLECTION_NAME,
     STUDENT_COLLECTION_NAME,
-    WEBSITE_COLLECTION_NAME,
+    WEBSITE_CONFIGURATION_COLLECTION_NAME,
+    WEBSITE_CONTACT_COLLECTION_NAME,
+    WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME,
+    WEBSITE_OFFICIAL_LINK_COLLECTION_NAME,
+    WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME,
 } = process.env;
 
 /**

@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { DesignationValidators } from "./designation.validator.js";
 import { DesignationController } from "./designation.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: Designation successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     DesignationValidators.designationBodyValidator,
     DesignationController.createDesignationController
 ]);
@@ -86,7 +86,7 @@ router.get("/:designationId", [
  *         description: Designation successfully updated.
  */
 router.put("/:designationId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     DesignationValidators.designationParamsValidator,
     DesignationValidators.designationBodyValidator,
     DesignationController.updateADesignationController
@@ -110,7 +110,7 @@ router.put("/:designationId", [
  *         description: Designation successfully deleted.
  */
 router.delete("/:designationId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     DesignationValidators.designationParamsValidator,
     DesignationController.deleteADesignationController
 ]);

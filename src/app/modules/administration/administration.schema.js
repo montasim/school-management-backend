@@ -1,35 +1,38 @@
+/**
+ * @fileoverview Joi Validation Schemas for Administration Posts.
+ *
+ * This module provides Joi schemas for validating various aspects of administration posts in the application.
+ * It includes schemas for validating administration post parameters such as IDs, ensuring they adhere to
+ * the expected format and constraints. The schemas utilize custom validation functions and constants
+ * to provide accurate and efficient validation. Centralizing these schemas in a single module
+ * allows for consistent validation logic across administration-related routes and services.
+ *
+ * @requires Joi - Library for schema description and data validation.
+ * @requires ID_CONSTANTS - Constants related to ID generation and validation.
+ * @requires createIdSchema - Shared utility function for creating ID validation schemas.
+ * @module AdministrationValidationSchemas - Exported Joi validation schemas for administration post data.
+ */
+
 import Joi from "joi";
-import { ID_CONSTANTS, IMAGE_PATTERN } from './administration.constants.js';
+import { ID_CONSTANTS } from './administration.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
 
-const administrationParamsSchema = Joi.object({
+/**
+ * Joi validation schema for administration post parameters.
+ * Validates the 'administrationId' parameter in request using a custom ID schema.
+ *
+ * @type {Joi.ObjectSchema} - Joi schema object for validating administration post parameters.
+ */
+const administrationParamsValidationSchema = Joi.object({
     administrationId: createIdSchema(ID_CONSTANTS?.ADMINISTRATION_PREFIX, ID_CONSTANTS).required()
 });
 
 /**
- * @description Joi validation schema for administration's body data.
- * Validates the name, level, and image fields.
+ * @namespace AdministrationValidationSchemas
+ * @description Exported Joi validation schemas for administrationPost data.
  *
- * - `name`: Should be a string with a minimum length of 3 and a maximum length of 30.
- * - `level`: Should be a string with a minimum length of 2 and a maximum length of 20.
- * - `image`: Should be a string that matches the IMAGE_PATTERN.
+ * - `administrationParamsValidationSchema`: Schema for validating administration post ID parameters.
  */
-const administrationBodySchema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
-    category: Joi.array().items(Joi.string()).required(),
-    designation: Joi.string().min(2).max(20).required(),
-    image: Joi.string().pattern(IMAGE_PATTERN).required(),
-});
-
-/**
- * @namespace AdministrationSchema
- * @description Exported Joi validation schemas for administration data.
- *
- * - `administrationBodySchema`: Validates the body data of an administration.
- * - `administrationParamsSchema`: Validates the administration ID in request parameters.
- * - `deleteAdministrationQuerySchema`: Validates the admin ID in the query.
- */
-export const AdministrationSchema = {
-    administrationBodySchema,
-    administrationParamsSchema,
+export const AdministrationValidationSchemas = {
+    administrationParamsValidationSchema,
 };

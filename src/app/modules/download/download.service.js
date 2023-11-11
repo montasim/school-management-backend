@@ -1,7 +1,29 @@
-// Third-party modules
-import { v4 as uuidv4 } from 'uuid';
+/**
+ * @fileoverview Services for managing download operations.
+ *
+ * This module contains services related to download operations within the application. It includes functions for
+ * creating new download records, fetching a list of all downloads, retrieving specific downloads by filename, and
+ * deleting downloads. Each service function interfaces with the application's database and performs specific
+ * business logic operations, ensuring proper management and retrieval of download data. Additionally, these services
+ * handle interactions with external storage services, like Google Drive, for file uploads and deletions.
+ *
+ * @requires uuid - Module to generate unique identifiers.
+ * @requires DOWNLOAD_COLLECTION_NAME - Configured collection name for downloads in the database.
+ * @requires constants - Application constants for various status codes and messages.
+ * @requires ID_CONSTANTS - Constants for prefixing identifiers in the download module.
+ * @requires isValidRequest - Utility function to validate request authenticity.
+ * @requires generateResponseData - Utility function for generating standardized response data.
+ * @requires logger - Shared logging utility for error handling.
+ * @requires addANewEntryToDatabase - Utility for adding new entries to the database.
+ * @requires findById - Utility for finding a record by its identifier.
+ * @requires getAllData - Utility for retrieving all records from a database collection.
+ * @requires deleteByFileName - Utility for deleting records by filename.
+ * @requires findByFileName - Utility for finding a record by its filename.
+ * @requires GoogleDriveFileOperations - Helper for interacting with the Google Drive API.
+ * @module DownloadService - Exported object containing download-related service functions.
+ */
 
-// Absolute imports
+import { v4 as uuidv4 } from 'uuid';
 import { DOWNLOAD_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -11,8 +33,6 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-
-// Relative imports
 import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -22,7 +42,7 @@ import findById from "../../../shared/findById.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
 import findByFileName from "../../../shared/findByFileName.js";
-import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js";
+import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 
 /**
  * Creates a new download entry in the database.
@@ -30,20 +50,21 @@ import { HandleGoogleDrive } from "../../../helpers/handleGoogleDriveApi.js";
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {Object} newDownloadDetails - New download's details.
+ * @param file
  * @returns {Object} - The response after attempting download creation.
  * @throws {Error} Throws an error if any.
  */
-const createDownloadService = async (db, newDownloadDetails) => {
+const createDownloadService = async (db, newDownloadDetails, file) => {
     try {
-        const { title, fileName, fileBuffer, mimeType, adminId } = newDownloadDetails;
+        const { title, adminId } = newDownloadDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${fileName} already exists. Please select a different file name`)
+        if (await findByFileName(db, DOWNLOAD_COLLECTION_NAME, file?.originalname))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await HandleGoogleDrive.uploadFile(fileName, fileBuffer, mimeType);
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
         if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
@@ -51,7 +72,7 @@ const createDownloadService = async (db, newDownloadDetails) => {
         const downloadDetails = {
             id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
-            fileName: fileName,
+            fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             createdBy: adminId,
@@ -61,10 +82,11 @@ const createDownloadService = async (db, newDownloadDetails) => {
         const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
         const latestData = await findById(db, DOWNLOAD_COLLECTION_NAME, downloadDetails?.id);
 
+        delete latestData?.createdBy;
         delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${title} uploaded successfully`)
+            ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
     } catch (error) {
         logger.error(error);
@@ -138,7 +160,8 @@ const deleteADownloadService = async (db, adminId, fileName) => {
         const fileDetails = await findByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
         if (fileDetails) {
-            const response = await HandleGoogleDrive.deleteFile(fileDetails?.googleDriveFileId);
+            await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
+
             const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
 
             return result

@@ -1,4 +1,4 @@
-import validateWithSchema from "../../../helpers/validateWithSchema.js";
+import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { AuthenticationSchema } from "./authentication.schema.js";
 
 /**
@@ -16,7 +16,7 @@ import { AuthenticationSchema } from "./authentication.schema.js";
  *
  * @returns {void}
  */
-const loginValidator = validateWithSchema(AuthenticationSchema.loginSchema, 'body');
+const loginValidator = validateDataWithSchema(AuthenticationSchema.loginSchema, 'body');
 
 /**
  * @function
@@ -33,7 +33,7 @@ const loginValidator = validateWithSchema(AuthenticationSchema.loginSchema, 'bod
  *
  * @returns {void}
  */
-const signupValidator = validateWithSchema(AuthenticationSchema.signupSchema, 'body');
+const signupValidator = validateDataWithSchema(AuthenticationSchema.signupSchema, 'body');
 
 /**
  * @function
@@ -50,7 +50,7 @@ const signupValidator = validateWithSchema(AuthenticationSchema.signupSchema, 'b
  *
  * @returns {void}
  */
-const resetPasswordValidator = validateWithSchema(AuthenticationSchema.resetPasswordSchema, 'body');
+const resetPasswordValidator = validateDataWithSchema(AuthenticationSchema.resetPasswordSchema, 'body');
 
 /**
  * @typedef {Object} AuthenticationValidators

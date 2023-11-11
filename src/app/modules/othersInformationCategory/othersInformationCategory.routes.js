@@ -1,5 +1,5 @@
 import express from "express";
-import verifyAuthenticationTokenMiddleware from "../../middlewares/verifyAuthenticationTokenMiddleware.js";
+import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { CategoryValidators } from "./othersInformationCategory.validator.js";
 import { OthersInformationCategoryController } from "./othersInformationCategory.controller.js";
 
@@ -22,7 +22,7 @@ const router = express.Router();
  *         description: OthersInformationCategory successfully created.
  */
 router.post("/", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     CategoryValidators.othersInformationCategoryBodyValidator,
     OthersInformationCategoryController.createOthersInformationCategory
 ]);
@@ -86,7 +86,7 @@ router.get("/:othersInformationCategoryId", [
  *         description: OthersInformationCategory successfully updated.
  */
 router.put("/:othersInformationCategoryId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     CategoryValidators.othersInformationCategoryParamsValidator,
     CategoryValidators.othersInformationCategoryBodyValidator,
     OthersInformationCategoryController.updateAOthersInformationCategory
@@ -110,7 +110,7 @@ router.put("/:othersInformationCategoryId", [
  *         description: OthersInformationCategory successfully deleted.
  */
 router.delete("/:othersInformationCategoryId", [
-    verifyAuthenticationTokenMiddleware,
+    authTokenMiddleware,
     CategoryValidators.othersInformationCategoryParamsValidator,
     OthersInformationCategoryController.deleteAOthersInformationCategory
 ]);
