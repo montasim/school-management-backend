@@ -12,7 +12,7 @@ import {SERVER_DOWN_MESSAGE, STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../.
 const undefinedController = async (req, res) => {
     try {
         const returnData = {
-            data: "Undefined page of the school management API",
+            data: "Undefined API endpoint of the school management API",
             success: true,
             status: STATUS_OK,
             message: "The API endpoint you are trying to access is not defined 😁",
