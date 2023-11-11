@@ -15,7 +15,7 @@ const undefinedController = async (req, res) => {
             data: "Undefined page of the school management API",
             success: true,
             status: STATUS_OK,
-            message: "This route is to test the undefined route 😁",
+            message: "The API endpoint you are trying to access is not defined 😁",
         };
 
         return res.status(returnData?.status).json(returnData);
