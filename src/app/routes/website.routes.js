@@ -20,7 +20,7 @@ import websiteConfigurationRoutes from "../modules/website/websiteConfiguration/
 import websiteContactRoutes from "../modules/website/websiteContact/websiteContact.routes.js";
 import websiteImportantInformationLinkRoutes from "../modules/website/websiteImportantInformationLink/websiteImportantInformationLink.routes.js";
 import websiteOfficialLinkRoutes from "../modules/website/websiteOfficialLink/websiteOfficialLink.routes.js";
-import websiteSocialMediaRoutes from "../modules/website/websiteSocialMedia/websiteSocialMedia.routes.js";
+import websiteSocialMediaRoutes from "../modules/website/websiteSocialMedia/websiteSocialMediaLink.routes.js";
 
 const websiteRouter = express.Router();
 
