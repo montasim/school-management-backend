@@ -183,6 +183,22 @@ const studentBodyValidationSchema = () => {
 }
 
 /**
+ * @description Joi validation schema for administration body data.
+ * Validates the title, category, and description fields.
+ *
+ * - `name`: Should be a string with a minimum length of 3 and a maximum length of 50.
+ * - `level`: Should be a string with a minimum length of 3 and a maximum length of 20.
+ * - `level`: Should be a string with a minimum length of 3 and a maximum length of 50.
+ */
+const administrationBodyValidationSchema = () => {
+    return Joi.object({
+        name: JoiSchemaGenerators.createStringSchema('name', 3, 50),
+        category: JoiSchemaGenerators.createStringSchema('category', 3, 20),
+        designation: JoiSchemaGenerators.createStringSchema('designation', 3, 50),
+    });
+}
+
+/**
  * @description Joi validation schema for blogPost body data.
  * Validates the title, category, and description fields.
  *
@@ -235,6 +251,7 @@ const createStringSchema = (fieldName, minLength, maxLength) => {
 export const JoiSchemaGenerators = {
   carouselBodyValidationSchema,
   studentBodyValidationSchema,
+  administrationBodyValidationSchema,
   fileValidationSchema,
   fileWithTitleValidationSchema,
   createFileNameSchema,
