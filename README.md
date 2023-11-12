@@ -218,3 +218,4 @@ Give credit to any individuals, projects, or resources that helped or inspired y
 
 1. [The Ultimate Guide: Uploading Files to Google Drive with NodeJS using Google Drive APIs](https://www.youtube.com/watch?v=bkaQTLCBBeo&t=600s)
 2. [How I can upload file to google drive with google drive api?](https://stackoverflow.com/questions/65181932/how-i-can-upload-file-to-google-drive-with-google-drive-api)
+3. [Convert Postman Collection to Swagger OpenAPI Specification. Free, No Sign-up, Unlimited, One-Click.](https://swagify.io/convert/)

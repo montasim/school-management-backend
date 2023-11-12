@@ -1,5 +1,5 @@
 {
-  "name": "school-management-backend",
+  "name": "school-management-api",
   "version": "1.0.0",
   "description": "APIs for providing endpoints for managing school data including students, teachers, courses, and more.",
   "main": "index.js",
