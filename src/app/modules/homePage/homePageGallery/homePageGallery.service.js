@@ -97,8 +97,8 @@ const getHomePageGalleryListService = async (db) => {
         const homePageGallery = await getAllData(db, HOME_PAGE_GALLERY_COLLECTION_NAME);
 
         return homePageGallery?.length
-            ? generateResponseData(homePageGallery, true, STATUS_OK, `${homePageGallery?.length} homePageGallery found`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No homePageHomePageGallery found');
+            ? generateResponseData(homePageGallery, true, STATUS_OK, `${homePageGallery?.length} home page gallery found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No home page gallery found');
     } catch (error) {
         logger.error(error);
 

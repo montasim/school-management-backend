@@ -1,5 +1,3 @@
-import {STATUS_OK} from "../../../constants/constants.js";
-
 /**
  * A predefined data object containing information about the API.
  * @constant
@@ -59,69 +57,72 @@ import {STATUS_OK} from "../../../constants/constants.js";
  * @property {string} aboutDeveloper.github - The GitHub profile of the developer.
  */
 const returnData = {
-    status: STATUS_OK,
-    success: true,
-    message: "Welcome to School Management API 🚀",
-    data: {
-        description: "This API provides endpoints for managing school data including students, teachers, courses, and more.",
-        version: "1.0.0",
-        author: "Mohammad Montasim -Al- Mamun Shuvo",
-        email: "montasimmamun@gmail.com",
-        status_information: "All systems operational.",
-        terms_of_service: "By using this API, you agree to our terms of service.",
-        friendly_message: "Hello! If you're a developer, check out our docs to get started. If you're lost, here's a link to our main site.",
-
-        environment: {
-            currentEnvironment: "production",
-            apiVersion: "v1",
+    "status": 200,
+    "success": true,
+    "message": "Welcome to the School Management API! 👋",
+    "data": {
+        "description": "This API facilitates the management of school operations, including student, teacher, and course management.",
+        "version": "1.0.0",
+        "author": "Mohammad Montasim -Al- Mamun Shuvo",
+        "contact": {
+            "email": "montasimmamun@gmail.com",
+            "phone": "+8801722815469"
         },
-        endpoints: {
-            administration: "/api/v1/administration",
-            announcement: "/api/v1/announcement",
-            authentication: "/api/v1/authentication",
-            category: "/api/v1/category",
-            contact: "/api/v1/contact",
-            dashboard: "/api/v1/dashboard",
-            download: "/api/v1/download",
-            homePage: "/api/v1/homePage",
-            level: "/api/v1/level",
-            notice: "/api/v1/notice",
-            othersInformation: "/api/v1/othersInformation",
-            othersInformationCategory: "/api/v1/othersInformationCategory",
-            result: "/api/v1/result",
-            routine: "/api/v1/routine",
-            students: "/api/v1/students",
-            teachers: "/api/v1/teachers",
-            website: "/api/v1/website",
+        "statusInformation": "All systems are currently operational. ✅",
+        "termsOfService": "/terms",
+        "apiDocumentation": {
+            "overview": "/docs",
+            "swaggerUI": "/api-docs"
         },
-        authentication: {
-            info: "To authenticate requests, include your token in the headers.",
-            signupLink: "/api/v1/authentication/signup",
+        "rateLimit": {
+            "limit": "100 requests per 15 minutes 🕒",
+            "info": "To ensure fair usage, our API limits the number of requests to 100 every 15 minutes."
         },
-        links: {
-            documentation: "https://school-management-backend-ashen.vercel.app/docs",
-            swagger_ui: "https://school-management-backend-ashen.vercel.app/api-docs",
-            terms_of_service: "https://school-management-backend-ashen.vercel.app/terms",
-            main_site: "https://school-management-backend-ashen.vercel.app",
+        "environment": {
+            "current": "production 🌐",
+            "apiVersion": "v1"
         },
-        support: {
-            contact: "montasimmamun@gmail.com",
+        "endpoints": {
+            "administration": "/api/v1/administration",
+            "announcements": "/api/v1/announcements",
+            "authentication": "/api/v1/authentication",
+            "categories": "/api/v1/categories",
+            "contacts": "/api/v1/contacts",
+            "dashboard": "/api/v1/dashboard",
+            "downloads": "/api/v1/downloads",
+            "homePage": "/api/v1/homePage",
+            "levels": "/api/v1/levels",
+            "notices": "/api/v1/notices",
+            "otherInformation": "/api/v1/otherInformation",
+            "results": "/api/v1/results",
+            "routines": "/api/v1/routines",
+            "students": "/api/v1/students",
+            "teachers": "/api/v1/teachers",
+            "websiteConfig": "/api/v1/websiteConfig"
         },
-        tutorials: {
-            gettingStarted: "https://school-management-backend-ashen.vercel.app/docs/getting-started",
+        "authentication": {
+            "info": "Authenticate requests with a token in the header.",
+            "signupEndpoint": "/api/v1/authentication/signup"
         },
-        healthStatus: {
-            serviceStatus: "/status",
-            knownIssues: [],
+        "support": {
+            "contactEmail": "montasimmamun@gmail.com",
+            "technicalSupport": "/support"
         },
-        aboutDeveloper: {
-            Name: "Mohammad Montasim -Al- Mamun Shuvo",
-            email: "montasimmamun@gmail.com",
-            mobile: "+8801722815469",
-            linkedin: "https://www.linkedin.com/in/montasim",
-            github: "https://github.com/montasim",
+        "tutorials": {
+            "gettingStarted": "/docs/getting-started"
         },
-    },
+        "healthStatus": {
+            "checkEndpoint": "/status",
+            "knownIssues": []
+        },
+        "aboutDeveloper": {
+            "name": "Mohammad Montasim -Al- Mamun Shuvo",
+            "email": "montasimmamun@gmail.com",
+            "mobile": "+8801722815469",
+            "linkedin": "https://www.linkedin.com/in/montasim",
+            "github": "https://github.com/montasim",
+        }
+    }
 };
 
 export default returnData;
