@@ -54,7 +54,6 @@ const LOG_COLORS = {
     debug: 'blue',
 };
 
-
 // Status code
 const STATUS_OK = 200;
 const STATUS_BAD_REQUEST = 400;
@@ -66,7 +65,7 @@ const STATUS_INTERNAL_SERVER_ERROR = 500;
 
 // Message related
 const SERVER_LOG_MESSAGE = "Server running on port";
-const SERVER_DOWN_MESSAGE = "Server is down 🥲🥲🥲";
+const SERVER_DOWN_MESSAGE = "Your request can not be processed at this moment. Please try again later 🥲🥲🥲";
 const FORBIDDEN_MESSAGE = "You do not have necessary permission";
 
 export {

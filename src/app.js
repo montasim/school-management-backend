@@ -28,24 +28,36 @@ import userRateLimiter from "./app/middlewares/userRateLimiter.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import appRoutes from "./app/routes/index.js";
 
+
 /**
- * Create an instance of an Express application.
- * @type {Express.Application}
+ * Initializes and configures an Express.js application instance.
+ * This initialization includes applying various middlewares and setting up the routes for the application.
+ * The middlewares include JSON parser for request body parsing, request logging for monitoring and debugging,
+ * CORS handling with a custom configuration for cross-origin requests, and rate limiting to control request frequency.
+ * The database connection is established before handling any routes through the DatabaseMiddleware.
+ * All the application-specific routes are then mounted to the Express app. Optionally, there's provision to
+ * disconnect from the database after request processing. This setup ensures a structured and efficient handling
+ * of requests with necessary preprocessing and postprocessing steps, providing a solid foundation for the
+ * web application's backend architecture.
+ *
+ * @type {Express.Application} - The configured Express.js application ready for use.
  */
 const app = express();
 
-// To serve static files:
-app.use(express.static('./'));
-
 /**
- * Use the JSON middleware to parse incoming JSON requests.
+ * To serve static files
  */
-app.use(express.json());
+app.use(express.static('./'));
 
 /**
  * Use the log middleware to log incoming requests.
  */
 app.use(requestLoggingMiddleware);
+
+/**
+ * Use the JSON middleware to parse incoming JSON requests.
+ */
+app.use(express.json());
 
 /**
  * Use the CORS middleware with a custom configuration.

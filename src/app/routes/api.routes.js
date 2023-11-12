@@ -48,6 +48,18 @@ import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
 import websiteRoutes from "../routes/website.routes.js";
 
+/**
+ * Sets up the main router for the application. This router is responsible for aggregating all the individual
+ * route modules and assigning them to their respective base paths. Each base path corresponds to a different
+ * module or functionality within the application. The router facilitates clear separation and organization
+ * of different parts of the application's API, making it easier to manage and scale.
+ *
+ * @namespace apiRouter - Main router object combining all route modules.
+ * @type {express.Router}
+ * @example
+ * // In the main server file:
+ * app.use('/api', apiRouter); // Mounts the API router on '/api' base path.
+ */
 const apiRouter = express.Router();
 
 /**
