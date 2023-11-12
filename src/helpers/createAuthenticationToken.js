@@ -33,19 +33,12 @@ import extractBrowserInfo from "./userAgentParser.js";
  */
 const createAuthenticationToken = async (userAgent, userDetails = {}) => {
     try {
-        const userAgentDetails = extractBrowserInfo(userAgent);
-
-        console.log(userAgent)
         // Sign and return the JWT token with user details and secret
         return jwt.sign(
             {
                 id: userDetails.id,
                 name: userDetails.name,
-                browser: userAgentDetails?.browser,
-                browserVersion: userAgentDetails?.browserVersion,
-                os: userAgentDetails?.os,
-                osVersion: userAgentDetails?.osVersion,
-                device: userAgentDetails?.device,
+                userAgent: userAgent,
             },
             SECRET_TOKEN,
             {

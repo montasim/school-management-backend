@@ -79,7 +79,7 @@ const loginService = async (db, loginDetails) => {
         }
 
         if (foundAdminDetails?.currentlyLoggedInDevice >= 3) {
-            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that two devices at a time.");
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that three devices at a time.");
         }
 
         delete foundAdminDetails?._id;

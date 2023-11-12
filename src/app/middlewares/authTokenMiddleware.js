@@ -73,19 +73,9 @@ const authTokenMiddleware = async (req, res, next) => {
         return res.status(STATUS_BAD_REQUEST).json(generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token'));
 
     const userAgent = req.headers['user-agent'];
-    const currentDeviceDetails = extractBrowserInfo(userAgent);
 
-    if (currentDeviceDetails?.browser !== verified?.browser)
+    if (userAgent !== verified?.userAgent)
         return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
-
-    if (currentDeviceDetails?.browserVersion !== verified?.browserVersion)
-            return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
-
-    if (currentDeviceDetails?.os !== verified?.os)
-            return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
-
-    if (currentDeviceDetails?.device !== verified?.device)
-            return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
 
     req.adminId = verified.id;
     req.adminUserName = verified.userName;
