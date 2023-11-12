@@ -47,7 +47,7 @@ import getAllData from "../../../../shared/getAllData.js";
  */
 const createHomePageGalleryService = async (db, newHomePageGalleryDetails, file) => {
     try {
-        const { title, category, description, adminId } = newHomePageGalleryDetails;
+        const { title, adminId } = newHomePageGalleryDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
