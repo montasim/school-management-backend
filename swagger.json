@@ -1,7 +1,11 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "School",
+    "title": "School Management API",
+    "description": "This API facilitates the management of school operations, including student, teacher, and course management.",
+    "contact": {
+      "email": "montasimmamun@gmail.com"
+    },
     "version": "1.0.0"
   },
   "servers": [
