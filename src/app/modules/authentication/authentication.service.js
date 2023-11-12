@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 import { ADMIN_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -32,20 +33,18 @@ const loginService = async (db,  loginDetails) => {
 
         delete foundAdminDetails?._id;
 
-        if (foundAdminDetails) {
-            if (foundAdminDetails?.password === password) {
-                const token = await createAuthenticationToken(foundAdminDetails);
+        const isPasswordMatch = await bcrypt.compare(password, foundAdminDetails.password);
 
-                if (token) {
-                    const returnData = {
-                        name: foundAdminDetails?.name,
-                        userName: foundAdminDetails?.userName,
-                        token: token,
-                    }
-                    return generateResponseData(returnData, true, STATUS_OK, "Authorized");
-                } else {
-                    return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
+        if (isPasswordMatch) {
+            const token = await createAuthenticationToken(foundAdminDetails);
+
+            if (token) {
+                const returnData = {
+                    name: foundAdminDetails?.name,
+                    userName: foundAdminDetails?.userName,
+                    token: token,
                 }
+                return generateResponseData(returnData, true, STATUS_OK, "Authorized");
             } else {
                 return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
             }
@@ -100,11 +99,13 @@ const signupService = async (db, signupDetails) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${userName} already exists`);
         } else {
             if (password === confirmPassword) {
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password, salt);
                 const prepareNewUserDetails = {
                     id: `admin-${uuidv4().substr(0, 6)}`,
                     name: name,
                     userName: userName,
-                    password: password,
+                    password: hashedPassword,
                     createdAt: new Date(),
                 };
                 const result = await addANewEntryToDatabase(db, ADMIN_COLLECTION_NAME, prepareNewUserDetails);
