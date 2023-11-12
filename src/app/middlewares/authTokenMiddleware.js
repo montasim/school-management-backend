@@ -17,10 +17,12 @@
  */
 
 import jwt from 'jsonwebtoken';
-import { SECRET_TOKEN } from '../../config/config.js';
+import { ADMIN_COLLECTION_NAME, SECRET_TOKEN } from '../../config/config.js';
 import generateResponseData from '../../shared/generateResponseData.js';
 import logger from '../../shared/logger.js';
 import { STATUS_BAD_REQUEST, STATUS_UNAUTHORIZED } from '../../constants/constants.js';
+import findByUserName from "../../shared/findByUserName.js";
+import extractBrowserInfo from "../../helpers/userAgentParser.js";
 
 /**
  * Extracts the token from the Authorization header.
@@ -30,6 +32,7 @@ import { STATUS_BAD_REQUEST, STATUS_UNAUTHORIZED } from '../../constants/constan
  */
 const extractToken = (header) => {
     const bearer = 'Bearer ';
+
     return header?.startsWith(bearer) ? header.slice(bearer.length) : null;
 };
 
@@ -44,6 +47,7 @@ const verifyToken = (token) => {
         return jwt.verify(token, SECRET_TOKEN);
     } catch (error) {
         logger.error(error);
+
         return null;
     }
 };
@@ -57,18 +61,31 @@ const verifyToken = (token) => {
  * @param {express.Response} res - The Express response object.
  * @param {Function} next - The next middleware function in the Express app's request-response cycle.
  */
-const authTokenMiddleware = (req, res, next) => {
+const authTokenMiddleware = async (req, res, next) => {
     const token = extractToken(req.headers['authorization']);
 
-    if (!token) {
+    if (!token)
         return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
-    }
 
     const verified = verifyToken(token);
 
-    if (!verified) {
+    if (!verified)
         return res.status(STATUS_BAD_REQUEST).json(generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token'));
-    }
+
+    const userAgent = req.headers['user-agent'];
+    const currentDeviceDetails = extractBrowserInfo(userAgent);
+
+    if (currentDeviceDetails?.browser !== verified?.browser)
+        return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
+
+    if (currentDeviceDetails?.browserVersion !== verified?.browserVersion)
+            return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
+
+    if (currentDeviceDetails?.os !== verified?.os)
+            return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
+
+    if (currentDeviceDetails?.device !== verified?.device)
+            return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
 
     req.adminId = verified.id;
     req.adminUserName = verified.userName;

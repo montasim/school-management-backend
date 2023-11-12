@@ -11,8 +11,9 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const loginController = async (req, res) => {
+    const userAgent = req.headers['user-agent'];
     const { userName, password, db } = extractFromRequest(req, ['userName', 'password']);
-    const loginDetails = { userName, password };
+    const loginDetails = { userName, password, userAgent };
 
     await handleServiceResponse(res, AuthenticationService.loginService, db, loginDetails);
 };

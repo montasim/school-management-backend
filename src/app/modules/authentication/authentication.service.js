@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Service functions for user authentication and management.
+ *
+ * This file includes service functions related to user authentication and management
+ * in the application. It encompasses services for logging in, verifying user credentials,
+ * signing up new users, resetting passwords, and deleting user accounts.
+ * These services interact with the database to fetch, verify, and manipulate user data
+ * as per the requirements of each function. They are essential for implementing
+ * the authentication and account management features of the application.
+ *
+ * @requires bcrypt - Module for hashing passwords.
+ * @requires uuid - Module for generating unique identifiers.
+ * @requires database - Database connection module.
+ * @requires constants - Application constants for status codes and messages.
+ * @requires logger - Logger module for logging errors and information.
+ *
+ * @module UserService - Exported user service functions for the application.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import { ADMIN_COLLECTION_NAME } from "../../../config/config.js";
@@ -7,7 +26,8 @@ import {
     STATUS_INTERNAL_SERVER_ERROR,
     STATUS_OK,
     STATUS_UNAUTHORIZED,
-    STATUS_UNPROCESSABLE_ENTITY
+    STATUS_UNPROCESSABLE_ENTITY,
+    STATUS_LOCKED,
 } from "../../../constants/constants.js";
 import findById from "../../../shared/findById.js";
 import findByUserName from "../../../shared/findByUserName.js";
@@ -18,37 +38,81 @@ import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import createAuthenticationToken from "../../../helpers/createAuthenticationToken.js";
 import logger from "../../../shared/logger.js";
+import resetFailedAttempts from "../../../helpers/resetFailedAttempts.js";
+import incrementFailedAttempts from "../../../helpers/incrementFailedAttempts.js";
+import checkIfAccountIsLocked from "../../../helpers/checkIfAccountIsLocked.js";
+import addCurrentlyLoggedInDevice from "../../../shared/addCurrentlyLoggedInDevice.js";
 
 /**
- * Service to authenticate a user using their login details.
+ * Handles the login process for an admin user.
+ *
+ * This function checks the provided login details against the database records.
+ * It validates the username and password, checks for account lock conditions due
+ * to failed attempts, and generates an authentication token upon successful login.
+ *
  * @async
- * @param {Object} db - DatabaseMiddleware instance.
- * @param {Object} loginDetails - The login details provided.
- * @returns {Object} Result object containing status, message and data.
+ * @function loginService
+ * @param {Object} db - The database connection object.
+ * @param {Object} loginDetails - The login credentials provided by the user.
+ * @param {string} loginDetails.userName - The username of the admin.
+ * @param {string} loginDetails.password - The password of the admin.
+ * @returns {Promise<Object>} A promise that resolves to an object containing either
+ * the login status and token (on success) or an error message (on failure).
+ * @throws {Error} Throws an error if there's an issue within the try block
+ * (e.g., database connectivity issues, bcrypt comparison failure).
+ *
+ * The function performs several checks and operations:
+ * - Validates whether the provided username exists in the database.
+ * - Checks if the account is locked due to previous failed login attempts.
+ * - Compares the provided password with the hashed password in the database.
+ * - Generates an authentication token upon successful password match.
+ * - Resets the failed login attempts counter after a successful login.
+ * - Increments the failed login attempts counter upon an unsuccessful login.
  */
-const loginService = async (db,  loginDetails) => {
+const loginService = async (db, loginDetails) => {
     try {
-        const { userName, password } = loginDetails;
+        const { userName, password, userAgent } = loginDetails;
         const foundAdminDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
 
-        delete foundAdminDetails?._id;
+        if (!foundAdminDetails) {
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
+        }
 
-        const isPasswordMatch = await bcrypt.compare(password, foundAdminDetails.password);
+        if (foundAdminDetails?.currentlyLoggedInDevice >= 3) {
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that two devices at a time.");
+        }
+
+        delete foundAdminDetails?._id;
+        delete foundAdminDetails?.createdAt;
+        delete foundAdminDetails?.modifiedAt;
+
+        await checkIfAccountIsLocked(foundAdminDetails);
+
+        const isPasswordMatch = await bcrypt.compare(password, foundAdminDetails?.password);
 
         if (isPasswordMatch) {
-            const token = await createAuthenticationToken(foundAdminDetails);
+            const token = await createAuthenticationToken(userAgent, foundAdminDetails);
 
             if (token) {
+                // Reset failed attempts on successful login
+                await resetFailedAttempts(db, userName);
+                // Add currently logged in device
+                await addCurrentlyLoggedInDevice(db, foundAdminDetails);
+
                 const returnData = {
-                    name: foundAdminDetails?.name,
-                    userName: foundAdminDetails?.userName,
+                    name: foundAdminDetails.name,
+                    userName: foundAdminDetails.userName,
+                    currentlyLoggedInDevice: foundAdminDetails.currentlyLoggedInDevice,
                     token: token,
-                }
+                };
                 return generateResponseData(returnData, true, STATUS_OK, "Authorized");
             } else {
-                return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
+                return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Failed to create token");
             }
         } else {
+            // Increment failed attempts
+            await incrementFailedAttempts(db, foundAdminDetails);
+
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
         }
     } catch (error) {
@@ -59,11 +123,25 @@ const loginService = async (db,  loginDetails) => {
 };
 
 /**
- * Service to authenticate an admin using their login token.
+ * Verifies the existence and validity of a user's admin ID.
+ *
+ * This function is used to validate if a given admin ID is present and active in the database.
+ * It primarily serves for user verification purposes, where it confirms if an admin user
+ * exists based on the provided ID. It does not perform any authentication or authorization checks.
+ *
  * @async
- * @param {Object} db - DatabaseMiddleware instance.
- * @param {Object} adminId - The login details provided.
- * @returns {Object} Result object containing status, message and data.
+ * @function verifyUserService
+ * @param {Object} db - The database connection object.
+ * @param {string} adminId - The unique identifier of the admin user to be verified.
+ * @returns {Promise<Object>} A promise that resolves to an object containing
+ * either a success message (if the admin ID is found) or an error/unauthorized message.
+ * @throws {Error} Throws an error if there's an issue within the try block
+ * (e.g., database connectivity issues or failure during data retrieval).
+ *
+ * The function performs the following operations:
+ * - Fetches admin details based on the given ID from the database.
+ * - Checks if the admin details exist.
+ * - Returns a success response if the admin exists, otherwise returns an unauthorized response.
  */
 const verifyUserService = async (db,  adminId) => {
     try {
@@ -82,13 +160,31 @@ const verifyUserService = async (db,  adminId) => {
 };
 
 /**
- * Creates a new admin entry in the database.
+ * Handles the user signup process for an admin user.
+ *
+ * This service is responsible for processing the signup details of a new admin user.
+ * It includes verifying if the username already exists, matching passwords, hashing the password,
+ * and adding the new admin user to the database. It ensures that each admin user has a unique username.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param signupDetails
- * @returns {Object} - The response after attempting admin creation.
- * @throws {Error} Throws an error if any.
+ * @function signupService
+ * @param {Object} db - The database connection object.
+ * @param {Object} signupDetails - The signup details of the new admin user.
+ * @param {string} signupDetails.name - The full name of the new admin user.
+ * @param {string} signupDetails.userName - The username for the new admin user.
+ * @param {string} signupDetails.password - The password for the new admin user.
+ * @param {string} signupDetails.confirmPassword - The password confirmation for validation.
+ * @returns {Promise<Object>} A promise that resolves to an object containing either
+ * a success message and the user's details (if the user is created successfully)
+ * or an error/unprocessable entity message.
+ * @throws {Error} Throws an error if there's an issue within the try block
+ * (e.g., database connectivity issues, bcrypt hashing failure, or failure during user creation).
+ *
+ * The function performs the following operations:
+ * - Checks if the username already exists in the database.
+ * - Validates if the password and confirmPassword match.
+ * - Hashes the password using bcrypt.
+ * - Creates a new admin user entry in the database with the hashed password and other details.
  */
 const signupService = async (db, signupDetails) => {
     try {
@@ -106,6 +202,10 @@ const signupService = async (db, signupDetails) => {
                     name: name,
                     userName: userName,
                     password: hashedPassword,
+                    currentlyLoggedInDevice: 0,
+                    lastLoginAt: null,
+                    allowedFailedAttempts: 3,
+                    lastFailedAttempts: null,
                     createdAt: new Date(),
                 };
                 const result = await addANewEntryToDatabase(db, ADMIN_COLLECTION_NAME, prepareNewUserDetails);
@@ -114,6 +214,10 @@ const signupService = async (db, signupDetails) => {
                 delete latestData?._id;
                 delete latestData?.id;
                 delete latestData?.password;
+                delete latestData?.allowedFailedAttempts;
+                delete latestData?.lastFailedAttempts;
+                delete latestData?.createdAt;
+                delete latestData?.modifiedAt;
 
                 return result?.acknowledged
                     ? generateResponseData(latestData, true, STATUS_OK, `${prepareNewUserDetails?.userName} created successfully`)
@@ -131,53 +235,49 @@ const signupService = async (db, signupDetails) => {
 };
 
 /**
- * Service to reset a user's password.
+ * Service to handle the reset password functionality.
+ *
+ * This service facilitates the process of resetting an admin's password. It ensures
+ * that the request is valid, the old password matches, and updates the password with
+ * a hashed version of the new password.
+ *
  * @async
- * @param {Object} db - DatabaseMiddleware instance.
- * @param {Object} resetPasswordDetails - New password details.
- * @returns {Object} Result object containing status, message and data.
+ * @function resetPasswordService
+ * @param {Object} db - Database connection object.
+ * @param {Object} resetPasswordDetails - Details for password reset including adminId, oldPassword, newPassword, confirmNewPassword.
+ * @returns {Promise<Object>} - Promise object representing the outcome of the password reset operation.
  */
 const resetPasswordService = async (db, resetPasswordDetails) => {
     try {
-        const { adminId } = resetPasswordDetails;
+        const { adminId, oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
         const foundAdmin = await findById(db, ADMIN_COLLECTION_NAME, adminId);
 
-        if (foundAdmin) {
-            const { oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
-
-            if (newPassword === confirmNewPassword) {
-                if (foundAdmin?.password === oldPassword) {
-                    if (foundAdmin?.id === adminId) {
-                        const updatedAdminDetails = {
-                            id: foundAdmin?.id,
-                            userName: foundAdmin?.userName,
-                            password: newPassword,
-                            createdAt: foundAdmin?.createdAt,
-                            modifiedAt: new Date(),
-                        };
-                        const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, updatedAdminDetails);
-                        const latestData = await findById(db, ADMIN_COLLECTION_NAME, adminId);
-
-                        delete latestData?._id;
-                        delete latestData?.id;
-                        delete latestData?.password;
-
-                        return result?.modifiedCount
-                            ? generateResponseData(latestData, true, STATUS_OK, `${adminId} updated successfully`)
-                            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${adminId} not updated`);
-
-                    } else {
-                        return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
-                    }
-                } else {
-                    return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Wrong password");
-                }
-            } else {
-                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Password did not matched");
-            }
-        } else {
+        if (!foundAdmin || foundAdmin?.id !== adminId)
             return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
-        }
+
+        const isPasswordMatch = await bcrypt.compare(oldPassword, foundAdmin?.password);
+        const isNewAndOldPasswordMatch = await bcrypt.compare(oldPassword, foundAdmin?.password);
+
+        if (!isPasswordMatch)
+            return generateResponseData({}, false, STATUS_FORBIDDEN, "Wrong old password");
+
+        if (isNewAndOldPasswordMatch)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update password");
+
+        if (newPassword !== confirmNewPassword)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Passwords do not match");
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+        const updatedAdminDetails = {
+            password: hashedNewPassword,
+            modifiedAt: new Date(),
+        };
+        const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, updatedAdminDetails);
+
+        return result?.modifiedCount
+            ? generateResponseData({}, true, STATUS_OK, "Password updated successfully")
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update password");
     } catch (error) {
         logger.error(error);
 
@@ -186,11 +286,19 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
 };
 
 /**
- * Service to delete a user.
+ * Service for deleting an admin user from the database.
+ *
+ * This service facilitates the deletion of an admin user identified by their unique ID.
+ * It checks if the request to delete the user is valid and then proceeds to remove the user from the database.
+ * The function returns a response indicating the success or failure of the deletion process.
+ *
  * @async
- * @param {Object} db - DatabaseMiddleware instance.
- * @param deleteAdminDetails
- * @returns {Object} Result object containing status, message and data.
+ * @function deleteUserService
+ * @param {Object} db - The database connection object.
+ * @param {Object} deleteAdminDetails - The details of the admin user to be deleted.
+ * @param {string} deleteAdminDetails.adminId - The unique identifier of the admin user to be deleted.
+ * @returns {Promise<Object>} A promise that resolves with the response data after attempting to delete the admin user.
+ * @throws {Error} Throws an error if the operation fails.
  */
 const deleteUserService = async (db, deleteAdminDetails) => {
     try {
