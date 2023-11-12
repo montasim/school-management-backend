@@ -32,7 +32,7 @@ import returnData from "./index.constants.js";
  */
 const indexController = async (req, res) => {
     try {
-        return res.status(returnData?.status).json(returnDatas);
+        return res.status(returnData?.status).json(returnData);
     } catch (error) {
         logger.error(error);
 
