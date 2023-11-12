@@ -39,6 +39,7 @@ const extractFromRequest = (req, keysFromBody = [], keysFromParams = []) => {
         });
 
         extractedData.adminId = req.adminId;
+        extractedData.tokenId = req.tokenId;
         extractedData.db = req.db;
 
         return extractedData;

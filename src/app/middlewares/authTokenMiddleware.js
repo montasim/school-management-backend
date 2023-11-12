@@ -17,12 +17,11 @@
  */
 
 import jwt from 'jsonwebtoken';
-import { ADMIN_COLLECTION_NAME, SECRET_TOKEN } from '../../config/config.js';
+import { SECRET_TOKEN } from '../../config/config.js';
 import generateResponseData from '../../shared/generateResponseData.js';
 import logger from '../../shared/logger.js';
 import { STATUS_BAD_REQUEST, STATUS_UNAUTHORIZED } from '../../constants/constants.js';
-import findByUserName from "../../shared/findByUserName.js";
-import extractBrowserInfo from "../../helpers/userAgentParser.js";
+import isTokenRevoked from "../../helpers/isTokenRevoked.js";
 
 /**
  * Extracts the token from the Authorization header.
@@ -62,25 +61,36 @@ const verifyToken = (token) => {
  * @param {Function} next - The next middleware function in the Express app's request-response cycle.
  */
 const authTokenMiddleware = async (req, res, next) => {
-    const token = extractToken(req.headers['authorization']);
+    try {
+        const token = extractToken(req?.headers['authorization']);
 
-    if (!token)
-        return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
+        if (!token)
+            return res?.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
 
-    const verified = verifyToken(token);
+        const verified = verifyToken(token);
 
-    if (!verified)
-        return res.status(STATUS_BAD_REQUEST).json(generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token'));
+        if (!verified)
+            return res?.status(STATUS_BAD_REQUEST).json(generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token'));
 
-    const userAgent = req.headers['user-agent'];
+        if (await isTokenRevoked(req?.db, verified?.id, verified?.tokenId))
+            return { valid: false, reason: 'Token has been revoked' };
 
-    if (userAgent !== verified?.userAgent)
-        return res.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
+        const userAgent = req?.headers['user-agent'];
 
-    req.adminId = verified.id;
-    req.adminUserName = verified.userName;
+        if (userAgent !== verified?.userAgent)
+            return res?.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
 
-    next();
+        req.adminId = verified.id;
+        req.tokenId = verified.userName;
+        req.adminUserName = verified.userName;
+        req.name = verified.name;
+
+        next();
+    } catch (error) {
+        logger.error(error);
+
+        return null;
+    }
 };
 
 export default authTokenMiddleware;

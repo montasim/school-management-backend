@@ -56,8 +56,8 @@ const signupController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const resetPasswordController = async (req, res) => {
-    const { oldPassword, newPassword, confirmNewPassword, adminId, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
-    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword, adminId };
+    const { oldPassword, newPassword, confirmNewPassword, adminId, tokenId, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
+    const resetPasswordDetails = { oldPassword, newPassword, confirmNewPassword, adminId, tokenId };
 
     await handleServiceResponse(res, AuthenticationService.resetPasswordService, db, resetPasswordDetails);
 };
@@ -71,9 +71,9 @@ const resetPasswordController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const logoutController = async (req, res) => {
-    const { adminId, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
+    const { adminId, tokenId, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
 
-    await handleServiceResponse(res, AuthenticationService.logoutService, db, adminId);
+    await handleServiceResponse(res, AuthenticationService.logoutService, db, adminId, tokenId);
 };
 
 /**
@@ -85,8 +85,8 @@ const logoutController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteUserController = async (req, res) => {
-    const { password, confirmPassword, adminId, db } = extractFromRequest(req, ['password', 'confirmPassword']);
-    const deleteAdminDetails = { password, confirmPassword, adminId };
+    const { password, confirmPassword, adminId, tokenId, db } = extractFromRequest(req, ['password', 'confirmPassword']);
+    const deleteAdminDetails = { password, confirmPassword, adminId, tokenId };
 
     await handleServiceResponse(res, AuthenticationService.deleteUserService, db, deleteAdminDetails);
 };

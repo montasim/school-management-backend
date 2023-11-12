@@ -41,6 +41,7 @@ import resetFailedAttempts from "../../../helpers/resetFailedAttempts.js";
 import incrementFailedAttempts from "../../../helpers/incrementFailedAttempts.js";
 import checkIfAccountIsLocked from "../../../helpers/checkIfAccountIsLocked.js";
 import addCurrentlyLoggedInDevice from "../../../shared/addCurrentlyLoggedInDevice.js";
+import removeTokenId from "../../../helpers/removeTokenId.js";
 
 /**
  * Handles the login process for an admin user.
@@ -90,7 +91,7 @@ const loginService = async (db, loginDetails) => {
         const isPasswordMatch = await bcrypt.compare(password, foundAdminDetails?.password);
 
         if (isPasswordMatch) {
-            const token = await createAuthenticationToken(userAgent, foundAdminDetails);
+            const token = await createAuthenticationToken(db, userAgent, foundAdminDetails);
 
             if (token) {
                 // Reset failed attempts on successful login
@@ -215,6 +216,8 @@ const signupService = async (db, signupDetails) => {
                 delete latestData?.password;
                 delete latestData?.allowedFailedAttempts;
                 delete latestData?.lastFailedAttempts;
+                delete latestData?.currentlyLoggedInDevice;
+                delete latestData?.lastLoginAt;
                 delete latestData?.createdAt;
                 delete latestData?.modifiedAt;
 
@@ -248,7 +251,7 @@ const signupService = async (db, signupDetails) => {
  */
 const resetPasswordService = async (db, resetPasswordDetails) => {
     try {
-        const { adminId, oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
+        const { adminId, tokenId, oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
         const foundAdmin = await findById(db, ADMIN_COLLECTION_NAME, adminId);
 
         if (!foundAdmin || foundAdmin?.id !== adminId)
@@ -274,9 +277,13 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
         };
         const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, updatedAdminDetails);
 
-        return result?.modifiedCount
-            ? generateResponseData({}, true, STATUS_OK, "Password updated successfully")
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update password");
+        if (result?.modifiedCount) {
+            await removeTokenId(db, adminId, tokenId);
+
+            return generateResponseData({}, true, STATUS_OK, "Password updated successfully")
+        } else {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update password");
+        }
     } catch (error) {
         logger.error(error);
 
@@ -294,9 +301,10 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
  * @function logoutService
  * @param {Object} db - Database connection object.
  * @param {Object} adminId - Admin id.
+ * @param tokenId
  * @returns {Promise<Object>} - Promise object representing the outcome of the log-out operation.
  */
-const logoutService = async (db, adminId) => {
+const logoutService = async (db, adminId, tokenId) => {
     try {
         const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
 
@@ -306,19 +314,22 @@ const logoutService = async (db, adminId) => {
         }
 
         // Decrement the currentlyLoggedInDevice count.
-        if (foundAdminDetails.currentlyLoggedInDevice > 0) {
+        if (foundAdminDetails.currentlyLoggedInDevice > 0)
             foundAdminDetails.currentlyLoggedInDevice -= 1;
-        }
 
         // Update the admin details in the database.
         const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, foundAdminDetails);
 
-        // Return a success or failure response based on the database operation result.
-        return result?.modifiedCount
-            ? generateResponseData({}, true, STATUS_OK, "Successfully logged out")
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update logout status");
+        if (result?.modifiedCount) {
+            await removeTokenId(db, adminId, tokenId);
+
+            return generateResponseData({}, true, STATUS_OK, "Successfully logged out")
+        } else {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update logout status");
+        }
     } catch (error) {
         logger.error(error);
+
         return error;
     }
 };
