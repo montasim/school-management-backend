@@ -1,142 +1,3788 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "School Management API",
-    "version": "1.0.0",
-    "description": "API for managing school data."
+    "title": "School",
+    "version": "1.0.0"
   },
+  "servers": [
+    {
+      "url": "http://{{server_url}}"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "noauthAuth": {
+        "type": "http",
+        "scheme": "noauth"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "api"
+    },
+    {
+      "name": "api > v1"
+    },
+    {
+      "name": "api > v1 > category"
+    },
+    {
+      "name": "api > v1 > website"
+    },
+    {
+      "name": "api > v1 > website > configuration"
+    },
+    {
+      "name": "api > v1 > website > contact"
+    },
+    {
+      "name": "api > v1 > website > importantInformationLink"
+    },
+    {
+      "name": "api > v1 > website > officialLink"
+    },
+    {
+      "name": "api > v1 > website > socialMediaLink"
+    },
+    {
+      "name": "api > v1 > othersInformationCategory"
+    },
+    {
+      "name": "api > v1 > announcement"
+    },
+    {
+      "name": "api > v1 > administration"
+    },
+    {
+      "name": "api > v1 > othersInformation"
+    },
+    {
+      "name": "api > v1 > authentication"
+    },
+    {
+      "name": "api > v1 > student"
+    },
+    {
+      "name": "api > v1 > contact"
+    },
+    {
+      "name": "api > v1 > download"
+    },
+    {
+      "name": "api > v1 > notice"
+    },
+    {
+      "name": "api > v1 > result"
+    },
+    {
+      "name": "api > v1 > routine"
+    },
+    {
+      "name": "api > v1 > level"
+    },
+    {
+      "name": "api > v1 > designation"
+    },
+    {
+      "name": "api > v1 > dashboard"
+    },
+    {
+      "name": "api > v1 > homePage"
+    },
+    {
+      "name": "api > v1 > homePage > homePagePost"
+    },
+    {
+      "name": "api > v1 > homePage > homePageCarousel"
+    },
+    {
+      "name": "api > v1 > homePage > homePageGallery"
+    },
+    {
+      "name": "api > v1 > blog"
+    },
+    {
+      "name": "status"
+    },
+    {
+      "name": "index"
+    },
+    {
+      "name": "undefined"
+    }
+  ],
   "paths": {
-    "/api/v1/administration": {
+    "/api/{API_VERSION}/category": {
       "post": {
-        "summary": "Create an administration.",
-        "description": "Endpoint to add a new administration to the system.",
+        "tags": [
+          "api > v1 > category"
+        ],
+        "summary": "category",
         "requestBody": {
-          "description": "The administration to create.",
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Administration"
+                "type": "object",
+                "example": {
+                  "name": "কৃতি শিক্ষার্থী"
+                }
               }
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Administration successfully created."
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
           }
         }
       },
       "get": {
-        "summary": "Retrieve all administrations.",
-        "description": "Endpoint to retrieve a list of all administrations.",
+        "tags": [
+          "api > v1 > category"
+        ],
+        "summary": "category",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A list of administrations."
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
           }
         }
       }
     },
-    "/api/v1/{administrationId}": {
+    "/api/{API_VERSION}/category/category-a84e3a": {
       "get": {
-        "summary": "Retrieve a specific administration by ID.",
-        "description": "Endpoint to get details of an administration by their ID.",
+        "tags": [
+          "api > v1 > category"
+        ],
+        "summary": "category/:categoryId",
         "parameters": [
           {
-            "name": "administrationId",
+            "name": "API_VERSION",
             "in": "path",
-            "required": true,
-            "description": "ID of the administration to retrieve.",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Administration details."
-          }
-        }
-      },
-      "put": {
-        "summary": "Update an administration by ID.",
-        "description": "Endpoint to update the details of an administration by their ID.",
-        "parameters": [
-          {
-            "name": "administrationId",
-            "in": "path",
-            "required": true,
-            "description": "ID of the administration to update.",
-            "schema": {
-              "type": "string"
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
             }
-          }
-        ],
-        "requestBody": {
-          "description": "Updated details of the administration.",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Administration"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Administration successfully updated."
           }
         }
       },
       "delete": {
-        "summary": "Delete an administration by ID.",
-        "description": "Endpoint to delete an administration by their ID.",
+        "tags": [
+          "api > v1 > category"
+        ],
+        "summary": "category/:categoryId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "administrationId",
+            "name": "API_VERSION",
             "in": "path",
-            "required": true,
-            "description": "ID of the administration to delete.",
             "schema": {
               "type": "string"
-            }
+            },
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Administration successfully deleted."
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
           }
         }
       }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Administration": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the administration."
-          },
-          "category": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Category of the administration."
-          },
-          "designation": {
-            "type": "string",
-            "description": "Designation of the administration."
-          },
-          "image": {
-            "type": "string",
-            "description": "Image URL of the administration."
+    },
+    "/api/{API_VERSION}/category/category-49490d": {
+      "put": {
+        "tags": [
+          "api > v1 > category"
+        ],
+        "summary": "category/:categoryId",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "শিক্ষকবৃন্দ"
+                }
+              }
+            }
           }
         },
-        "required": ["name", "category", "designation", "image"]
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/website/configuration": {
+      "post": {
+        "tags": [
+          "api > v1 > website > configuration"
+        ],
+        "summary": "configuration",
+        "description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "ডেমো সরকারী স্কুল এন্ড কলেজ"
+                  },
+                  "slogan": {
+                    "type": "string",
+                    "example": "Website Slogan"
+                  },
+                  "websiteLogo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > website > configuration"
+        ],
+        "summary": "configuration",
+        "description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > website > configuration"
+        ],
+        "summary": "configuration",
+        "description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "ডেমো সরকারী স্কুল এন্ড কলেজ"
+                  },
+                  "slogan": {
+                    "type": "string",
+                    "example": "Website Slogan 2"
+                  },
+                  "websiteLogo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > website > configuration"
+        ],
+        "summary": "configuration",
+        "description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/website/contact": {
+      "post": {
+        "tags": [
+          "api > v1 > website > contact"
+        ],
+        "summary": "contact",
+        "description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "address": "আপনার ঠিকানা।",
+                  "googleMapLocation": {
+                    "latitude": "34.0522N",
+                    "longitude": "118.2437W"
+                  },
+                  "mobile": "01711112233",
+                  "phone": "01711112233",
+                  "email": "email@yourdomain.com",
+                  "website": "https://www.yourdomain.com"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > website > contact"
+        ],
+        "summary": "contact",
+        "description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > website > contact"
+        ],
+        "summary": "contact",
+        "description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "address": "আপনার ঠিকানা। SDHYSUHDUSHDUH",
+                  "googleMapLocation": {
+                    "latitude": "34.0522N",
+                    "longitude": "118.2437W"
+                  },
+                  "mobile": "01711112233",
+                  "phone": "01711112233",
+                  "email": "email@yourdomain.com",
+                  "website": "https://www.yourdomain.com"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > website > contact"
+        ],
+        "summary": "contact",
+        "description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/website/importantInformationLink": {
+      "post": {
+        "tags": [
+          "api > v1 > website > importantInformationLink"
+        ],
+        "summary": "importantInformationLink",
+        "description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "importantInformationLinkTitle": "মাল্টিমিডিয়া ক্লাসরুম ম্যানেজমেন্ট 2",
+                  "importantInformationLink": "https://school-abid.vercel.app/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > website > importantInformationLink"
+        ],
+        "summary": "importantInformationLink",
+        "description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/website/importantInformationLink/websiteImportantInformationLink-b98602": {
+      "get": {
+        "tags": [
+          "api > v1 > website > importantInformationLink"
+        ],
+        "summary": "importantInformationLink/importantInformationLinkId",
+        "description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > website > importantInformationLink"
+        ],
+        "summary": "importantInformationLink/importantInformationLinkId",
+        "description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "importantInformationLinkTitle": "মাল্টিমিডিয়া ক্লাসরুম ম্যানেজমেন্ট 2",
+                  "importantInformationLink": "https://school-abid.vercel.app/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > website > importantInformationLink"
+        ],
+        "summary": "importantInformationLink/importantInformationLinkId",
+        "description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/website/officialLink": {
+      "post": {
+        "tags": [
+          "api > v1 > website > officialLink"
+        ],
+        "summary": "officialLink",
+        "description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "officialLinkTitle": "সেকায়েপ",
+                  "officialLink": "https://school-abid.vercel.app/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > website > officialLink"
+        ],
+        "summary": "officialLink",
+        "description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/website/officialLink/websiteOfficialLink-af5eb3": {
+      "get": {
+        "tags": [
+          "api > v1 > website > officialLink"
+        ],
+        "summary": "officialLink:/officialLinkId",
+        "description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > website > officialLink"
+        ],
+        "summary": "officialLink:/officialLinkId",
+        "description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "officialLinkTitle": "সেকায়েপ",
+                  "officialLink": "https://school-abid.vercel.app/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > website > officialLink"
+        ],
+        "summary": "officialLink:/officialLinkId",
+        "description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/website/socialMediaLink": {
+      "post": {
+        "tags": [
+          "api > v1 > website > socialMediaLink"
+        ],
+        "summary": "socialMediaLink",
+        "description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "socialMediaLinkTitle": "GitHub",
+                  "socialMediaLink": "https://school-abid.vercel.app/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > website > socialMediaLink"
+        ],
+        "summary": "socialMediaLink",
+        "description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/website/socialMediaLink/websiteSocialMediaLink-dc2d33": {
+      "get": {
+        "tags": [
+          "api > v1 > website > socialMediaLink"
+        ],
+        "summary": "socialMediaLink/socialMediaLinkId",
+        "description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > website > socialMediaLink"
+        ],
+        "summary": "socialMediaLink/socialMediaLinkId",
+        "description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "socialMediaLinkTitle": "GitHub 2",
+                  "socialMediaLink": "https://school-abid.vercel.app/"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > website > socialMediaLink"
+        ],
+        "summary": "socialMediaLink/socialMediaLinkId",
+        "description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/othersInformationCategory": {
+      "post": {
+        "tags": [
+          "api > v1 > othersInformationCategory"
+        ],
+        "summary": "othersInformationCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "পরিচালনা পরিষদ  sdsdsdsd"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > othersInformationCategory"
+        ],
+        "summary": "othersInformationCategory",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/othersInformationCategory/othersInformationCategory-2eacd6": {
+      "get": {
+        "tags": [
+          "api > v1 > othersInformationCategory"
+        ],
+        "summary": "othersInformationCategory/:othersInformationCategoryId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > othersInformationCategory"
+        ],
+        "summary": "othersInformationCategory/:othersInformationCategoryId",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "শিক্ষকবৃন্দ as"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > othersInformationCategory"
+        ],
+        "summary": "othersInformationCategory/:othersInformationCategoryId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/announcement": {
+      "post": {
+        "tags": [
+          "api > v1 > announcement"
+        ],
+        "summary": "announcement",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "এই ওয়েবসাইট বিক্রি করা হবে ।"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > announcement"
+        ],
+        "summary": "announcement",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/announcement/announcement-ba4a73": {
+      "get": {
+        "tags": [
+          "api > v1 > announcement"
+        ],
+        "summary": "announcement/:announcementId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > announcement"
+        ],
+        "summary": "announcement/:announcementId",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "শিক্ষকবৃন্দ"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > announcement"
+        ],
+        "summary": "announcement/:announcementId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/administration": {
+      "post": {
+        "tags": [
+          "api > v1 > administration"
+        ],
+        "summary": "administration",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "জান্নাতুন নাঈমv1"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "শিক্ষকবৃন্দ"
+                  },
+                  "designation": {
+                    "type": "string",
+                    "example": "কৃতি শিক্ষার্থী"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > administration"
+        ],
+        "summary": "administration",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/administration/administration-dd87dc": {
+      "get": {
+        "tags": [
+          "api > v1 > administration"
+        ],
+        "summary": "administration/:administrationId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > administration"
+        ],
+        "summary": "administration/:administrationId",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "জান্নাতুন নাঈমv1"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "শিক্ষকবৃন্দ"
+                  },
+                  "designation": {
+                    "type": "string",
+                    "example": "কৃতি শিক্ষার্থী"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/administration/administration-dd87dcs": {
+      "delete": {
+        "tags": [
+          "api > v1 > administration"
+        ],
+        "summary": "administration/:administrationId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/othersInformation": {
+      "post": {
+        "tags": [
+          "api > v1 > othersInformation"
+        ],
+        "summary": "othersInformation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "title": "ভর্তি তথ্য",
+                  "category": "ভর্তি তথ্য",
+                  "description": "এতদ্বারা জানানো যাচ্ছে যে, আগামী ১৩.১২.২০১৮ইং তারিখে ডেমো হাইস্কুল এন্ড কলেজের নবম শ্রেণীতে নতুন ছাত্রছাত্রীদের ভর্তি করা হবে। যারা জেএসসি পরীক্ষায় ২.০ পেয়েছে কেবল তারাই আবেদন করতে পারবে। আগ্রহীরা ওয়েবসাইট থেকে ফরম ডাউনলোড করে পূরণ করে্আমাদের ই-মেইলে অথবা সরাসরি আমাদের অফিসে জমা দেয়ার জন্য বলা হলো। ফরম মূল্য : ২০০ টাকা ভর্তি ফি : ২০০০ টাকা মো: কামরুল ইসলাম প্রিন্সিপাল ডোমো সরকারী হাইস্কুল এন্ড কলেজ চুনারুঘাট সদর, চুনারুঘাট, হবিগঞ্জ।"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > othersInformation"
+        ],
+        "summary": "othersInformation",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/othersInformation/othersInformation-cccb41": {
+      "get": {
+        "tags": [
+          "api > v1 > othersInformation"
+        ],
+        "summary": "othersInformation/:othersInformationId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > othersInformation"
+        ],
+        "summary": "othersInformation/:othersInformationId",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "title": "asdsds",
+                  "category": "শিক্ষকবৃন্দ 1",
+                  "description": "কৃতি শিক্ষার্থী"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > othersInformation"
+        ],
+        "summary": "othersInformation/:othersInformationId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/authentication/login": {
+      "post": {
+        "tags": [
+          "api > v1 > authentication"
+        ],
+        "summary": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "userName": "montasim",
+                  "password": "password"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/authentication/verify-user": {
+      "get": {
+        "tags": [
+          "api > v1 > authentication"
+        ],
+        "summary": "verify-user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/authentication/signup": {
+      "post": {
+        "tags": [
+          "api > v1 > authentication"
+        ],
+        "summary": "signup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "montasim",
+                  "userName": "montasim",
+                  "password": "password",
+                  "confirmPassword": "password"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/authentication/reset-password": {
+      "put": {
+        "tags": [
+          "api > v1 > authentication"
+        ],
+        "summary": "reset-password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "oldPassword": "password",
+                  "newPassword": "password1",
+                  "confirmNewPassword": "password1"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/authentication/delete-user": {
+      "delete": {
+        "tags": [
+          "api > v1 > authentication"
+        ],
+        "summary": "delete-user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/student": {
+      "post": {
+        "tags": [
+          "api > v1 > student"
+        ],
+        "summary": "student",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "মো: রফিকুল আমিনkkkk"
+                  },
+                  "level": {
+                    "type": "string",
+                    "example": "১০ম শ্রেণী"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > student"
+        ],
+        "summary": "student",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/student/student-3810a3": {
+      "get": {
+        "tags": [
+          "api > v1 > student"
+        ],
+        "summary": "student/:studentId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > student"
+        ],
+        "summary": "student/:studentId",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "মো: রফিকুল আমিন okay"
+                  },
+                  "level": {
+                    "type": "string",
+                    "example": "১০ম শ্রেণী"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > student"
+        ],
+        "summary": "student/:studentId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/contact/send-email": {
+      "post": {
+        "tags": [
+          "api > v1 > contact"
+        ],
+        "summary": "send-email",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "firstName": "Montasim",
+                  "lastName": "Mamun",
+                  "phone": "+8801722815469",
+                  "email": "montasimmamun@gmail.com",
+                  "subject": "Test message subject",
+                  "message": "This is a test message to test the send-email functionality."
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/download": {
+      "post": {
+        "tags": [
+          "api > v1 > download"
+        ],
+        "summary": "download",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "১ম সাময়িকি পরীক্ষার রুটিন ডাউনলোড"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > download"
+        ],
+        "summary": "download",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/download/ABID HASAN CV.pdf": {
+      "get": {
+        "tags": [
+          "api > v1 > download"
+        ],
+        "summary": "download/:fileName",
+        "security": [
+          {
+            "noauthAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/download/learning-patterns-final-v1.1.pdf": {
+      "delete": {
+        "tags": [
+          "api > v1 > download"
+        ],
+        "summary": "download/:fileName",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/notice": {
+      "post": {
+        "tags": [
+          "api > v1 > notice"
+        ],
+        "summary": "notice",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "test"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > notice"
+        ],
+        "summary": "notice",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/notice/tem.pdf": {
+      "get": {
+        "tags": [
+          "api > v1 > notice"
+        ],
+        "summary": "notice/:fileName",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/notice/test notice.pdf": {
+      "delete": {
+        "tags": [
+          "api > v1 > notice"
+        ],
+        "summary": "notice/:fileName",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/result": {
+      "post": {
+        "tags": [
+          "api > v1 > result"
+        ],
+        "summary": "result",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "test"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > result"
+        ],
+        "summary": "result",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/result/test result.pdf": {
+      "get": {
+        "tags": [
+          "api > v1 > result"
+        ],
+        "summary": "result/:fileName",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > result"
+        ],
+        "summary": "result/:fileName",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/routine": {
+      "post": {
+        "tags": [
+          "api > v1 > routine"
+        ],
+        "summary": "routine",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "testsscsc"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > routine"
+        ],
+        "summary": "routine",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/routine/test routine.pdf": {
+      "get": {
+        "tags": [
+          "api > v1 > routine"
+        ],
+        "summary": "routine/:fileName",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > routine"
+        ],
+        "summary": "routine/:fileName",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/level": {
+      "post": {
+        "tags": [
+          "api > v1 > level"
+        ],
+        "summary": "level",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "দ্বাদশ শ্রেণী"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > level"
+        ],
+        "summary": "level",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/level/undefined-19d467": {
+      "get": {
+        "tags": [
+          "api > v1 > level"
+        ],
+        "summary": "level/:levelId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > level"
+        ],
+        "summary": "level/:levelId",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "৯ম শ্রেণী"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/level/designation-471ece": {
+      "delete": {
+        "tags": [
+          "api > v1 > level"
+        ],
+        "summary": "level/:levelId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/designation": {
+      "post": {
+        "tags": [
+          "api > v1 > designation"
+        ],
+        "summary": "designation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "শিক্ষার্থী"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > designation"
+        ],
+        "summary": "designation",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/designation/designation-b74a50": {
+      "get": {
+        "tags": [
+          "api > v1 > designation"
+        ],
+        "summary": "designation/:designationId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > designation"
+        ],
+        "summary": "designation/:designationId",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "শিক্ষক 2"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/designation/designation-348424": {
+      "delete": {
+        "tags": [
+          "api > v1 > designation"
+        ],
+        "summary": "designation/:designationId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/dashboard/summary": {
+      "get": {
+        "tags": [
+          "api > v1 > dashboard"
+        ],
+        "summary": "summary",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/homePage/homePagePost": {
+      "post": {
+        "tags": [
+          "api > v1 > homePage > homePagePost"
+        ],
+        "summary": "homePagePost",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "উপধ্যক্ষের বাণী"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "উপধ্যক্ষের বাণী"
+                  },
+                  "postImage": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "বাংলাদেশের শিক্ষা ব্যবস্থার একটি পূর্ণাঙ্গ ধারা মাদরাসা শিক্ষা। সাধারণ শিক্ষার পাশপাশি সমান্তরালভাবে এটি বয়ে চলেছে দীর্ঘদিন ধরে এবং এ দেশের জন-মানসে তার স্থান করে নিয়েছে সুরক্ষিত ও সুদৃঢ়ভাবে। ধর্মীয় শিক্ষা ও জাগতিক শিক্ষা দুটি পরস্পরের পরিপুরক। এ সমন্বিত ইসলামী শিক্ষা ব্যবস্থার প্রতিষ্ঠানিক রুপই হচ্ছে মাদরাসা শিক্ষা। ইহলৌকিক উন্নতির সাথে সাথে পারলৌকিক মুক্তির পথ দেখাতেই প্রতিষ্ঠা"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > homePage > homePagePost"
+        ],
+        "summary": "homePagePost",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/homePage/homePagePost/homePagePost-f93083": {
+      "get": {
+        "tags": [
+          "api > v1 > homePage > homePagePost"
+        ],
+        "summary": "homePagePost/:homePagePostId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > homePage > homePagePost"
+        ],
+        "summary": "homePagePost/:homePagePostId",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "উপধ্যক্ষের বাণী 2"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "উপধ্যক্ষের বাণী"
+                  },
+                  "postImage": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "বাংলাদেশের শিক্ষা ব্যবস্থার একটি পূর্ণাঙ্গ ধারা মাদরাসা শিক্ষা। সাধারণ শিক্ষার পাশপাশি সমান্তরালভাবে এটি বয়ে চলেছে দীর্ঘদিন ধরে এবং এ দেশের জন-মানসে তার স্থান করে নিয়েছে সুরক্ষিত ও সুদৃঢ়ভাবে। ধর্মীয় শিক্ষা ও জাগতিক শিক্ষা দুটি পরস্পরের পরিপুরক। এ সমন্বিত ইসলামী শিক্ষা ব্যবস্থার প্রতিষ্ঠানিক রুপই হচ্ছে মাদরাসা শিক্ষা। ইহলৌকিক উন্নতির সাথে সাথে পারলৌকিক মুক্তির পথ দেখাতেই প্রতিষ্ঠা"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > homePage > homePagePost"
+        ],
+        "summary": "homePagePost/:homePagePostId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/homePage/homePageCarousel": {
+      "post": {
+        "tags": [
+          "api > v1 > homePage > homePageCarousel"
+        ],
+        "summary": "homePageCarousel",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "home Page Carousel image "
+                  },
+                  "galleryImage": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > homePage > homePageCarousel"
+        ],
+        "summary": "homePageCarousel",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/homePage/homePageCarousel/homePageCarousel-b018ed": {
+      "get": {
+        "tags": [
+          "api > v1 > homePage > homePageCarousel"
+        ],
+        "summary": "homePageCarousel/:homePageCarouselId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > homePage > homePageCarousel"
+        ],
+        "summary": "homePageCarousel/:homePageCarouselId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/homePage/homePageGallery": {
+      "post": {
+        "tags": [
+          "api > v1 > homePage > homePageGallery"
+        ],
+        "summary": "homePageGallery",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "home Page Carousel image "
+                  },
+                  "galleryImage": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > homePage > homePageGallery"
+        ],
+        "summary": "homePageGallery",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/homePage/homePageGallery/homePageGallery-358162": {
+      "get": {
+        "tags": [
+          "api > v1 > homePage > homePageGallery"
+        ],
+        "summary": "homePageGallery/homePageGalleryId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "api > v1 > homePage > homePageGallery"
+        ],
+        "summary": "homePageGallery/homePageGalleryId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/blog": {
+      "post": {
+        "tags": [
+          "api > v1 > blog"
+        ],
+        "summary": "blog",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "প্রতিষ্ঠানের ইতিহাস"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "প্রতিষ্ঠানের ইতিহাস"
+                  },
+                  "postImage": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "সুনামগঞ্জ জেলাধীন জগন্নাথপুরস্থ এক প্রাচীন জনপদের নাম ইসহাকপুর । এ গ্রামের সম্ভ্রান্ত ধর্মভীরু মুসলিম পরিবার সমূহের মধ্যে শীর্ষস্থানে অবস্থান খান পরিবারের । বংশমর্যাদায় যেমন শ্রেষ্ঠত্বের দাবীদার তেমনি শিক্ষা-দীক্ষায়, ধর্মভীরুতায়.সামাজিক আচার-অনুষ্ঠানে এ জনপদের অন্য সবের উপর রয়েছে এ পরিবারের অতুলনীয় সম্মান। যতদূর জানা যায় মরহুম দেলওয়ার খান ছিলেন এ পরিবারের একজন শিক্ষিত ব্যক্তি ।"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "api > v1 > blog"
+        ],
+        "summary": "blog",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/blog/blogPost-659c75": {
+      "get": {
+        "tags": [
+          "api > v1 > blog"
+        ],
+        "summary": "blog/:blogId",
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "api > v1 > blog"
+        ],
+        "summary": "blog/:blogId",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "প্রতিষ্ঠানের ইতিহাস 3"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "প্রতিষ্ঠানের ইতিহাস"
+                  },
+                  "postImage": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "সুনামগঞ্জ জেলাধীন জগন্নাথপুরস্থ এক প্রাচীন জনপদের নাম ইসহাকপুর । এ গ্রামের সম্ভ্রান্ত ধর্মভীরু মুসলিম পরিবার সমূহের মধ্যে শীর্ষস্থানে অবস্থান খান পরিবারের । বংশমর্যাদায় যেমন শ্রেষ্ঠত্বের দাবীদার তেমনি শিক্ষা-দীক্ষায়, ধর্মভীরুতায়.সামাজিক আচার-অনুষ্ঠানে এ জনপদের অন্য সবের উপর রয়েছে এ পরিবারের অতুলনীয় সম্মান। যতদূর জানা যায় মরহুম দেলওয়ার খান ছিলেন এ পরিবারের একজন শিক্ষিত ব্যক্তি ।"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/{API_VERSION}/blog/blogPost-67dc58": {
+      "delete": {
+        "tags": [
+          "api > v1 > blog"
+        ],
+        "summary": "blog/:blogId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "API_VERSION",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "tags": [
+          "status"
+        ],
+        "summary": "status",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "index"
+        ],
+        "summary": "index",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/undefined": {
+      "get": {
+        "tags": [
+          "undefined"
+        ],
+        "summary": "undefined",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
       }
     }
   }

@@ -1,0 +1,4710 @@
+{
+	"info": {
+		"_postman_id": "0f44fbdb-6f54-4f8d-bcfc-8f1e4e504394",
+		"name": "School",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12432462",
+		"_collection_link": "https://bold-shadow-700506.postman.co/workspace/restoman~f98ef84e-46bf-4b30-b5a3-0a563f495445/collection/12432462-0f44fbdb-6f54-4f8d-bcfc-8f1e4e504394?action=share&source=collection_link&creator=12432462"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "v1",
+					"item": [
+						{
+							"name": "category",
+							"item": [
+								{
+									"name": "category",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var template = `\r",
+													"<div style=\"text-align:center\">\r",
+													"    <h2>{{response.status}}</h2>\r",
+													"    <h3>{{response.message}}</h3>\r",
+													"</div>\r",
+													"`;\r",
+													"\r",
+													"function constructVisualizerPayload() {\r",
+													"    return { response: pm.response.json() }\r",
+													"}\r",
+													"\r",
+													"pm.visualizer.set(template, constructVisualizerPayload());"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"কৃতি শিক্ষার্থী\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/category",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"category"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "category",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/category",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"category"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "category/:categoryId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/category/category-a84e3a",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"category",
+												"category-a84e3a"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "category/:categoryId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"শিক্ষকবৃন্দ\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/category/category-49490d",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"category",
+												"category-49490d"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "category/:categoryId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/category/category-a84e3a",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"category",
+												"category-a84e3a"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "website",
+							"item": [
+								{
+									"name": "configuration",
+									"item": [
+										{
+											"name": "configuration",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<p>{{response.message}}</p>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return {response: pm.response.json()}\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "name",
+															"value": "ডেমো সরকারী স্কুল এন্ড কলেজ",
+															"type": "text"
+														},
+														{
+															"key": "slogan",
+															"value": "Website Slogan",
+															"type": "text"
+														},
+														{
+															"key": "websiteLogo",
+															"type": "file",
+															"src": "/E:/OTHERS/DOWNLOADS/logo.png"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/configuration",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"configuration"
+													]
+												},
+												"description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "configuration",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<style type=\"text/css\">\r",
+															"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+															"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+															"    .tftable tr {background-color:#ffffff;}\r",
+															"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+															"    .tftable tr:hover {background-color:#e0ffff;}\r",
+															"</style>\r",
+															"\r",
+															"<table class=\"tftable\" border=\"1\">\r",
+															"    <tr>\r",
+															"        <th>ID</th>\r",
+															"        <th>Name</th>\r",
+															"        <th>Slogan</th>\r",
+															"        <th>Address</th>\r",
+															"        <th>Google Map Location</th>\r",
+															"        <th>Mobile</th>\r",
+															"        <th>Phone</th>\r",
+															"        <th>Email</th>\r",
+															"        <th>Website</th>\r",
+															"        <th>Facebook</th>\r",
+															"        <th>Twitter</th>\r",
+															"        <th>Instagram</th>\r",
+															"        <th>LinkedIn</th>\r",
+															"        <th>Official Links</th>\r",
+															"        <th>Important Information Links</th>\r",
+															"        <th>Created At</th>\r",
+															"    </tr>\r",
+															"    \r",
+															"    {{#each response.data}}\r",
+															"        <tr>\r",
+															"            <td>{{id}}</td>\r",
+															"            <td>{{name}}</td>\r",
+															"            <td>{{slogan}}</td>\r",
+															"            <td>{{contact.address}}</td>\r",
+															"            <td>{{contact.googleMapLocation}}</td>\r",
+															"            <td>{{contact.mobile}}</td>\r",
+															"            <td>{{contact.phone}}</td>\r",
+															"            <td>{{contact.email}}</td>\r",
+															"            <td>{{contact.website}}</td>\r",
+															"            <td>{{socialMediaLinks.facebook}}</td>\r",
+															"            <td>{{socialMediaLinks.twitter}}</td>\r",
+															"            <td>{{socialMediaLinks.instagram}}</td>\r",
+															"            <td>{{socialMediaLinks.linkedin}}</td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each officialLinks}}\r",
+															"                        <li><a href=\"{{officialLink}}\">{{officialLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each importantInformationLinks}}\r",
+															"                        <li><a href=\"{{importantInformationLink}}\">{{importantInformationLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>{{createdAt}}</td>\r",
+															"        </tr>\r",
+															"    {{/each}}\r",
+															"</table>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return { response: pm.response.json() }\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());pm.test(\"Schema is valid\", function () {\r",
+															"  var schema = {\r",
+															"    type: \"object\",\r",
+															"    properties: {\r",
+															"      data: {\r",
+															"        type: \"array\",\r",
+															"        items: {\r",
+															"          type: \"object\",\r",
+															"          properties: {\r",
+															"            id: { type: \"string\" },\r",
+															"            name: { type: \"string\" },\r",
+															"            slogan: { type: \"string\" },\r",
+															"            contact: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                address: { type: \"string\" },\r",
+															"                googleMapLocation: { type: \"string\" },\r",
+															"                mobile: { type: \"string\" },\r",
+															"                phone: { type: \"string\" },\r",
+															"                email: { type: \"string\" },\r",
+															"                website: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"address\", \"googleMapLocation\", \"mobile\", \"phone\", \"email\", \"website\"]\r",
+															"            },\r",
+															"            socialMediaLinks: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                facebook: { type: \"string\" },\r",
+															"                twitter: { type: \"string\" },\r",
+															"                instagram: { type: \"string\" },\r",
+															"                linkedin: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"facebook\", \"twitter\", \"instagram\", \"linkedin\"]\r",
+															"            },\r",
+															"            officialLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  officialLinkTitle: { type: \"string\" },\r",
+															"                  officialLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"officialLinkTitle\", \"officialLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            importantInformationLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  importantInformationLinkTitle: { type: \"string\" },\r",
+															"                  importantInformationLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"importantInformationLinkTitle\", \"importantInformationLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            createdAt: { type: \"string\" }\r",
+															"          },\r",
+															"          required: [\"id\", \"name\", \"slogan\", \"contact\", \"socialMediaLinks\", \"officialLinks\", \"importantInformationLinks\", \"createdAt\"]\r",
+															"        }\r",
+															"      },\r",
+															"      success: { type: \"boolean\" },\r",
+															"      status: { type: \"number\" },\r",
+															"      message: { type: \"string\" }\r",
+															"    },\r",
+															"    required: [\"data\", \"success\", \"status\", \"message\"]\r",
+															"  };\r",
+															"\r",
+															"  var response = pm.response.json();\r",
+															"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/configuration",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"configuration"
+													]
+												},
+												"description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "configuration",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<p>{{response.message}}</p>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return {response: pm.response.json()}\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "name",
+															"value": "ডেমো সরকারী স্কুল এন্ড কলেজ",
+															"type": "text"
+														},
+														{
+															"key": "slogan",
+															"value": "Website Slogan 2",
+															"type": "text"
+														},
+														{
+															"key": "websiteLogo",
+															"type": "file",
+															"src": "/E:/OTHERS/DOWNLOADS/MONTASIM.png"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/configuration",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"configuration"
+													]
+												},
+												"description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "configuration",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/configuration",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"configuration"
+													]
+												},
+												"description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n"
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "bearer",
+										"bearer": [
+											{
+												"key": "token",
+												"value": "{{JWT_TOKEN}}",
+												"type": "string"
+											}
+										]
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								},
+								{
+									"name": "contact",
+									"item": [
+										{
+											"name": "contact",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<p>{{response.message}}</p>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return {response: pm.response.json()}\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"address\": \"আপনার ঠিকানা।\",\r\n    \"googleMapLocation\": {\r\n        \"latitude\": \"34.0522N\",\r\n        \"longitude\": \"118.2437W\"\r\n    },\r\n    \"mobile\": \"01711112233\",\r\n    \"phone\": \"01711112233\",\r\n    \"email\": \"email@yourdomain.com\",\r\n    \"website\": \"https://www.yourdomain.com\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/contact",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"contact"
+													]
+												},
+												"description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "contact",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<style type=\"text/css\">\r",
+															"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+															"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+															"    .tftable tr {background-color:#ffffff;}\r",
+															"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+															"    .tftable tr:hover {background-color:#e0ffff;}\r",
+															"</style>\r",
+															"\r",
+															"<table class=\"tftable\" border=\"1\">\r",
+															"    <tr>\r",
+															"        <th>ID</th>\r",
+															"        <th>Name</th>\r",
+															"        <th>Slogan</th>\r",
+															"        <th>Address</th>\r",
+															"        <th>Google Map Location</th>\r",
+															"        <th>Mobile</th>\r",
+															"        <th>Phone</th>\r",
+															"        <th>Email</th>\r",
+															"        <th>Website</th>\r",
+															"        <th>Facebook</th>\r",
+															"        <th>Twitter</th>\r",
+															"        <th>Instagram</th>\r",
+															"        <th>LinkedIn</th>\r",
+															"        <th>Official Links</th>\r",
+															"        <th>Important Information Links</th>\r",
+															"        <th>Created At</th>\r",
+															"    </tr>\r",
+															"    \r",
+															"    {{#each response.data}}\r",
+															"        <tr>\r",
+															"            <td>{{id}}</td>\r",
+															"            <td>{{name}}</td>\r",
+															"            <td>{{slogan}}</td>\r",
+															"            <td>{{contact.address}}</td>\r",
+															"            <td>{{contact.googleMapLocation}}</td>\r",
+															"            <td>{{contact.mobile}}</td>\r",
+															"            <td>{{contact.phone}}</td>\r",
+															"            <td>{{contact.email}}</td>\r",
+															"            <td>{{contact.website}}</td>\r",
+															"            <td>{{socialMediaLinks.facebook}}</td>\r",
+															"            <td>{{socialMediaLinks.twitter}}</td>\r",
+															"            <td>{{socialMediaLinks.instagram}}</td>\r",
+															"            <td>{{socialMediaLinks.linkedin}}</td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each officialLinks}}\r",
+															"                        <li><a href=\"{{officialLink}}\">{{officialLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each importantInformationLinks}}\r",
+															"                        <li><a href=\"{{importantInformationLink}}\">{{importantInformationLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>{{createdAt}}</td>\r",
+															"        </tr>\r",
+															"    {{/each}}\r",
+															"</table>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return { response: pm.response.json() }\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());pm.test(\"Schema is valid\", function () {\r",
+															"  var schema = {\r",
+															"    type: \"object\",\r",
+															"    properties: {\r",
+															"      data: {\r",
+															"        type: \"array\",\r",
+															"        items: {\r",
+															"          type: \"object\",\r",
+															"          properties: {\r",
+															"            id: { type: \"string\" },\r",
+															"            name: { type: \"string\" },\r",
+															"            slogan: { type: \"string\" },\r",
+															"            contact: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                address: { type: \"string\" },\r",
+															"                googleMapLocation: { type: \"string\" },\r",
+															"                mobile: { type: \"string\" },\r",
+															"                phone: { type: \"string\" },\r",
+															"                email: { type: \"string\" },\r",
+															"                website: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"address\", \"googleMapLocation\", \"mobile\", \"phone\", \"email\", \"website\"]\r",
+															"            },\r",
+															"            socialMediaLinks: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                facebook: { type: \"string\" },\r",
+															"                twitter: { type: \"string\" },\r",
+															"                instagram: { type: \"string\" },\r",
+															"                linkedin: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"facebook\", \"twitter\", \"instagram\", \"linkedin\"]\r",
+															"            },\r",
+															"            officialLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  officialLinkTitle: { type: \"string\" },\r",
+															"                  officialLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"officialLinkTitle\", \"officialLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            importantInformationLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  importantInformationLinkTitle: { type: \"string\" },\r",
+															"                  importantInformationLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"importantInformationLinkTitle\", \"importantInformationLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            createdAt: { type: \"string\" }\r",
+															"          },\r",
+															"          required: [\"id\", \"name\", \"slogan\", \"contact\", \"socialMediaLinks\", \"officialLinks\", \"importantInformationLinks\", \"createdAt\"]\r",
+															"        }\r",
+															"      },\r",
+															"      success: { type: \"boolean\" },\r",
+															"      status: { type: \"number\" },\r",
+															"      message: { type: \"string\" }\r",
+															"    },\r",
+															"    required: [\"data\", \"success\", \"status\", \"message\"]\r",
+															"  };\r",
+															"\r",
+															"  var response = pm.response.json();\r",
+															"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/contact",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"contact"
+													]
+												},
+												"description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "contact",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"address\": \"আপনার ঠিকানা। SDHYSUHDUSHDUH\",\r\n    \"googleMapLocation\": {\r\n        \"latitude\": \"34.0522N\",\r\n        \"longitude\": \"118.2437W\"\r\n    },\r\n    \"mobile\": \"01711112233\",\r\n    \"phone\": \"01711112233\",\r\n    \"email\": \"email@yourdomain.com\",\r\n    \"website\": \"https://www.yourdomain.com\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/contact",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"contact"
+													]
+												},
+												"description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "contact",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/contact",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"contact"
+													]
+												},
+												"description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n"
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "bearer",
+										"bearer": [
+											{
+												"key": "token",
+												"value": "{{JWT_TOKEN}}",
+												"type": "string"
+											}
+										]
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								},
+								{
+									"name": "importantInformationLink",
+									"item": [
+										{
+											"name": "importantInformationLink",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<p>{{response.message}}</p>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return {response: pm.response.json()}\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"importantInformationLinkTitle\": \"মাল্টিমিডিয়া ক্লাসরুম ম্যানেজমেন্ট 2\",\r\n    \"importantInformationLink\": \"https://school-abid.vercel.app/\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/importantInformationLink",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"importantInformationLink"
+													]
+												},
+												"description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "importantInformationLink",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<style type=\"text/css\">\r",
+															"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+															"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+															"    .tftable tr {background-color:#ffffff;}\r",
+															"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+															"    .tftable tr:hover {background-color:#e0ffff;}\r",
+															"</style>\r",
+															"\r",
+															"<table class=\"tftable\" border=\"1\">\r",
+															"    <tr>\r",
+															"        <th>ID</th>\r",
+															"        <th>Name</th>\r",
+															"        <th>Slogan</th>\r",
+															"        <th>Address</th>\r",
+															"        <th>Google Map Location</th>\r",
+															"        <th>Mobile</th>\r",
+															"        <th>Phone</th>\r",
+															"        <th>Email</th>\r",
+															"        <th>Website</th>\r",
+															"        <th>Facebook</th>\r",
+															"        <th>Twitter</th>\r",
+															"        <th>Instagram</th>\r",
+															"        <th>LinkedIn</th>\r",
+															"        <th>Official Links</th>\r",
+															"        <th>Important Information Links</th>\r",
+															"        <th>Created At</th>\r",
+															"    </tr>\r",
+															"    \r",
+															"    {{#each response.data}}\r",
+															"        <tr>\r",
+															"            <td>{{id}}</td>\r",
+															"            <td>{{name}}</td>\r",
+															"            <td>{{slogan}}</td>\r",
+															"            <td>{{contact.address}}</td>\r",
+															"            <td>{{contact.googleMapLocation}}</td>\r",
+															"            <td>{{contact.mobile}}</td>\r",
+															"            <td>{{contact.phone}}</td>\r",
+															"            <td>{{contact.email}}</td>\r",
+															"            <td>{{contact.website}}</td>\r",
+															"            <td>{{socialMediaLinks.facebook}}</td>\r",
+															"            <td>{{socialMediaLinks.twitter}}</td>\r",
+															"            <td>{{socialMediaLinks.instagram}}</td>\r",
+															"            <td>{{socialMediaLinks.linkedin}}</td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each officialLinks}}\r",
+															"                        <li><a href=\"{{officialLink}}\">{{officialLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each importantInformationLinks}}\r",
+															"                        <li><a href=\"{{importantInformationLink}}\">{{importantInformationLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>{{createdAt}}</td>\r",
+															"        </tr>\r",
+															"    {{/each}}\r",
+															"</table>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return { response: pm.response.json() }\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());pm.test(\"Schema is valid\", function () {\r",
+															"  var schema = {\r",
+															"    type: \"object\",\r",
+															"    properties: {\r",
+															"      data: {\r",
+															"        type: \"array\",\r",
+															"        items: {\r",
+															"          type: \"object\",\r",
+															"          properties: {\r",
+															"            id: { type: \"string\" },\r",
+															"            name: { type: \"string\" },\r",
+															"            slogan: { type: \"string\" },\r",
+															"            contact: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                address: { type: \"string\" },\r",
+															"                googleMapLocation: { type: \"string\" },\r",
+															"                mobile: { type: \"string\" },\r",
+															"                phone: { type: \"string\" },\r",
+															"                email: { type: \"string\" },\r",
+															"                website: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"address\", \"googleMapLocation\", \"mobile\", \"phone\", \"email\", \"website\"]\r",
+															"            },\r",
+															"            socialMediaLinks: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                facebook: { type: \"string\" },\r",
+															"                twitter: { type: \"string\" },\r",
+															"                instagram: { type: \"string\" },\r",
+															"                linkedin: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"facebook\", \"twitter\", \"instagram\", \"linkedin\"]\r",
+															"            },\r",
+															"            officialLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  officialLinkTitle: { type: \"string\" },\r",
+															"                  officialLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"officialLinkTitle\", \"officialLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            importantInformationLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  importantInformationLinkTitle: { type: \"string\" },\r",
+															"                  importantInformationLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"importantInformationLinkTitle\", \"importantInformationLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            createdAt: { type: \"string\" }\r",
+															"          },\r",
+															"          required: [\"id\", \"name\", \"slogan\", \"contact\", \"socialMediaLinks\", \"officialLinks\", \"importantInformationLinks\", \"createdAt\"]\r",
+															"        }\r",
+															"      },\r",
+															"      success: { type: \"boolean\" },\r",
+															"      status: { type: \"number\" },\r",
+															"      message: { type: \"string\" }\r",
+															"    },\r",
+															"    required: [\"data\", \"success\", \"status\", \"message\"]\r",
+															"  };\r",
+															"\r",
+															"  var response = pm.response.json();\r",
+															"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/importantInformationLink",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"importantInformationLink"
+													]
+												},
+												"description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "importantInformationLink/importantInformationLinkId",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<style type=\"text/css\">\r",
+															"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+															"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+															"    .tftable tr {background-color:#ffffff;}\r",
+															"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+															"    .tftable tr:hover {background-color:#e0ffff;}\r",
+															"</style>\r",
+															"\r",
+															"<table class=\"tftable\" border=\"1\">\r",
+															"    <tr>\r",
+															"        <th>ID</th>\r",
+															"        <th>Name</th>\r",
+															"        <th>Slogan</th>\r",
+															"        <th>Address</th>\r",
+															"        <th>Google Map Location</th>\r",
+															"        <th>Mobile</th>\r",
+															"        <th>Phone</th>\r",
+															"        <th>Email</th>\r",
+															"        <th>Website</th>\r",
+															"        <th>Facebook</th>\r",
+															"        <th>Twitter</th>\r",
+															"        <th>Instagram</th>\r",
+															"        <th>LinkedIn</th>\r",
+															"        <th>Official Links</th>\r",
+															"        <th>Important Information Links</th>\r",
+															"        <th>Created At</th>\r",
+															"    </tr>\r",
+															"    \r",
+															"    {{#each response.data}}\r",
+															"        <tr>\r",
+															"            <td>{{id}}</td>\r",
+															"            <td>{{name}}</td>\r",
+															"            <td>{{slogan}}</td>\r",
+															"            <td>{{contact.address}}</td>\r",
+															"            <td>{{contact.googleMapLocation}}</td>\r",
+															"            <td>{{contact.mobile}}</td>\r",
+															"            <td>{{contact.phone}}</td>\r",
+															"            <td>{{contact.email}}</td>\r",
+															"            <td>{{contact.website}}</td>\r",
+															"            <td>{{socialMediaLinks.facebook}}</td>\r",
+															"            <td>{{socialMediaLinks.twitter}}</td>\r",
+															"            <td>{{socialMediaLinks.instagram}}</td>\r",
+															"            <td>{{socialMediaLinks.linkedin}}</td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each officialLinks}}\r",
+															"                        <li><a href=\"{{officialLink}}\">{{officialLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each importantInformationLinks}}\r",
+															"                        <li><a href=\"{{importantInformationLink}}\">{{importantInformationLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>{{createdAt}}</td>\r",
+															"        </tr>\r",
+															"    {{/each}}\r",
+															"</table>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return { response: pm.response.json() }\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());pm.test(\"Schema is valid\", function () {\r",
+															"  var schema = {\r",
+															"    type: \"object\",\r",
+															"    properties: {\r",
+															"      data: {\r",
+															"        type: \"array\",\r",
+															"        items: {\r",
+															"          type: \"object\",\r",
+															"          properties: {\r",
+															"            id: { type: \"string\" },\r",
+															"            name: { type: \"string\" },\r",
+															"            slogan: { type: \"string\" },\r",
+															"            contact: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                address: { type: \"string\" },\r",
+															"                googleMapLocation: { type: \"string\" },\r",
+															"                mobile: { type: \"string\" },\r",
+															"                phone: { type: \"string\" },\r",
+															"                email: { type: \"string\" },\r",
+															"                website: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"address\", \"googleMapLocation\", \"mobile\", \"phone\", \"email\", \"website\"]\r",
+															"            },\r",
+															"            socialMediaLinks: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                facebook: { type: \"string\" },\r",
+															"                twitter: { type: \"string\" },\r",
+															"                instagram: { type: \"string\" },\r",
+															"                linkedin: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"facebook\", \"twitter\", \"instagram\", \"linkedin\"]\r",
+															"            },\r",
+															"            officialLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  officialLinkTitle: { type: \"string\" },\r",
+															"                  officialLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"officialLinkTitle\", \"officialLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            importantInformationLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  importantInformationLinkTitle: { type: \"string\" },\r",
+															"                  importantInformationLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"importantInformationLinkTitle\", \"importantInformationLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            createdAt: { type: \"string\" }\r",
+															"          },\r",
+															"          required: [\"id\", \"name\", \"slogan\", \"contact\", \"socialMediaLinks\", \"officialLinks\", \"importantInformationLinks\", \"createdAt\"]\r",
+															"        }\r",
+															"      },\r",
+															"      success: { type: \"boolean\" },\r",
+															"      status: { type: \"number\" },\r",
+															"      message: { type: \"string\" }\r",
+															"    },\r",
+															"    required: [\"data\", \"success\", \"status\", \"message\"]\r",
+															"  };\r",
+															"\r",
+															"  var response = pm.response.json();\r",
+															"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/importantInformationLink/websiteImportantInformationLink-b98602",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"importantInformationLink",
+														"websiteImportantInformationLink-b98602"
+													]
+												},
+												"description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "importantInformationLink/importantInformationLinkId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"importantInformationLinkTitle\": \"মাল্টিমিডিয়া ক্লাসরুম ম্যানেজমেন্ট 2\",\r\n    \"importantInformationLink\": \"https://school-abid.vercel.app/\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/importantInformationLink/websiteImportantInformationLink-b98602",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"importantInformationLink",
+														"websiteImportantInformationLink-b98602"
+													]
+												},
+												"description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "importantInformationLink/importantInformationLinkId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/importantInformationLink/websiteImportantInformationLink-b98602",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"importantInformationLink",
+														"websiteImportantInformationLink-b98602"
+													]
+												},
+												"description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n"
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "bearer",
+										"bearer": [
+											{
+												"key": "token",
+												"value": "{{JWT_TOKEN}}",
+												"type": "string"
+											}
+										]
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								},
+								{
+									"name": "officialLink",
+									"item": [
+										{
+											"name": "officialLink",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<p>{{response.message}}</p>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return {response: pm.response.json()}\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"officialLinkTitle\": \"সেকায়েপ\",\r\n    \"officialLink\": \"https://school-abid.vercel.app/\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/officialLink",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"officialLink"
+													]
+												},
+												"description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "officialLink",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<style type=\"text/css\">\r",
+															"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+															"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+															"    .tftable tr {background-color:#ffffff;}\r",
+															"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+															"    .tftable tr:hover {background-color:#e0ffff;}\r",
+															"</style>\r",
+															"\r",
+															"<table class=\"tftable\" border=\"1\">\r",
+															"    <tr>\r",
+															"        <th>ID</th>\r",
+															"        <th>Name</th>\r",
+															"        <th>Slogan</th>\r",
+															"        <th>Address</th>\r",
+															"        <th>Google Map Location</th>\r",
+															"        <th>Mobile</th>\r",
+															"        <th>Phone</th>\r",
+															"        <th>Email</th>\r",
+															"        <th>Website</th>\r",
+															"        <th>Facebook</th>\r",
+															"        <th>Twitter</th>\r",
+															"        <th>Instagram</th>\r",
+															"        <th>LinkedIn</th>\r",
+															"        <th>Official Links</th>\r",
+															"        <th>Important Information Links</th>\r",
+															"        <th>Created At</th>\r",
+															"    </tr>\r",
+															"    \r",
+															"    {{#each response.data}}\r",
+															"        <tr>\r",
+															"            <td>{{id}}</td>\r",
+															"            <td>{{name}}</td>\r",
+															"            <td>{{slogan}}</td>\r",
+															"            <td>{{contact.address}}</td>\r",
+															"            <td>{{contact.googleMapLocation}}</td>\r",
+															"            <td>{{contact.mobile}}</td>\r",
+															"            <td>{{contact.phone}}</td>\r",
+															"            <td>{{contact.email}}</td>\r",
+															"            <td>{{contact.website}}</td>\r",
+															"            <td>{{socialMediaLinks.facebook}}</td>\r",
+															"            <td>{{socialMediaLinks.twitter}}</td>\r",
+															"            <td>{{socialMediaLinks.instagram}}</td>\r",
+															"            <td>{{socialMediaLinks.linkedin}}</td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each officialLinks}}\r",
+															"                        <li><a href=\"{{officialLink}}\">{{officialLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each importantInformationLinks}}\r",
+															"                        <li><a href=\"{{importantInformationLink}}\">{{importantInformationLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>{{createdAt}}</td>\r",
+															"        </tr>\r",
+															"    {{/each}}\r",
+															"</table>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return { response: pm.response.json() }\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());pm.test(\"Schema is valid\", function () {\r",
+															"  var schema = {\r",
+															"    type: \"object\",\r",
+															"    properties: {\r",
+															"      data: {\r",
+															"        type: \"array\",\r",
+															"        items: {\r",
+															"          type: \"object\",\r",
+															"          properties: {\r",
+															"            id: { type: \"string\" },\r",
+															"            name: { type: \"string\" },\r",
+															"            slogan: { type: \"string\" },\r",
+															"            contact: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                address: { type: \"string\" },\r",
+															"                googleMapLocation: { type: \"string\" },\r",
+															"                mobile: { type: \"string\" },\r",
+															"                phone: { type: \"string\" },\r",
+															"                email: { type: \"string\" },\r",
+															"                website: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"address\", \"googleMapLocation\", \"mobile\", \"phone\", \"email\", \"website\"]\r",
+															"            },\r",
+															"            socialMediaLinks: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                facebook: { type: \"string\" },\r",
+															"                twitter: { type: \"string\" },\r",
+															"                instagram: { type: \"string\" },\r",
+															"                linkedin: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"facebook\", \"twitter\", \"instagram\", \"linkedin\"]\r",
+															"            },\r",
+															"            officialLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  officialLinkTitle: { type: \"string\" },\r",
+															"                  officialLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"officialLinkTitle\", \"officialLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            importantInformationLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  importantInformationLinkTitle: { type: \"string\" },\r",
+															"                  importantInformationLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"importantInformationLinkTitle\", \"importantInformationLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            createdAt: { type: \"string\" }\r",
+															"          },\r",
+															"          required: [\"id\", \"name\", \"slogan\", \"contact\", \"socialMediaLinks\", \"officialLinks\", \"importantInformationLinks\", \"createdAt\"]\r",
+															"        }\r",
+															"      },\r",
+															"      success: { type: \"boolean\" },\r",
+															"      status: { type: \"number\" },\r",
+															"      message: { type: \"string\" }\r",
+															"    },\r",
+															"    required: [\"data\", \"success\", \"status\", \"message\"]\r",
+															"  };\r",
+															"\r",
+															"  var response = pm.response.json();\r",
+															"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/officialLink",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"officialLink"
+													]
+												},
+												"description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "officialLink:/officialLinkId",
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": []
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/officialLink/websiteOfficialLink-af5eb3",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"officialLink",
+														"websiteOfficialLink-af5eb3"
+													]
+												},
+												"description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "officialLink:/officialLinkId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"officialLinkTitle\": \"সেকায়েপ\",\r\n    \"officialLink\": \"https://school-abid.vercel.app/\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/officialLink/websiteOfficialLink-af5eb3",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"officialLink",
+														"websiteOfficialLink-af5eb3"
+													]
+												},
+												"description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "officialLink:/officialLinkId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/officialLink/websiteOfficialLink-af5eb3",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"officialLink",
+														"websiteOfficialLink-af5eb3"
+													]
+												},
+												"description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n"
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "bearer",
+										"bearer": [
+											{
+												"key": "token",
+												"value": "{{JWT_TOKEN}}",
+												"type": "string"
+											}
+										]
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								},
+								{
+									"name": "socialMediaLink",
+									"item": [
+										{
+											"name": "socialMediaLink",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<p>{{response.message}}</p>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return {response: pm.response.json()}\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"socialMediaLinkTitle\": \"GitHub\",\r\n    \"socialMediaLink\": \"https://school-abid.vercel.app/\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/socialMediaLink",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"socialMediaLink"
+													]
+												},
+												"description": "\nThis endpoint allows developers to create a new website.\n\n#### Request Parameters\n\nThe request must include a JSON object in the request body. The JSON object should have the following properties:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| url | String | The URL of the website |\n| description | String | A description of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nIn the event of an error, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates whether the request was successful |\n| status | Integer | The status code of the response |\n| message | String | A message indicating the result of the request |\n\nThe status code 422 indicates that the request was unable to be processed due to invalid input data.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "socialMediaLink",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"var template = `\r",
+															"<style type=\"text/css\">\r",
+															"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+															"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+															"    .tftable tr {background-color:#ffffff;}\r",
+															"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+															"    .tftable tr:hover {background-color:#e0ffff;}\r",
+															"</style>\r",
+															"\r",
+															"<table class=\"tftable\" border=\"1\">\r",
+															"    <tr>\r",
+															"        <th>ID</th>\r",
+															"        <th>Name</th>\r",
+															"        <th>Slogan</th>\r",
+															"        <th>Address</th>\r",
+															"        <th>Google Map Location</th>\r",
+															"        <th>Mobile</th>\r",
+															"        <th>Phone</th>\r",
+															"        <th>Email</th>\r",
+															"        <th>Website</th>\r",
+															"        <th>Facebook</th>\r",
+															"        <th>Twitter</th>\r",
+															"        <th>Instagram</th>\r",
+															"        <th>LinkedIn</th>\r",
+															"        <th>Official Links</th>\r",
+															"        <th>Important Information Links</th>\r",
+															"        <th>Created At</th>\r",
+															"    </tr>\r",
+															"    \r",
+															"    {{#each response.data}}\r",
+															"        <tr>\r",
+															"            <td>{{id}}</td>\r",
+															"            <td>{{name}}</td>\r",
+															"            <td>{{slogan}}</td>\r",
+															"            <td>{{contact.address}}</td>\r",
+															"            <td>{{contact.googleMapLocation}}</td>\r",
+															"            <td>{{contact.mobile}}</td>\r",
+															"            <td>{{contact.phone}}</td>\r",
+															"            <td>{{contact.email}}</td>\r",
+															"            <td>{{contact.website}}</td>\r",
+															"            <td>{{socialMediaLinks.facebook}}</td>\r",
+															"            <td>{{socialMediaLinks.twitter}}</td>\r",
+															"            <td>{{socialMediaLinks.instagram}}</td>\r",
+															"            <td>{{socialMediaLinks.linkedin}}</td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each officialLinks}}\r",
+															"                        <li><a href=\"{{officialLink}}\">{{officialLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>\r",
+															"                <ul>\r",
+															"                    {{#each importantInformationLinks}}\r",
+															"                        <li><a href=\"{{importantInformationLink}}\">{{importantInformationLinkTitle}}</a></li>\r",
+															"                    {{/each}}\r",
+															"                </ul>\r",
+															"            </td>\r",
+															"            <td>{{createdAt}}</td>\r",
+															"        </tr>\r",
+															"    {{/each}}\r",
+															"</table>\r",
+															"`;\r",
+															"\r",
+															"function constructVisualizerPayload() {\r",
+															"    return { response: pm.response.json() }\r",
+															"}\r",
+															"\r",
+															"pm.visualizer.set(template, constructVisualizerPayload());pm.test(\"Schema is valid\", function () {\r",
+															"  var schema = {\r",
+															"    type: \"object\",\r",
+															"    properties: {\r",
+															"      data: {\r",
+															"        type: \"array\",\r",
+															"        items: {\r",
+															"          type: \"object\",\r",
+															"          properties: {\r",
+															"            id: { type: \"string\" },\r",
+															"            name: { type: \"string\" },\r",
+															"            slogan: { type: \"string\" },\r",
+															"            contact: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                address: { type: \"string\" },\r",
+															"                googleMapLocation: { type: \"string\" },\r",
+															"                mobile: { type: \"string\" },\r",
+															"                phone: { type: \"string\" },\r",
+															"                email: { type: \"string\" },\r",
+															"                website: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"address\", \"googleMapLocation\", \"mobile\", \"phone\", \"email\", \"website\"]\r",
+															"            },\r",
+															"            socialMediaLinks: {\r",
+															"              type: \"object\",\r",
+															"              properties: {\r",
+															"                facebook: { type: \"string\" },\r",
+															"                twitter: { type: \"string\" },\r",
+															"                instagram: { type: \"string\" },\r",
+															"                linkedin: { type: \"string\" }\r",
+															"              },\r",
+															"              required: [\"facebook\", \"twitter\", \"instagram\", \"linkedin\"]\r",
+															"            },\r",
+															"            officialLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  officialLinkTitle: { type: \"string\" },\r",
+															"                  officialLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"officialLinkTitle\", \"officialLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            importantInformationLinks: {\r",
+															"              type: \"array\",\r",
+															"              items: {\r",
+															"                type: \"object\",\r",
+															"                properties: {\r",
+															"                  importantInformationLinkTitle: { type: \"string\" },\r",
+															"                  importantInformationLink: { type: \"string\" }\r",
+															"                },\r",
+															"                required: [\"importantInformationLinkTitle\", \"importantInformationLink\"]\r",
+															"              }\r",
+															"            },\r",
+															"            createdAt: { type: \"string\" }\r",
+															"          },\r",
+															"          required: [\"id\", \"name\", \"slogan\", \"contact\", \"socialMediaLinks\", \"officialLinks\", \"importantInformationLinks\", \"createdAt\"]\r",
+															"        }\r",
+															"      },\r",
+															"      success: { type: \"boolean\" },\r",
+															"      status: { type: \"number\" },\r",
+															"      message: { type: \"string\" }\r",
+															"    },\r",
+															"    required: [\"data\", \"success\", \"status\", \"message\"]\r",
+															"  };\r",
+															"\r",
+															"  var response = pm.response.json();\r",
+															"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/socialMediaLink",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"socialMediaLink"
+													]
+												},
+												"description": "\nThis endpoint allows developers to retrieve information about a website.\n\n#### Request Parameters\n\nThere are no request parameters for this endpoint.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain a 'data' array with the website information. Each website object will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| id | String | Unique identifier of the website |\n| name | String | Name of the website |\n| slogan | String | Slogan of the website |\n| contact | Object | Contact information for the website |\n| socialMediaLinks | Object | Social media links for the website |\n| officialLinks | Array | Array of official links for the website |\n| importantInformationLinks | Array | Array of important information links for the website |\n| createdAt | String | Timestamp of when the website was created |\n\nThe response will also contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the response |\n| message | String | Additional message related to the response |\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "socialMediaLink/socialMediaLinkId",
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/socialMediaLink/websiteSocialMediaLink-dc2d33",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"socialMediaLink",
+														"websiteSocialMediaLink-dc2d33"
+													]
+												},
+												"description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "socialMediaLink/socialMediaLinkId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"socialMediaLinkTitle\": \"GitHub 2\",\r\n    \"socialMediaLink\": \"https://school-abid.vercel.app/\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/socialMediaLink/websiteSocialMediaLink-dc2d33",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"socialMediaLink",
+														"websiteSocialMediaLink-dc2d33"
+													]
+												},
+												"description": "\nThis endpoint allows developers to update the website information.\n\n#### Request Parameters\n\nThe request body should contain a JSON object with the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| name | String | The name of the website |\n| slogan | String | The slogan of the website |\n| contact | Object | An object containing contact information for the website |\n| socialMediaLinks | Object | An object containing social media links for the website |\n| officialLinks | Array | An array of objects containing official links for the website |\n| importantInformationLinks | Array | An array of objects containing important information links for the website |\n| createdAt | String | The creation date of the website |\n| modifiedAt | String | The last modification date of the website |\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| data | Object | An object containing the updated website information |\n| success | Boolean | Indicates whether the request was successful or not |\n| status | Integer | The status code of the response |\n| message | String | A message associated with the response |\n\nNote: The 'data' field contains the updated website information. The other fields are metadata about the response.\n\nIn the event of an error, the response will contain an 'error' object with a 'message' field describing the error.\n"
+											},
+											"response": []
+										},
+										{
+											"name": "socialMediaLink/socialMediaLinkId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/website/socialMediaLink/websiteSocialMediaLink-dc2d33",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"website",
+														"socialMediaLink",
+														"websiteSocialMediaLink-dc2d33"
+													]
+												},
+												"description": "\nThis endpoint allows developers to delete a website.\n\n#### Response Fields\n\nIn the event of a successful request, the response will contain the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| data | Object | An empty object |\n| success | Boolean | Indicates if the request was successful |\n| status | Integer | Status code of the request |\n| message | String | A message associated with the request |\n\n"
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "bearer",
+										"bearer": [
+											{
+												"key": "token",
+												"value": "{{JWT_TOKEN}}",
+												"type": "string"
+											}
+										]
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								}
+							],
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{{JWT_TOKEN}}",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "othersInformationCategory",
+							"item": [
+								{
+									"name": "othersInformationCategory",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"পরিচালনা পরিষদ  sdsdsdsd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformationCategory",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformationCategory"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "othersInformationCategory",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformationCategory",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformationCategory"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "othersInformationCategory/:othersInformationCategoryId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformationCategory/othersInformationCategory-2eacd6",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformationCategory",
+												"othersInformationCategory-2eacd6"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "othersInformationCategory/:othersInformationCategoryId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"শিক্ষকবৃন্দ as\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformationCategory/othersInformationCategory-2eacd6",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformationCategory",
+												"othersInformationCategory-2eacd6"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "othersInformationCategory/:othersInformationCategoryId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformationCategory/othersInformationCategory-2eacd6",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformationCategory",
+												"othersInformationCategory-2eacd6"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "announcement",
+							"item": [
+								{
+									"name": "announcement",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"এই ওয়েবসাইট বিক্রি করা হবে ।\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/announcement",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"announcement"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "announcement",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/announcement",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"announcement"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "announcement/:announcementId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/announcement/announcement-ba4a73",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"announcement",
+												"announcement-ba4a73"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "announcement/:announcementId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"শিক্ষকবৃন্দ\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/announcement/announcement-ba4a73",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"announcement",
+												"announcement-ba4a73"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "announcement/:announcementId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/announcement/announcement-ba4a73",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"announcement",
+												"announcement-ba4a73"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "administration",
+							"item": [
+								{
+									"name": "administration",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "name",
+													"value": "জান্নাতুন নাঈমv1",
+													"type": "text"
+												},
+												{
+													"key": "category",
+													"value": "শিক্ষকবৃন্দ",
+													"type": "text"
+												},
+												{
+													"key": "designation",
+													"value": "কৃতি শিক্ষার্থী",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/logo.png"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/administration",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"administration"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "administration",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/administration",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"administration"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "administration/:administrationId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/administration/administration-dd87dc",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"administration",
+												"administration-dd87dc"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "administration/:administrationId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "name",
+													"value": "জান্নাতুন নাঈমv1",
+													"type": "text"
+												},
+												{
+													"key": "category",
+													"value": "শিক্ষকবৃন্দ",
+													"type": "text"
+												},
+												{
+													"key": "designation",
+													"value": "কৃতি শিক্ষার্থী",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/MONTASIM.png"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/administration/administration-dd87dc",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"administration",
+												"administration-dd87dc"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "administration/:administrationId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/administration/administration-dd87dcs",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"administration",
+												"administration-dd87dcs"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "othersInformation",
+							"item": [
+								{
+									"name": "othersInformation",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"ভর্তি তথ্য\",\r\n    \"category\": \"ভর্তি তথ্য\",\r\n    \"description\": \"এতদ্বারা জানানো যাচ্ছে যে, আগামী ১৩.১২.২০১৮ইং তারিখে ডেমো হাইস্কুল এন্ড কলেজের নবম শ্রেণীতে নতুন ছাত্রছাত্রীদের ভর্তি করা হবে। যারা জেএসসি পরীক্ষায় ২.০ পেয়েছে কেবল তারাই আবেদন করতে পারবে। আগ্রহীরা ওয়েবসাইট থেকে ফরম ডাউনলোড করে পূরণ করে্আমাদের ই-মেইলে অথবা সরাসরি আমাদের অফিসে জমা দেয়ার জন্য বলা হলো। ফরম মূল্য : ২০০ টাকা ভর্তি ফি : ২০০০ টাকা মো: কামরুল ইসলাম প্রিন্সিপাল ডোমো সরকারী হাইস্কুল এন্ড কলেজ চুনারুঘাট সদর, চুনারুঘাট, হবিগঞ্জ।\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformation",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformation"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "othersInformation",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformation",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformation"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "othersInformation/:othersInformationId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformation/othersInformation-cccb41",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformation",
+												"othersInformation-cccb41"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "othersInformation/:othersInformationId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"asdsds\",\r\n    \"category\": \"শিক্ষকবৃন্দ 1\",\r\n    \"description\": \"কৃতি শিক্ষার্থী\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformation/othersInformation-cccb41",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformation",
+												"othersInformation-cccb41"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "othersInformation/:othersInformationId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/othersInformation/othersInformation-cccb41",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"othersInformation",
+												"othersInformation-cccb41"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "authentication",
+							"item": [
+								{
+									"name": "login",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userName\": \"montasim\",\r\n    \"password\": \"password\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/authentication/login",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"authentication",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "verify-user",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/authentication/verify-user",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"authentication",
+												"verify-user"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "signup",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"montasim\",\r\n    \"userName\": \"montasim\",\r\n    \"password\": \"password\",\r\n    \"confirmPassword\": \"password\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/authentication/signup",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"authentication",
+												"signup"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "reset-password",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"oldPassword\": \"password\",\r\n    \"newPassword\": \"password1\",\r\n    \"confirmNewPassword\": \"password1\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/authentication/reset-password",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"authentication",
+												"reset-password"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete-user",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/authentication/delete-user",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"authentication",
+												"delete-user"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "student",
+							"item": [
+								{
+									"name": "student",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "name",
+													"value": "মো: রফিকুল আমিনkkkk",
+													"type": "text"
+												},
+												{
+													"key": "level",
+													"value": "১০ম শ্রেণী",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/SHUVO 2.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/student",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"student"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "student",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/student",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"student"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "student/:studentId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/student/student-3810a3",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"student",
+												"student-3810a3"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "student/:studentId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "name",
+													"value": "মো: রফিকুল আমিন okay",
+													"type": "text"
+												},
+												{
+													"key": "level",
+													"value": "১০ম শ্রেণী",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/logo.png"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/student/student-3810a3",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"student",
+												"student-3810a3"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "student/:studentId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "file",
+											"file": {}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/student/student-3810a3",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"student",
+												"student-3810a3"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "contact",
+							"item": [
+								{
+									"name": "send-email",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"firstName\": \"Montasim\",\r\n    \"lastName\": \"Mamun\",\r\n    \"phone\": \"+8801722815469\",\r\n    \"email\": \"montasimmamun@gmail.com\",\r\n    \"subject\": \"Test message subject\",\r\n    \"message\": \"This is a test message to test the send-email functionality.\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/contact/send-email",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"contact",
+												"send-email"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "download",
+							"item": [
+								{
+									"name": "download",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "title",
+													"value": "১ম সাময়িকি পরীক্ষার রুটিন ডাউনলোড",
+													"type": "text"
+												},
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/Coding Interview Preparation Certificate.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/download",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"download"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "download",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/download",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"download"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "download/:fileName",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/download/ABID HASAN CV.pdf",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"download",
+												"ABID HASAN CV.pdf"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "download/:fileName",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/download/learning-patterns-final-v1.1.pdf",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"download",
+												"learning-patterns-final-v1.1.pdf"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "notice",
+							"item": [
+								{
+									"name": "notice",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "title",
+													"value": "test",
+													"type": "text"
+												},
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/E:/DOWNLOADS/Advanced React Certificate.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/notice",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"notice"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "notice",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/notice",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"notice"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "notice/:fileName",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/notice/tem.pdf",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"notice",
+												"tem.pdf"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "notice/:fileName",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/notice/test notice.pdf",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"notice",
+												"test notice.pdf"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "result",
+							"item": [
+								{
+									"name": "result",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "title",
+													"value": "test",
+													"type": "text"
+												},
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/E:/DOWNLOADS/Advanced React Certificate.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/result",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"result"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "result",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/result",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"result"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "result/:fileName",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/result/test result.pdf",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"result",
+												"test result.pdf"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "result/:fileName",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/result/test result.pdf",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"result",
+												"test result.pdf"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "routine",
+							"item": [
+								{
+									"name": "routine",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "title",
+													"value": "testsscsc",
+													"type": "text"
+												},
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/Coding Interview Preparation Certificate.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/routine",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"routine"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "routine",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/routine",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"routine"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "routine/:fileName",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/routine/test routine.pdf",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"routine",
+												"test routine.pdf"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "routine/:fileName",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/routine/test routine.pdf",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"routine",
+												"test routine.pdf"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "level",
+							"item": [
+								{
+									"name": "level",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"দ্বাদশ শ্রেণী\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/level",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"level"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "level",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/level",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"level"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "level/:levelId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/level/undefined-19d467",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"level",
+												"undefined-19d467"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "level/:levelId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"৯ম শ্রেণী\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/level/undefined-19d467",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"level",
+												"undefined-19d467"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "level/:levelId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/level/designation-471ece",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"level",
+												"designation-471ece"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "designation",
+							"item": [
+								{
+									"name": "designation",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"শিক্ষার্থী\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/designation",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"designation"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "designation",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/designation",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"designation"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "designation/:designationId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/designation/designation-b74a50",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"designation",
+												"designation-b74a50"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "designation/:designationId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"শিক্ষক 2\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/designation/designation-b74a50",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"designation",
+												"designation-b74a50"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "designation/:designationId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/designation/designation-348424",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"designation",
+												"designation-348424"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "dashboard",
+							"item": [
+								{
+									"name": "summary",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/dashboard/summary",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"dashboard",
+												"summary"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "homePage",
+							"item": [
+								{
+									"name": "homePagePost",
+									"item": [
+										{
+											"name": "homePagePost",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "title",
+															"value": "উপধ্যক্ষের বাণী",
+															"type": "text"
+														},
+														{
+															"key": "category",
+															"value": "উপধ্যক্ষের বাণী",
+															"type": "text"
+														},
+														{
+															"key": "postImage",
+															"type": "file",
+															"src": "/E:/OTHERS/DOWNLOADS/SHUVO 2.jpg"
+														},
+														{
+															"key": "description",
+															"value": "বাংলাদেশের শিক্ষা ব্যবস্থার একটি পূর্ণাঙ্গ ধারা মাদরাসা শিক্ষা। সাধারণ শিক্ষার পাশপাশি সমান্তরালভাবে এটি বয়ে চলেছে দীর্ঘদিন ধরে এবং এ দেশের জন-মানসে তার স্থান করে নিয়েছে সুরক্ষিত ও সুদৃঢ়ভাবে। ধর্মীয় শিক্ষা ও জাগতিক শিক্ষা দুটি পরস্পরের পরিপুরক। এ সমন্বিত ইসলামী শিক্ষা ব্যবস্থার প্রতিষ্ঠানিক রুপই হচ্ছে মাদরাসা শিক্ষা। ইহলৌকিক উন্নতির সাথে সাথে পারলৌকিক মুক্তির পথ দেখাতেই প্রতিষ্ঠা",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePagePost",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePagePost"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePagePost",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePagePost",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePagePost"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePagePost/:homePagePostId",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePagePost/homePagePost-f93083",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePagePost",
+														"homePagePost-f93083"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePagePost/:homePagePostId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "title",
+															"value": "উপধ্যক্ষের বাণী 2",
+															"type": "text"
+														},
+														{
+															"key": "category",
+															"value": "উপধ্যক্ষের বাণী",
+															"type": "text"
+														},
+														{
+															"key": "postImage",
+															"type": "file",
+															"src": "/E:/OTHERS/DOWNLOADS/Devhacks.png"
+														},
+														{
+															"key": "description",
+															"value": "বাংলাদেশের শিক্ষা ব্যবস্থার একটি পূর্ণাঙ্গ ধারা মাদরাসা শিক্ষা। সাধারণ শিক্ষার পাশপাশি সমান্তরালভাবে এটি বয়ে চলেছে দীর্ঘদিন ধরে এবং এ দেশের জন-মানসে তার স্থান করে নিয়েছে সুরক্ষিত ও সুদৃঢ়ভাবে। ধর্মীয় শিক্ষা ও জাগতিক শিক্ষা দুটি পরস্পরের পরিপুরক। এ সমন্বিত ইসলামী শিক্ষা ব্যবস্থার প্রতিষ্ঠানিক রুপই হচ্ছে মাদরাসা শিক্ষা। ইহলৌকিক উন্নতির সাথে সাথে পারলৌকিক মুক্তির পথ দেখাতেই প্রতিষ্ঠা",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePagePost/homePagePost-f93083",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePagePost",
+														"homePagePost-f93083"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePagePost/:homePagePostId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePagePost/homePagePost-f93083",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePagePost",
+														"homePagePost-f93083"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "homePageCarousel",
+									"item": [
+										{
+											"name": "homePageCarousel",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "title",
+															"value": "home Page Carousel image ",
+															"type": "text"
+														},
+														{
+															"key": "galleryImage",
+															"type": "file",
+															"src": "/E:/OTHERS/DOWNLOADS/CSS one-liner tip.png"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePageCarousel",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePageCarousel"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePageCarousel",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePageCarousel",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePageCarousel"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePageCarousel/:homePageCarouselId",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePageCarousel/homePageCarousel-b018ed",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePageCarousel",
+														"homePageCarousel-b018ed"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePageCarousel/:homePageCarouselId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePageCarousel/homePageCarousel-b018ed",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePageCarousel",
+														"homePageCarousel-b018ed"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "homePageGallery",
+									"item": [
+										{
+											"name": "homePageGallery",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "title",
+															"value": "home Page Carousel image ",
+															"type": "text"
+														},
+														{
+															"key": "galleryImage",
+															"type": "file",
+															"src": "/E:/OTHERS/DOWNLOADS/CSS one-liner tip.png"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePageGallery",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePageGallery"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePageGallery",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePageGallery",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePageGallery"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePageGallery/homePageGalleryId",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePageGallery/homePageGallery-358162",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePageGallery",
+														"homePageGallery-358162"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "homePageGallery/homePageGalleryId",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{JWT_TOKEN}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/homePage/homePageGallery/homePageGallery-358162",
+													"host": [
+														"{{SERVER_URL}}"
+													],
+													"path": [
+														"api",
+														"{{API_VERSION}}",
+														"homePage",
+														"homePageGallery",
+														"homePageGallery-358162"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "blog",
+							"item": [
+								{
+									"name": "blog",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "title",
+													"value": "প্রতিষ্ঠানের ইতিহাস",
+													"type": "text"
+												},
+												{
+													"key": "category",
+													"value": "প্রতিষ্ঠানের ইতিহাস",
+													"type": "text"
+												},
+												{
+													"key": "postImage",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/3.ico"
+												},
+												{
+													"key": "description",
+													"value": "সুনামগঞ্জ জেলাধীন জগন্নাথপুরস্থ এক প্রাচীন জনপদের নাম ইসহাকপুর । এ গ্রামের সম্ভ্রান্ত ধর্মভীরু মুসলিম পরিবার সমূহের মধ্যে শীর্ষস্থানে অবস্থান খান পরিবারের । বংশমর্যাদায় যেমন শ্রেষ্ঠত্বের দাবীদার তেমনি শিক্ষা-দীক্ষায়, ধর্মভীরুতায়.সামাজিক আচার-অনুষ্ঠানে এ জনপদের অন্য সবের উপর রয়েছে এ পরিবারের অতুলনীয় সম্মান। যতদূর জানা যায় মরহুম দেলওয়ার খান ছিলেন এ পরিবারের একজন শিক্ষিত ব্যক্তি ।",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/blog",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"blog"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "blog",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/blog",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"blog"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "blog/:blogId",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/blog/blogPost-659c75",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"blog",
+												"blogPost-659c75"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "blog/:blogId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "title",
+													"value": "প্রতিষ্ঠানের ইতিহাস 3",
+													"type": "text"
+												},
+												{
+													"key": "category",
+													"value": "প্রতিষ্ঠানের ইতিহাস",
+													"type": "text"
+												},
+												{
+													"key": "postImage",
+													"type": "file",
+													"src": "/E:/OTHERS/DOWNLOADS/default_user.jpg"
+												},
+												{
+													"key": "description",
+													"value": "সুনামগঞ্জ জেলাধীন জগন্নাথপুরস্থ এক প্রাচীন জনপদের নাম ইসহাকপুর । এ গ্রামের সম্ভ্রান্ত ধর্মভীরু মুসলিম পরিবার সমূহের মধ্যে শীর্ষস্থানে অবস্থান খান পরিবারের । বংশমর্যাদায় যেমন শ্রেষ্ঠত্বের দাবীদার তেমনি শিক্ষা-দীক্ষায়, ধর্মভীরুতায়.সামাজিক আচার-অনুষ্ঠানে এ জনপদের অন্য সবের উপর রয়েছে এ পরিবারের অতুলনীয় সম্মান। যতদূর জানা যায় মরহুম দেলওয়ার খান ছিলেন এ পরিবারের একজন শিক্ষিত ব্যক্তি ।",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/blog/blogPost-659c75",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"blog",
+												"blogPost-659c75"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "blog/:blogId",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{JWT_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{SERVER_URL}}/api/{{API_VERSION}}/blog/blogPost-67dc58",
+											"host": [
+												"{{SERVER_URL}}"
+											],
+											"path": [
+												"api",
+												"{{API_VERSION}}",
+												"blog",
+												"blogPost-67dc58"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "status",
+			"item": [
+				{
+					"name": "status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/status",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "index",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "undefined",
+			"item": [
+				{
+					"name": "undefined",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/undefined",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"undefined"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{JWT_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "PROTOCOL",
+			"value": "https://"
+		}
+	]
+}
