@@ -72,7 +72,7 @@ const returnData = {
         "termsOfService": "/terms",
         "apiDocumentation": {
             "overview": "/docs",
-            "swaggerUI": "/api-docs"
+            "swaggerUI": "https://app.swaggerhub.com/apis/MONTASIMMAMUN/school-management-api/1.0.0"
         },
         "rateLimit": {
             "limit": "100 requests per 15 minutes 🕒",
