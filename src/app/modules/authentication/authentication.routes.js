@@ -1,3 +1,19 @@
+/**
+ * @fileoverview Authentication Routes
+ *
+ * This module sets up the routing for authentication-related endpoints. It integrates
+ * middleware for validation, token authentication, and controllers for handling authentication
+ * operations like login, signup, password reset, and user verification. The routes are defined
+ * using the Express.js framework. Each route is associated with specific validation and controller
+ * methods to ensure proper request handling and business logic execution.
+ *
+ * @module authenticationRoutes
+ * @requires express - Express framework to create route handlers.
+ * @requires AuthenticationValidators - Module containing validation middleware for authentication routes.
+ * @requires AuthenticationController - Module containing controller functions for handling authentication logic.
+ * @requires authTokenMiddleware - Middleware for verifying JWT tokens in incoming requests.
+ */
+
 import express from "express";
 import { AuthenticationValidators } from "./authentication.validator.js";
 import { AuthenticationController } from "./authentication.controller.js";
@@ -86,6 +102,22 @@ router.put(
     authTokenMiddleware,
     AuthenticationValidators.resetPasswordValidator,
     AuthenticationController.resetPasswordController
+);
+
+/**
+ * @swagger
+ * /:
+ *   homePagePost:
+ *     summary: Log out an admin.
+ *     description: Endpoint to verify the login admin of the system.
+ *     responses:
+ *       200:
+ *         description: Admin verified.
+ */
+router.get(
+    "/logout",
+    authTokenMiddleware,
+    AuthenticationController.logoutController
 );
 
 /**

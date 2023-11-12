@@ -64,6 +64,20 @@ const resetPasswordController = async (req, res) => {
 
 /**
  * @async
+ * @function logoutController
+ * @description Controller for log out an admin.
+ *
+ * @param {express.Request} req - Express request object containing used details.
+ * @param {express.Response} res - Express response object to send data back to client.
+ */
+const logoutController = async (req, res) => {
+    const { adminId, db } = extractFromRequest(req, ['oldPassword', 'newPassword', 'confirmNewPassword']);
+
+    await handleServiceResponse(res, AuthenticationService.logoutService, db, adminId);
+};
+
+/**
+ * @async
  * @function deleteAnAdmin
  * @description Controller for deleting an admin.
  *
@@ -89,5 +103,6 @@ export const AuthenticationController = {
     verifyUserController,
     signupController,
     resetPasswordController,
+    logoutController,
     deleteUserController,
 };

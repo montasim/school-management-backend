@@ -27,7 +27,6 @@ import {
     STATUS_OK,
     STATUS_UNAUTHORIZED,
     STATUS_UNPROCESSABLE_ENTITY,
-    STATUS_LOCKED,
 } from "../../../constants/constants.js";
 import findById from "../../../shared/findById.js";
 import findByUserName from "../../../shared/findByUserName.js";
@@ -286,6 +285,45 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
 };
 
 /**
+ * Service to handle the log-out functionality.
+ *
+ * This service facilitates the process of log our an admin. It ensures
+ * that the request is valid, and updates the currently logged in device number
+ *
+ * @async
+ * @function logoutService
+ * @param {Object} db - Database connection object.
+ * @param {Object} adminId - Admin id.
+ * @returns {Promise<Object>} - Promise object representing the outcome of the log-out operation.
+ */
+const logoutService = async (db, adminId) => {
+    try {
+        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
+
+        // Check if admin details were found and if the ID matches.
+        if (!foundAdminDetails || foundAdminDetails?.id !== adminId) {
+            return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
+        }
+
+        // Decrement the currentlyLoggedInDevice count.
+        if (foundAdminDetails.currentlyLoggedInDevice > 0) {
+            foundAdminDetails.currentlyLoggedInDevice -= 1;
+        }
+
+        // Update the admin details in the database.
+        const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, foundAdminDetails);
+
+        // Return a success or failure response based on the database operation result.
+        return result?.modifiedCount
+            ? generateResponseData({}, true, STATUS_OK, "Successfully logged out")
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update logout status");
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
+/**
  * Service for deleting an admin user from the database.
  *
  * This service facilitates the deletion of an admin user identified by their unique ID.
@@ -331,5 +369,6 @@ export const AuthenticationService = {
     verifyUserService,
     signupService,
     resetPasswordService,
+    logoutService,
     deleteUserService,
 };
