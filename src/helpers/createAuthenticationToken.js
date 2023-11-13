@@ -17,7 +17,6 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import {ADMIN_COLLECTION_NAME, SECRET_TOKEN} from "../config/config.js";
 import logger from "../shared/logger.js";
-import findById from "../shared/findById.js";
 import updateById from "../shared/updateById.js";
 
 /**

@@ -1,5 +1,4 @@
 import { ADMIN_COLLECTION_NAME } from "../config/config.js";
-import findById from "../shared/findById.js";
 import logger from "../shared/logger.js";
 import updateById from "../shared/updateById.js";
 
