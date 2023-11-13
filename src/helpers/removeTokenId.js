@@ -5,7 +5,6 @@ import updateById from "../shared/updateById.js";
 const removeTokenId = async (db, foundAdminDetails, tokenId) => {
     try {
         if (foundAdminDetails && foundAdminDetails?.tokenId) {
-            console.log(foundAdminDetails.tokenId, tokenId)
             foundAdminDetails.tokenId = foundAdminDetails?.tokenId?.filter(id => id !== tokenId);
 
             // Decrement the currentlyLoggedInDevice count.
