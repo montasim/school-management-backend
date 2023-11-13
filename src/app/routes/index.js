@@ -61,7 +61,7 @@ router.use(`/`, indexRoutes);
 router.use(`/status`, statusRoutes);
 
 // This will cause an uncaught exception
-router.use('/test-uncaught-exception', (req, res) => {
+router.use('/test-uncaught-exception', () => {
     throw new Error('Simulated uncaught exception');
 });
 
