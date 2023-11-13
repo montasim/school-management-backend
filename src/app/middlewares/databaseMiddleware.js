@@ -60,7 +60,8 @@ const connect = async (req, res, next) => {
 const disconnect = async (req, res, next) => {
   try {
     // Close the MongoDB client connection
-    await req.dbClient.close();
+    if (req?.dbClient?.isConnected())
+      await req?.dbClient?.close();
 
     console.info("Database connection closed");
 

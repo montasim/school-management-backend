@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { HomePageGalleryValidationService } from "./homePageGallery.validator.js";
 import { HomePageGalleryController } from "./homePageGallery.controller.js";
+import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
 const homePageGalleryRouter = express.Router();
 
@@ -59,6 +60,7 @@ const homePageGalleryRouter = express.Router();
 homePageGalleryRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('galleryImage'),
+    multerErrorHandlerMiddleware,
     HomePageGalleryValidationService.validateHomePageGalleryDetails,
     HomePageGalleryValidationService.validateHomePageGalleryFile,
     HomePageGalleryController.createHomePageGalleryController

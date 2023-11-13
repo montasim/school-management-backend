@@ -17,6 +17,7 @@ import app from './app.js';
 import { PORT } from "./config/config.js";
 import { SERVER_LOG_MESSAGE } from "./constants/constants.js";
 import logger from "./shared/logger.js";
+import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 
 /**
  * Initializes and starts the Express server.
@@ -31,11 +32,49 @@ import logger from "./shared/logger.js";
  * @param {number} PORT - The port number from the configuration.
  * @callback logger.http - Logs the server start-up message with the port number.
  */
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     /**
      * Log the server start message along with the port number.
      */
     logger.http(`${SERVER_LOG_MESSAGE} ${PORT}`);
     // Optionally, this message can be logged to the console directly.
     // console.log(`${SERVER_LOG_MESSAGE} ${PORT}`);
+});
+
+process.on('uncaughtException', async (error) => {
+    console.error('Uncaught Exception:', error);
+
+    logger.error(error);
+
+    try {
+        app.use(DatabaseMiddleware.disconnect);
+    } catch (dbError) {
+        console.error('Error closing the database connection:', dbError);
+
+        logger.error(dbError);
+    }
+
+    // Stop the server from accepting new connections and finish existing connections
+    server.close(() => {
+        console.log('HTTP server closed due to uncaught exception');
+
+        // Exit the process with a non-zero code to indicate an error
+        process.exit(1);
+    });
+});
+
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+        console.log('HTTP server closed');
+        // Close other resources like database connections here
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('SIGINT signal received: closing HTTP server');
+    server.close(() => {
+        console.log('HTTP server closed');
+        // Close other resources here
+    });
 });

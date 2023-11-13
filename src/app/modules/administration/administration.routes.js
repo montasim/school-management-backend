@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { AdministrationValidationService } from "./administration.validator.js";
 import { AdministrationController } from "./administration.controller.js";
+import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
 const administrationRouter = express.Router();
 
@@ -63,6 +64,7 @@ const administrationRouter = express.Router();
 administrationRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
+    multerErrorHandlerMiddleware,
     AdministrationValidationService.validateAdministrationDetails,
     AdministrationValidationService.validateAdministrationFile,
     AdministrationController.createAdministrationController
@@ -154,6 +156,7 @@ administrationRouter.get("/:administrationId", [
 administrationRouter.put("/:administrationId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
+    multerErrorHandlerMiddleware,
     AdministrationValidationService.validateAdministrationParams,
     AdministrationValidationService.validateAdministrationDetails,
     AdministrationValidationService.validateAdministrationFile,

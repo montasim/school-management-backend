@@ -18,6 +18,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteConfigurationValidationService } from "./websiteConfiguration.validator.js";
 import { WebsiteConfigurationController } from "./websiteConfiguration.controller.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
+import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
 const websiteConfigurationRouter = express.Router();
 
@@ -59,6 +60,7 @@ const websiteConfigurationRouter = express.Router();
 websiteConfigurationRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteLogo'),
+    multerErrorHandlerMiddleware,
     WebsiteConfigurationValidationService.validateWebsiteConfigurationDetails,
     WebsiteConfigurationValidationService.validateWebsiteConfigurationFile,
     WebsiteConfigurationController.createWebsiteConfigurationController
@@ -120,6 +122,7 @@ websiteConfigurationRouter.get("/", [
 websiteConfigurationRouter.put("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteLogo'),
+    multerErrorHandlerMiddleware,
     WebsiteConfigurationValidationService.validateWebsiteConfigurationDetails,
     WebsiteConfigurationValidationService.validateWebsiteConfigurationFile,
     WebsiteConfigurationController.updateWebsiteConfigurationController

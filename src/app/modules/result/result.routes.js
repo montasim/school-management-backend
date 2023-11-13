@@ -19,6 +19,7 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { ResultValidationService } from "./result.validator.js";
 import { ResultController } from "./result.controller.js";
+import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
 const resultRouter = express.Router();
 
@@ -56,6 +57,7 @@ const resultRouter = express.Router();
 resultRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
+    multerErrorHandlerMiddleware,
     ResultController.createResultController
 ]);
 

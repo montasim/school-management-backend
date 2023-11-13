@@ -19,6 +19,7 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { DownloadValidationService } from "./download.validator.js";
 import { DownloadController } from "./download.controller.js";
+import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
 const downloadRouter = express.Router();
 
@@ -56,6 +57,7 @@ const downloadRouter = express.Router();
 downloadRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
+    multerErrorHandlerMiddleware,
     DownloadController.createDownloadController
 ]);
 

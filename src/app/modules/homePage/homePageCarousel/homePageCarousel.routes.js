@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { HomePageCarouselValidationService } from "./homePageCarousel.validator.js";
 import { HomePageCarouselController } from "./homePageCarousel.controller.js";
+import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
 const homePageCarouselRouter = express.Router();
 
@@ -59,6 +60,7 @@ const homePageCarouselRouter = express.Router();
 homePageCarouselRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('carouselImage'),
+    multerErrorHandlerMiddleware,
     HomePageCarouselValidationService.validateHomePageCarouselDetails,
     HomePageCarouselValidationService.validateHomePageCarouselFile,
     HomePageCarouselController.createHomePageCarouselController

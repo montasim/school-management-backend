@@ -60,6 +60,11 @@ router.use(`/`, indexRoutes);
  */
 router.use(`/status`, statusRoutes);
 
+// This will cause an uncaught exception
+router.use('/test-uncaught-exception', (req, res) => {
+    throw new Error('Simulated uncaught exception');
+});
+
 /**
  * Sets up versioned routing for the administration module.
  * @name /api/${API_VERSION}/administration

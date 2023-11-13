@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { HomePagePostValidationService } from "./homePagePost.validator.js";
 import { HomePagePostController } from "./homePagePost.controller.js";
+import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
 const homePagePostRouter = express.Router();
 
@@ -67,6 +68,7 @@ const homePagePostRouter = express.Router();
 homePagePostRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
+    multerErrorHandlerMiddleware,
     HomePagePostValidationService.validateHomePagePostDetails,
     HomePagePostValidationService.validateHomePagePostFile,
     HomePagePostController.createHomePagePostController
@@ -166,6 +168,7 @@ homePagePostRouter.get("/:homePagePostId", [
 homePagePostRouter.put("/:homePagePostId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
+    multerErrorHandlerMiddleware,
     HomePagePostValidationService.validateHomePagePostParams,
     HomePagePostValidationService.validateHomePagePostDetails,
     HomePagePostValidationService.validateHomePagePostFile,
