@@ -73,7 +73,7 @@ const authTokenMiddleware = async (req, res, next) => {
             return res?.status(STATUS_BAD_REQUEST).json(generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token'));
 
         if (await isTokenRevoked(req?.db, verified?.id, verified?.tokenId))
-            return { valid: false, reason: 'Token has been revoked' };
+            return res?.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
 
         const userAgent = req?.headers['user-agent'];
 
@@ -81,7 +81,7 @@ const authTokenMiddleware = async (req, res, next) => {
             return res?.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
 
         req.adminId = verified.id;
-        req.tokenId = verified.userName;
+        req.tokenId = verified.tokenId;
         req.adminUserName = verified.userName;
         req.name = verified.name;
 

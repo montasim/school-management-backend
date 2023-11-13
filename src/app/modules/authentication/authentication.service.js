@@ -74,47 +74,41 @@ const loginService = async (db, loginDetails) => {
         const { userName, password, userAgent } = loginDetails;
         const foundAdminDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
 
-        if (!foundAdminDetails) {
+        if (!foundAdminDetails)
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
-        }
 
-        if (foundAdminDetails?.currentlyLoggedInDevice >= 3) {
-            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that three devices at a time.");
-        }
-
-        delete foundAdminDetails?._id;
-        delete foundAdminDetails?.createdAt;
-        delete foundAdminDetails?.modifiedAt;
+        if (foundAdminDetails?.currentlyLoggedInDevice >= 3)
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that 3 devices at a time. Please log out from any of the login device and try again");
 
         await checkIfAccountIsLocked(foundAdminDetails);
 
         const isPasswordMatch = await bcrypt.compare(password, foundAdminDetails?.password);
 
-        if (isPasswordMatch) {
-            const token = await createAuthenticationToken(db, userAgent, foundAdminDetails);
-
-            if (token) {
-                // Reset failed attempts on successful login
-                await resetFailedAttempts(db, userName);
-                // Add currently logged in device
-                await addCurrentlyLoggedInDevice(db, foundAdminDetails);
-
-                const returnData = {
-                    name: foundAdminDetails.name,
-                    userName: foundAdminDetails.userName,
-                    currentlyLoggedInDevice: foundAdminDetails.currentlyLoggedInDevice,
-                    token: token,
-                };
-                return generateResponseData(returnData, true, STATUS_OK, "Authorized");
-            } else {
-                return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Failed to create token");
-            }
-        } else {
+        if (!isPasswordMatch) {
             // Increment failed attempts
             await incrementFailedAttempts(db, foundAdminDetails);
 
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
         }
+
+        const token = await createAuthenticationToken(db, userAgent, foundAdminDetails);
+
+        if (!token)
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Failed to create token");
+
+        // Reset failed attempts on successful login
+        await resetFailedAttempts(db, userName);
+        // Add currently logged in device
+        await addCurrentlyLoggedInDevice(db, foundAdminDetails);
+
+        const returnData = {
+            name: foundAdminDetails.name,
+            userName: foundAdminDetails.userName,
+            currentlyLoggedInDevice: foundAdminDetails.currentlyLoggedInDevice,
+            token: token,
+        };
+
+        return generateResponseData(returnData, true, STATUS_OK, "Authorized");
     } catch (error) {
         logger.error(error);
 
@@ -203,6 +197,7 @@ const signupService = async (db, signupDetails) => {
                     userName: userName,
                     password: hashedPassword,
                     currentlyLoggedInDevice: 0,
+                    tokenId: [],
                     lastLoginAt: null,
                     allowedFailedAttempts: 3,
                     lastFailedAttempts: null,
@@ -217,6 +212,7 @@ const signupService = async (db, signupDetails) => {
                 delete latestData?.allowedFailedAttempts;
                 delete latestData?.lastFailedAttempts;
                 delete latestData?.currentlyLoggedInDevice;
+                delete latestData?.tokenId;
                 delete latestData?.lastLoginAt;
                 delete latestData?.createdAt;
                 delete latestData?.modifiedAt;
@@ -252,19 +248,20 @@ const signupService = async (db, signupDetails) => {
 const resetPasswordService = async (db, resetPasswordDetails) => {
     try {
         const { adminId, tokenId, oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
-        const foundAdmin = await findById(db, ADMIN_COLLECTION_NAME, adminId);
+        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
 
-        if (!foundAdmin || foundAdmin?.id !== adminId)
+        if (!foundAdminDetails || foundAdminDetails?.id !== adminId)
             return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
 
-        const isPasswordMatch = await bcrypt.compare(oldPassword, foundAdmin?.password);
-        const isNewAndOldPasswordMatch = await bcrypt.compare(oldPassword, foundAdmin?.password);
+        const isPasswordMatch = await bcrypt.compare(oldPassword, foundAdminDetails?.password);
 
         if (!isPasswordMatch)
-            return generateResponseData({}, false, STATUS_FORBIDDEN, "Wrong old password");
+            return generateResponseData({}, false, STATUS_FORBIDDEN, "Wrong password");
+
+        const isNewAndOldPasswordMatch = await bcrypt.compare(oldPassword, newPassword);
 
         if (isNewAndOldPasswordMatch)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update password");
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "New password can not be same as old password");
 
         if (newPassword !== confirmNewPassword)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Passwords do not match");
@@ -278,7 +275,7 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
         const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, updatedAdminDetails);
 
         if (result?.modifiedCount) {
-            await removeTokenId(db, adminId, tokenId);
+            await removeTokenId(db, foundAdminDetails, tokenId);
 
             return generateResponseData({}, true, STATUS_OK, "Password updated successfully")
         } else {
@@ -314,14 +311,14 @@ const logoutService = async (db, adminId, tokenId) => {
         }
 
         // Decrement the currentlyLoggedInDevice count.
-        if (foundAdminDetails.currentlyLoggedInDevice > 0)
+        if (foundAdminDetails?.currentlyLoggedInDevice > 0)
             foundAdminDetails.currentlyLoggedInDevice -= 1;
 
         // Update the admin details in the database.
         const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, foundAdminDetails);
 
         if (result?.modifiedCount) {
-            await removeTokenId(db, adminId, tokenId);
+            await removeTokenId(db, foundAdminDetails, tokenId);
 
             return generateResponseData({}, true, STATUS_OK, "Successfully logged out")
         } else {

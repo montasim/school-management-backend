@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {ADMIN_COLLECTION_NAME, SECRET_TOKEN} from "../config/config.js";
 import logger from "../shared/logger.js";
 import findById from "../shared/findById.js";
+import updateById from "../shared/updateById.js";
 
 /**
  * Generates a JSON Web Token (JWT) for the given user details.
@@ -26,32 +27,37 @@ import findById from "../shared/findById.js";
  * @function
  * @param {Object} db - The database connection object.
  * @param userAgent
- * @param {Object} userDetails - An object containing user details.
- * @param {string} userDetails.id - The unique identifier of the user.
- * @param {string} userDetails.name - The name of the user.
- * @param {string} userDetails.userName - The username of the user.
+ * @param {Object} adminDetails - An object containing user details.
+ * @param {string} adminDetails.id - The unique identifier of the user.
+ * @param {string} adminDetails.name - The name of the user.
+ * @param {string} adminDetails.userName - The username of the user.
  * @returns {Promise<string>} Returns a promise that resolves with the generated JWT.
  * @throws {Error} Throws an error if token generation fails.
  */
-const createAuthenticationToken = async (db, userAgent, userDetails = {}) => {
+const createAuthenticationToken = async (db, userAgent, adminDetails = {}) => {
     try {
-        const { id, name, userName } = userDetails;
-        const tokenId = uuidv4(); // Generate a unique identifier for this token
-        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, id);
+        const { id, name, userName, tokenId } = adminDetails;
+        const newTokenId = uuidv4(); // Generate a unique identifier for this token
 
-       foundAdminDetails.tokenId.push(tokenId);
-
-        // Limit the number of stored token IDs
-        if (foundAdminDetails.tokenId.length > 3) {
-            foundAdminDetails.tokenId.shift(); // Remove the oldest token ID
+        // Initialize tokenId array if it doesn't exist
+        if (!tokenId) {
+            adminDetails.tokenId = [];
         }
 
-        await db.collection(ADMIN_COLLECTION_NAME).updateOne({ userName: foundAdminDetails.userName }, { $set: { tokenId: foundAdminDetails.tokenId } });
+        // Append new token ID
+        adminDetails?.tokenId?.push(newTokenId);
+
+        // Limit the number of stored token IDs
+        if (adminDetails?.tokenId?.length > 3) {
+            adminDetails?.tokenId?.shift(); // Remove the oldest token ID
+        }
+
+        await updateById(db, ADMIN_COLLECTION_NAME, id, adminDetails);
 
         // Sign and return the JWT token with user details and secret
         return jwt.sign(
             {
-                tokenId: tokenId,
+                tokenId: newTokenId,
                 id: id,
                 userName: userName,
                 name: name,
