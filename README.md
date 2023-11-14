@@ -23,32 +23,28 @@ It serves as the backbone for a school management software, enabling efficient h
 
 ## Key Features
 
-1. `User Authentication and Management:` Secure login, signup, password management, and user verification services ensure safe access to the system. 
-The API handles user authentication seamlessly, providing mechanisms for account creation, password resetting, and user deletion.
-
-2. `Administration Services:` This module handles all administrative operations, including creating, retrieving, updating, and deleting administrative posts. 
-It integrates with Google Drive for file management, ensuring secure and efficient handling of administrative documents.
-
-3. `Blog Management:` A dedicated service for managing blog posts, allowing for the creation, retrieval, updating, and deletion of blog content. 
-This feature enhances the school's digital presence and communication with its community.
-
-4. `Download Management:` The API offers services to manage downloadable content like circulars, notices, and documents. 
-It includes functionalities for adding, fetching, and deleting download records, with Google Drive integration for file storage.
-
-5. `HomePage Carousel Management:` A specialized service to manage the home page carousel, enabling schools to update and manage the carousel images and links dynamically, 
-enhancing the user experience on the school's website.
-
-6. `Student Information Management:` Comprehensive services for handling student data, including enrollment details, academic records, and personal information. 
-The system facilitates CRUD operations on student data, ensuring up-to-date and accurate record keeping.
-
-7. `Website Configuration Management:` This module allows for the customization and configuration of the school's website settings. 
-It includes services for adding new configurations, updating existing settings, and removing outdated configurations.
-
-8. `Security and Compliance:` The API places a strong emphasis on security, with advanced authentication mechanisms, role-based access control, and secure handling of sensitive data. 
-Compliance with educational data protection standards is a key consideration in its design.
-
-9. `Customization and Scalability:` Designed with flexibility in mind, the API can be easily customized to fit the specific needs of different educational institutions. 
-Its modular architecture allows for easy scaling and integration with other systems and platforms.
+1. `User Authentication and Management:` Offers robust security features for login, signup, password management, and user verification, ensuring safe and secure access to the system. 
+2. `Administration Services:` Manages administrative tasks, including creating, updating, and deleting administrative posts, with Google Drive integration for efficient file management. 
+3. `Announcement Services:` Facilitates the creation, retrieval, update, and deletion of announcements, enhancing school-wide communication. 
+4. `Blog Management:` Allows for comprehensive management of blog content, including creating, updating, and deleting posts, aiding in the school's digital outreach. 
+5. `Category Management:` Provides services for handling different content categories, streamlining content organization and retrieval. 
+6. `Contact Management:` Features a dedicated service for managing and sending emails, enhancing communication efficiency. 
+7. `Dashboard Management:` Offers specialized services for managing dashboard functionalities, optimizing administrative oversight. 
+8. `Designation Management:` Allows for the management of various designations within the school, including creation, update, and deletion. 
+9. `Download Management:` Manages downloadable content like circulars and documents, with Google Drive integration for secure file storage. 
+10. `HomePage Management:` Specialized services for dynamic management of the home page, including carousels, blogs, and links, enhancing the website's user experience. 
+11. `Index Management:` Manages the index route of the API, providing detailed information about the available services. 
+12. `Level Management:` Handles the creation, retrieval, update, and deletion of academic levels or grades, streamlining academic management. 
+13. `Notice Management:` Manages notices and documents, with functionalities for adding, fetching, and deleting records, supported by Google Drive integration. 
+14. `Others Information Management:` Manages miscellaneous information, providing services for adding, fetching, and deleting records, with file storage on Google Drive. 
+15. `Result Management:` Handles academic results and records, offering services for adding, fetching, and deleting results. 
+16. `Routine Management:` Manages school routines and schedules, facilitating the addition, retrieval, and deletion of routine records. 
+17. `Status Management:` Offers comprehensive services to check the current status and health of the API. 
+18. `Student Information Management:` Manages student data, including enrollment, academic records, and personal information, ensuring accurate and up-to-date record-keeping. 
+19. `Undefined Route Management:` Monitors and manages responses for undefined API routes. 
+20. `Website Management:` Allows customization and configuration of the school's website settings, including adding, updating, and removing configurations. 
+21. `Security and Compliance:` Prioritizes security with advanced authentication mechanisms and compliance with educational data protection standards. 
+22. `Customization and Scalability:` Designed for flexibility, allowing customization to fit specific institutional needs and scalable architecture for integration with other systems.
 
 
 ## Technology Stack
@@ -164,7 +160,8 @@ Import the [postman_collection.json](postman_collection.json) on [Postman](https
 
 ## API Documentation
 
-List of API endpoints:
+<details>
+    <summary> List of API endpoints: </summary>
 
 - `/api`
 - `/api > v1`
@@ -197,6 +194,7 @@ List of API endpoints:
 - `/status`
 - `/index`
 - `/undefined`
+</details>
 
 Check out [School Management API documentation on Swagger](https://app.swaggerhub.com/apis/MONTASIMMAMUN/school-management-api/1.0.0) for details.
 
