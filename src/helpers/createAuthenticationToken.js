@@ -15,7 +15,11 @@
 
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
-import {ADMIN_COLLECTION_NAME, SECRET_TOKEN} from "../config/config.js";
+import {
+    ADMIN_COLLECTION_NAME,
+    MAX_CONCURRENT_LOGINS,
+    SECRET_TOKEN
+} from "../config/config.js";
 import logger from "../shared/logger.js";
 import updateById from "../shared/updateById.js";
 
@@ -46,8 +50,14 @@ const createAuthenticationToken = async (db, userAgent, adminDetails = {}) => {
         // Append new token ID
         adminDetails?.tokenId?.push(newTokenId);
 
-        // Limit the number of stored token IDs
-        if (adminDetails?.tokenId?.length > 3) {
+        /**
+         * Limit the number of stored token IDs
+         *
+         * Here, parseInt is used with a radix of 10 to ensure it's parsed as a base-10 number.
+         * This is especially important in cases where the value might start with 0
+         * (which could be incorrectly interpreted as an octal number) or include non-numeric characters.
+         */
+        if (adminDetails?.tokenId?.length > parseInt(MAX_CONCURRENT_LOGINS, 10)) {
             adminDetails?.tokenId?.shift(); // Remove the oldest token ID
         }
 

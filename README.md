@@ -176,37 +176,32 @@ Import the [postman_collection.json](postman_collection.json) on [Postman](https
 <details>
     <summary> List of API endpoints: </summary>
 
-- `/api`
-- `/api > v1`
-- `/api > v1 > category`
-- `/api > v1 > website`
-- `/api > v1 > website > configuration`
-- `/api > v1 > website > contact`
-- `/api > v1 > website > importantInformationLink`
-- `/api > v1 > website > officialLink`
-- `/api > v1 > website > socialMediaLink`
-- `/api > v1 > othersInformationCategory`
-- `/api > v1 > announcement`
-- `/api > v1 > administration`
-- `/api > v1 > othersInformation`
-- `/api > v1 > authentication`
-- `/api > v1 > student`
-- `/api > v1 > contact`
-- `/api > v1 > download`
-- `/api > v1 > notice`
-- `/api > v1 > result`
-- `/api > v1 > routine`
-- `/api > v1 > level`
-- `/api > v1 > designation`
-- `/api > v1 > dashboard`
-- `/api > v1 > homePage`
-- `/api > v1 > homePage > homePagePost`
-- `/api > v1 > homePage > homePageCarousel`
-- `/api > v1 > homePage > homePageGallery`
-- `/api > v1 > blog`
-- `/status`
-- `/index`
-- `/undefined`
+1. `/`
+2. `/api > v1 > administration`
+3. `/api > v1 > announcement`
+4. `/api > v1 > authentication`
+5. `/api > v1 > blog`
+6. `/api > v1 > category`
+7. `/api > v1 > contact`
+8. `/api > v1 > dashboard`
+9. `/api > v1 > designation`
+10. `/api > v1 > download`
+11. `/api > v1 > homePage > homePageCarousel`
+12. `/api > v1 > homePage > homePageGallery`
+13. `/api > v1 > homePage > homePagePost`
+14. `/api > v1 > level`
+15. `/api > v1 > notice`
+16. `/api > v1 > othersInformation`
+17. `/api > v1 > othersInformationCategory`
+18. `/api > v1 > result`
+19. `/api > v1 > routine`
+20. `/api > v1 > student`
+21. `/api > v1 > website > configuration`
+22. `/api > v1 > website > importantInformationLink`
+23. `/api > v1 > website > officialLink`
+24. `/api > v1 > website > socialMediaLink`
+25. `/status`
+26. `/undefined`
 </details>
 
 Check out [School Management API documentation on Swagger](https://app.swaggerhub.com/apis/MONTASIMMAMUN/school-management-api/1.0.0) for details.
@@ -262,3 +257,15 @@ This project is licensed under the `MIT License` - see the [LICENSE](LICENSE) fi
 
     In summary, while you can make educated guesses based on the content and structure of the data, there's no foolproof way to determine the MIME type of binary data without additional information or context.
 </details>
+
+<details>
+    <summary>
+        2. How to kill a port using npm?
+    </summary>
+
+   ```bash
+    npx kill-port <PORT_NUMBER>
+   ```
+</details>
+
+

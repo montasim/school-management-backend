@@ -61,9 +61,22 @@ const returnData = {
     "success": true,
     "message": "Welcome to the School Management API! 👋",
     "data": {
-        "description": "The School Management API is a comprehensive backend system designed to facilitate the management of various aspects of a school's operations. " +
-                       "This robust API integrates a range of functionalities tailored to meet the diverse needs of educational institutions. " +
-                       "It serves as the backbone for a school management software, enabling efficient handling of administrative tasks, student information management, blog updates, and much more.",
+        "description": "The School Management API is a robust and comprehensive backend system designed for educational institutions," +
+            "developed using Node.js and Express.js. It centralizes various aspects of school management," +
+            "such as administrative tasks, student information, blog updates, and more." +
+            "A key feature is its strong user authentication system, providing secure login, signup, and password management." +
+            "The API includes modules for diverse school activities, ranging from administration to blog and announcement management." +
+
+            "Integration with Google Drive is a significant aspect, enabling efficient file management across different modules." +
+            "Security and compliance are prioritized, with advanced authentication, role-based access control," +
+            "and adherence to data protection standards, ensuring the safety of sensitive information." +
+
+            "The APIs technology stack includes MongoDB, Bcrypt, CORS, Jsonwebtoken, Multer, Nodemailer, and Swagger," +
+            "providing a comprehensive set of tools for database management, security, file handling, and documentation." +
+            "The project is structured for easy development and maintenance, with clear directory organization and" +
+            "environment-specific configurations. Hosted on Vercel, it offers seamless deployment. Overall," +
+            "the School Management API is a versatile and efficient solution for modern educational institutions," +
+            "embodying both operational efficiency and technological advancement.",
         "version": "1.0.0",
         "author": "Mohammad Montasim -Al- Mamun Shuvo",
         "contact": {
@@ -85,22 +98,32 @@ const returnData = {
             "apiVersion": "v1"
         },
         "endpoints": {
+            "index": "/",
             "administration": "/api/v1/administration",
-            "announcements": "/api/v1/announcements",
+            "announcement": "/api/v1/announcement",
             "authentication": "/api/v1/authentication",
-            "categories": "/api/v1/categories",
-            "contacts": "/api/v1/contacts",
+            "blog": "/api/v1/blog",
+            "category": "/api/v1/category",
+            "contact": "/api/v1/contact",
             "dashboard": "/api/v1/dashboard",
-            "downloads": "/api/v1/downloads",
-            "homePage": "/api/v1/homePage",
-            "levels": "/api/v1/levels",
-            "notices": "/api/v1/notices",
-            "otherInformation": "/api/v1/otherInformation",
-            "results": "/api/v1/results",
-            "routines": "/api/v1/routines",
-            "students": "/api/v1/students",
-            "teachers": "/api/v1/teachers",
-            "websiteConfig": "/api/v1/websiteConfig"
+            "designation": "/api/v1/designation",
+            "download": "/api/v1/download",
+            "homePageCarousel": "/api/v1/homePage/homePageCarousel",
+            "homePageGallery": "/api/v1/homePage/homePageGallery",
+            "homePagePost": "/api/v1/homePage/homePagePost",
+            "level": "/api/v1/level",
+            "notice": "/api/v1/notice",
+            "othersInformation": "/api/v1/othersInformation",
+            "othersInformationCategory": "/api/v1/othersInformationCategory",
+            "result": "/api/v1/result",
+            "routine": "/api/v1/routine",
+            "student": "/api/v1/student",
+            "configuration": "/api/v1/website/configuration",
+            "importantInformationLink": "/api/v1/website/importantInformationLink",
+            "officialLink": "/api/v1/website/officialLink",
+            "socialMediaLink": "/api/v1/website/socialMediaLink",
+            "status": "/status",
+            "undefined": "/undefined",
         },
         "authentication": {
             "info": "Authenticate requests with a token in the header.",
