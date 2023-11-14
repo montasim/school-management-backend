@@ -20,6 +20,7 @@ import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { DownloadValidationService } from "./download.validator.js";
 import { DownloadController } from "./download.controller.js";
 import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
+import obfuscateResponse from "../../../helpers/obfuscateResponse.js";
 
 const downloadRouter = express.Router();
 
@@ -137,7 +138,8 @@ downloadRouter.get("/:fileName", [
 downloadRouter.delete("/:fileName", [
     authTokenMiddleware,
     DownloadValidationService.validateDownloadParams,
-    DownloadController.deleteADownloadController
+    DownloadController.deleteADownloadController,
+    obfuscateResponse
 ]);
 
 export default downloadRouter;

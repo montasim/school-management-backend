@@ -27,6 +27,7 @@ import apiRoutes from "./api.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
 import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
+import obfuscateResponse from "../../helpers/obfuscateResponse.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -61,8 +62,11 @@ router.use(`/`, indexRoutes);
 router.use(`/status`, statusRoutes);
 
 // This will cause an uncaught exception
-router.use('/test-uncaught-exception', () => {
-    throw new Error('Simulated uncaught exception');
+router.use('/test-uncaught-exception', (req, res) => {
+    const data = { message: 'Hello World' };
+    const obfuscatedData = obfuscateResponse(data);
+    console.log(obfuscatedData)
+    res.send(obfuscatedData);
 });
 
 /**

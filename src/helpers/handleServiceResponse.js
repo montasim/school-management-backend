@@ -14,6 +14,7 @@
 
 import logger from "../shared/logger.js";
 import {STATUS_INTERNAL_SERVER_ERROR} from "../constants/constants.js";
+import obfuscateResponse from "./obfuscateResponse.js";
 
 /**
  * Executes the provided service function, handles its response, and sends
@@ -33,7 +34,9 @@ const handleServiceResponse = async (res, serviceFunction, ...params) => {
     try {
         const { data, success, status, message } = await serviceFunction(...params);
 
-        return res.status(status).json({ data, success, status, message });
+        // return res.status(status).json({ data, success, status, message });
+        return res.send(obfuscateResponse({ data, success, status, message }));
+        // return res.status(status).json(obfuscateResponse({ data, success, status, message }));
     } catch (error) {
         logger.error(error);
 
