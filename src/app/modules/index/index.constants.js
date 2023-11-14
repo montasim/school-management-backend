@@ -61,7 +61,9 @@ const returnData = {
     "success": true,
     "message": "Welcome to the School Management API! 👋",
     "data": {
-        "description": "This API facilitates the management of school operations, including student, teacher, and course management.",
+        "description": "The School Management API is a comprehensive backend system designed to facilitate the management of various aspects of a school's operations. " +
+                       "This robust API integrates a range of functionalities tailored to meet the diverse needs of educational institutions. " +
+                       "It serves as the backbone for a school management software, enabling efficient handling of administrative tasks, student information management, blog updates, and much more.",
         "version": "1.0.0",
         "author": "Mohammad Montasim -Al- Mamun Shuvo",
         "contact": {
