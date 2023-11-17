@@ -1,11 +1,11 @@
 /**
  * @fileoverview HomePagePost Service for Handling HomePagePost Data Operations.
  *
- * This module provides services for managing homePagePost-related operations in the application.
- * It includes functions for creating, retrieving, updating, and deleting homePagePost posts,
+ * This module provides services for managing HomePagePost-related operations in the application.
+ * It includes functions for creating, retrieving, updating, and deleting HomePagePosts,
  * along with interactions with the Google Drive API for file management.
- * These services abstract the database and file system interactions, providing a
- * clean interface for the controller layer to perform CRUD operations on homePagePost data.
+ * These services abstract database and file system interactions, providing a
+ * streamlined interface for the controller layer to perform CRUD operations on HomePagePost data.
  *
  * @requires uuid - Module for generating unique identifiers.
  * @requires config - Configuration file for application settings.
@@ -13,13 +13,13 @@
  * @requires isValidRequest - Utility function to validate requests.
  * @requires GoogleDriveFileOperations - Helper module for Google Drive file operations.
  * @requires logger - Shared logging utility for error handling.
- * @module HomePagePostService - Exported services for homePagePost operations.
+ * @module HomePagePostService - Exported services for HomePagePost operations.
  */
 
 import { v4 as uuidv4 } from 'uuid';
 import { HOME_PAGE_POST_COLLECTION_NAME } from "../../../../config/config.js";
 import {
-    FORBIDDEN_MESSAGE,
+    FORBIDDEN_MESSAGE, STATUS_BAD_REQUEST,
     STATUS_FORBIDDEN,
     STATUS_INTERNAL_SERVER_ERROR,
     STATUS_NOT_FOUND,
@@ -38,13 +38,16 @@ import updateById from "../../../../shared/updateById.js";
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
- * Creates a new homePagePost entry in the database.
+ * Creates a new HomePagePost entry in the database.
+ * This function handles the creation of a new HomePagePost, including uploading an associated file
+ * to Google Drive and storing the post details in the database.
  *
  * @async
  * @param {Object} db - Database connection object.
- * @param {Object} newHomePagePostDetails - Object containing details of the new homePagePost.
- * @param {Object} file - The file object for the homePagePost's associated image or content.
- * @returns {Promise<Object>} A promise that resolves to the response object after creating the homePagePost.
+ * @param {Object} newHomePagePostDetails - Object containing details of the new HomePagePost.
+ * @param {Object} file - The file object for the HomePagePost's associated image or content.
+ * @returns {Promise<Object>} A promise that resolves to the response object after creating the HomePagePost.
+ * @throws {Error} Throws an error if the database operation or file upload fails.
  */
 const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
     try {
@@ -88,12 +91,13 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
 };
 
 /**
- * Retrieves a list of all homePageHomePagePost from the database.
+ * Retrieves a list of all HomePagePosts from the database.
+ * This function fetches all entries from the HomePagePost collection and returns them.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of homePageHomePagePost or an error message.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @returns {Promise<Object>} A promise that resolves to an object containing a list of HomePagePosts.
+ * @throws {Error} Throws an error if the database operation fails.
  */
 const getHomePagePostListService = async (db) => {
     try {
@@ -110,13 +114,14 @@ const getHomePagePostListService = async (db) => {
 };
 
 /**
- * Retrieves a specific homePageHomePagePost by ID from the database.
+ * Retrieves a specific HomePagePost by its ID from the database.
+ * This function fetches details of a single HomePagePost based on the provided ID.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} homePagePostId - The ID of the homePageHomePagePost to retrieve.
- * @returns {Object} - The homePageHomePagePost details or an error message.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {string} homePagePostId - The ID of the HomePagePost to retrieve.
+ * @returns {Promise<Object>} A promise that resolves to an object containing details of the requested HomePagePost.
+ * @throws {Error} Throws an error if the database operation fails.
  */
 const getAHomePagePostService = async (db, homePagePostId) => {
     try {
@@ -137,47 +142,74 @@ const getAHomePagePostService = async (db, homePagePostId) => {
 };
 
 /**
- * Retrieves a specific homePageHomePagePost by ID from the database.
+ * Updates a specific HomePagePost entry in the database.
+ *
+ * This function handles the updating of HomePagePost details based on the provided ID.
+ * It allows updating fields such as title, category, description, and the post image.
+ * If a new image is provided, it replaces the old one in Google Drive and updates
+ * the corresponding fields in the database.
  *
  * @async
+ * @function updateAHomePagePostService
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} homePagePostId - The ID of the homePageHomePagePost to retrieve.
- * @param newHomePagePostDetails
- * @param {Object} file - The file object for the homePagePost's associated image or content.
- * @returns {Object} - The homePageHomePagePost details or an error message.
- * @throws {Error} Throws an error if any.
+ * @param {Object} newHomePagePostDetails - Object containing the new details of the HomePagePost.
+ * @param {string} newHomePagePostDetails.homePagePostId - The ID of the HomePagePost to update.
+ * @param {string} newHomePagePostDetails.title - The new title of the HomePagePost.
+ * @param {string} newHomePagePostDetails.category - The new category of the HomePagePost.
+ * @param {string} newHomePagePostDetails.description - The new description of the HomePagePost.
+ * @param {string} newHomePagePostDetails.adminId - The ID of the admin performing the update.
+ * @param {Object} postImage - The new image file for the HomePagePost, if provided.
+ * @returns {Promise<Object>} A promise that resolves to the response object containing the updated details or an error message.
+ * @throws {Error} If an error occurs during the database operation or file upload.
  */
-const updateAHomePagePostService = async (db, homePagePostId, newHomePagePostDetails, file) => {
+const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage) => {
     try {
-        const { title, category, description, adminId } = newHomePagePostDetails;
+        const { homePagePostId, title, category, description, adminId } = newHomePagePostDetails;
+
+        if (!title && !category && !description && !postImage)
+            return generateResponseData({}, false, STATUS_BAD_REQUEST, "All fields can not be empty");
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        // Retrieve the current details of the home page post
         const oldDetails = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePagePostId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        // Initialize the object to store updated details
+        const updatedHomePagePostDetails = {};
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        // Update file if provided
+        if (postImage) {
+            await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(postImage);
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            if (!uploadGoogleDriveFileResponse?.shareableLink)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
-        const updatedHomePagePostDetails = {
-            ...(title && { title }),
-            ...(category && { category }),
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            ...(description && { description }),
-            modifiedBy: adminId,
-            modifiedAt: new Date(),
-        };
+            updatedHomePagePostDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
+            updatedHomePagePostDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+        }
+
+        // Update title, category, and description if provided
+        if (title) updatedHomePagePostDetails.title = title;
+        if (category) updatedHomePagePostDetails.category = category;
+        if (description) updatedHomePagePostDetails.description = description;
+
+        // Update modifiedBy and modifiedAt
+        updatedHomePagePostDetails.modifiedBy = adminId;
+        updatedHomePagePostDetails.modifiedAt = new Date();
+
+        // Update the home page post
         const result = await updateById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId, updatedHomePagePostDetails);
+
+        // Retrieve the updated data
         const latestData = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
 
+        // Remove unnecessary data before sending response
+        delete latestData._id;
         delete latestData.createdBy;
         delete latestData.modifiedBy;
         delete latestData.googleDriveFileId;
@@ -194,14 +226,15 @@ const updateAHomePagePostService = async (db, homePagePostId, newHomePagePostDet
 };
 
 /**
- * Deletes a specific homePageHomePagePost by ID from the database.
+ * Deletes a specific HomePagePost by its ID from the database.
+ * This function handles the deletion of a HomePagePost, including removing any associated file from Google Drive.
  *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} adminId - The user ID making the request.
- * @param {string} homePagePostId - The ID of the homePageHomePagePost to delete.
- * @returns {Object} - A confirmation message or an error message.
- * @throws {Error} Throws an error if any.
+ * @param {Object} db - Database connection object.
+ * @param {string} adminId - The ID of the admin requesting the deletion.
+ * @param {string} homePagePostId - The ID of the HomePagePost to delete.
+ * @returns {Promise<Object>} A promise that resolves to a confirmation message or an error message.
+ * @throws {Error} Throws an error if the database operation or file deletion fails.
  */
 const deleteAHomePagePostService = async (db, adminId, homePagePostId) => {
     try {

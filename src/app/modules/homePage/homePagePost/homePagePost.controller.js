@@ -87,9 +87,9 @@ const getAHomePagePostController = async (req, res) => {
 const updateAHomePagePostController = async (req, res) => {
     try {
         const { homePagePostId, title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description'], ['homePagePostId']);
-        const updatedHomePagePostDetails = { title, category, description, adminId };
+        const updatedHomePagePostDetails = { homePagePostId, title, category, description, adminId };
 
-        await handleServiceResponse(res, HomePagePostService.updateAHomePagePostService, db, homePagePostId, updatedHomePagePostDetails, req?.file);
+        await handleServiceResponse(res, HomePagePostService.updateAHomePagePostService, db, updatedHomePagePostDetails, req?.file);
     } catch (error) {
         logger.error(error);
 
