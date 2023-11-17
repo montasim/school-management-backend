@@ -262,3 +262,4 @@ This project is licensed under the `MIT License` - see the [LICENSE](LICENSE) fi
 
     In summary, while you can make educated guesses based on the content and structure of the data, there's no foolproof way to determine the MIME type of binary data without additional information or context.
 </details>
+
