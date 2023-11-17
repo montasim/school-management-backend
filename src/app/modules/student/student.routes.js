@@ -67,7 +67,7 @@ const studentRouter = express.Router();
  */
 studentRouter.post("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('image'),
+    fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
     StudentController.createStudentController
 ]);
@@ -165,7 +165,7 @@ studentRouter.get("/:studentId", [
  */
 studentRouter.put("/:studentId", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('image'),
+    fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
     StudentValidationService.validateStudentParams,
     StudentController.updateAStudentController
