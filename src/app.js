@@ -27,6 +27,7 @@
 import express from "express";
 import helmet from "helmet";
 import hpp from "hpp";
+import timeout from "connect-timeout";
 import cookieParser from "cookie-parser";
 import csurf from 'csurf';
 import cors from "cors";
@@ -39,7 +40,6 @@ import appRoutes from "./app/routes/index.js";
 import { SECRET_KEY } from "./config/config.js";
 import { STATUS_INTERNAL_SERVER_ERROR } from "./constants/constants.js";
 import logger from "./shared/logger.js";
-import timeout from "connect-timeout";
 
 const app = express();
 

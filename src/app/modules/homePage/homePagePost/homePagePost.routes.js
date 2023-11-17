@@ -69,8 +69,6 @@ homePagePostRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
     multerErrorHandlerMiddleware,
-    HomePagePostValidationService.validateHomePagePostDetails,
-    HomePagePostValidationService.validateHomePagePostFile,
     HomePagePostController.createHomePagePostController
 ]);
 
@@ -170,8 +168,6 @@ homePagePostRouter.put("/:homePagePostId", [
     fileUploadMiddleware.single('postImage'),
     multerErrorHandlerMiddleware,
     HomePagePostValidationService.validateHomePagePostParams,
-    HomePagePostValidationService.validateHomePagePostDetails,
-    HomePagePostValidationService.validateHomePagePostFile,
     HomePagePostController.updateAHomePagePostController
 ]);
 
