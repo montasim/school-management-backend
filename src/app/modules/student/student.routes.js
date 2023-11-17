@@ -69,8 +69,6 @@ studentRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
     multerErrorHandlerMiddleware,
-    StudentValidationService.validateStudentDetails,
-    StudentValidationService.validateStudentFile,
     StudentController.createStudentController
 ]);
 
@@ -170,8 +168,6 @@ studentRouter.put("/:studentId", [
     fileUploadMiddleware.single('image'),
     multerErrorHandlerMiddleware,
     StudentValidationService.validateStudentParams,
-    StudentValidationService.validateStudentDetails,
-    StudentValidationService.validateStudentFile,
     StudentController.updateAStudentController
 ]);
 

@@ -36,10 +36,6 @@ if (process.env.NODE_ENV === "production") {
  * @property {string} API_VERSION - The version of the API.
  * @property {string} PORT - The port number for the application server.
  */
-/**
- * @type {ServerConfig}
- */
-// Server and API configurations
 export const {
     API_VERSION,
     PORT,
@@ -49,12 +45,10 @@ export const {
  * @typedef {Object} SecurityConfig
  * @property {string} SECRET_TOKEN - The secret token for authentication.
  */
-/**
- * @type {SecurityConfig}
- */
-// Security configurations
 export const {
+    SECRET_KEY,
     SECRET_TOKEN,
+    MAX_CONCURRENT_LOGINS,
 } = process.env;
 
 /**
@@ -64,10 +58,6 @@ export const {
  * @property {string} CATEGORY_COLLECTION_NAME - The name of the category collection in MongoDB.
  * ...other collection names...
  */
-/**
- * @type {MongoDBConfig}
- */
-// MongoDB related configurations
 export const {
     ADMIN_COLLECTION_NAME,
     ADMINISTRATION_COLLECTION_NAME,
@@ -103,10 +93,6 @@ export const {
  * @property {string} EMAIL_SERVICE_PORT - The port to use for the email service.
  * @property {string} EMAIL_SERVICE_USER - The username for the email service.
  */
-/**
- * @type {EmailConfig}
- */
-// Email service configurations
 export const {
     EMAIL_SERVICE,
     EMAIL_SERVICE_DESTINATION_OWNER_NAME,
@@ -123,10 +109,6 @@ export const {
  * @property {string} GOOGLE_DRIVE_PRIVATE_KEY - The private key for Google Drive API.
  * @property {string} GOOGLE_DRIVE_SCOPE - The scope of access for Google Drive API.
  */
-/**
- * @type {GoogleDriveConfig}
- */
-// Google Drive configurations
 export const {
     GOOGLE_DRIVE_CLIENT_EMAIL,
     GOOGLE_DRIVE_FOLDER_KEY,

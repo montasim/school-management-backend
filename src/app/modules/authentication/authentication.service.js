@@ -19,7 +19,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
-import { ADMIN_COLLECTION_NAME } from "../../../config/config.js";
+import { ADMIN_COLLECTION_NAME, MAX_CONCURRENT_LOGINS } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -77,7 +77,14 @@ const loginService = async (db, loginDetails) => {
         if (!foundAdminDetails)
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
 
-        if (foundAdminDetails?.currentlyLoggedInDevice >= 3)
+        /**
+         * Limit the number of concurrent login
+         *
+         * Here, parseInt is used with a radix of 10 to ensure it's parsed as a base-10 number.
+         * This is especially important in cases where the value might start with 0
+         * (which could be incorrectly interpreted as an octal number) or include non-numeric characters.
+         */
+        if (foundAdminDetails?.currentlyLoggedInDevice >= parseInt(MAX_CONCURRENT_LOGINS, 10))
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that 3 devices at a time. Please log out from any of the login device and try again");
 
         await checkIfAccountIsLocked(foundAdminDetails);
