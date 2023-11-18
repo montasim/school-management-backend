@@ -170,8 +170,6 @@ blogRouter.put("/:blogId", [
     fileUploadMiddleware.single('postImage'),
     multerErrorHandlerMiddleware,
     BlogValidationService.validateBlogParams,
-    BlogValidationService.validateBlogDetails,
-    BlogValidationService.validateBlogFile,
     BlogController.updateABlogController
 ]);
 

@@ -154,30 +154,44 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        // Retrieve the current details of the blog
         const oldDetails = await findById(db, BLOG_COLLECTION_NAME, blogId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        // Initialize the object to store updated details
+        const updatedBlogDetails = { ...oldDetails };
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        // Update file if provided
+        if (file) {
+            await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            if (!uploadGoogleDriveFileResponse?.shareableLink)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
-        const updatedBlogDetails = {
-            ...(title && { title }),
-            ...(category && { category }),
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            ...(description && { description }),
-            modifiedBy: adminId,
-            modifiedAt: new Date(),
-        };
+            updatedBlogDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
+            updatedBlogDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+        }
+
+        // Update title, category, and description if provided
+        if (title) updatedBlogDetails.title = title;
+        if (category) updatedBlogDetails.category = category;
+        if (description) updatedBlogDetails.description = description;
+
+        // Update modifiedBy and modifiedAt
+        updatedBlogDetails.modifiedBy = adminId;
+        updatedBlogDetails.modifiedAt = new Date();
+
+        // Update the blog
         const result = await updateById(db, BLOG_COLLECTION_NAME, blogId, updatedBlogDetails);
+
+        // Retrieve the updated data
         const latestData = await findById(db, BLOG_COLLECTION_NAME, blogId);
 
+        // Remove unnecessary data before sending response
+        delete latestData._id;
         delete latestData.createdBy;
         delete latestData.modifiedBy;
         delete latestData.googleDriveFileId;
