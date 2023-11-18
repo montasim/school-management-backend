@@ -25,6 +25,7 @@ const FILE_EXTENSION_TYPE_PDF = "pdf";
 const FILE_EXTENSION_TYPE_JPG = "jpg";
 const FILE_EXTENSION_TYPE_PNG = "png";
 const FILE_EXTENSION_TYPE_ICO = "ico";
+const FILE_EXTENSION_TYPE_MP4 = "mp4";
 
 // File size
 const MAX_PDF_FILE_SIZE = 25 * 1024 * 1024;
@@ -35,6 +36,7 @@ const MIME_TYPE_PDF = "application/pdf";
 const MIME_TYPE_JPG = "image/jpeg";
 const MIME_TYPE_PNG = "image/png";
 const MIME_TYPE_ICO = "image/x-icon";
+const MIME_TYPE_MP4 = "application/mp4";
 
 // Log related
 const LOG_LEVELS = {
@@ -76,6 +78,7 @@ export {
     FILE_EXTENSION_TYPE_JPG,
     FILE_EXTENSION_TYPE_PNG,
     FILE_EXTENSION_TYPE_ICO,
+    FILE_EXTENSION_TYPE_MP4,
     MAX_PDF_FILE_SIZE,
     MAX_IMAGE_FILE_SIZE,
     LOG_LEVELS,
@@ -84,6 +87,7 @@ export {
     MIME_TYPE_JPG,
     MIME_TYPE_PNG,
     MIME_TYPE_ICO,
+    MIME_TYPE_MP4,
     STATUS_OK,
     STATUS_BAD_REQUEST,
     STATUS_UNAUTHORIZED,

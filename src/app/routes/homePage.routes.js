@@ -14,20 +14,10 @@
  */
 
 import express from "express";
-import homePageGalleryRoutes from "../modules/homePage/homePageGallery/homePageGallery.routes.js";
 import homePagePostRoutes from "../modules/homePage/homePagePost/homePagePost.routes.js";
 import homePageCarouselRoutes from "../modules/homePage/homePageCarousel/homePageCarousel.routes.js";
 
 const homePageRouter = express.Router();
-
-/**
- * Sets up versioned routing for the home page gallery module.
- * @name /homePageGallery
- * @function
- * @inner
- * @memberof module:routes
- */
-homePageRouter.use("/homePageGallery", homePageGalleryRoutes);
 
 /**
  * Sets up versioned routing for the homePagePost module.

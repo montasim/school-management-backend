@@ -47,6 +47,7 @@ import resultRoutes from "../modules/result/result.routes.js";
 import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
 import websiteRoutes from "../routes/website.routes.js";
+import galleryRoutes from "./gallery.routes.js";
 
 /**
  * Sets up the main router for the application. This router is responsible for aggregating all the individual
@@ -143,6 +144,15 @@ apiRouter.use(`/designation`, designationRoutes);
  * @memberof module:routes
  */
 apiRouter.use("/download", downloadRoutes);
+
+/**
+ * Sets up versioned routing for the gallery module.
+ * @name /gallery
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+apiRouter.use("/gallery", galleryRoutes);
 
 /**
  * Sets up versioned routing for the level module.

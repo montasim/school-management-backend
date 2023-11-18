@@ -1,11 +1,11 @@
 /**
- * @fileoverview HomePageGallery Service for Handling HomePageGallery Data Operations.
+ * @fileoverview PhotoGallery Service for Handling PhotoGallery Data Operations.
  *
- * This module provides services for managing homePageGallery-related operations in the application.
- * It includes functions for creating, retrieving, updating, and deleting homePageGallery posts,
+ * This module provides services for managing photoGallery-related operations in the application.
+ * It includes functions for creating, retrieving, updating, and deleting photoGallery posts,
  * along with interactions with the Google Drive API for file management.
  * These services abstract the database and file system interactions, providing a
- * clean interface for the controller layer to perform CRUD operations on homePageGallery data.
+ * clean interface for the controller layer to perform CRUD operations on photoGallery data.
  *
  * @requires uuid - Module for generating unique identifiers.
  * @requires config - Configuration file for application settings.
@@ -13,11 +13,11 @@
  * @requires isValidRequest - Utility function to validate requests.
  * @requires GoogleDriveFileOperations - Helper module for Google Drive file operations.
  * @requires logger - Shared logging utility for error handling.
- * @module HomePageGalleryService - Exported services for homePageGallery operations.
+ * @module PhotoGalleryService - Exported services for photoGallery operations.
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { HOME_PAGE_GALLERY_COLLECTION_NAME } from "../../../../config/config.js";
+import { PHOTO_GALLERY_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -26,7 +26,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
-import { ID_CONSTANTS } from "./homePageGallery.constants.js";
+import { ID_CONSTANTS } from "./photoGallery.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
@@ -37,17 +37,17 @@ import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
- * Creates a new homePageGallery entry in the database.
+ * Creates a new photoGallery entry in the database.
  *
  * @async
  * @param {Object} db - Database connection object.
- * @param {Object} newHomePageGalleryDetails - Object containing details of the new homePageGallery.
- * @param {Object} file - The file object for the homePageGallery's associated image or content.
- * @returns {Promise<Object>} A promise that resolves to the response object after creating the homePageGallery.
+ * @param {Object} newPhotoGalleryDetails - Object containing details of the new photoGallery.
+ * @param {Object} file - The file object for the photoGallery's associated image or content.
+ * @returns {Promise<Object>} A promise that resolves to the response object after creating the photoGallery.
  */
-const createHomePageGalleryService = async (db, newHomePageGalleryDetails, file) => {
+const createPhotoGalleryService = async (db, newPhotoGalleryDetails, file) => {
     try {
-        const { title, adminId } = newHomePageGalleryDetails;
+        const { title, adminId } = newPhotoGalleryDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -57,8 +57,8 @@ const createHomePageGalleryService = async (db, newHomePageGalleryDetails, file)
         if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
-        const homePageGalleryDetails = {
-            id: `${ID_CONSTANTS?.HOME_PAGE_GALLERY_PREFIX}-${uuidv4().substr(0, 6)}`,
+        const photoGalleryDetails = {
+            id: `${ID_CONSTANTS?.PHOTO_GALLERY_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
@@ -66,8 +66,8 @@ const createHomePageGalleryService = async (db, newHomePageGalleryDetails, file)
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, HOME_PAGE_GALLERY_COLLECTION_NAME, homePageGalleryDetails);
-        const latestData = await findById(db, HOME_PAGE_GALLERY_COLLECTION_NAME, homePageGalleryDetails?.id);
+        const result = await addANewEntryToDatabase(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails);
+        const latestData = await findById(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -85,19 +85,19 @@ const createHomePageGalleryService = async (db, newHomePageGalleryDetails, file)
 };
 
 /**
- * Retrieves a list of all homePageHomePageGallery from the database.
+ * Retrieves a list of all homePagePhotoGallery from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of homePageHomePageGallery or an error message.
+ * @returns {Object} - The list of homePagePhotoGallery or an error message.
  * @throws {Error} Throws an error if any.
  */
-const getHomePageGalleryListService = async (db) => {
+const getPhotoGalleryListService = async (db) => {
     try {
-        const homePageGallery = await getAllData(db, HOME_PAGE_GALLERY_COLLECTION_NAME);
+        const photoGallery = await getAllData(db, PHOTO_GALLERY_COLLECTION_NAME);
 
-        return homePageGallery?.length
-            ? generateResponseData(homePageGallery, true, STATUS_OK, `${homePageGallery?.length} home page gallery found`)
+        return photoGallery?.length
+            ? generateResponseData(photoGallery, true, STATUS_OK, `${photoGallery?.length} home page gallery found`)
             : generateResponseData({}, false, STATUS_NOT_FOUND, 'No home page gallery found');
     } catch (error) {
         logger.error(error);
@@ -107,25 +107,25 @@ const getHomePageGalleryListService = async (db) => {
 };
 
 /**
- * Retrieves a specific homePageHomePageGallery by ID from the database.
+ * Retrieves a specific homePagePhotoGallery by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} homePageGalleryId - The ID of the homePageHomePageGallery to retrieve.
- * @returns {Object} - The homePageHomePageGallery details or an error message.
+ * @param {string} photoGalleryId - The ID of the homePagePhotoGallery to retrieve.
+ * @returns {Object} - The homePagePhotoGallery details or an error message.
  * @throws {Error} Throws an error if any.
  */
-const getAHomePageGalleryService = async (db, homePageGalleryId) => {
+const getAPhotoGalleryService = async (db, photoGalleryId) => {
     try {
-        const homePageGallery = await findById(db, HOME_PAGE_GALLERY_COLLECTION_NAME, homePageGalleryId);
+        const photoGallery = await findById(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryId);
 
-        delete homePageGallery?.createdBy;
-        delete homePageGallery?.modifiedBy;
-        delete homePageGallery.googleDriveFileId;
+        delete photoGallery?.createdBy;
+        delete photoGallery?.modifiedBy;
+        delete photoGallery.googleDriveFileId;
 
-        return homePageGallery
-            ? generateResponseData(homePageGallery, true, STATUS_OK, `${homePageGalleryId} found successfully`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageGalleryId} not found`);
+        return photoGallery
+            ? generateResponseData(photoGallery, true, STATUS_OK, `${photoGalleryId} found successfully`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, `${photoGalleryId} not found`);
     } catch (error) {
         logger.error(error);
 
@@ -134,32 +134,32 @@ const getAHomePageGalleryService = async (db, homePageGalleryId) => {
 };
 
 /**
- * Deletes a specific homePageHomePageGallery by ID from the database.
+ * Deletes a specific homePagePhotoGallery by ID from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} adminId - The user ID making the request.
- * @param {string} homePageGalleryId - The ID of the homePageHomePageGallery to delete.
+ * @param {string} photoGalleryId - The ID of the homePagePhotoGallery to delete.
  * @returns {Object} - A confirmation message or an error message.
  * @throws {Error} Throws an error if any.
  */
-const deleteAHomePageGalleryService = async (db, adminId, homePageGalleryId) => {
+const deleteAPhotoGalleryService = async (db, adminId, photoGalleryId) => {
     try {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, HOME_PAGE_GALLERY_COLLECTION_NAME, homePageGalleryId);
+        const oldDetails = await findById(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryId);
 
         if (!oldDetails)
-            return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageGalleryId} not found`);
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${photoGalleryId} not found`);
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
-        const result = await deleteById(db, HOME_PAGE_GALLERY_COLLECTION_NAME, homePageGalleryId);
+        const result = await deleteById(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryId);
 
         return result
-            ? generateResponseData({}, true, STATUS_OK, `${homePageGalleryId} deleted successfully`)
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${homePageGalleryId} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${photoGalleryId} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${photoGalleryId} could not be deleted`);
     } catch (error) {
         logger.error(error);
 
@@ -168,12 +168,12 @@ const deleteAHomePageGalleryService = async (db, adminId, homePageGalleryId) => 
 };
 
 /**
- * @namespace HomePageHomePageGalleryService
- * @description Group of services related to homePageHomePageGallery operations.
+ * @namespace HomePagePhotoGalleryService
+ * @description Group of services related to homePagePhotoGallery operations.
  */
-export const HomePageGalleryService = {
-    createHomePageGalleryService,
-    getHomePageGalleryListService,
-    getAHomePageGalleryService,
-    deleteAHomePageGalleryService
+export const PhotoGalleryService = {
+    createPhotoGalleryService,
+    getPhotoGalleryListService,
+    getAPhotoGalleryService,
+    deleteAPhotoGalleryService
 };
