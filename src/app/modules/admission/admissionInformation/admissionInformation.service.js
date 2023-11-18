@@ -30,7 +30,7 @@ import { ID_CONSTANTS } from "./admissionInformation.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
-import deleteById from "../../../../shared/deleteById.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
@@ -200,7 +200,7 @@ const deleteAAdmissionInformationService = async (db, adminId, admissionInformat
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${admissionInformationId} not found`);
 
-        const result = await deleteById(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
+        const result = await deleteByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, 'id', admissionInformationId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${admissionInformationId} deleted successfully`)

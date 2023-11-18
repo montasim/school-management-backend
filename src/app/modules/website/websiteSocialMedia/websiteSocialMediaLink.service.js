@@ -15,7 +15,7 @@
  * @requires findByField - Helper function for finding database entries by ID.
  * @requires getAllData - Helper function for retrieving all data from a database collection.
  * @requires updateById - Helper function for updating database entries by ID.
- * @requires deleteById - Helper function for deleting database entries by ID.
+ * @requires deleteByField - Helper function for deleting database entries by ID.
  * @module WebsiteSocialMediaLinkService - Exported services for website important information link operations.
  */
 
@@ -37,7 +37,7 @@ import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js
 import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import updateById from "../../../../shared/updateById.js";
-import deleteById from "../../../../shared/deleteById.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 
 /**
  * Creates a new entry for a website important information link in the database.
@@ -178,10 +178,10 @@ const deleteAWebsiteSocialMediaLinkService = async (db, adminId, websiteSocialMe
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findByField(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId))
+        if (!await findByField(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, 'id', websiteSocialMediaLinkId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteSocialMediaLinkId} not found`);
 
-        const result = await deleteById(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId);
+        const result = await deleteByField(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, 'id', websiteSocialMediaLinkId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${websiteSocialMediaLinkId} deleted successfully`)

@@ -30,7 +30,7 @@ import { ID_CONSTANTS } from "./homePageCarousel.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
-import deleteById from "../../../../shared/deleteById.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
@@ -47,7 +47,7 @@ import getAllData from "../../../../shared/getAllData.js";
  */
 const createHomePageCarouselService = async (db, newHomePageCarouselDetails, file) => {
     try {
-        const { title, category, description, adminId } = newHomePageCarouselDetails;
+        const { title, adminId } = newHomePageCarouselDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -71,7 +71,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails, fil
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
@@ -155,7 +155,7 @@ const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) =
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
-        const result = await deleteById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId);
+        const result = await deleteByField(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, 'id', homePageCarouselId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${homePageCarouselId} deleted successfully`)

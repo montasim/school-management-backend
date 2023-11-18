@@ -17,7 +17,7 @@
  * @requires addANewEntryToDatabase - Utility for adding new entries to the database.
  * @requires findByField - Utility for finding a record by its identifier.
  * @requires getAllData - Utility for retrieving all records from a database collection.
- * @requires deleteByFileName - Utility for deleting records by filename.
+ * @requires deleteByField - Utility for deleting records by filename.
  * @requires GoogleDriveFileOperations - Helper for interacting with the Google Drive API.
  * @module ResultService - Exported object containing result-related service functions.
  */
@@ -37,10 +37,10 @@ import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
-import findByField from "../../../shared/findByField.js";
-import getAllData from "../../../shared/getAllData.js";
-import deleteByFileName from "../../../shared/deleteByFileName.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
+import findByField from "../../../shared/findByField.js";
+import deleteByField from "../../../shared/deleteByField.js";
+import getAllData from "../../../shared/getAllData.js";
 
 /**
  * Creates a new result entry in the database.
@@ -159,7 +159,7 @@ const deleteAResultService = async (db, adminId, fileName) => {
 
         if (fileDetails) {
             await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
-            const result = await deleteByFileName(db, RESULT_COLLECTION_NAME, fileName);
+            const result = await deleteByField(db, RESULT_COLLECTION_NAME, 'fileName', fileName);
 
             return result
                 ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)

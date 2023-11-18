@@ -17,7 +17,7 @@
  * @requires addANewEntryToDatabase - Utility for adding new entries to the database.
  * @requires findByField - Utility for finding a record by its identifier.
  * @requires getAllData - Utility for retrieving all records from a database collection.
- * @requires deleteByFileName - Utility for deleting records by filename.
+ * @requires deleteByField - Utility for deleting records by filename.
  * @requires GoogleDriveFileOperations - Helper for interacting with the Google Drive API.
  * @module AdmissionFormService - Exported object containing admissionForm-related service functions.
  */
@@ -39,7 +39,7 @@ import logger from "../../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
 import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
-import deleteByFileName from "../../../../shared/deleteByFileName.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js";
 
 /**
@@ -155,12 +155,12 @@ const deleteAAdmissionFormService = async (db, adminId, fileName) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const fileDetails = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, fileName);
+        const fileDetails = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'id', fileName);
 
         if (fileDetails) {
             await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
 
-            const result = await deleteByFileName(db, ADMISSION_FORM_COLLECTION_NAME, fileName);
+            const result = await deleteByField(db, ADMISSION_FORM_COLLECTION_NAME, 'fileName', fileName);
 
             return result
                 ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)

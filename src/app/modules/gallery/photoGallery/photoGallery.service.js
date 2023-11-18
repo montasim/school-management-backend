@@ -30,7 +30,7 @@ import { ID_CONSTANTS } from "./photoGallery.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
-import deleteById from "../../../../shared/deleteById.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
@@ -155,7 +155,7 @@ const deleteAPhotoGalleryService = async (db, adminId, photoGalleryId) => {
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
-        const result = await deleteById(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryId);
+        const result = await deleteByField(db, PHOTO_GALLERY_COLLECTION_NAME, 'id', photoGalleryId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${photoGalleryId} deleted successfully`)

@@ -18,7 +18,7 @@ import { ID_CONSTANTS } from "./othersInformation.constants.js";
 // Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
-import deleteById from "../../../shared/deleteById.js";
+import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
@@ -185,7 +185,7 @@ const deleteAOthersInformationService = async (db, adminId, othersInformationId)
         if (!await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${othersInformationId} not found`);
 
-        const result = await deleteById(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId);
+        const result = await deleteByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${othersInformationId} deleted successfully`)

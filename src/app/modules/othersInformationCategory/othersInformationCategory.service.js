@@ -11,7 +11,7 @@ import {
 import { ID_CONSTANTS } from "./othersInformationCategory.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
-import deleteById from "../../../shared/deleteById.js";
+import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
@@ -167,7 +167,7 @@ const deleteAOthersInformationCategory = async (db, adminId, othersInformationCa
         if (!await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, 'id', othersInformationCategoryId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${othersInformationCategoryId} not found`);
 
-        const result = await deleteById(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId);
+        const result = await deleteByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, 'id', othersInformationCategoryId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${othersInformationCategoryId} deleted successfully`)

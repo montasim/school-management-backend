@@ -30,7 +30,7 @@ import {
 } from "../../../constants/constants.js";
 import findByField from "../../../shared/findByField.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import deleteById from "../../../shared/deleteById.js";
+import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
@@ -358,7 +358,7 @@ const deleteUserService = async (db, deleteAdminDetails) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const result = await deleteById(db, ADMIN_COLLECTION_NAME, adminId);
+        const result = await deleteByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${adminId} deleted successfully`)

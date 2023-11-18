@@ -16,7 +16,7 @@ import { ID_CONSTANTS } from "./level.constants.js";
 // Shared utilities and functions
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
-import deleteById from "../../../shared/deleteById.js";
+import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
@@ -172,7 +172,7 @@ const deleteALevelService = async (db, adminId, levelId) => {
         if (!await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${levelId} not found`);
 
-        const result = await deleteById(db, LEVEL_COLLECTION_NAME, levelId);
+        const result = await deleteByField(db, LEVEL_COLLECTION_NAME, 'id', levelId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${levelId} deleted successfully`)

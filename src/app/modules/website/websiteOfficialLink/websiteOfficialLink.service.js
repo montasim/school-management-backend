@@ -15,7 +15,7 @@
  * @requires findByField - Helper function for finding database entries by ID.
  * @requires getAllData - Helper function for retrieving all data from a database collection.
  * @requires updateById - Helper function for updating database entries by ID.
- * @requires deleteById - Helper function for deleting database entries by ID.
+ * @requires deleteByField - Helper function for deleting database entries by ID.
  * @module WebsiteOfficialLinkService - Exported services for website important information link operations.
  */
 
@@ -37,7 +37,7 @@ import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js
 import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import updateById from "../../../../shared/updateById.js";
-import deleteById from "../../../../shared/deleteById.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 
 /**
  * Creates a new entry for a website important information link in the database.
@@ -181,7 +181,7 @@ const deleteAWebsiteOfficialLinkService = async (db, adminId, websiteOfficialLin
         if (!await findByField(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, 'id', websiteOfficialLinkId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteOfficialLinkId} not found`);
 
-        const result = await deleteById(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkId);
+        const result = await deleteByField(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, 'id', websiteOfficialLinkId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${websiteOfficialLinkId} deleted successfully`)

@@ -30,7 +30,7 @@ import { ID_CONSTANTS } from "./student.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
-import deleteById from "../../../shared/deleteById.js";
+import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
@@ -229,7 +229,7 @@ const deleteAStudentService = async (db, adminId, studentId) => {
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
-        const result = await deleteById(db, STUDENT_COLLECTION_NAME, studentId);
+        const result = await deleteByField(db, STUDENT_COLLECTION_NAME, 'id', studentId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${studentId} deleted successfully`)
