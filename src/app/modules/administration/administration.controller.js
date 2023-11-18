@@ -55,9 +55,11 @@ const getAdministrationListController = async (req, res) => {
     try {
         // Extract 'filterBy' parameter and split by '&' to support multiple categories
         const categoryFilter = req?.query?.filterBy ? req?.query?.filterBy.split('&') : [];
+
         await handleServiceResponse(res, AdministrationService.getAdministrationListService, req?.db, categoryFilter);
     } catch (error) {
         logger.error(error);
+
         return error;
     }
 };

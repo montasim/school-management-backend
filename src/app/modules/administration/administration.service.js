@@ -35,7 +35,6 @@ import generateResponseData from "../../../shared/generateResponseData.js";
 import findById from "../../../shared/findById.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
-import getAllData from "../../../shared/getAllData.js";
 
 /**
  * Creates a new administration entry in the database.
