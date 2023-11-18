@@ -128,15 +128,34 @@ const updateAOthersInformationService = async (db, othersInformationId, newOther
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const updatedOthersInformationDetails = {
-            ...(title && { title }),
-            ...(category && { category }),
-            ...(description && { description }),
-            modifiedBy: adminId,
-            modifiedAt: new Date(),
-        };
+        // Retrieve the current details of the others information
+        const oldDetails = await findById(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId);
+
+        if (!oldDetails)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${othersInformationId} not found`);
+
+        // Initialize the object to store updated details
+        const updatedOthersInformationDetails = { ...oldDetails };
+
+        // Update title, category, and description if provided
+        if (title) updatedOthersInformationDetails.title = title;
+        if (category) updatedOthersInformationDetails.category = category;
+        if (description) updatedOthersInformationDetails.description = description;
+
+        // Update modifiedBy and modifiedAt
+        updatedOthersInformationDetails.modifiedBy = adminId;
+        updatedOthersInformationDetails.modifiedAt = new Date();
+
+        // Update the others information data
         const result = await updateById(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId, updatedOthersInformationDetails);
+
+        // Retrieve the updated data
         const latestData = await findById(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId);
+
+        // Remove unnecessary data before sending response
+        delete latestData._id;
+        delete latestData.createdBy;
+        delete latestData.modifiedBy;
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${othersInformationId} updated successfully`)

@@ -167,7 +167,7 @@ const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage)
         const { homePagePostId, title, category, description, adminId } = newHomePagePostDetails;
 
         if (!title && !category && !description && !postImage)
-            return generateResponseData({}, false, STATUS_BAD_REQUEST, "All fields can not be empty");
+            return generateResponseData({}, false, STATUS_BAD_REQUEST, "All fields cannot be empty");
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -179,7 +179,7 @@ const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePagePostId} not found`);
 
         // Initialize the object to store updated details
-        const updatedHomePagePostDetails = {};
+        const updatedHomePagePostDetails = { ...oldDetails };
 
         // Update file if provided
         if (postImage) {

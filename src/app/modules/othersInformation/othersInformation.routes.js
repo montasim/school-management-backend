@@ -88,7 +88,6 @@ router.get("/:othersInformationId", [
 router.put("/:othersInformationId", [
     authTokenMiddleware,
     OthersInformationValidators.othersInformationParamsValidator,
-    OthersInformationValidators.othersInformationBodyValidator,
     OthersInformationController.updateAOthersInformationController
 ]);
 
