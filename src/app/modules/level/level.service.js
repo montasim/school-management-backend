@@ -15,7 +15,6 @@ import { ID_CONSTANTS } from "./level.constants.js";
 
 // Shared utilities and functions
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -23,7 +22,6 @@ import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
-import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new level entry in the database.
@@ -38,7 +36,7 @@ const createLevelService = async (db, newLevelDetails) => {
     try {
         const { name, adminId } = newLevelDetails;
 
-        if (await isAlreadyExistsByName(db, LEVEL_COLLECTION_NAME, name))
+        if (await findByField(db, LEVEL_COLLECTION_NAME, 'name', name))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         if (!await isValidRequest(db, adminId))
@@ -171,7 +169,7 @@ const deleteALevelService = async (db, adminId, levelId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, LEVEL_COLLECTION_NAME, levelId))
+        if (!await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${levelId} not found`);
 
         const result = await deleteById(db, LEVEL_COLLECTION_NAME, levelId);

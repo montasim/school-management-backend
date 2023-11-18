@@ -10,7 +10,6 @@ import {
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./othersInformationCategory.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -18,7 +17,6 @@ import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
-import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new othersInformationCategory entry in the database.
@@ -33,7 +31,7 @@ const createOthersInformationCategory = async (db, newOthersInformationCategoryD
     try {
         const { name, adminId } = newOthersInformationCategoryDetails;
 
-        if (await isAlreadyExistsByName(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, name))
+        if (await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, 'name', name))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         if (!await isValidRequest(db, adminId))
@@ -166,7 +164,7 @@ const deleteAOthersInformationCategory = async (db, adminId, othersInformationCa
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId))
+        if (!await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, 'id', othersInformationCategoryId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${othersInformationCategoryId} not found`);
 
         const result = await deleteById(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId);

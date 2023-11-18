@@ -17,7 +17,6 @@ import { ID_CONSTANTS } from "./announcement.constants.js";
 
 // Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
@@ -171,7 +170,7 @@ const deleteAAnnouncementService = async (db, adminId, announcementId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId))
+        if (!await findByField(db, ANNOUNCEMENT_COLLECTION_NAME, 'id', announcementId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${announcementId} not found`);
 
         const result = await deleteById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId);

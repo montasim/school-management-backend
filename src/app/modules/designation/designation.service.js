@@ -15,7 +15,6 @@ import { ID_CONSTANTS } from "./designation.constants.js";
 
 // Shared utilities and functions
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -23,7 +22,6 @@ import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
-import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new designation entry in the database.
@@ -38,7 +36,7 @@ const createDesignationService = async (db, newDesignationDetails) => {
     try {
         const { name, adminId } = newDesignationDetails;
 
-        if (await isAlreadyExistsByName(db, DESIGNATION_COLLECTION_NAME, name))
+        if (await findByField(db, DESIGNATION_COLLECTION_NAME, 'name', name))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         if (!await isValidRequest(db, adminId))
@@ -171,7 +169,7 @@ const deleteADesignationService = async (db, adminId, designationId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, DESIGNATION_COLLECTION_NAME, designationId))
+        if (!await findByField(db, DESIGNATION_COLLECTION_NAME, 'id', designationId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${designationId} not found`);
 
         const result = await deleteById(db, DESIGNATION_COLLECTION_NAME, designationId);
