@@ -19,7 +19,7 @@ import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 
@@ -49,7 +49,7 @@ const createDesignationService = async (db, newDesignationDetails) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, DESIGNATION_COLLECTION_NAME, designationDetails);
+        const result = await createByDetails(db, DESIGNATION_COLLECTION_NAME, designationDetails);
         const latestData = await findByField(db, DESIGNATION_COLLECTION_NAME, 'id', designationDetails?.id);
 
         delete latestData?.createdBy;

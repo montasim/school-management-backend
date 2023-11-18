@@ -11,7 +11,7 @@
  *
  * @requires isValidRequest - Helper function to validate the requester authority.
  * @requires generateResponseData - Utility to format the response data.
- * @requires findByField, addANewEntryToDatabase - Database utility functions.
+ * @requires findByField, createByDetails - Database utility functions.
  * @requires logger - Logger utility for logging information.
  * @module WebsiteContactService - Exports service functions for website contact operations.
  */
@@ -31,7 +31,7 @@ import isValidRequest from "../../../../shared/isValidRequest.js";
 import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
@@ -64,7 +64,7 @@ const createWebsiteContactService = async (db, websiteContactDetails) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, WEBSITE_CONTACT_COLLECTION_NAME, prepareWebsiteDetails);
+        const result = await createByDetails(db, WEBSITE_CONTACT_COLLECTION_NAME, prepareWebsiteDetails);
         const latestData = await findByField(db, WEBSITE_CONTACT_COLLECTION_NAME, 'id', prepareWebsiteDetails?.id);
 
         delete latestData?._id;

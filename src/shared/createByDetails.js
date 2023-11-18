@@ -8,7 +8,7 @@
  * insertion operation. Errors during the insertion process are logged using a shared logger utility.
  *
  * @requires logger - Shared logging utility for error logging.
- * @module addANewEntryToDatabase - Function to add new entries to a database collection.
+ * @module createByDetails - Function to add new entries to a database collection.
  */
 
 import logger from "./logger.js";
@@ -23,7 +23,7 @@ import logger from "./logger.js";
  * @param details
  * @returns {Promise<boolean>} Returns `details` of the added entry.
  */
-const addANewEntryToDatabase = async (db, collectionName, details) => {
+const createByDetails = async (db, collectionName, details) => {
     try {
         if (!collectionName) {
             logger.error("COLLECTION_NAME is not defined");
@@ -41,4 +41,4 @@ const addANewEntryToDatabase = async (db, collectionName, details) => {
     }
 };
 
-export default addANewEntryToDatabase;
+export default createByDetails;

@@ -32,7 +32,7 @@ import findByField from "../../../shared/findByField.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import createAuthenticationToken from "../../../helpers/createAuthenticationToken.js";
 import logger from "../../../shared/logger.js";
@@ -209,7 +209,7 @@ const signupService = async (db, signupDetails) => {
                     lastFailedAttempts: null,
                     createdAt: new Date(),
                 };
-                const result = await addANewEntryToDatabase(db, ADMIN_COLLECTION_NAME, prepareNewUserDetails);
+                const result = await createByDetails(db, ADMIN_COLLECTION_NAME, prepareNewUserDetails);
                 const latestData = await findByField(db, ADMIN_COLLECTION_NAME, 'id', prepareNewUserDetails?.id);
 
                 delete latestData?._id;

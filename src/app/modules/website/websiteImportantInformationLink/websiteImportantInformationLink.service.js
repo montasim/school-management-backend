@@ -11,7 +11,7 @@
  * @requires ID_CONSTANTS - Constants related to ID generation and validation.
  * @requires generateResponseData - Helper function for generating standardized response data.
  * @requires logger - Utility for logging errors.
- * @requires addANewEntryToDatabase - Helper function for adding new entries to the database.
+ * @requires createByDetails - Helper function for adding new entries to the database.
  * @requires findByField - Helper function for finding database entries by ID.
  * @requires getAllData - Helper function for retrieving all data from a database collection.
  * @requires updateById - Helper function for updating database entries by ID.
@@ -33,7 +33,7 @@ import { ID_CONSTANTS } from "./websiteImportantInformationLink.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import logger from "../../../../shared/logger.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import updateById from "../../../../shared/updateById.js";
@@ -63,7 +63,7 @@ const createWebsiteImportantInformationLinkService = async (db, newWebsiteImport
             createdBy: adminId,
             createdAt: new Date(),
         };
-        const result = await addANewEntryToDatabase(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkDetails);
+        const result = await createByDetails(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkDetails);
         const latestData = await findByField(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, 'id', websiteImportantInformationLinkDetails?.id);
 
         delete latestData?._id;

@@ -33,7 +33,7 @@ import logger from "../../../../shared/logger.js";
 import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
@@ -66,12 +66,12 @@ const createPhotoGalleryService = async (db, newPhotoGalleryDetails, file) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails);
+        const result = await createByDetails(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails);
         const latestData = await findByField(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)

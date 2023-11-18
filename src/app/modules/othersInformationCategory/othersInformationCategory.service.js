@@ -14,7 +14,7 @@ import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 
@@ -44,7 +44,7 @@ const createOthersInformationCategory = async (db, newOthersInformationCategoryD
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryDetails);
+        const result = await createByDetails(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryDetails);
         const latestData = await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, 'id', othersInformationCategoryDetails?.id);
 
         delete latestData?.createdBy;

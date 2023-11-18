@@ -21,7 +21,7 @@ import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 
@@ -50,8 +50,8 @@ const createOthersInformationService = async (db, newOthersInformationDetails) =
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationDetails);
-        const latestData = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationDetails?.id);
+        const result = await createByDetails(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationDetails);
+        const latestData = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationDetails?.id);
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${othersInformationDetails?.name} created successfully`)

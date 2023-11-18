@@ -33,7 +33,7 @@ import logger from "../../../../shared/logger.js";
 import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import updateById from "../../../../shared/updateById.js";
 import getAllData from "../../../../shared/getAllData.js";
 
@@ -64,7 +64,7 @@ const createAdmissionInformationService = async (db, newAdmissionInformationDeta
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationDetails);
+        const result = await createByDetails(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationDetails);
         const latestData = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, 'id', admissionInformationDetails?.id);
 
         delete latestData?._id;

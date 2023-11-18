@@ -21,7 +21,7 @@ import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 
@@ -51,7 +51,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, CATEGORY_COLLECTION_NAME, categoryDetails);
+        const result = await createByDetails(db, CATEGORY_COLLECTION_NAME, categoryDetails);
         const latestData = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryDetails?.id);
 
         delete latestData?.createdBy;

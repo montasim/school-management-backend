@@ -14,7 +14,7 @@
  * @requires isValidRequest - Utility function to validate request authenticity.
  * @requires generateResponseData - Utility function for generating standardized response data.
  * @requires logger - Shared logging utility for error handling.
- * @requires addANewEntryToDatabase - Utility for adding new entries to the database.
+ * @requires createByDetails - Utility for adding new entries to the database.
  * @requires findByField - Utility for finding a record by its identifier.
  * @requires getAllData - Utility for retrieving all records from a database collection.
  * @requires deleteByField - Utility for deleting records by filename.
@@ -36,7 +36,7 @@ import { ID_CONSTANTS } from "./admissionForm.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import logger from "../../../../shared/logger.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import deleteByField from "../../../../shared/deleteByField.js";
@@ -77,7 +77,7 @@ const createAdmissionFormService = async (db, newAdmissionFormDetails, file) => 
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, ADMISSION_FORM_COLLECTION_NAME, admissionFormDetails);
+        const result = await createByDetails(db, ADMISSION_FORM_COLLECTION_NAME, admissionFormDetails);
         const latestData = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'id', admissionFormDetails?.id);
 
         delete latestData?.createdBy;

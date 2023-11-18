@@ -33,7 +33,7 @@ import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 
@@ -68,7 +68,7 @@ const createStudentService = async (db, newStudentDetails, file) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, STUDENT_COLLECTION_NAME, studentDetails);
+        const result = await createByDetails(db, STUDENT_COLLECTION_NAME, studentDetails);
         const latestData = await findByField(db, STUDENT_COLLECTION_NAME, 'id', studentDetails?.id);
 
         delete latestData?._id;

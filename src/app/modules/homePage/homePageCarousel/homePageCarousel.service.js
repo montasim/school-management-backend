@@ -33,7 +33,7 @@ import logger from "../../../../shared/logger.js";
 import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
@@ -66,7 +66,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails, fil
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselDetails);
+        const result = await createByDetails(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselDetails);
         const latestData = await findByField(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, 'id', homePageCarouselDetails?.id);
 
         delete latestData?.createdBy;

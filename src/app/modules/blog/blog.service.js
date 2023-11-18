@@ -33,7 +33,7 @@ import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 
@@ -69,7 +69,7 @@ const createBlogService = async (db, newBlogDetails, file) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, BLOG_COLLECTION_NAME, blogDetails);
+        const result = await createByDetails(db, BLOG_COLLECTION_NAME, blogDetails);
         const latestData = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogDetails?.id);
 
         delete latestData?.createdBy;

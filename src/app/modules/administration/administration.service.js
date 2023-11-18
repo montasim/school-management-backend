@@ -33,7 +33,7 @@ import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 
 /**
@@ -80,7 +80,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
         };
 
         // Add the new administration entry to the database
-        const result = await addANewEntryToDatabase(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails);
+        const result = await createByDetails(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails);
 
         // Retrieve the latest data for response
         const latestData = await findByField(db, ADMINISTRATION_COLLECTION_NAME, 'id', administrationDetails?.id);
