@@ -48,6 +48,7 @@ import routineRoutes from "../modules/routine/routine.routes.js";
 import studentRoutes from "../modules/student/student.routes.js";
 import websiteRoutes from "../routes/website.routes.js";
 import galleryRoutes from "./gallery.routes.js";
+import admissionRoutes from "./admission.routes.js";
 
 /**
  * Sets up the main router for the application. This router is responsible for aggregating all the individual
@@ -55,13 +56,13 @@ import galleryRoutes from "./gallery.routes.js";
  * module or functionality within the application. The router facilitates clear separation and organization
  * of different parts of the application's API, making it easier to manage and scale.
  *
- * @namespace apiRouter - Main router object combining all route modules.
+ * @namespace router - Main router object combining all route modules.
  * @type {express.Router}
  * @example
  * // In the main server file:
  * app.use('/api', apiRouter); // Mounts the API router on '/api' base path.
  */
-const apiRouter = express.Router();
+const router = express.Router();
 
 /**
  * Sets up routing for the announcement module.
@@ -70,7 +71,16 @@ const apiRouter = express.Router();
  * @inner
  * @memberof module:routes
  */
-apiRouter.use(`/announcement`, announcementRoutes);
+router.use(`/admission`, admissionRoutes);
+
+/**
+ * Sets up routing for the announcement module.
+ * @name /announcement
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use(`/announcement`, announcementRoutes);
 
 /**
  * Sets up versioned routing for the administration module.
@@ -79,7 +89,7 @@ apiRouter.use(`/announcement`, announcementRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/administration", administrationRoutes);
+router.use("/administration", administrationRoutes);
 
 /**
  * Sets up routing for the authentication module.
@@ -88,7 +98,7 @@ apiRouter.use("/administration", administrationRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use(`/authentication`, authenticationRoutes);
+router.use(`/authentication`, authenticationRoutes);
 
 /**
  * Sets up versioned routing for the blog module.
@@ -97,7 +107,7 @@ apiRouter.use(`/authentication`, authenticationRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use(`/blog`, blogRoutes);
+router.use(`/blog`, blogRoutes);
 
 /**
  * Sets up versioned routing for the category module.
@@ -106,7 +116,7 @@ apiRouter.use(`/blog`, blogRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/category", categoryRoutes);
+router.use("/category", categoryRoutes);
 
 /**
  * Sets up versioned routing for the contact module.
@@ -115,7 +125,7 @@ apiRouter.use("/category", categoryRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/contact", contactRoutes);
+router.use("/contact", contactRoutes);
 
 /**
  * Sets up routing for the dashboard module.
@@ -124,8 +134,8 @@ apiRouter.use("/contact", contactRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use(`/dashboard`, dashboardRoutes);
-apiRouter.use("/contact", contactRoutes);
+router.use(`/dashboard`, dashboardRoutes);
+router.use("/contact", contactRoutes);
 
 /**
  * Sets up routing for the designation module.
@@ -134,7 +144,7 @@ apiRouter.use("/contact", contactRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use(`/designation`, designationRoutes);
+router.use(`/designation`, designationRoutes);
 
 /**
  * Sets up versioned routing for the download module.
@@ -143,7 +153,7 @@ apiRouter.use(`/designation`, designationRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/download", downloadRoutes);
+router.use("/download", downloadRoutes);
 
 /**
  * Sets up versioned routing for the gallery module.
@@ -152,7 +162,7 @@ apiRouter.use("/download", downloadRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/gallery", galleryRoutes);
+router.use("/gallery", galleryRoutes);
 
 /**
  * Sets up versioned routing for the level module.
@@ -161,7 +171,7 @@ apiRouter.use("/gallery", galleryRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/level", levelRoutes);
+router.use("/level", levelRoutes);
 
 /**
  * Sets up versioned routing for the homePagePost module.
@@ -170,7 +180,7 @@ apiRouter.use("/level", levelRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/homePage", homePageRoutes);
+router.use("/homePage", homePageRoutes);
 
 /**
  * Sets up routing for the notice module.
@@ -179,7 +189,7 @@ apiRouter.use("/homePage", homePageRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/notice", noticeRoutes);
+router.use("/notice", noticeRoutes);
 
 /**
  * Sets up routing for the othersInformation module.
@@ -188,7 +198,7 @@ apiRouter.use("/notice", noticeRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use(`/othersInformation`, othersInformationRoutes);
+router.use(`/othersInformation`, othersInformationRoutes);
 
 /**
  * Sets up routing for the othersInformationCategory module.
@@ -197,7 +207,7 @@ apiRouter.use(`/othersInformation`, othersInformationRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use(`/othersInformationCategory`, othersInformationCategoryRoutes);
+router.use(`/othersInformationCategory`, othersInformationCategoryRoutes);
 
 /**
  * Sets up versioned routing for the result module.
@@ -206,7 +216,7 @@ apiRouter.use(`/othersInformationCategory`, othersInformationCategoryRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/result", resultRoutes);
+router.use("/result", resultRoutes);
 
 /**
  * Sets up versioned routing for the routine module.
@@ -215,7 +225,7 @@ apiRouter.use("/result", resultRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/routine", routineRoutes);
+router.use("/routine", routineRoutes);
 
 /**
  * Sets up versioned routing for the student module.
@@ -224,7 +234,7 @@ apiRouter.use("/routine", routineRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use("/student", studentRoutes);
+router.use("/student", studentRoutes);
 
 /**
  * Sets up routing for the website module.
@@ -233,11 +243,11 @@ apiRouter.use("/student", studentRoutes);
  * @inner
  * @memberof module:routes
  */
-apiRouter.use(`/website`, websiteRoutes);
+router.use(`/website`, websiteRoutes);
 
 /**
  * The main router object that combines all route modules.
  * @type {Router}
  * @namespace module:routes
  */
-export default apiRouter;
+export default router;

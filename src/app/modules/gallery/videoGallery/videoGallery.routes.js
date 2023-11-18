@@ -42,7 +42,7 @@ const videoGalleryRouter = express.Router();
  *       - in: formData
  *         name: galleryVideo
  *         type: file
- *         description: The videoGallery post image file to upload.
+ *         description: The videoGallery post video file to upload.
  *     responses:
  *       200:
  *         description: VideoGallery successfully created.
