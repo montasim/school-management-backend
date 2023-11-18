@@ -40,18 +40,24 @@ const createAdministrationController = async (req, res) => {
 
 /**
  * @async
- * @function getAdministrationList
- * @description Controller for fetching all other information.
+ * @function getAdministrationListController
+ * @description Controller for fetching all administrations. This function also handles
+ * filtering administrations based on one or multiple categories. If a 'filterBy' query parameter
+ * is provided, the function interprets it as a list of categories to filter by. These categories
+ * are separated by '&' in the query parameter. The function then passes these categories to the
+ * service layer for filtering the results accordingly.
  *
- * @param {express.Request} req - Express request object.
- * @param {express.Response} res - Express response object to send data back to client.
+ * @param {express.Request} req - Express request object. It may contain a 'filterBy' query parameter
+ *                                with one or more category names, separated by '&'.
+ * @param {express.Response} res - Express response object to send data back to the client.
  */
 const getAdministrationListController = async (req, res) => {
     try {
-        await handleServiceResponse(res, AdministrationService.getAdministrationListService, req?.db);
+        // Extract 'filterBy' parameter and split by '&' to support multiple categories
+        const categoryFilter = req?.query?.filterBy ? req?.query?.filterBy.split('&') : [];
+        await handleServiceResponse(res, AdministrationService.getAdministrationListService, req?.db, categoryFilter);
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
