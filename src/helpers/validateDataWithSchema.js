@@ -7,15 +7,13 @@
  * allows the request to proceed to the next middleware. This utility simplifies adding validation logic to routes,
  * ensuring that incoming data adheres to the expected structure and types before being processed by the route handlers.
  *
- * @requires handleValidationError - Function to handle and respond to validation errors.
  * @requires logger - Shared logging utility for error logging.
  * @requires constants - Application constants, including HTTP status codes.
  * @module validateWithSchema - Generates middleware for Joi schema validation in Express routes.
  */
 
-import handleValidationError from "./handleValidationError.js";
 import logger from "../shared/logger.js";
-import { STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";
+import { STATUS_BAD_REQUEST, STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";
 
 /**
  * Validates request data against a provided Joi schema.
@@ -30,14 +28,21 @@ const validateDataWithSchema = (schema, source = 'body') => async (req, res, nex
         const { error } = schema?.validate(dataToValidate);
 
         if (error) {
-            return handleValidationError(res, error);
+            const messages = error?.details?.map(detail => detail?.message).join(', ');
+
+            return res?.status(STATUS_BAD_REQUEST).json({
+                data: {},
+                success: false,
+                status: STATUS_BAD_REQUEST,
+                message: messages,
+            });
         }
 
         next();
     } catch (error) {
         logger.error(error);
 
-        return res.status(STATUS_INTERNAL_SERVER_ERROR).json(error);
+        return res?.status(STATUS_INTERNAL_SERVER_ERROR).json(error);
     }
 };
 

@@ -24,7 +24,7 @@ import createIdSchema from "../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating blog post parameters.
  */
 const blogParamsValidationSchema = Joi.object({
-    blogId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX, ID_CONSTANTS).required()
+    blogId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 /**

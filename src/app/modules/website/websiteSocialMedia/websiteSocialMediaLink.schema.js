@@ -42,7 +42,7 @@ const websiteSocialMediaLinkBodySchema = Joi.object({
  * ensuring that the correct link is identified and processed.
  */
 const websiteSocialMediaLinkParamsSchema = Joi.object({
-    websiteSocialMediaLinkId: createIdSchema(ID_CONSTANTS?.WEBSITE_PREFIX, ID_CONSTANTS).required()
+    websiteSocialMediaLinkId: createIdSchema(ID_CONSTANTS?.WEBSITE_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 

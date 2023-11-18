@@ -26,7 +26,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./administration.constants.js";
+import { ADMINISTRATION_CONSTANTS } from "./administration.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
@@ -59,7 +59,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const administrationDetails = {
-            id: `${ID_CONSTANTS?.ADMINISTRATION_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: `${ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX}-${uuidv4().substr(0, 6)}`,
             name: name,
             category: category,
             designation: designation,
@@ -89,23 +89,42 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
 };
 
 /**
- * Retrieves a list of all homePageAdministration from the database.
- *
  * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of homePageAdministration or an error message.
- * @throws {Error} Throws an error if any.
+ * @function getAdministrationListService
+ * @description Service for retrieving a list of all administrations from the database,
+ * optionally filtered by categories. The results are sorted by the 'createdAt' field in
+ * descending order, ensuring the latest data is returned first.
+ *
+ * @param {Object} db - Database connection object.
+ * @param {Array<string>} categoryFilter - An array of category names to filter the administrations by.
+ *                                         If the array is empty or not provided, no filtering is applied.
+ * @returns {Promise<Object>} A promise that resolves to the response object containing the list of administrations
+ *                            or an error message. The response includes a success status, HTTP status code, and
+ *                            a message indicating the number of administrations found or an error message.
+ * @throws {Error} Throws an error if any issue occurs during the database query execution.
  */
-const getAdministrationListService = async (db) => {
+const getAdministrationListService = async (db, categoryFilter) => {
     try {
-        const administration = await getAllData(db, ADMINISTRATION_COLLECTION_NAME);
+        let query = {};
+        // Apply the category filter if provided
+        if (categoryFilter?.length > 0) {
+            // Use $in operator to match any of the categories
+            query = { 'category': { $in: categoryFilter } };
+        }
 
+        // Retrieve and sort administrations from the database based on the query
+        const administration = await db?.collection(ADMINISTRATION_COLLECTION_NAME)
+            .find(query)
+            .sort({ 'createdAt': -1 }) // Sort by 'createdAt' in descending order
+            .toArray();
+
+        // Generate and return the response data
         return administration?.length
             ? generateResponseData(administration, true, STATUS_OK, `${administration?.length} administration found`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No homePageAdministration found');
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No administration found with the given categories');
     } catch (error) {
+        // Log and return any errors encountered
         logger.error(error);
-
         return error;
     }
 };

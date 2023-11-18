@@ -42,7 +42,7 @@ const websiteOfficialLinkBodySchema = Joi.object({
  * ensuring that the correct link is identified and processed.
  */
 const websiteOfficialLinkParamsSchema = Joi.object({
-    websiteOfficialLinkId: createIdSchema(ID_CONSTANTS?.WEBSITE_PREFIX, ID_CONSTANTS).required()
+    websiteOfficialLinkId: createIdSchema(ID_CONSTANTS?.WEBSITE_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 

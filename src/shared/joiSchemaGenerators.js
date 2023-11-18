@@ -134,7 +134,7 @@ const fileValidationSchema = (allowedFieldname, allowedExtensions = [FILE_EXTENS
 const fileWithTitleValidationSchema = (allowedFileExtensions = [FILE_EXTENSION_TYPE_PDF], validMimeTypes = [MIME_TYPE_PDF]) => {
     return Joi.object({
         title: JoiSchemaGenerators.createStringSchema('title', 3, 200),
-        file: fileValidationSchema("postImage", [...allowedFileExtensions], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+        file: fileValidationSchema("postImage", [...allowedFileExtensions], [...validMimeTypes]),
     }).required();
 };
 
@@ -203,22 +203,6 @@ const admissionInformationBodyValidationSchema = () => {
 }
 
 /**
- * @description Joi validation schema for administration body data.
- * Validates the title, category, and description fields.
- *
- * - `name`: Should be a string with a minimum length of 3 and a maximum length of 50.
- * - `level`: Should be a string with a minimum length of 3 and a maximum length of 20.
- * - `level`: Should be a string with a minimum length of 3 and a maximum length of 50.
- */
-const administrationBodyValidationSchema = () => {
-    return Joi.object({
-        name: JoiSchemaGenerators.createStringSchema('name', 3, 50),
-        category: JoiSchemaGenerators.createStringSchema('category', 3, 20),
-        designation: JoiSchemaGenerators.createStringSchema('designation', 3, 50),
-    });
-}
-
-/**
  * @description Joi validation schema for blogPost body data.
  * Validates the title, category, and description fields.
  *
@@ -255,13 +239,11 @@ const createStringSchema = (fieldName, minLength, maxLength) => {
     return Joi.string()
         .min(minLength)
         .max(maxLength)
-        .required()
         .messages({
             'string.base': `"${fieldName}" should be a type of "text"`,
             'string.empty': `"${fieldName}" cannot be an empty field`,
             'string.min': `"${fieldName}" should have a minimum length of {#limit}`,
             'string.max': `"${fieldName}" should have a maximum length of {#limit}`,
-            'any.required': `"${fieldName}" is a required field`
         });
 };
 
@@ -271,7 +253,6 @@ const createStringSchema = (fieldName, minLength, maxLength) => {
 export const JoiSchemaGenerators = {
   carouselBodyValidationSchema,
   studentBodyValidationSchema,
-  administrationBodyValidationSchema,
   fileValidationSchema,
   fileWithTitleValidationSchema,
   createFileNameSchema,

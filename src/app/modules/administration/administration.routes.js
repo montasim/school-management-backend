@@ -65,7 +65,7 @@ administrationRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
     multerErrorHandlerMiddleware,
-    AdministrationValidationService.validateAdministrationDetails,
+    AdministrationValidationService.validateNewAdministrationDetails,
     AdministrationValidationService.validateAdministrationFile,
     AdministrationController.createAdministrationController
 ]);
@@ -158,6 +158,8 @@ administrationRouter.put("/:administrationId", [
     fileUploadMiddleware.single('image'),
     multerErrorHandlerMiddleware,
     AdministrationValidationService.validateAdministrationParams,
+    AdministrationValidationService.validateUpdatedAdministrationDetails,
+    AdministrationValidationService.validateAdministrationFile,
     AdministrationController.updateAAdministrationController
 ]);
 
