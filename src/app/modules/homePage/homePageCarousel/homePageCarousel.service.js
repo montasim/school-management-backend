@@ -32,7 +32,7 @@ import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOp
 import logger from "../../../../shared/logger.js";
 import deleteById from "../../../../shared/deleteById.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
-import findById from "../../../../shared/findById.js";
+import findByField from "../../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
 import getAllData from "../../../../shared/getAllData.js";
 
@@ -67,7 +67,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails, fil
         };
 
         const result = await addANewEntryToDatabase(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselDetails);
-        const latestData = await findById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselDetails?.id);
+        const latestData = await findByField(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, 'id', homePageCarouselDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -117,7 +117,7 @@ const getHomePageCarouselListService = async (db) => {
  */
 const getAHomePageCarouselService = async (db, homePageCarouselId) => {
     try {
-        const homePageCarousel = await findById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId);
+        const homePageCarousel = await findByField(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, 'id', homePageCarouselId);
 
         delete homePageCarousel?.createdBy;
         delete homePageCarousel?.modifiedBy;
@@ -148,7 +148,7 @@ const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) =
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, homePageCarouselId);
+        const oldDetails = await findByField(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, 'id', homePageCarouselId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageCarouselId} not found`);

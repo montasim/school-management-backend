@@ -14,7 +14,7 @@ import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
@@ -47,7 +47,7 @@ const createOthersInformationCategory = async (db, newOthersInformationCategoryD
         };
 
         const result = await addANewEntryToDatabase(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryDetails);
-        const latestData = await findById(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryDetails?.id);
+        const latestData = await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, 'id', othersInformationCategoryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -97,7 +97,7 @@ const getOthersInformationCategoryList = async (db) => {
  */
 const getAOthersInformationCategory = async (db, othersInformationCategoryId) => {
     try {
-        const othersInformationCategory = await findById(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId);
+        const othersInformationCategory = await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId);
 
         delete othersInformationCategory?.createdBy;
         delete othersInformationCategory?.modifiedBy;
@@ -135,7 +135,7 @@ const updateAOthersInformationCategory = async (db, othersInformationCategoryId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId, updatedOthersInformationCategoryDetails);
-        const latestData = await findById(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId);
+        const latestData = await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;

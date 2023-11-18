@@ -21,7 +21,7 @@ import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
@@ -54,7 +54,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
         };
 
         const result = await addANewEntryToDatabase(db, CATEGORY_COLLECTION_NAME, categoryDetails);
-        const latestData = await findById(db, CATEGORY_COLLECTION_NAME, categoryDetails?.id);
+        const latestData = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -104,7 +104,7 @@ const getCategoryListService = async (db) => {
  */
 const getACategoryService = async (db, categoryId) => {
     try {
-        const category = await findById(db, CATEGORY_COLLECTION_NAME, categoryId);
+        const category = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId);
 
         delete category?.createdBy;
         delete category?.modifiedBy;
@@ -142,7 +142,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
             modifiedAt: new Date(),
         };
         const result = await updateById(db, CATEGORY_COLLECTION_NAME, categoryId, updatedCategoryDetails);
-        const latestData = await findById(db, CATEGORY_COLLECTION_NAME, categoryId);
+        const latestData = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;

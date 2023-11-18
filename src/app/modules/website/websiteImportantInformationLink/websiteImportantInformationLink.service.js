@@ -12,7 +12,7 @@
  * @requires generateResponseData - Helper function for generating standardized response data.
  * @requires logger - Utility for logging errors.
  * @requires addANewEntryToDatabase - Helper function for adding new entries to the database.
- * @requires findById - Helper function for finding database entries by ID.
+ * @requires findByField - Helper function for finding database entries by ID.
  * @requires getAllData - Helper function for retrieving all data from a database collection.
  * @requires updateById - Helper function for updating database entries by ID.
  * @requires deleteById - Helper function for deleting database entries by ID.
@@ -34,7 +34,7 @@ import isValidRequest from "../../../../shared/isValidRequest.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import logger from "../../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
-import findById from "../../../../shared/findById.js";
+import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import updateById from "../../../../shared/updateById.js";
 import deleteById from "../../../../shared/deleteById.js";
@@ -64,7 +64,7 @@ const createWebsiteImportantInformationLinkService = async (db, newWebsiteImport
             createdAt: new Date(),
         };
         const result = await addANewEntryToDatabase(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkDetails);
-        const latestData = await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkDetails?.id);
+        const latestData = await findByField(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, 'id', websiteImportantInformationLinkDetails?.id);
 
         delete latestData?._id;
         delete latestData?.createdBy;
@@ -111,7 +111,7 @@ const getWebsiteImportantInformationLinkListService = async (db) => {
  */
 const getAWebsiteImportantInformationLinkService = async (db, websiteImportantInformationLinkId) => {
     try {
-        const websiteImportantInformationLink = await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId);
+        const websiteImportantInformationLink = await findByField(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, 'id', websiteImportantInformationLinkId);
 
         return websiteImportantInformationLink
             ? generateResponseData(websiteImportantInformationLink, true, STATUS_OK, `${websiteImportantInformationLinkId} found successfully`)
@@ -140,7 +140,7 @@ const updateAWebsiteImportantInformationLinkService = async (db, websiteImportan
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId))
+        if (!await findByField(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, 'id', websiteImportantInformationLinkId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteImportantInformationLinkId} not found`);
 
         const updatedWebsiteImportantInformationLink = {
@@ -150,7 +150,7 @@ const updateAWebsiteImportantInformationLinkService = async (db, websiteImportan
             modifiedAt: new Date(),
         };
         const result = await updateById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId, updatedWebsiteImportantInformationLink);
-        const latestData = await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId);
+        const latestData = await findByField(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, 'id', websiteImportantInformationLinkId);
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${websiteImportantInformationLinkId} updated successfully`)
@@ -178,7 +178,7 @@ const deleteAWebsiteImportantInformationLinkService = async (db, adminId, websit
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId))
+        if (!await findByField(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, 'id', websiteImportantInformationLinkId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteImportantInformationLinkId} not found`);
 
         const result = await deleteById(db, WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME, websiteImportantInformationLinkId);

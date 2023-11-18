@@ -14,7 +14,7 @@
  * @returns {Promise<boolean>} A boolean indicating whether the token has been revoked.
  */
 
-import findById from "../shared/findById.js";
+import findByField from "../shared/findByField.js";
 import { ADMIN_COLLECTION_NAME } from "../config/config.js";
 import logger from "../shared/logger.js";
 import removeTokenId from "./removeTokenId.js";
@@ -35,7 +35,7 @@ import removeTokenId from "./removeTokenId.js";
  */
 const isTokenRevoked = async (db, adminId, jti) => {
     try {
-        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
+        const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, adminId);
 
         // Check if tokenId array exists and contains the provided jti
         if (foundAdminDetails?.tokenId?.includes(jti)) {

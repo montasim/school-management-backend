@@ -12,7 +12,7 @@
  * @requires generateResponseData - Helper function for generating standardized response data.
  * @requires logger - Utility for logging errors.
  * @requires addANewEntryToDatabase - Helper function for adding new entries to the database.
- * @requires findById - Helper function for finding database entries by ID.
+ * @requires findByField - Helper function for finding database entries by ID.
  * @requires getAllData - Helper function for retrieving all data from a database collection.
  * @requires updateById - Helper function for updating database entries by ID.
  * @requires deleteById - Helper function for deleting database entries by ID.
@@ -34,7 +34,7 @@ import isValidRequest from "../../../../shared/isValidRequest.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import logger from "../../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
-import findById from "../../../../shared/findById.js";
+import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import updateById from "../../../../shared/updateById.js";
 import deleteById from "../../../../shared/deleteById.js";
@@ -64,7 +64,7 @@ const createWebsiteOfficialLinkService = async (db, newWebsiteOfficialLinkDetail
             createdAt: new Date(),
         };
         const result = await addANewEntryToDatabase(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkDetails);
-        const latestData = await findById(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkDetails?.id);
+        const latestData = await findByField(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, 'id', websiteOfficialLinkDetails?.id);
 
         delete latestData?._id;
         delete latestData?.createdBy;
@@ -111,7 +111,7 @@ const getWebsiteOfficialLinkListService = async (db) => {
  */
 const getAWebsiteOfficialLinkService = async (db, websiteOfficialLinkId) => {
     try {
-        const websiteOfficialLink = await findById(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkId);
+        const websiteOfficialLink = await findByField(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, 'id', websiteOfficialLinkId);
 
         return websiteOfficialLink
             ? generateResponseData(websiteOfficialLink, true, STATUS_OK, `${websiteOfficialLinkId} found successfully`)
@@ -140,7 +140,7 @@ const updateAWebsiteOfficialLinkService = async (db, websiteOfficialLinkId, upda
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findById(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkId))
+        if (!await findByField(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, 'id', websiteOfficialLinkId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteOfficialLinkId} not found`);
 
         const updatedWebsiteOfficialLink = {
@@ -150,7 +150,7 @@ const updateAWebsiteOfficialLinkService = async (db, websiteOfficialLinkId, upda
             modifiedAt: new Date(),
         };
         const result = await updateById(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkId, updatedWebsiteOfficialLink);
-        const latestData = await findById(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkId);
+        const latestData = await findByField(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, 'id', websiteOfficialLinkId);
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${websiteOfficialLinkId} updated successfully`)
@@ -178,7 +178,7 @@ const deleteAWebsiteOfficialLinkService = async (db, adminId, websiteOfficialLin
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findById(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkId))
+        if (!await findByField(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, 'id', websiteOfficialLinkId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteOfficialLinkId} not found`);
 
         const result = await deleteById(db, WEBSITE_OFFICIAL_LINK_COLLECTION_NAME, websiteOfficialLinkId);

@@ -19,7 +19,7 @@ import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
@@ -52,7 +52,7 @@ const createDesignationService = async (db, newDesignationDetails) => {
         };
 
         const result = await addANewEntryToDatabase(db, DESIGNATION_COLLECTION_NAME, designationDetails);
-        const latestData = await findById(db, DESIGNATION_COLLECTION_NAME, designationDetails?.id);
+        const latestData = await findByField(db, DESIGNATION_COLLECTION_NAME, 'id', designationDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -102,7 +102,7 @@ const getDesignationListService = async (db) => {
  */
 const getADesignationService = async (db, designationId) => {
     try {
-        const designation = await findById(db, DESIGNATION_COLLECTION_NAME, designationId);
+        const designation = await findByField(db, DESIGNATION_COLLECTION_NAME, 'id', designationId);
 
         delete designation?.createdBy;
         delete designation?.modifiedBy;
@@ -140,7 +140,7 @@ const updateADesignationService = async (db, designationId, newDesignationDetail
             modifiedAt: new Date(),
         };
         const result = await updateById(db, DESIGNATION_COLLECTION_NAME, designationId, updatedDesignationDetails);
-        const latestData = await findById(db, DESIGNATION_COLLECTION_NAME, designationId);
+        const latestData = await findByField(db, DESIGNATION_COLLECTION_NAME, 'id', designationId);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;

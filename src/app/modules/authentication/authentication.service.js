@@ -28,8 +28,7 @@ import {
     STATUS_UNAUTHORIZED,
     STATUS_UNPROCESSABLE_ENTITY,
 } from "../../../constants/constants.js";
-import findById from "../../../shared/findById.js";
-import findByUserName from "../../../shared/findByUserName.js";
+import findByField from "../../../shared/findByField.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -72,7 +71,7 @@ import removeTokenId from "../../../helpers/removeTokenId.js";
 const loginService = async (db, loginDetails) => {
     try {
         const { userName, password, userAgent } = loginDetails;
-        const foundAdminDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
+        const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, 'userName', userName);
 
         if (!foundAdminDetails)
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
@@ -146,7 +145,7 @@ const loginService = async (db, loginDetails) => {
  */
 const verifyUserService = async (db,  adminId) => {
     try {
-        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
+        const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);
 
         delete foundAdminDetails?._id;
 
@@ -190,7 +189,7 @@ const verifyUserService = async (db,  adminId) => {
 const signupService = async (db, signupDetails) => {
     try {
         const { name, userName, password, confirmPassword } = signupDetails;
-        const foundUserDetails = await findByUserName(db, ADMIN_COLLECTION_NAME, userName);
+        const foundUserDetails = await findByField(db, ADMIN_COLLECTION_NAME,  'userName', userName);
 
         if (foundUserDetails) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${userName} already exists`);
@@ -211,7 +210,7 @@ const signupService = async (db, signupDetails) => {
                     createdAt: new Date(),
                 };
                 const result = await addANewEntryToDatabase(db, ADMIN_COLLECTION_NAME, prepareNewUserDetails);
-                const latestData = await findById(db, ADMIN_COLLECTION_NAME, prepareNewUserDetails?.id);
+                const latestData = await findByField(db, ADMIN_COLLECTION_NAME, 'id', prepareNewUserDetails?.id);
 
                 delete latestData?._id;
                 delete latestData?.id;
@@ -242,7 +241,7 @@ const signupService = async (db, signupDetails) => {
 /**
  * Service to handle the reset password functionality.
  *
- * This service facilitates the process of resetting an admin's password. It ensures
+ * This service facilitates the process of resetting an admin password. It ensures
  * that the request is valid, the old password matches, and updates the password with
  * a hashed version of the new password.
  *
@@ -255,7 +254,7 @@ const signupService = async (db, signupDetails) => {
 const resetPasswordService = async (db, resetPasswordDetails) => {
     try {
         const { adminId, tokenId, oldPassword, newPassword, confirmNewPassword } = resetPasswordDetails;
-        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
+        const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);
 
         if (!foundAdminDetails || foundAdminDetails?.id !== adminId)
             return generateResponseData({}, false, STATUS_FORBIDDEN, "Forbidden");
@@ -310,7 +309,7 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
  */
 const logoutService = async (db, adminId, tokenId) => {
     try {
-        const foundAdminDetails = await findById(db, ADMIN_COLLECTION_NAME, adminId);
+        const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);
 
         // Check if admin details were found and if the ID matches.
         if (!foundAdminDetails || foundAdminDetails?.id !== adminId) {

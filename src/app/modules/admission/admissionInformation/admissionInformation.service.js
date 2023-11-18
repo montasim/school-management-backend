@@ -32,7 +32,7 @@ import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOp
 import logger from "../../../../shared/logger.js";
 import deleteById from "../../../../shared/deleteById.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
-import findById from "../../../../shared/findById.js";
+import findByField from "../../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../../shared/updateById.js";
 import getAllData from "../../../../shared/getAllData.js";
@@ -65,7 +65,7 @@ const createAdmissionInformationService = async (db, newAdmissionInformationDeta
         };
 
         const result = await addANewEntryToDatabase(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationDetails);
-        const latestData = await findById(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationDetails?.id);
+        const latestData = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, 'id', admissionInformationDetails?.id);
 
         delete latestData?._id;
         delete latestData?.createdBy;
@@ -115,7 +115,7 @@ const getAdmissionInformationListService = async (db) => {
  */
 const getAAdmissionInformationService = async (db, admissionInformationId) => {
     try {
-        const admissionInformation = await findById(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
+        const admissionInformation = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, 'id', admissionInformationId);
 
         delete admissionInformation?._id;
         delete admissionInformation?.createdBy;
@@ -148,7 +148,7 @@ const updateAAdmissionInformationService = async (db, admissionInformationId, ne
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
+        const oldDetails = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${admissionInformationId} not found`);
@@ -164,7 +164,7 @@ const updateAAdmissionInformationService = async (db, admissionInformationId, ne
             modifiedAt: new Date(),
         };
         const result = await updateById(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId, updatedAdmissionInformationDetails);
-        const latestData = await findById(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
+        const latestData = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
 
         delete latestData.createdBy;
         delete latestData.modifiedBy;
@@ -195,7 +195,7 @@ const deleteAAdmissionInformationService = async (db, adminId, admissionInformat
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
+        const oldDetails = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${admissionInformationId} not found`);

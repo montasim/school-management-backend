@@ -19,7 +19,7 @@ import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
@@ -52,7 +52,7 @@ const createLevelService = async (db, newLevelDetails) => {
         };
 
         const result = await addANewEntryToDatabase(db, LEVEL_COLLECTION_NAME, levelDetails);
-        const latestData = await findById(db, LEVEL_COLLECTION_NAME, levelDetails?.id);
+        const latestData = await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -102,7 +102,7 @@ const getLevelListService = async (db) => {
  */
 const getALevelService = async (db, levelId) => {
     try {
-        const level = await findById(db, LEVEL_COLLECTION_NAME, levelId);
+        const level = await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId);
 
         delete level?.createdBy;
         delete level?.modifiedBy;
@@ -140,7 +140,7 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
             modifiedAt: new Date(),
         };
         const result = await updateById(db, LEVEL_COLLECTION_NAME, levelId, updatedLevelDetails);
-        const latestData = await findById(db, LEVEL_COLLECTION_NAME, levelId);
+        const latestData = await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
