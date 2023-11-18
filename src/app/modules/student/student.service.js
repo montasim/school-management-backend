@@ -155,29 +155,43 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        // Retrieve the current details of the student
         const oldDetails = await findById(db, STUDENT_COLLECTION_NAME, studentId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${studentId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        // Initialize the object to store updated details
+        const updatedStudentDetails = { ...oldDetails };
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        // Update name and level if provided
+        if (name) updatedStudentDetails.name = name;
+        if (level) updatedStudentDetails.level = level;
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        // Update file if provided
+        if (file) {
+            await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
-        const updatedStudentDetails = {
-            ...(name && { name }),
-            ...(level && { level }),
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            modifiedBy: adminId,
-            modifiedAt: new Date(),
-        };
+            if (!uploadGoogleDriveFileResponse?.shareableLink)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
+            updatedStudentDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
+            updatedStudentDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+        }
+
+        // Update modifiedBy and modifiedAt
+        updatedStudentDetails.modifiedBy = adminId;
+        updatedStudentDetails.modifiedAt = new Date();
+
+        // Update the student data
         const result = await updateById(db, STUDENT_COLLECTION_NAME, studentId, updatedStudentDetails);
+
+        // Retrieve the updated data
         const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentId);
 
+        // Remove unnecessary data before sending response
+        delete latestData._id;
         delete latestData.createdBy;
         delete latestData.modifiedBy;
         delete latestData.googleDriveFileId;
