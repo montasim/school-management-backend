@@ -134,7 +134,7 @@ const fileValidationSchema = (allowedFieldname, allowedExtensions = [FILE_EXTENS
 const fileWithTitleValidationSchema = (allowedFileExtensions = [FILE_EXTENSION_TYPE_PDF], validMimeTypes = [MIME_TYPE_PDF]) => {
     return Joi.object({
         title: JoiSchemaGenerators.createStringSchema('title', 3, 200),
-        file: fileValidationSchema("postImage", [...allowedFileExtensions], [MIME_TYPE_PNG, MIME_TYPE_JPG]),
+        file: fileValidationSchema("postImage", [...allowedFileExtensions], [...validMimeTypes]),
     }).required();
 };
 
