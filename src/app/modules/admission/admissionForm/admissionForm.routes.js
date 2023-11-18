@@ -58,6 +58,7 @@ admissionFormRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
+    AdmissionFormValidationService.validateAdmissionFormFile,
     AdmissionFormController.createAdmissionFormController
 ]);
 
