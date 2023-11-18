@@ -3,7 +3,7 @@ import { ID_CONSTANTS } from './category.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
 
 const categoryParamsSchema = Joi.object({
-    categoryId: createIdSchema(ID_CONSTANTS?.CATEGORY_PREFIX, ID_CONSTANTS).required()
+    categoryId: createIdSchema(ID_CONSTANTS?.CATEGORY_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 /**

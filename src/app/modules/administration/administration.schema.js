@@ -14,7 +14,7 @@
  */
 
 import Joi from "joi";
-import { ID_CONSTANTS } from './administration.constants.js';
+import { ADMINISTRATION_CONSTANTS } from './administration.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
 
 /**
@@ -24,7 +24,11 @@ import createIdSchema from "../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating administration post parameters.
  */
 const administrationParamsValidationSchema = Joi.object({
-    administrationId: createIdSchema(ID_CONSTANTS?.ADMINISTRATION_PREFIX, ID_CONSTANTS).required()
+    administrationId: createIdSchema(
+        ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX,
+        ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_MIN_LENGTH,
+        ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_MAX_LENGTH,
+    ).required()
 });
 
 /**

@@ -24,7 +24,7 @@ import createIdSchema from "../../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating homePageCarousel post parameters.
  */
 const homePageCarouselParamsValidationSchema = Joi.object({
-    homePageCarouselId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_CAROUSEL_PREFIX, ID_CONSTANTS).required()
+    homePageCarouselId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_CAROUSEL_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 /**

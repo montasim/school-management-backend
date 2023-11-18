@@ -24,7 +24,7 @@ import createIdSchema from "../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating student post parameters.
  */
 const studentParamsValidationSchema = Joi.object({
-    studentId: createIdSchema(ID_CONSTANTS?.STUDENT_PREFIX, ID_CONSTANTS).required()
+    studentId: createIdSchema(ID_CONSTANTS?.STUDENT_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 /**

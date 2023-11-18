@@ -24,7 +24,7 @@ import createIdSchema from "../../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating homePagePost post parameters.
  */
 const homePagePostParamsValidationSchema = Joi.object({
-    homePagePostId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX, ID_CONSTANTS).required()
+    homePagePostId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 /**

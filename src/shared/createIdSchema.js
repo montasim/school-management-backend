@@ -1,43 +1,52 @@
 /**
  * @fileoverview Joi Schema Generator for ID Validation.
  *
- * This module provides a function to create a Joi validation schema specifically for IDs.
- * The schema is dynamically generated based on a specified prefix and ID length constraints
- * defined in the application constants. This function is essential for ensuring that IDs
- * across different entities in the application conform to a uniform format and meet specific
- * length requirements, enhancing data integrity and consistency.
+ * This module exports a function to create Joi validation schemas for IDs, ensuring that they conform to a specified format.
+ * The schema is tailored based on a provided prefix and ID length constraints, which are critical for maintaining consistent
+ * ID formats across various entities in the application. This approach enhances data integrity and consistency in ID validation.
  *
- * @requires Joi - Library for schema description and data validation.
- * @requires logger - A logging utility for error logging.
- * @module createIdSchema - Exported function for generating Joi ID validation schemas.
+ * @module createIdSchema - Exports a function for generating Joi schemas to validate ID formats.
+ * @requires Joi - Library used for schema definition and data validation.
+ * @requires logger - Utility for logging errors.
  */
 
 import Joi from "joi";
 import logger from "./logger.js";
 
 /**
- * Generates a Joi Validation Schema for IDs.
+ * Creates a Joi String Schema for Validating IDs.
  *
- * Constructs a Joi string schema to validate ID formats based on a specified prefix, such as 'admin' or 'student'.
- * The function takes into account minimum and maximum length constraints from the provided ID constants.
- * It utilizes regular expressions to ensure that IDs start with the given prefix and are followed by a hyphen
- * and alphanumeric characters, thereby standardizing ID validation across different application components.
+ * This function constructs a Joi string schema for ID validation, incorporating a specific prefix and length constraints.
+ * The generated schema uses a regular expression to ensure that the IDs start with the given prefix, followed by a hyphen
+ * and a sequence of alphanumeric characters. The function is flexible to accommodate different prefix requirements and length
+ * constraints, making it a versatile tool for standardizing ID validation in various parts of the application.
  *
- * @param {string} prefix - The prefix used in the ID (e.g., 'admin', 'student').
- * @param ID_CONSTANTS - Constants defining ID length constraints.
- * @returns {Joi.StringSchema} - A Joi schema to validate the ID format and length.
+ * @param {string} prefix - The prefix for the ID, like 'admin', 'student', etc.
+ * @param {number} minimumLength - The minimum allowed length for the ID.
+ * @param {number} maximumLength - The maximum allowed length for the ID.
+ * @returns {Joi.StringSchema} - A Joi string schema for validating ID formats and lengths.
  */
-const createIdSchema = (prefix, ID_CONSTANTS) => {
+const createIdSchema = (prefix, minimumLength, maximumLength) => {
     try {
-        const pattern = new RegExp(`^(${prefix})-\\w+$`);
+        // Define the pattern for ID validation based on the prefix
+        const pattern = new RegExp(`^(${prefix})-\\w{6}$`);
 
+        // Return the Joi string schema with the defined pattern and length constraints
         return Joi.string()
             .pattern(pattern)
-            .min(ID_CONSTANTS?.MIN_LENGTH)
-            .max(ID_CONSTANTS?.MAX_LENGTH)
+            .min(minimumLength)
+            .max(maximumLength)
+            .messages({
+                'string.base': `"${prefix}Id" should be a type of 'text'`,
+                'string.empty': `"${prefix}Id" cannot be an empty field`,
+                'string.min': `"${prefix}Id" should have a minimum length of ${minimumLength}`,
+                'string.max': `"${prefix}Id" should have a maximum length of ${maximumLength}`,
+                'any.required': `"${prefix}Id" is a required field`,
+                'string.pattern.base': `Invalid "${prefix}Id"`
+            });
     } catch (error) {
+        // Log any errors encountered during schema creation
         logger.error(error);
-
         return error;
     }
 };

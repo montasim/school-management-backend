@@ -3,7 +3,7 @@ import { ID_CONSTANTS } from './designation.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
 
 const designationParamsSchema = Joi.object({
-    designationId: createIdSchema(ID_CONSTANTS?.LEVEL_PREFIX, ID_CONSTANTS).required()
+    designationId: createIdSchema(ID_CONSTANTS?.LEVEL_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 /**

@@ -26,7 +26,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./administration.constants.js";
+import { ADMINISTRATION_CONSTANTS } from "./administration.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
@@ -59,7 +59,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const administrationDetails = {
-            id: `${ID_CONSTANTS?.ADMINISTRATION_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: `${ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX}-${uuidv4().substr(0, 6)}`,
             name: name,
             category: category,
             designation: designation,

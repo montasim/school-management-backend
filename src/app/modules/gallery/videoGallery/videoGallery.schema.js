@@ -24,7 +24,7 @@ import createIdSchema from "../../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating videoGallery post parameters.
  */
 const videoGalleryParamsValidationSchema = Joi.object({
-    videoGalleryId: createIdSchema(ID_CONSTANTS?.VIDEO_GALLERY_PREFIX, ID_CONSTANTS).required()
+    videoGalleryId: createIdSchema(ID_CONSTANTS?.VIDEO_GALLERY_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
 });
 
 /**
