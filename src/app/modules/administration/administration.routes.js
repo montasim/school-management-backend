@@ -158,8 +158,6 @@ administrationRouter.put("/:administrationId", [
     fileUploadMiddleware.single('image'),
     multerErrorHandlerMiddleware,
     AdministrationValidationService.validateAdministrationParams,
-    AdministrationValidationService.validateAdministrationDetails,
-    AdministrationValidationService.validateAdministrationFile,
     AdministrationController.updateAAdministrationController
 ]);
 

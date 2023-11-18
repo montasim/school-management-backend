@@ -123,14 +123,15 @@ const getAAdministrationService = async (db, administrationId) => {
     try {
         const administration = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
+        if (!administration)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
+
         delete administration?._id;
         delete administration?.createdBy;
         delete administration?.modifiedBy;
         delete administration.googleDriveFileId;
 
-        return administration
-            ? generateResponseData(administration, true, STATUS_OK, `${administrationId} found successfully`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
+        return generateResponseData(administration, true, STATUS_OK, `${administrationId} found successfully`);
     } catch (error) {
         logger.error(error);
 
@@ -156,36 +157,47 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        // Retrieve the current details of the administration
         const oldDetails = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        // Initialize the object to store updated details
+        const updatedAdministrationDetails = { ...oldDetails };
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        // Update file if provided
+        if (file) {
+            await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            if (!uploadGoogleDriveFileResponse?.shareableLink)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
-        const updatedAdministrationDetails = {
-            ...(name && { name }),
-            ...(category && { category }),
-            ...(designation && { designation }),
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            modifiedBy: adminId,
-            modifiedAt: new Date(),
-        };
+            updatedAdministrationDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
+            updatedAdministrationDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+        }
+
+        // Update name, category, and designation if provided
+        if (name) updatedAdministrationDetails.name = name;
+        if (category) updatedAdministrationDetails.category = category;
+        if (designation) updatedAdministrationDetails.designation = designation;
+
+        // Update modifiedBy and modifiedAt
+        updatedAdministrationDetails.modifiedBy = adminId;
+        updatedAdministrationDetails.modifiedAt = new Date();
+
+        // Update the administration
         const result = await updateById(db, ADMINISTRATION_COLLECTION_NAME, administrationId, updatedAdministrationDetails);
-        const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
 
-        delete latestData.createdBy;
-        delete latestData.modifiedBy;
-        delete latestData.googleDriveFileId;
+        // Remove unnecessary data before sending response
+        delete updatedAdministrationDetails._id;
+        delete updatedAdministrationDetails.createdBy;
+        delete updatedAdministrationDetails.modifiedBy;
+        delete updatedAdministrationDetails.googleDriveFileId;
 
         return result?.modifiedCount
-            ? generateResponseData(latestData, true, STATUS_OK, `${administrationId} updated successfully`)
+            ? generateResponseData(updatedAdministrationDetails, true, STATUS_OK, `${administrationId} updated successfully`)
             : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${administrationId} not updated`);
 
     } catch (error) {
