@@ -40,28 +40,39 @@ import getAllData from "../../../shared/getAllData.js";
 /**
  * Creates a new administration entry in the database.
  *
+ * This function handles the creation of a new administration record, including uploading associated files to Google Drive
+ * and storing the administration details in the database. It validates the requesting user's authorization, uploads the
+ * file to Google Drive, and then adds the new administration record to the database. The function returns a response
+ * indicating the success or failure of the operation.
+ *
  * @async
+ * @function createAdministrationService
  * @param {Object} db - Database connection object.
- * @param {Object} newAdministrationDetails - Object containing details of the new administration.
+ * @param {Object} newAdministrationDetails - Object containing the details of the new administration.
  * @param {Object} file - The file object for the administration's associated image or content.
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the administration.
+ * @throws {Error} If an error occurs during the database operation or file upload.
  */
 const createAdministrationService = async (db, newAdministrationDetails, file) => {
     try {
         const { name, category, designation, adminId } = newAdministrationDetails;
 
-        if (!await isValidRequest(db, adminId))
+        // Validate the requesting user's authorization
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
+        // Upload the file to Google Drive and handle the response
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        if (!uploadGoogleDriveFileResponse?.shareableLink) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        }
 
+        // Prepare administration details for database insertion
         const administrationDetails = {
             id: `${ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX}-${uuidv4().substr(0, 6)}`,
             name: name,
-            category: category,
+            category: Array.isArray(category) ? category : [category], // Ensure category is an array
             designation: designation,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
@@ -69,21 +80,24 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
             createdAt: new Date(),
         };
 
+        // Add the new administration entry to the database
         const result = await addANewEntryToDatabase(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails);
-        const latestData = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationDetails?.id);
 
+        // Retrieve the latest data for response
+        const latestData = await findByField(db, ADMINISTRATION_COLLECTION_NAME, 'id', administrationDetails?.id);
+
+        // Clean up the data before sending it back in the response
         delete latestData?._id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
         delete latestData.googleDriveFileId;
 
+        // Return the appropriate response based on the database operation result
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${name} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
-
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
