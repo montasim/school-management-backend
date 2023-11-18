@@ -11,15 +11,14 @@
  * @requires google - Google APIs client library.
  * @requires logger - Shared logging utility for error logging.
  * @requires getGoogleDriveAuthorization - Function to authorize the application to access Google Drive.
- * @requires convertBufferToStream - Utility function to convert a buffer to a stream.
  * @requires GOOGLE_DRIVE_FOLDER_KEY - Folder key for Google Drive uploads, defined in the application's configuration.
  * @module GoogleDriveFileOperations - Exports functions for uploading and deleting files on Google Drive.
  */
 
 import { google } from 'googleapis';
+import { Readable } from "stream";
 import logger from "../shared/logger.js";
 import getGoogleDriveAuthorization from "./getGoogleDriveAuthorization.js";
-import convertBufferToStream from "./convertBufferToStream.js";
 import { GOOGLE_DRIVE_FOLDER_KEY } from "../config/config.js";
 
 /**
@@ -41,8 +40,10 @@ const uploadFileToDrive = async (file) => {
             name: file?.originalname,
             parents: [GOOGLE_DRIVE_FOLDER_KEY],
         };
+        const fileStream = new Readable();
 
-        const fileStream = convertBufferToStream(file.buffer);
+        fileStream.push(file.buffer);
+        fileStream.push(null);
 
         // Upload the file
         const { data: fileData } = await drive.files.create({
