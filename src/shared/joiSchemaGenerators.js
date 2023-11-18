@@ -183,6 +183,26 @@ const studentBodyValidationSchema = () => {
 }
 
 /**
+ * @description Joi validation schema for admission information body data.
+ * Validates the title, category, and description fields.
+ *
+ * - `title`: Should be a string with a minimum length of 3 and a maximum length of 50.
+ * - `description`: Should be a string with a minimum length of 3 and a maximum length of 50.
+ * - `formFee`: Should be a string with a minimum length of 3 and a maximum length of 20.
+ * - `admissionFee`: Should be a string with a minimum length of 3 and a maximum length of 50.
+ * - `lastFormSubmissionDate`: Should be a string with a minimum length of 3 and a maximum length of 50.
+ */
+const admissionInformationBodyValidationSchema = () => {
+    return Joi.object({
+        title: JoiSchemaGenerators.createStringSchema('title', 3, 1000),
+        description: JoiSchemaGenerators.createStringSchema('description', 3, 3000),
+        formFee: JoiSchemaGenerators.createStringSchema('formFee', 1, 50),
+        admissionFee: JoiSchemaGenerators.createStringSchema('admissionFee', 1, 50),
+        lastFormSubmissionDate: JoiSchemaGenerators.createStringSchema('lastFormSubmissionDate', 1, 50),
+    });
+}
+
+/**
  * @description Joi validation schema for administration body data.
  * Validates the title, category, and description fields.
  *
@@ -259,4 +279,5 @@ export const JoiSchemaGenerators = {
   uriValidationSchema,
   createStringSchema,
   websiteConfigurationBodyValidationSchema,
+  admissionInformationBodyValidationSchema,
 };
