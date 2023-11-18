@@ -35,7 +35,7 @@ import removeTokenId from "./removeTokenId.js";
  */
 const isTokenRevoked = async (db, adminId, jti) => {
     try {
-        const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, adminId);
+        const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);
 
         // Check if tokenId array exists and contains the provided jti
         if (foundAdminDetails?.tokenId?.includes(jti)) {
