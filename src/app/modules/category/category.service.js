@@ -17,15 +17,13 @@ import { ID_CONSTANTS } from "./category.constants.js";
 
 // Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
-import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new category entry in the database.
@@ -40,7 +38,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
     try {
         const { name, adminId } = newCategoryDetails;
 
-        if (await isAlreadyExistsByName(db, CATEGORY_COLLECTION_NAME, name))
+        if (await findByField(db, CATEGORY_COLLECTION_NAME, 'name', name))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         if (!await isValidRequest(db, adminId))
@@ -54,7 +52,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
         };
 
         const result = await addANewEntryToDatabase(db, CATEGORY_COLLECTION_NAME, categoryDetails);
-        const latestData = await findById(db, CATEGORY_COLLECTION_NAME, categoryDetails?.id);
+        const latestData = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -69,7 +67,6 @@ const createCategoryService = async (db, newCategoryDetails) => {
         return error;
     }
 };
-
 
 /**
  * Retrieves a list of all category from the database.
@@ -104,7 +101,7 @@ const getCategoryListService = async (db) => {
  */
 const getACategoryService = async (db, categoryId) => {
     try {
-        const category = await findById(db, CATEGORY_COLLECTION_NAME, categoryId);
+        const category = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId);
 
         delete category?.createdBy;
         delete category?.modifiedBy;
@@ -142,7 +139,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
             modifiedAt: new Date(),
         };
         const result = await updateById(db, CATEGORY_COLLECTION_NAME, categoryId, updatedCategoryDetails);
-        const latestData = await findById(db, CATEGORY_COLLECTION_NAME, categoryId);
+        const latestData = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -173,7 +170,7 @@ const deleteACategoryService = async (db, adminId, categoryId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, CATEGORY_COLLECTION_NAME, categoryId))
+        if (!await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${categoryId} not found`);
 
         const result = await deleteById(db, CATEGORY_COLLECTION_NAME, categoryId);

@@ -12,7 +12,7 @@
  * @requires generateResponseData - Helper function for generating standardized response data.
  * @requires logger - Utility for logging errors.
  * @requires addANewEntryToDatabase - Helper function for adding new entries to the database.
- * @requires findById - Helper function for finding database entries by ID.
+ * @requires findByField - Helper function for finding database entries by ID.
  * @requires getAllData - Helper function for retrieving all data from a database collection.
  * @requires updateById - Helper function for updating database entries by ID.
  * @requires deleteById - Helper function for deleting database entries by ID.
@@ -34,7 +34,7 @@ import isValidRequest from "../../../../shared/isValidRequest.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import logger from "../../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
-import findById from "../../../../shared/findById.js";
+import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import updateById from "../../../../shared/updateById.js";
 import deleteById from "../../../../shared/deleteById.js";
@@ -64,7 +64,7 @@ const createWebsiteSocialMediaLinkService = async (db, newWebsiteSocialMediaLink
             createdAt: new Date(),
         };
         const result = await addANewEntryToDatabase(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkDetails);
-        const latestData = await findById(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkDetails?.id);
+        const latestData = await findByField(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkDetails?.id);
 
         delete latestData?._id;
         delete latestData?.createdBy;
@@ -111,7 +111,7 @@ const getWebsiteSocialMediaLinkListService = async (db) => {
  */
 const getAWebsiteSocialMediaLinkService = async (db, websiteSocialMediaLinkId) => {
     try {
-        const websiteSocialMediaLink = await findById(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId);
+        const websiteSocialMediaLink = await findByField(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId);
 
         return websiteSocialMediaLink
             ? generateResponseData(websiteSocialMediaLink, true, STATUS_OK, `${websiteSocialMediaLinkId} found successfully`)
@@ -140,7 +140,7 @@ const updateAWebsiteSocialMediaLinkService = async (db, websiteSocialMediaLinkId
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findById(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId))
+        if (!await findByField(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteSocialMediaLinkId} not found`);
 
         const updatedWebsiteSocialMediaLink = {
@@ -150,7 +150,7 @@ const updateAWebsiteSocialMediaLinkService = async (db, websiteSocialMediaLinkId
             modifiedAt: new Date(),
         };
         const result = await updateById(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId, updatedWebsiteSocialMediaLink);
-        const latestData = await findById(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId);
+        const latestData = await findByField(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId);
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${websiteSocialMediaLinkId} updated successfully`)
@@ -178,7 +178,7 @@ const deleteAWebsiteSocialMediaLinkService = async (db, adminId, websiteSocialMe
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findById(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId))
+        if (!await findByField(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${websiteSocialMediaLinkId} not found`);
 
         const result = await deleteById(db, WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME, websiteSocialMediaLinkId);

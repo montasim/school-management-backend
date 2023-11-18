@@ -32,7 +32,7 @@ import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOpera
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
@@ -70,7 +70,7 @@ const createBlogService = async (db, newBlogDetails, file) => {
         };
 
         const result = await addANewEntryToDatabase(db, BLOG_COLLECTION_NAME, blogDetails);
-        const latestData = await findById(db, BLOG_COLLECTION_NAME, blogDetails?.id);
+        const latestData = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -120,7 +120,7 @@ const getBlogListService = async (db) => {
  */
 const getABlogService = async (db, blogId) => {
     try {
-        const blog = await findById(db, BLOG_COLLECTION_NAME, blogId);
+        const blog = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
 
         delete blog?.createdBy;
         delete blog?.modifiedBy;
@@ -155,7 +155,7 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         // Retrieve the current details of the blog
-        const oldDetails = await findById(db, BLOG_COLLECTION_NAME, blogId);
+        const oldDetails = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);
@@ -188,7 +188,7 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
         const result = await updateById(db, BLOG_COLLECTION_NAME, blogId, updatedBlogDetails);
 
         // Retrieve the updated data
-        const latestData = await findById(db, BLOG_COLLECTION_NAME, blogId);
+        const latestData = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
 
         // Remove unnecessary data before sending response
         delete latestData._id;
@@ -222,7 +222,7 @@ const deleteABlogService = async (db, adminId, blogId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, BLOG_COLLECTION_NAME, blogId);
+        const oldDetails = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);

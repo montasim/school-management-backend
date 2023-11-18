@@ -32,7 +32,7 @@ import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOpera
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
@@ -69,7 +69,7 @@ const createStudentService = async (db, newStudentDetails, file) => {
         };
 
         const result = await addANewEntryToDatabase(db, STUDENT_COLLECTION_NAME, studentDetails);
-        const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentDetails?.id);
+        const latestData = await findByField(db, STUDENT_COLLECTION_NAME, 'id', studentDetails?.id);
 
         delete latestData?._id;
         delete latestData?.createdBy;
@@ -120,7 +120,7 @@ const getStudentListService = async (db) => {
  */
 const getAStudentService = async (db, studentId) => {
     try {
-        const student = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+        const student = await findByField(db, STUDENT_COLLECTION_NAME, 'id', studentId);
 
         delete student?._id;
         delete student?.createdBy;
@@ -156,7 +156,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         // Retrieve the current details of the student
-        const oldDetails = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+        const oldDetails = await findByField(db, STUDENT_COLLECTION_NAME, 'id', studentId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${studentId} not found`);
@@ -188,7 +188,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
         const result = await updateById(db, STUDENT_COLLECTION_NAME, studentId, updatedStudentDetails);
 
         // Retrieve the updated data
-        const latestData = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+        const latestData = await findByField(db, STUDENT_COLLECTION_NAME, 'id', studentId);
 
         // Remove unnecessary data before sending response
         delete latestData._id;
@@ -222,7 +222,7 @@ const deleteAStudentService = async (db, adminId, studentId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, STUDENT_COLLECTION_NAME, studentId);
+        const oldDetails = await findByField(db, STUDENT_COLLECTION_NAME, 'id', studentId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${studentId} not found`);

@@ -15,15 +15,13 @@ import { ID_CONSTANTS } from "./level.constants.js";
 
 // Shared utilities and functions
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
-import isAlreadyExistsByName from "../../../shared/isAlreadyExistsByName.js";
 
 /**
  * Creates a new level entry in the database.
@@ -38,7 +36,7 @@ const createLevelService = async (db, newLevelDetails) => {
     try {
         const { name, adminId } = newLevelDetails;
 
-        if (await isAlreadyExistsByName(db, LEVEL_COLLECTION_NAME, name))
+        if (await findByField(db, LEVEL_COLLECTION_NAME, 'name', name))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         if (!await isValidRequest(db, adminId))
@@ -52,7 +50,7 @@ const createLevelService = async (db, newLevelDetails) => {
         };
 
         const result = await addANewEntryToDatabase(db, LEVEL_COLLECTION_NAME, levelDetails);
-        const latestData = await findById(db, LEVEL_COLLECTION_NAME, levelDetails?.id);
+        const latestData = await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -102,7 +100,7 @@ const getLevelListService = async (db) => {
  */
 const getALevelService = async (db, levelId) => {
     try {
-        const level = await findById(db, LEVEL_COLLECTION_NAME, levelId);
+        const level = await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId);
 
         delete level?.createdBy;
         delete level?.modifiedBy;
@@ -140,7 +138,7 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
             modifiedAt: new Date(),
         };
         const result = await updateById(db, LEVEL_COLLECTION_NAME, levelId, updatedLevelDetails);
-        const latestData = await findById(db, LEVEL_COLLECTION_NAME, levelId);
+        const latestData = await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -171,7 +169,7 @@ const deleteALevelService = async (db, adminId, levelId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, LEVEL_COLLECTION_NAME, levelId))
+        if (!await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${levelId} not found`);
 
         const result = await deleteById(db, LEVEL_COLLECTION_NAME, levelId);

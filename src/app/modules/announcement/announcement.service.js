@@ -17,10 +17,9 @@ import { ID_CONSTANTS } from "./announcement.constants.js";
 
 // Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
-import isValidById from "../../../shared/isValidById.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
@@ -52,7 +51,7 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
         };
 
         const result = await addANewEntryToDatabase(db, ANNOUNCEMENT_COLLECTION_NAME, announcementDetails);
-        const latestData = await findById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementDetails?.id);
+        const latestData = await findByField(db, ANNOUNCEMENT_COLLECTION_NAME, 'id', announcementDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -102,7 +101,7 @@ const getAnnouncementListService = async (db) => {
  */
 const getAAnnouncementService = async (db, announcementId) => {
     try {
-        const announcement = await findById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId);
+        const announcement = await findByField(db, ANNOUNCEMENT_COLLECTION_NAME, 'id', announcementId);
 
         delete announcement?.createdBy;
         delete announcement?.modifiedBy;
@@ -140,7 +139,7 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
             modifiedAt: new Date(),
         };
         const result = await updateById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId, updatedAnnouncementDetails);
-        const latestData = await findById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId);
+        const latestData = await findByField(db, ANNOUNCEMENT_COLLECTION_NAME, 'id', announcementId);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -171,7 +170,7 @@ const deleteAAnnouncementService = async (db, adminId, announcementId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await isValidById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId))
+        if (!await findByField(db, ANNOUNCEMENT_COLLECTION_NAME, 'id', announcementId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${announcementId} not found`);
 
         const result = await deleteById(db, ANNOUNCEMENT_COLLECTION_NAME, announcementId);

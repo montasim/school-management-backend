@@ -32,7 +32,7 @@ import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOp
 import logger from "../../../../shared/logger.js";
 import deleteById from "../../../../shared/deleteById.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
-import findById from "../../../../shared/findById.js";
+import findByField from "../../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
 import getAllData from "../../../../shared/getAllData.js";
 
@@ -67,7 +67,7 @@ const createVideoGalleryService = async (db, newVideoGalleryDetails, file) => {
         };
 
         const result = await addANewEntryToDatabase(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryDetails);
-        const latestData = await findById(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryDetails?.id);
+        const latestData = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -117,7 +117,7 @@ const getVideoGalleryListService = async (db) => {
  */
 const getAVideoGalleryService = async (db, videoGalleryId) => {
     try {
-        const videoGallery = await findById(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryId);
+        const videoGallery = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryId);
 
         delete videoGallery?.createdBy;
         delete videoGallery?.modifiedBy;
@@ -148,7 +148,7 @@ const deleteAVideoGalleryService = async (db, adminId, videoGalleryId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryId);
+        const oldDetails = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${videoGalleryId} not found`);

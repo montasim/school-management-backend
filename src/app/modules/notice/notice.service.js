@@ -15,10 +15,9 @@
  * @requires generateResponseData - Utility function for generating standardized response data.
  * @requires logger - Shared logging utility for error handling.
  * @requires addANewEntryToDatabase - Utility for adding new entries to the database.
- * @requires findById - Utility for finding a record by its identifier.
+ * @requires findByField - Utility for finding a record by its identifier.
  * @requires getAllData - Utility for retrieving all records from a database collection.
  * @requires deleteByFileName - Utility for deleting records by filename.
- * @requires findByFileName - Utility for finding a record by its filename.
  * @requires GoogleDriveFileOperations - Helper for interacting with the Google Drive API.
  * @module NoticeService - Exported object containing notice-related service functions.
  */
@@ -38,10 +37,9 @@ import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByFileName from "../../../shared/deleteByFileName.js";
-import findByFileName from "../../../shared/findByFileName.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 
 /**
@@ -61,7 +59,7 @@ const createNoticeService = async (db, newNoticeDetails, file) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (await findByFileName(db, NOTICE_COLLECTION_NAME, file?.originalname))
+        if (await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', file?.originalname))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
@@ -80,7 +78,7 @@ const createNoticeService = async (db, newNoticeDetails, file) => {
         };
 
         const result = await addANewEntryToDatabase(db, NOTICE_COLLECTION_NAME, noticeDetails);
-        const latestData = await findById(db, NOTICE_COLLECTION_NAME, noticeDetails?.id);
+        const latestData = await findByField(db, NOTICE_COLLECTION_NAME, 'id', noticeDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.googleDriveFileId;
@@ -128,7 +126,7 @@ const getNoticeListService = async (db) => {
  */
 const getANoticeService = async (db, fileName) => {
     try {
-        const notice = await findByFileName(db, NOTICE_COLLECTION_NAME, fileName);
+        const notice = await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', fileName);
 
         delete notice?.googleDriveFileId;
 
@@ -157,7 +155,7 @@ const deleteANoticeService = async (db, adminId, fileName) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const fileDetails = await findByFileName(db, NOTICE_COLLECTION_NAME, fileName);
+        const fileDetails = await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', fileName);
 
         if (fileDetails) {
             await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);

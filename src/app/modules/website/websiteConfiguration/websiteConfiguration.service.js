@@ -30,7 +30,7 @@ import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
-import findById from "../../../../shared/findById.js";
+import findByField from "../../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
 import getAllData from "../../../../shared/getAllData.js";
 
@@ -75,7 +75,7 @@ const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
         };
 
         const result = await addANewEntryToDatabase(db, WEBSITE_CONFIGURATION_COLLECTION_NAME, prepareWebsiteDetails);
-        const latestData = await findById(db, WEBSITE_CONFIGURATION_COLLECTION_NAME, prepareWebsiteDetails?.id);
+        const latestData = await findByField(db, WEBSITE_CONFIGURATION_COLLECTION_NAME, 'id', prepareWebsiteDetails?.id);
 
         delete latestData._id;
         delete latestData.id;

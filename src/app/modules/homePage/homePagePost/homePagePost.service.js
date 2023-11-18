@@ -32,7 +32,7 @@ import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOp
 import logger from "../../../../shared/logger.js";
 import deleteById from "../../../../shared/deleteById.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
-import findById from "../../../../shared/findById.js";
+import findByField from "../../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../../shared/updateById.js";
 import getAllData from "../../../../shared/getAllData.js";
@@ -73,7 +73,7 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
         };
 
         const result = await addANewEntryToDatabase(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostDetails);
-        const latestData = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostDetails?.id);
+        const latestData = await findByField(db, HOME_PAGE_POST_COLLECTION_NAME, 'id', homePagePostDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
@@ -125,7 +125,7 @@ const getHomePagePostListService = async (db) => {
  */
 const getAHomePagePostService = async (db, homePagePostId) => {
     try {
-        const homePagePost = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
+        const homePagePost = await findByField(db, HOME_PAGE_POST_COLLECTION_NAME, 'id', homePagePostId);
 
         delete homePagePost?.createdBy;
         delete homePagePost?.modifiedBy;
@@ -173,7 +173,7 @@ const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage)
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         // Retrieve the current details of the home page post
-        const oldDetails = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
+        const oldDetails = await findByField(db, HOME_PAGE_POST_COLLECTION_NAME, 'id', homePagePostId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePagePostId} not found`);
@@ -206,7 +206,7 @@ const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage)
         const result = await updateById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId, updatedHomePagePostDetails);
 
         // Retrieve the updated data
-        const latestData = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
+        const latestData = await findByField(db, HOME_PAGE_POST_COLLECTION_NAME, 'id', homePagePostId);
 
         // Remove unnecessary data before sending response
         delete latestData._id;
@@ -241,7 +241,7 @@ const deleteAHomePagePostService = async (db, adminId, homePagePostId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
+        const oldDetails = await findByField(db, HOME_PAGE_POST_COLLECTION_NAME, 'id', homePagePostId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePagePostId} not found`);

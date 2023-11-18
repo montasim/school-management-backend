@@ -32,10 +32,9 @@ import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOpera
 import logger from "../../../shared/logger.js";
 import deleteById from "../../../shared/deleteById.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import findById from "../../../shared/findById.js";
+import findByField from "../../../shared/findByField.js";
 import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
 import updateById from "../../../shared/updateById.js";
-import getAllData from "../../../shared/getAllData.js";
 
 /**
  * Creates a new administration entry in the database.
@@ -90,7 +89,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
         delete latestData?._id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData?.googleDriveFileId;
 
         // Return the appropriate response based on the database operation result
         return result?.acknowledged
@@ -98,6 +97,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
     } catch (error) {
         logger.error(error);
+
         return error;
     }
 };
@@ -154,7 +154,7 @@ const getAdministrationListService = async (db, categoryFilter) => {
  */
 const getAAdministrationService = async (db, administrationId) => {
     try {
-        const administration = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
+        const administration = await findByField(db, ADMINISTRATION_COLLECTION_NAME, 'id', administrationId);
 
         if (!administration)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
@@ -191,7 +191,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         // Retrieve the current details of the administration
-        const oldDetails = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
+        const oldDetails = await findByField(db, ADMINISTRATION_COLLECTION_NAME, 'id', administrationId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
@@ -255,7 +255,7 @@ const deleteAAdministrationService = async (db, adminId, administrationId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findById(db, ADMINISTRATION_COLLECTION_NAME, administrationId);
+        const oldDetails = await findByField(db, ADMINISTRATION_COLLECTION_NAME, 'id', administrationId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
