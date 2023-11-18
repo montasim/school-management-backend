@@ -149,21 +149,29 @@ const updateWebsiteConfigurationService = async (db, websiteDetails, file) => {
         if (!oldWebsiteDetails?.id)
             return generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found. Please add website configuration to update');
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails?.googleDriveWebsiteLogoFileId);
+        // Initialize the object to store updated details
+        const updatedWebsiteDetails = { ...oldWebsiteDetails };
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        // Update name and slogan if provided
+        if (name) updatedWebsiteDetails.name = name;
+        if (slogan) updatedWebsiteDetails.slogan = slogan;
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        // Update the website logo if a new file is provided
+        if (file) {
+            await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails.googleDriveWebsiteLogoFileId);
+            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
-        const updatedWebsiteDetails = {
-            ...(name && { name }),
-            ...(slogan && { slogan }),
-            googleDriveWebsiteLogoFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveWebsiteLogoShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            modifiedBy: adminId,
-            modifiedAt: new Date(),
-        };
+            if (!uploadGoogleDriveFileResponse?.shareableLink)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
+            updatedWebsiteDetails.googleDriveWebsiteLogoFileId = uploadGoogleDriveFileResponse.fileId;
+            updatedWebsiteDetails.googleDriveWebsiteLogoShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+        }
+
+        // Update modifiedBy and modifiedAt
+        updatedWebsiteDetails.modifiedBy = adminId;
+        updatedWebsiteDetails.modifiedAt = new Date();
+
         const result = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOneAndUpdate(
             {}, // Assuming you are updating a single document without a filter.
             { $set: updatedWebsiteDetails },

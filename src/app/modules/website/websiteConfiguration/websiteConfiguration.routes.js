@@ -123,8 +123,6 @@ websiteConfigurationRouter.put("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteLogo'),
     multerErrorHandlerMiddleware,
-    WebsiteConfigurationValidationService.validateWebsiteConfigurationDetails,
-    WebsiteConfigurationValidationService.validateWebsiteConfigurationFile,
     WebsiteConfigurationController.updateWebsiteConfigurationController
 ]);
 
