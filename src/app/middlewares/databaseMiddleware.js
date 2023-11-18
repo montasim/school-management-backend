@@ -1,3 +1,15 @@
+/**
+ * @fileoverview MongoDB Connection Middleware Module.
+ *
+ * This module provides middleware functions for connecting to and disconnecting from a MongoDB database using the MongoClient from the "mongodb" package.
+ * It ensures the reuse of a single MongoClient instance across the application for efficient database interactions. The module imports configuration
+ * settings from "../../config/config.js" and a logger utility from "../../shared/logger.js" for logging purposes.
+ *
+ * The module exports an object `DatabaseMiddleware` containing the middleware functions `connect` and `disconnect`.
+ *
+ * @module DatabaseMiddleware
+ */
+
 import { MongoClient } from "mongodb";
 import { MONGODB_URI, DATABASE_NAME } from "../../config/config.js";
 import logger from "../../shared/logger.js";
@@ -9,9 +21,15 @@ import logger from "../../shared/logger.js";
 let client;
 
 /**
- * Function to get an instance of MongoClient.
- * Ensures that only a single instance of MongoClient is created and reused.
- * @returns {Promise<MongoClient>} The MongoClient instance.
+ * Retrieves a singleton instance of the MongoClient.
+ *
+ * This function initializes and returns a MongoClient instance connected to the database. It ensures that only a single instance of MongoClient
+ * is created and reused throughout the application, following the singleton pattern. This approach helps in managing database connections efficiently
+ * and avoiding the overhead of establishing multiple connections. The function connects the client to the database using the URI provided in the
+ * configuration file and sets options for `useNewUrlParser` and `useUnifiedTopology` to enable the new URL parser and the unified topology layer
+ * respectively.
+ *
+ * @returns {Promise<MongoClient>} A promise that resolves to the MongoClient instance, connected to the database.
  */
 const getClient = async () => {
   if (!client) {
@@ -29,12 +47,13 @@ const getClient = async () => {
 };
 
 /**
- * Middleware function for connecting to the MongoDB database.
- * Ensures that the database connection is established and available in the request object.
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Next middleware function.
- * @returns {Promise<void>} Proceeds to the next middleware/controller after establishing the connection.
+ * Middleware to establish a connection to the MongoDB database.
+ * Attaches the database client and the specific database instance to the request object.
+ *
+ * @param {object} req - The Express request object.
+ * @param {object} res - The Express response object.
+ * @param {function} next - The next middleware function in the Express pipeline.
+ * @returns {Promise<void>} A promise that resolves when the connection is established and the middleware processing is complete.
  */
 const connect = async (req, res, next) => {
   try {
@@ -50,12 +69,13 @@ const connect = async (req, res, next) => {
 };
 
 /**
- * Middleware function for disconnecting from the MongoDB database.
- * (Optional) Closes the database connection after request processing.
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Next middleware function.
- * @returns {Promise<void>} Proceeds to the next middleware/controller after disconnecting.
+ * Middleware to close the MongoDB database connection.
+ * This function is optional and can be used to close the database connection after a request is processed.
+ *
+ * @param {object} req - The Express request object.
+ * @param {object} res - The Express response object.
+ * @param {function} next - The next middleware function in the Express pipeline.
+ * @returns {Promise<void>} A promise that resolves when the connection is closed and the middleware processing is complete.
  */
 const disconnect = async (req, res, next) => {
   try {

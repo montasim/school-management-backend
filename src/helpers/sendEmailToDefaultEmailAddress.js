@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Email Sending Service
+ *
+ * This service module provides functionality to send emails using nodemailer. It is configured to use specific email service
+ * settings defined in the system's environment variables. The service includes a function for sending emails to a default or specified
+ * email address, with the flexibility to set the subject and HTML content of the email. The module imports the required configuration
+ * from "../config/config.js" and uses a logger from "../shared/logger.js" for logging purposes.
+ *
+ * @module EmailSendingService
+ */
+
 import nodemailer from "nodemailer";
 import logger from "../shared/logger.js";
 import {
@@ -9,15 +20,19 @@ import {
 } from "../config/config.js";
 
 /**
- * Sends an email to the default email address configured in the system.
+ * Sends an email to the specified or default email address.
+ *
+ * This asynchronous function uses nodemailer to create a transporter object configured with the system's email service settings.
+ * It sends an email to either a specified address or a default destination email address, with the given subject and HTML content.
+ * The function handles errors by logging them and returning the error object. It is useful for automated email notifications
+ * or alerts within the system.
  *
  * @async
- * @function
- * @param emailAddress
+ * @param {string} [emailAddress=EMAIL_SERVICE_DESTINATION_EMAIL] - The recipient's email address. Defaults to the system's configured destination email.
  * @param {string} subject - The subject of the email.
  * @param {string} html - The HTML content of the email.
- * @throws {Error} Throws an error if there is an issue with sending the email.
- * @returns {Promise<void>} Returns a promise that resolves when the email is sent successfully.
+ * @throws {Error} - Throws an error if there is an issue with sending the email.
+ * @returns {Promise<void>} - A promise that resolves when the email is sent successfully.
  */
 const sendEmailToDefaultEmailAddress = async (emailAddress = EMAIL_SERVICE_DESTINATION_EMAIL, subject, html) => {
     try {
