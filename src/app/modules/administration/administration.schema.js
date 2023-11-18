@@ -16,6 +16,67 @@
 import Joi from "joi";
 import { ADMINISTRATION_CONSTANTS } from './administration.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
+
+/**
+ * @description Joi validation schema for new administration data.
+ * Validates the name, category, and designation fields of an administration entry.
+ *
+ * - `name`: A string representing the name of the administration, with a minimum length of 3 and a maximum length of 50 characters.
+ * - `category`: A string representing the category of the administration, with a minimum length of 3 and a maximum length of 50 characters.
+ * - `designation`: A string representing the designation within the administration, with a minimum length of 3 and a maximum length of 50 characters.
+ * Each field is required for the validation to pass.
+ */
+const newAdministrationValidationSchema = Joi.object({
+    name: JoiSchemaGenerators.createStringSchema(
+        'name',
+        ADMINISTRATION_CONSTANTS?.PROPERTY_NAME_MIN_LENGTH,
+        ADMINISTRATION_CONSTANTS?.PROPERTY_NAME_MAX_LENGTH
+    ).required(),
+    category: JoiSchemaGenerators.createStringSchema(
+        'category',
+        ADMINISTRATION_CONSTANTS?.PROPERTY_CATEGORY_MIN_LENGTH,
+        ADMINISTRATION_CONSTANTS?.PROPERTY_CATEGORY_MAX_LENGTH
+    ).required(),
+    designation: JoiSchemaGenerators.createStringSchema(
+        'designation',
+        ADMINISTRATION_CONSTANTS?.PROPERTY_DESIGNATION_MIN_LENGTH,
+        ADMINISTRATION_CONSTANTS?.PROPERTY_DESIGNATION_MAX_LENGTH
+    ).required(),
+});
+
+/**
+ * @description Joi validation schema for updating administration data.
+ * Validates the fields for updating an existing administration entry.
+ * Fields include name, category, and designation of the administration.
+ *
+ * This schema allows for partial updates, meaning each field is optional.
+ * If provided, each field must adhere to the specified length constraints.
+ *
+ * - `name`: An optional string representing the updated name of the administration.
+ *   If provided, it must have a minimum length of 3 and a maximum length of 50 characters.
+ * - `category`: An optional string representing the updated category of the administration.
+ *   If provided, it must have a minimum length of 3 and a maximum length of 50 characters.
+ * - `designation`: An optional string representing the updated designation within the administration.
+ *   If provided, it must have a minimum length of 3 and a maximum length of 50 characters.
+ */
+const updateAdministrationValidationSchema = Joi.object({
+    name: JoiSchemaGenerators.createStringSchema(
+        'name',
+        ADMINISTRATION_CONSTANTS?.PROPERTY_NAME_MIN_LENGTH,
+        ADMINISTRATION_CONSTANTS?.PROPERTY_NAME_MAX_LENGTH
+    ),
+    category: JoiSchemaGenerators.createStringSchema(
+        'category',
+        ADMINISTRATION_CONSTANTS?.PROPERTY_CATEGORY_MIN_LENGTH,
+        ADMINISTRATION_CONSTANTS?.PROPERTY_CATEGORY_MAX_LENGTH
+    ),
+    designation: JoiSchemaGenerators.createStringSchema(
+        'designation',
+        ADMINISTRATION_CONSTANTS?.PROPERTY_DESIGNATION_MIN_LENGTH,
+        ADMINISTRATION_CONSTANTS?.PROPERTY_DESIGNATION_MAX_LENGTH
+    )
+});
 
 /**
  * Joi validation schema for administration post parameters.
@@ -38,5 +99,7 @@ const administrationParamsValidationSchema = Joi.object({
  * - `administrationParamsValidationSchema`: Schema for validating administration post ID parameters.
  */
 export const AdministrationValidationSchemas = {
+    newAdministrationValidationSchema,
     administrationParamsValidationSchema,
+    updateAdministrationValidationSchema,
 };

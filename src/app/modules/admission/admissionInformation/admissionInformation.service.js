@@ -26,7 +26,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
-import { ID_CONSTANTS } from "./admissionInformation.constants.js";
+import { ADMISSION_INFORMATION_CONSTANTS } from "./admissionInformation.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
@@ -53,7 +53,7 @@ const createAdmissionInformationService = async (db, newAdmissionInformationDeta
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const admissionInformationDetails = {
-            id: `${ID_CONSTANTS?.ADMISSION_INFORMATION_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: `${ADMISSION_INFORMATION_CONSTANTS?.ADMISSION_INFORMATION_ID_PREFIX}-${uuidv4().substr(0, 6)}`,
             title: title,
             description: description,
             formFee: formFee,

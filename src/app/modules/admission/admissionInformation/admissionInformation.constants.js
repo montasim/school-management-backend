@@ -1,22 +1,57 @@
 /**
- * @constant
- * @namespace ID_CONSTANTS
- * @description Constants related to ID generation and validation.
- * @property {string} ADMIN_PREFIX - Prefix for admin IDs.
- * @property {string} STUDENT_PREFIX - Prefix for admissionInformation IDs.
- * @property {number} MIN_LENGTH - Minimum allowed length for IDs.
- * @property {number} MAX_LENGTH - Maximum allowed length for IDs.
+ * @fileoverview Constants for Admission Information Validation.
+ *
+ * This module exports constants used for validating admission information entities in the application.
+ * It includes minimum and maximum lengths for various properties like title, description, form fee,
+ * admission fee, last form submission date, and contact information. These constants ensure that the
+ * admission information data adheres to specified size constraints, maintaining consistency and reliability
+ * in the data validation process.
+ *
+ * @module ADMISSION_INFORMATION_CONSTANTS - Exported constants for admission information validation.
  */
-export const ID_CONSTANTS = {
-    ADMISSION_INFORMATION_PREFIX: "admissionInformation",
-    MIN_LENGTH: 9,
-    MAX_LENGTH: 30
-};
 
 /**
- * @constant
- * @type {RegExp}
- * @description Regular expression pattern for validating image filenames.
- * Expected to match filenames with alphanumeric characters and ending with jpg, png, jpeg, or gif extensions.
+ * Constants defining length constraints for properties of admission information.
  */
-export const IMAGE_PATTERN = /[a-zA-Z0-9]+\.(jpg|png|jpeg|gif)$/;
+const ADMISSION_INFORMATION_ID_PREFIX = 'admissionInformation';
+const ADMISSION_INFORMATION_ID_MIN_LENGTH = 27;
+const ADMISSION_INFORMATION_ID_MAX_LENGTH = 27;
+
+const PROPERTY_TITLE_MIN_LENGTH = 3;
+const PROPERTY_TITLE_MAX_LENGTH = 200;
+
+const PROPERTY_DESCRIPTION_MIN_LENGTH = 3;
+const PROPERTY_DESCRIPTION_MAX_LENGTH = 3000;
+
+const PROPERTY_FORM_PRICE_MIN_LENGTH = 3;
+const PROPERTY_FORM_PRICE_MAX_LENGTH = 10;
+
+const PROPERTY_ADMISSION_FEE_MIN_LENGTH = 3;
+const PROPERTY_ADMISSION_FEE_MAX_LENGTH = 10;
+
+const PROPERTY_LAST_FORM_SUBMISSION_DATE_MIN_LENGTH = 3;
+const PROPERTY_LAST_FORM_SUBMISSION_DATE_MAX_LENGTH = 12;
+
+const PROPERTY_CONTACT_MIN_LENGTH = 3;
+const PROPERTY_CONTACT_MAX_LENGTH = 1000;
+
+/**
+ * Exported constants for use in admission information validation.
+ */
+export const ADMISSION_INFORMATION_CONSTANTS = {
+    ADMISSION_INFORMATION_ID_PREFIX,
+    ADMISSION_INFORMATION_ID_MIN_LENGTH,
+    ADMISSION_INFORMATION_ID_MAX_LENGTH,
+    PROPERTY_TITLE_MIN_LENGTH,
+    PROPERTY_TITLE_MAX_LENGTH,
+    PROPERTY_DESCRIPTION_MIN_LENGTH,
+    PROPERTY_DESCRIPTION_MAX_LENGTH,
+    PROPERTY_FORM_PRICE_MIN_LENGTH,
+    PROPERTY_FORM_PRICE_MAX_LENGTH,
+    PROPERTY_ADMISSION_FEE_MIN_LENGTH,
+    PROPERTY_ADMISSION_FEE_MAX_LENGTH,
+    PROPERTY_LAST_FORM_SUBMISSION_DATE_MIN_LENGTH,
+    PROPERTY_LAST_FORM_SUBMISSION_DATE_MAX_LENGTH,
+    PROPERTY_CONTACT_MIN_LENGTH,
+    PROPERTY_CONTACT_MAX_LENGTH,
+};
