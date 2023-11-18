@@ -95,7 +95,7 @@ const getOthersInformationCategoryList = async (db) => {
  */
 const getAOthersInformationCategory = async (db, othersInformationCategoryId) => {
     try {
-        const othersInformationCategory = await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId);
+        const othersInformationCategory = await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, 'id', othersInformationCategoryId);
 
         delete othersInformationCategory?.createdBy;
         delete othersInformationCategory?.modifiedBy;
@@ -133,7 +133,7 @@ const updateAOthersInformationCategory = async (db, othersInformationCategoryId,
             modifiedAt: new Date(),
         };
         const result = await updateById(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId, updatedOthersInformationCategoryDetails);
-        const latestData = await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, othersInformationCategoryId);
+        const latestData = await findByField(db, OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME, 'id', othersInformationCategoryId);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;

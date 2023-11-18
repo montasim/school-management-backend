@@ -67,7 +67,7 @@ const createPhotoGalleryService = async (db, newPhotoGalleryDetails, file) => {
         };
 
         const result = await createByDetails(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails);
-        const latestData = await findByField(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails?.id);
+        const latestData = await findByField(db, PHOTO_GALLERY_COLLECTION_NAME, 'id', photoGalleryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;

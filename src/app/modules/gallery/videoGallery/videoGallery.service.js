@@ -67,7 +67,7 @@ const createVideoGalleryService = async (db, newVideoGalleryDetails, file) => {
         };
 
         const result = await createByDetails(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryDetails);
-        const latestData = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryDetails?.id);
+        const latestData = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, 'id', videoGalleryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;

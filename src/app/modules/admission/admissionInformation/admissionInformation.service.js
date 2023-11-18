@@ -132,14 +132,19 @@ const getAAdmissionInformationService = async (db, admissionInformationId) => {
 };
 
 /**
- * Retrieves a specific homePageAdmissionInformation by ID from the database.
+ * Updates a specific admission information entry in the database.
+ *
+ * This function handles the updating of admission information details based on the provided ID.
+ * It allows for conditional updating of fields such as title, description, fees, submission date, and contact.
+ * Only provided fields are updated, while others retain their original values.
  *
  * @async
+ * @function updateAAdmissionInformationService
  * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} admissionInformationId - The ID of the homePageAdmissionInformation to retrieve.
- * @param newAdmissionInformationDetails
- * @returns {Object} - The homePageAdmissionInformation details or an error message.
- * @throws {Error} Throws an error if any.
+ * @param {string} admissionInformationId - The ID of the admission information to update.
+ * @param {Object} newAdmissionInformationDetails - Object containing the new details of the admission information.
+ * @returns {Promise<Object>} A promise that resolves to the response object containing the updated details or an error message.
+ * @throws {Error} If an error occurs during the database operation.
  */
 const updateAAdmissionInformationService = async (db, admissionInformationId, newAdmissionInformationDetails) => {
     try {
@@ -148,23 +153,27 @@ const updateAAdmissionInformationService = async (db, admissionInformationId, ne
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
+        const oldDetails = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, 'id', admissionInformationId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${admissionInformationId} not found`);
 
-        const updatedAdmissionInformationDetails = {
-            title: title,
-            description: description,
-            formFee: formFee,
-            admissionFee: admissionFee,
-            lastFormSubmissionData: lastFormSubmissionData,
-            contact: contact,
-            modifiedBy: adminId,
-            modifiedAt: new Date(),
-        };
+        // Initialize the object to store updated details
+        const updatedAdmissionInformationDetails = { ...oldDetails };
+
+        if (title) updatedAdmissionInformationDetails.title = title;
+        if (description) updatedAdmissionInformationDetails.description = description;
+        if (formFee) updatedAdmissionInformationDetails.formFee = formFee;
+        if (admissionFee) updatedAdmissionInformationDetails.admissionFee = admissionFee;
+        if (lastFormSubmissionData) updatedAdmissionInformationDetails.lastFormSubmissionData = lastFormSubmissionData;
+        if (contact) updatedAdmissionInformationDetails.contact = contact;
+
+        // Update modifiedBy and modifiedAt
+        updatedAdmissionInformationDetails.modifiedBy = adminId;
+        updatedAdmissionInformationDetails.modifiedAt = new Date();
+
         const result = await updateById(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId, updatedAdmissionInformationDetails);
-        const latestData = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
+        const latestData = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, 'id', admissionInformationId);
 
         delete latestData.createdBy;
         delete latestData.modifiedBy;
@@ -195,7 +204,7 @@ const deleteAAdmissionInformationService = async (db, adminId, admissionInformat
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, admissionInformationId);
+        const oldDetails = await findByField(db, ADMISSION_INFORMATION_COLLECTION_NAME, 'id', admissionInformationId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${admissionInformationId} not found`);

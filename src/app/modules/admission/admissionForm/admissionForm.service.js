@@ -59,7 +59,7 @@ const createAdmissionFormService = async (db, newAdmissionFormDetails, file) => 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (await findByField(db, ADMISSION_FORM_COLLECTION_NAME, file?.originalname))
+        if (await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'fileName', file?.originalname))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
@@ -126,7 +126,7 @@ const getAdmissionFormListService = async (db) => {
  */
 const getAAdmissionFormService = async (db, fileName) => {
     try {
-        const admissionForm = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, fileName);
+        const admissionForm = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'fileName', fileName);
 
         delete admissionForm?.googleDriveFileId;
 
