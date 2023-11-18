@@ -66,6 +66,7 @@ const router = express.Router();
  */
 router.post("/", [
     authTokenMiddleware,
+    AdmissionInformationValidationService.validateNewAdmissionInformationDetails,
     AdmissionInformationController.createAdmissionInformationController
 ]);
 
@@ -167,6 +168,7 @@ router.get("/:admissionInformationId", [
 router.put("/:admissionInformationId", [
     authTokenMiddleware,
     AdmissionInformationValidationService.validateAdmissionInformationParams,
+    AdmissionInformationValidationService.validateUpdateAdmissionInformationDetails,
     AdmissionInformationController.updateAAdmissionInformationController
 ]);
 

@@ -16,7 +16,6 @@
 
 import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
 import { AdmissionInformationValidationSchemas } from "./admissionInformation.schema.js";
-import { JoiSchemaGenerators}  from "../../../../shared/joiSchemaGenerators.js";
 
 /**
  * Validates the details of a admissionInformation post against a predefined schema.
@@ -28,7 +27,19 @@ import { JoiSchemaGenerators}  from "../../../../shared/joiSchemaGenerators.js";
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateAdmissionInformationDetails = await validateDataWithSchema(JoiSchemaGenerators.admissionInformationBodyValidationSchema(), 'body');
+const validateNewAdmissionInformationDetails = await validateDataWithSchema(AdmissionInformationValidationSchemas.newAdmissionInformationValidationSchema, 'body');
+
+/**
+ * Validates the details of a admissionInformation post against a predefined schema.
+ *
+ * @async
+ * @function validateAdmissionInformationDetails
+ * @description Middleware to validate the admissionInformation post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the admissionInformation post's details.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const validateUpdateAdmissionInformationDetails = await validateDataWithSchema(AdmissionInformationValidationSchemas.updateAdmissionInformationValidationSchema, 'body');
 
 /**
  * Validates the admissionInformation post ID in request parameters.
@@ -47,6 +58,7 @@ const validateAdmissionInformationParams = await validateDataWithSchema(Admissio
  * @description Provides validation services for admissionInformation-related data in routes. This includes validation for admissionInformation details, admissionInformation files, and admissionInformation parameters.
  */
 export const AdmissionInformationValidationService = {
-    validateAdmissionInformationDetails,
+    validateNewAdmissionInformationDetails,
+    validateUpdateAdmissionInformationDetails,
     validateAdmissionInformationParams,
 };

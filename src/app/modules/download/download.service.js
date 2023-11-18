@@ -14,10 +14,10 @@
  * @requires isValidRequest - Utility function to validate request authenticity.
  * @requires generateResponseData - Utility function for generating standardized response data.
  * @requires logger - Shared logging utility for error handling.
- * @requires addANewEntryToDatabase - Utility for adding new entries to the database.
+ * @requires createByDetails - Utility for adding new entries to the database.
  * @requires findByField - Utility for finding a record by its identifier.
  * @requires getAllData - Utility for retrieving all records from a database collection.
- * @requires deleteByFileName - Utility for deleting records by filename.
+ * @requires deleteByField - Utility for deleting records by filename.
  * @requires GoogleDriveFileOperations - Helper for interacting with the Google Drive API.
  * @module DownloadService - Exported object containing download-related service functions.
  */
@@ -36,10 +36,10 @@ import { ID_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import findByField from "../../../shared/findByField.js";
 import getAllData from "../../../shared/getAllData.js";
-import deleteByFileName from "../../../shared/deleteByFileName.js";
+import deleteByField from "../../../shared/deleteByField.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 
 /**
@@ -77,7 +77,7 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
+        const result = await createByDetails(db, DOWNLOAD_COLLECTION_NAME, downloadDetails);
         const latestData = await findByField(db, DOWNLOAD_COLLECTION_NAME, 'id', downloadDetails?.id);
 
         delete latestData?.createdBy;
@@ -160,7 +160,7 @@ const deleteADownloadService = async (db, adminId, fileName) => {
         if (fileDetails) {
             await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
 
-            const result = await deleteByFileName(db, DOWNLOAD_COLLECTION_NAME, fileName);
+            const result = await deleteByField(db, DOWNLOAD_COLLECTION_NAME, 'fileName', fileName);
 
             return result
                 ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)

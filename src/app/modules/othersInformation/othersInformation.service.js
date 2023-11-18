@@ -18,10 +18,10 @@ import { ID_CONSTANTS } from "./othersInformation.constants.js";
 // Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
-import deleteById from "../../../shared/deleteById.js";
+import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 
@@ -50,8 +50,8 @@ const createOthersInformationService = async (db, newOthersInformationDetails) =
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationDetails);
-        const latestData = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationDetails?.id);
+        const result = await createByDetails(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationDetails);
+        const latestData = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationDetails?.id);
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${othersInformationDetails?.name} created successfully`)
@@ -98,7 +98,7 @@ const getOthersInformationListService = async (db) => {
  */
 const getAOthersInformationService = async (db, othersInformationId) => {
     try {
-        const othersInformation = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId);
+        const othersInformation = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationId);
 
         return othersInformation
             ? generateResponseData(othersInformation, true, STATUS_OK, `${othersInformationId} found successfully`)
@@ -128,7 +128,7 @@ const updateAOthersInformationService = async (db, othersInformationId, newOther
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         // Retrieve the current details of the others information
-        const oldDetails = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId);
+        const oldDetails = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${othersInformationId} not found`);
@@ -149,7 +149,7 @@ const updateAOthersInformationService = async (db, othersInformationId, newOther
         const result = await updateById(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId, updatedOthersInformationDetails);
 
         // Retrieve the updated data
-        const latestData = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId);
+        const latestData = await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationId);
 
         // Remove unnecessary data before sending response
         delete latestData._id;
@@ -185,7 +185,7 @@ const deleteAOthersInformationService = async (db, adminId, othersInformationId)
         if (!await findByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${othersInformationId} not found`);
 
-        const result = await deleteById(db, OTHERS_INFORMATION_COLLECTION_NAME, othersInformationId);
+        const result = await deleteByField(db, OTHERS_INFORMATION_COLLECTION_NAME, 'id', othersInformationId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${othersInformationId} deleted successfully`)

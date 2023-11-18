@@ -30,10 +30,10 @@ import { ID_CONSTANTS } from "./photoGallery.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
-import deleteById from "../../../../shared/deleteById.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
@@ -66,12 +66,12 @@ const createPhotoGalleryService = async (db, newPhotoGalleryDetails, file) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails);
-        const latestData = await findByField(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails?.id);
+        const result = await createByDetails(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryDetails);
+        const latestData = await findByField(db, PHOTO_GALLERY_COLLECTION_NAME, 'id', photoGalleryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
@@ -155,7 +155,7 @@ const deleteAPhotoGalleryService = async (db, adminId, photoGalleryId) => {
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
-        const result = await deleteById(db, PHOTO_GALLERY_COLLECTION_NAME, photoGalleryId);
+        const result = await deleteByField(db, PHOTO_GALLERY_COLLECTION_NAME, 'id', photoGalleryId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${photoGalleryId} deleted successfully`)

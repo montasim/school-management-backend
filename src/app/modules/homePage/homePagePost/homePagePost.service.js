@@ -30,10 +30,10 @@ import { ID_CONSTANTS } from "./homePagePost.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
-import deleteById from "../../../../shared/deleteById.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import updateById from "../../../../shared/updateById.js";
 import getAllData from "../../../../shared/getAllData.js";
 
@@ -72,12 +72,12 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostDetails);
+        const result = await createByDetails(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostDetails);
         const latestData = await findByField(db, HOME_PAGE_POST_COLLECTION_NAME, 'id', homePagePostDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
@@ -248,7 +248,7 @@ const deleteAHomePagePostService = async (db, adminId, homePagePostId) => {
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
-        const result = await deleteById(db, HOME_PAGE_POST_COLLECTION_NAME, homePagePostId);
+        const result = await deleteByField(db, HOME_PAGE_POST_COLLECTION_NAME, 'id', homePagePostId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${homePagePostId} deleted successfully`)

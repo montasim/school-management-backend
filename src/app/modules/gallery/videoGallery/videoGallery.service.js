@@ -30,10 +30,10 @@ import { ID_CONSTANTS } from "./videoGallery.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
-import deleteById from "../../../../shared/deleteById.js";
+import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
-import addANewEntryToDatabase from "../../../../shared/addANewEntryToDatabase.js";
+import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
 
 /**
@@ -66,12 +66,12 @@ const createVideoGalleryService = async (db, newVideoGalleryDetails, file) => {
             createdAt: new Date(),
         };
 
-        const result = await addANewEntryToDatabase(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryDetails);
-        const latestData = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryDetails?.id);
+        const result = await createByDetails(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryDetails);
+        const latestData = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, 'id', videoGalleryDetails?.id);
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData?.googleDriveFileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
@@ -155,7 +155,7 @@ const deleteAVideoGalleryService = async (db, adminId, videoGalleryId) => {
 
         await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
 
-        const result = await deleteById(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryId);
+        const result = await deleteByField(db, VIDEO_GALLERY_COLLECTION_NAME, 'id', videoGalleryId);
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${videoGalleryId} deleted successfully`)
