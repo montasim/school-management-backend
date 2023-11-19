@@ -61,6 +61,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails, fil
             title: title,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
             createdBy: adminId,
             createdAt: new Date(),
         };

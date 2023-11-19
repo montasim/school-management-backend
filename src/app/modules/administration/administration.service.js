@@ -75,6 +75,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
 
         // Upload the file to Google Drive and handle the response
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+
         if (!uploadGoogleDriveFileResponse?.shareableLink) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
         }
@@ -87,6 +88,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
             designation,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -231,8 +233,9 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
             if (!uploadGoogleDriveFileResponse?.shareableLink)
                 return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
-            updatedAdministrationDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
-            updatedAdministrationDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+            updatedAdministrationDetails.googleDriveFileId = uploadGoogleDriveFileResponse?.fileId;
+            updatedAdministrationDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse?.shareableLink;
+            updatedAdministrationDetails.downloadLink = uploadGoogleDriveFileResponse?.downloadLink;
         }
 
         // Update name, category, and designation if provided

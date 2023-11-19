@@ -63,6 +63,7 @@ const createBlogService = async (db, newBlogDetails, file) => {
             category: category,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
             description: description,
             createdBy: adminId,
             createdAt: new Date(),
@@ -172,6 +173,7 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
 
             updatedBlogDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
             updatedBlogDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+            updatedBlogDetails.downloadLink = uploadGoogleDriveFileResponse.downloadLink;
         }
 
         // Update title, category, and description if provided
