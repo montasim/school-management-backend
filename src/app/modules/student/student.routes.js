@@ -24,7 +24,7 @@ import { StudentValidationService } from "./student.validator.js";
 import { StudentController } from "./student.controller.js";
 import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
-const studentRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -65,7 +65,7 @@ const studentRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-studentRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
@@ -89,7 +89,7 @@ studentRouter.post("/", [
  * @description Handles GET request for retrieving a list of all students.
  * @route GET /
  */
-studentRouter.get("/", [
+router.get("/", [
     StudentController.getStudentListController
 ]);
 
@@ -115,7 +115,7 @@ studentRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific student.
  * @route GET /{studentId}
  */
-studentRouter.get("/:studentId", [
+router.get("/:studentId", [
     StudentValidationService.validateStudentParams,
     StudentController.getAStudentController
 ]);
@@ -163,7 +163,7 @@ studentRouter.get("/:studentId", [
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-studentRouter.put("/:studentId", [
+router.put("/:studentId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
@@ -196,10 +196,10 @@ studentRouter.put("/:studentId", [
  * Requires authentication.
  * @route DELETE /{studentId}
  */
-studentRouter.delete("/:studentId", [
+router.delete("/:studentId", [
     authTokenMiddleware,
     StudentValidationService.validateStudentParams,
     StudentController.deleteAStudentController
 ]);
 
-export default studentRouter;
+export default router;

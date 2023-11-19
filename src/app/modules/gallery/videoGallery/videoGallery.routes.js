@@ -24,7 +24,7 @@ import { VideoGalleryValidationService } from "./videoGallery.validator.js";
 import { VideoGalleryController } from "./videoGallery.controller.js";
 import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
-const videoGalleryRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -57,7 +57,7 @@ const videoGalleryRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-videoGalleryRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('galleryVideo'),
     multerErrorHandlerMiddleware,
@@ -81,7 +81,7 @@ videoGalleryRouter.post("/", [
  * @description Handles GET request for retrieving a list of all videoGallery.
  * @route GET /
  */
-videoGalleryRouter.get("/", [
+router.get("/", [
     VideoGalleryController.getVideoGalleryListController
 ]);
 
@@ -107,7 +107,7 @@ videoGalleryRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific videoGallery.
  * @route GET /{videoGalleryId}
  */
-videoGalleryRouter.get("/:videoGalleryId", [
+router.get("/:videoGalleryId", [
     VideoGalleryValidationService.validateVideoGalleryParams,
     VideoGalleryController.getAVideoGalleryController
 ]);
@@ -137,10 +137,10 @@ videoGalleryRouter.get("/:videoGalleryId", [
  * Requires authentication.
  * @route DELETE /{videoGalleryId}
  */
-videoGalleryRouter.delete("/:videoGalleryId", [
+router.delete("/:videoGalleryId", [
     authTokenMiddleware,
     VideoGalleryValidationService.validateVideoGalleryParams,
     VideoGalleryController.deleteAVideoGalleryController
 ]);
 
-export default videoGalleryRouter;
+export default router;

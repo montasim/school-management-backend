@@ -20,7 +20,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteImportantInformationLinkValidators } from "./websiteImportantInformationLink.validator.js";
 import { WebsiteImportantInformationLinkController } from "./websiteImportantInformationLink.controller.js";
 
-const websiteImportantInformationLinkRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -53,7 +53,7 @@ const websiteImportantInformationLinkRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteImportantInformationLinkRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkBodyValidator,
     WebsiteImportantInformationLinkController.createWebsiteImportantInformationLinkController
@@ -73,7 +73,7 @@ websiteImportantInformationLinkRouter.post("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteImportantInformationLinkRouter.get("/", [
+router.get("/", [
     WebsiteImportantInformationLinkController.getWebsiteImportantInformationLinkListController
 ]);
 
@@ -91,7 +91,7 @@ websiteImportantInformationLinkRouter.get("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteImportantInformationLinkRouter.get("/:websiteImportantInformationLinkId", [
+router.get("/:websiteImportantInformationLinkId", [
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkParamsValidator,
     WebsiteImportantInformationLinkController.getAWebsiteImportantInformationLinkController
 ]);
@@ -127,7 +127,7 @@ websiteImportantInformationLinkRouter.get("/:websiteImportantInformationLinkId",
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteImportantInformationLinkRouter.put("/:websiteImportantInformationLinkId", [
+router.put("/:websiteImportantInformationLinkId", [
     authTokenMiddleware,
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkParamsValidator,
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkBodyValidator,
@@ -150,10 +150,10 @@ websiteImportantInformationLinkRouter.put("/:websiteImportantInformationLinkId",
  *       500:
  *         description: Internal server error.
  */
-websiteImportantInformationLinkRouter.delete("/:websiteImportantInformationLinkId", [
+router.delete("/:websiteImportantInformationLinkId", [
     authTokenMiddleware,
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkParamsValidator,
     WebsiteImportantInformationLinkController.deleteAWebsiteImportantInformationLinkController
 ]);
 
-export default websiteImportantInformationLinkRouter;
+export default router;

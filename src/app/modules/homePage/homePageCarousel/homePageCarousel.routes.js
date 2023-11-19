@@ -24,7 +24,7 @@ import { HomePageCarouselValidationService } from "./homePageCarousel.validator.
 import { HomePageCarouselController } from "./homePageCarousel.controller.js";
 import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
-const homePageCarouselRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -57,7 +57,7 @@ const homePageCarouselRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-homePageCarouselRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('carouselImage'),
     multerErrorHandlerMiddleware,
@@ -83,7 +83,7 @@ homePageCarouselRouter.post("/", [
  * @description Handles GET request for retrieving a list of all homePageCarousels.
  * @route GET /
  */
-homePageCarouselRouter.get("/", [
+router.get("/", [
     HomePageCarouselController.getHomePageCarouselListController
 ]);
 
@@ -109,7 +109,7 @@ homePageCarouselRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific homePageCarousel.
  * @route GET /{homePageCarouselId}
  */
-homePageCarouselRouter.get("/:homePageCarouselId", [
+router.get("/:homePageCarouselId", [
     HomePageCarouselValidationService.validateHomePageCarouselParams,
     HomePageCarouselController.getAHomePageCarouselController
 ]);
@@ -139,10 +139,10 @@ homePageCarouselRouter.get("/:homePageCarouselId", [
  * Requires authentication.
  * @route DELETE /{homePageCarouselId}
  */
-homePageCarouselRouter.delete("/:homePageCarouselId", [
+router.delete("/:homePageCarouselId", [
     authTokenMiddleware,
     HomePageCarouselValidationService.validateHomePageCarouselParams,
     HomePageCarouselController.deleteAHomePageCarouselController
 ]);
 
-export default homePageCarouselRouter;
+export default router;

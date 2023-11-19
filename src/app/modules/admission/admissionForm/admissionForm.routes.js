@@ -19,9 +19,8 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { AdmissionFormValidationService } from "./admissionForm.validator.js";
 import { AdmissionFormController } from "./admissionForm.controller.js";
-import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
-const admissionFormRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -54,11 +53,10 @@ const admissionFormRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-admissionFormRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
-    multerErrorHandlerMiddleware,
-    AdmissionFormValidationService.validateAdmissionFormFile,
+    AdmissionFormValidationService.validateNewAdmissionFormDetails,
     AdmissionFormController.createAdmissionFormController
 ]);
 
@@ -79,7 +77,7 @@ admissionFormRouter.post("/", [
  * @description Handles GET request for retrieving a list of all admission forms.
  * @route GET /
  */
-admissionFormRouter.get("/", [
+router.get("/", [
     AdmissionFormController.getAdmissionFormListController
 ]);
 
@@ -105,7 +103,7 @@ admissionFormRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific admission form.
  * @route GET /{fileName}
  */
-admissionFormRouter.get("/:fileName", [
+router.get("/:fileName", [
     AdmissionFormValidationService.validateAdmissionFormParams,
     AdmissionFormController.getAAdmissionFormController
 ]);
@@ -135,10 +133,10 @@ admissionFormRouter.get("/:fileName", [
  * Requires authentication.
  * @route DELETE /{fileName}
  */
-admissionFormRouter.delete("/:fileName", [
+router.delete("/:fileName", [
     authTokenMiddleware,
     AdmissionFormValidationService.validateAdmissionFormParams,
     AdmissionFormController.deleteAAdmissionFormController
 ]);
 
-export default admissionFormRouter;
+export default router;

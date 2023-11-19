@@ -21,7 +21,7 @@ import { NoticeValidationService } from "./notice.validator.js";
 import { NoticeController } from "./notice.controller.js";
 import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
-const noticeRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ const noticeRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-noticeRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
@@ -78,7 +78,7 @@ noticeRouter.post("/", [
  * @description Handles GET request for retrieving a list of all notices.
  * @route GET /
  */
-noticeRouter.get("/", [
+router.get("/", [
     NoticeController.getNoticeListController
 ]);
 
@@ -104,7 +104,7 @@ noticeRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific notice.
  * @route GET /{fileName}
  */
-noticeRouter.get("/:fileName", [
+router.get("/:fileName", [
     NoticeValidationService.validateNoticeParams,
     NoticeController.getANoticeController
 ]);
@@ -134,10 +134,10 @@ noticeRouter.get("/:fileName", [
  * Requires authentication.
  * @route DELETE /{fileName}
  */
-noticeRouter.delete("/:fileName", [
+router.delete("/:fileName", [
     authTokenMiddleware,
     NoticeValidationService.validateNoticeParams,
     NoticeController.deleteANoticeController
 ]);
 
-export default noticeRouter;
+export default router;

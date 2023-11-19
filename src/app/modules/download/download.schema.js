@@ -17,6 +17,15 @@
 import Joi from "joi";
 import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
+import { DOWNLOAD_CONSTANTS } from "./download.constants.js";
+
+const newDownloadValidationSchema = Joi.object({
+    title: JoiSchemaGenerators?.createStringSchema(
+        "title",
+        DOWNLOAD_CONSTANTS?.PROPERTY_TITLE_MIN_LENGTH,
+        DOWNLOAD_CONSTANTS?.PROPERTY_TITLE_MAX_LENGTH
+    ).required(),
+})
 
 /**
  * @description Joi validation schema for download's params data.
@@ -33,5 +42,6 @@ const downloadParamsValidationSchema = Joi.object({
  * - `downloadParamsSchema`: Validates the download ID in request parameters.
  */
 export const DownloadValidationSchemas = {
+    newDownloadValidationSchema,
     downloadParamsValidationSchema,
 };

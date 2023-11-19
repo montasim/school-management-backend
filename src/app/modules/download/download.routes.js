@@ -19,9 +19,8 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { DownloadValidationService } from "./download.validator.js";
 import { DownloadController } from "./download.controller.js";
-import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
-const downloadRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -54,11 +53,10 @@ const downloadRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-downloadRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware?.single('file'),
-    multerErrorHandlerMiddleware,
-    DownloadValidationService?.validateDownloadFile,
+    DownloadValidationService?.validateNewDownloadDetails,
     DownloadController?.createDownloadController
 ]);
 
@@ -79,7 +77,7 @@ downloadRouter.post("/", [
  * @description Handles GET request for retrieving a list of all downloads.
  * @route GET /
  */
-downloadRouter.get("/", [
+router.get("/", [
     DownloadController.getDownloadListController
 ]);
 
@@ -105,7 +103,7 @@ downloadRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific download.
  * @route GET /{fileName}
  */
-downloadRouter.get("/:fileName", [
+router.get("/:fileName", [
     DownloadValidationService.validateDownloadParams,
     DownloadController.getADownloadController
 ]);
@@ -135,10 +133,10 @@ downloadRouter.get("/:fileName", [
  * Requires authentication.
  * @route DELETE /{fileName}
  */
-downloadRouter.delete("/:fileName", [
+router.delete("/:fileName", [
     authTokenMiddleware,
     DownloadValidationService.validateDownloadParams,
     DownloadController.deleteADownloadController
 ]);
 
-export default downloadRouter;
+export default router;

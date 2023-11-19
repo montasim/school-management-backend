@@ -21,7 +21,7 @@ import { ResultValidationService } from "./result.validator.js";
 import { ResultController } from "./result.controller.js";
 import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
-const resultRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ const resultRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-resultRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
@@ -78,7 +78,7 @@ resultRouter.post("/", [
  * @description Handles GET request for retrieving a list of all results.
  * @route GET /
  */
-resultRouter.get("/", [
+router.get("/", [
     ResultController.getResultListController
 ]);
 
@@ -104,7 +104,7 @@ resultRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific result.
  * @route GET /{fileName}
  */
-resultRouter.get("/:fileName", [
+router.get("/:fileName", [
     ResultValidationService.validateResultParams,
     ResultController.getAResultController
 ]);
@@ -134,10 +134,10 @@ resultRouter.get("/:fileName", [
  * Requires authentication.
  * @route DELETE /{fileName}
  */
-resultRouter.delete("/:fileName", [
+router.delete("/:fileName", [
     authTokenMiddleware,
     ResultValidationService.validateResultParams,
     ResultController.deleteAResultController
 ]);
 
-export default resultRouter;
+export default router;

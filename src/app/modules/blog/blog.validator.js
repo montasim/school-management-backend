@@ -23,6 +23,7 @@ import {
     MIME_TYPE_JPG,
     MIME_TYPE_PNG
 } from "../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../helpers/validateDataWithFileSchema.js";
 
 /**
  * Validates the details of a blog post against a predefined schema.
@@ -34,7 +35,15 @@ import {
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateNewBlogDetails = await validateDataWithSchema(JoiSchemaGenerators.newPostBodyValidationSchema(), 'body');
+const validateNewBlogDetails = await validateDataWithFileSchema(
+    JoiSchemaGenerators.newPostBodyValidationSchema(),
+    JoiSchemaGenerators.fileValidationSchema(
+        "postImage",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG],
+    ),
+    true
+);
 
 /**
  * Validates the details of an update blog post against a predefined schema.
@@ -46,19 +55,15 @@ const validateNewBlogDetails = await validateDataWithSchema(JoiSchemaGenerators.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateUpdateBlogDetails = await validateDataWithSchema(JoiSchemaGenerators.updatePostBodyValidationSchema(), 'body');
-
-/**
- * Validates the details of a blog post against a predefined schema.
- *
- * @async
- * @function validateBlogDetails
- * @description Middleware to validate the blog post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the blog post's details.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-const validateBlogFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema("postImage", [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], [MIME_TYPE_PNG, MIME_TYPE_JPG]), "file");
+const validateUpdateBlogDetails = await validateDataWithFileSchema(
+    JoiSchemaGenerators.updatePostBodyValidationSchema(),
+    JoiSchemaGenerators.fileValidationSchema(
+        "postImage",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG],
+    ),
+    false
+);
 
 /**
  * Validates the blog post ID in request parameters.
@@ -79,6 +84,5 @@ const validateBlogParams = await validateDataWithSchema(BlogValidationSchemas.bl
 export const BlogValidationService = {
     validateNewBlogDetails,
     validateUpdateBlogDetails,
-    validateBlogFile,
     validateBlogParams,
 };

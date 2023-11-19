@@ -20,7 +20,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteOfficialLinkValidators } from "./websiteOfficialLink.validator.js";
 import { WebsiteOfficialLinkController } from "./websiteOfficialLink.controller.js";
 
-const websiteOfficialLinkRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -53,7 +53,7 @@ const websiteOfficialLinkRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteOfficialLinkRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     WebsiteOfficialLinkValidators.websiteOfficialLinkBodyValidator,
     WebsiteOfficialLinkController.createWebsiteOfficialLinkController
@@ -73,7 +73,7 @@ websiteOfficialLinkRouter.post("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteOfficialLinkRouter.get("/", [
+router.get("/", [
     WebsiteOfficialLinkController.getWebsiteOfficialLinkListController
 ]);
 
@@ -91,7 +91,7 @@ websiteOfficialLinkRouter.get("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteOfficialLinkRouter.get("/:websiteOfficialLinkId", [
+router.get("/:websiteOfficialLinkId", [
     WebsiteOfficialLinkValidators.websiteOfficialLinkParamsValidator,
     WebsiteOfficialLinkController.getAWebsiteOfficialLinkController
 ]);
@@ -127,7 +127,7 @@ websiteOfficialLinkRouter.get("/:websiteOfficialLinkId", [
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteOfficialLinkRouter.put("/:websiteOfficialLinkId", [
+router.put("/:websiteOfficialLinkId", [
     authTokenMiddleware,
     WebsiteOfficialLinkValidators.websiteOfficialLinkParamsValidator,
     WebsiteOfficialLinkValidators.websiteOfficialLinkBodyValidator,
@@ -150,10 +150,10 @@ websiteOfficialLinkRouter.put("/:websiteOfficialLinkId", [
  *       500:
  *         description: Internal server error.
  */
-websiteOfficialLinkRouter.delete("/:websiteOfficialLinkId", [
+router.delete("/:websiteOfficialLinkId", [
     authTokenMiddleware,
     WebsiteOfficialLinkValidators.websiteOfficialLinkParamsValidator,
     WebsiteOfficialLinkController.deleteAWebsiteOfficialLinkController
 ]);
 
-export default websiteOfficialLinkRouter;
+export default router;
