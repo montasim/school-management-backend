@@ -19,6 +19,7 @@
 import { DesignationService } from "./designation.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+import logger from "../../../shared/logger.js";
 
 /**
  * @async
@@ -29,10 +30,16 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createDesignationController = async (req, res) => {
-    const { name, adminId, db } = extractFromRequest(req, ['name']);
-    const newDesignation = { name, adminId };
+    try {
+        const { name, adminId, db } = extractFromRequest(req, ['name']);
+        const newDesignation = { name, adminId };
 
-    await handleServiceResponse(res, DesignationService.createDesignationService, db, newDesignation);
+        await handleServiceResponse(res, DesignationService.createDesignationService, db, newDesignation);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -44,7 +51,13 @@ const createDesignationController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getDesignationListController = async (req, res) => {
-    await handleServiceResponse(res, DesignationService.getDesignationListService, req?.db);
+    try {
+        await handleServiceResponse(res, DesignationService.getDesignationListService, req?.db);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -56,9 +69,15 @@ const getDesignationListController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getADesignationController = async (req, res) => {
-    const { designationId, db } = extractFromRequest(req, [], ['designationId']);
+    try {
+        const { designationId, db } = extractFromRequest(req, [], ['designationId']);
 
-    await handleServiceResponse(res, DesignationService.getADesignationService, db, designationId);
+        await handleServiceResponse(res, DesignationService.getADesignationService, db, designationId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -70,10 +89,16 @@ const getADesignationController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateADesignationController = async (req, res) => {
-    const { designationId, name, adminId, db } = extractFromRequest(req, ['name'], ['designationId']);
-    const updatedDesignationDetails = { name, adminId };
+    try {
+        const { designationId, name, adminId, db } = extractFromRequest(req, ['name'], ['designationId']);
+        const updatedDesignationDetails = { name, adminId };
 
-    await handleServiceResponse(res, DesignationService.updateADesignationService, db, designationId, updatedDesignationDetails);
+        await handleServiceResponse(res, DesignationService.updateADesignationService, db, designationId, updatedDesignationDetails);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -85,9 +110,15 @@ const updateADesignationController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteADesignationController = async (req, res) => {
-    const { designationId, adminId, db } = extractFromRequest(req, [], ['designationId']);
+    try {
+        const { designationId, adminId, db } = extractFromRequest(req, [], ['designationId']);
 
-    await handleServiceResponse(res, DesignationService.deleteADesignationService, db, adminId, designationId);
+        await handleServiceResponse(res, DesignationService.deleteADesignationService, db, adminId, designationId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**

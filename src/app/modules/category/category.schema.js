@@ -1,18 +1,35 @@
+/**
+ * @fileoverview Joi Validation Schemas for Category Data.
+ *
+ * This module provides Joi schemas for validating category-related data in Express routes.
+ * It offers a comprehensive way to ensure that data related to categories, both in request parameters (like IDs)
+ * and in the request body, adheres to the expected formats and constraints.
+ *
+ * The validation schemas help maintain consistency and integrity of data throughout the application.
+ * They are particularly useful in routes handling category creation, updates, and retrieval by ensuring
+ * that only valid and well-formed data is processed. This is crucial for both functionality and security.
+ *
+ * @requires Joi - Library for schema description and data validation.
+ * @requires CATEGORY_CONSTANTS - Constants related to ID generation and validation.
+ * @requires createIdSchema - Utility function for creating ID validation schemas.
+ * @module CategorySchema - Exported Joi validation schemas for category data.
+ */
+
 import Joi from "joi";
-import { ID_CONSTANTS } from './category.constants.js';
+import { CATEGORY_CONSTANTS } from './category.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
 
+/**
+ * Validation schema for category ID parameters.
+ * Ensures that the category ID in request parameters matches the expected format.
+ */
 const categoryParamsSchema = Joi.object({
-    categoryId: createIdSchema(ID_CONSTANTS?.CATEGORY_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
+    categoryId: createIdSchema(CATEGORY_CONSTANTS?.CATEGORY_ID_PREFIX, CATEGORY_CONSTANTS?.CATEGORY_ID_MIN_LENGTH, CATEGORY_CONSTANTS?.CATEGORY_ID_MIN_LENGTH).required()
 });
 
 /**
- * @description Joi validation schema for category's body data.
- * Validates the name, level, and image fields.
- *
- * - `name`: Should be a string with a minimum length of 3 and a maximum length of 30.
- * - `level`: Should be a string with a minimum length of 2 and a maximum length of 20.
- * - `image`: Should be a string that matches the IMAGE_PATTERN.
+ * Validation schema for category's body data.
+ * Ensures that the body data for category-related requests is structured correctly.
  */
 const categoryBodySchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
@@ -20,10 +37,8 @@ const categoryBodySchema = Joi.object({
 
 /**
  * @namespace CategorySchema
- * @description Exported Joi validation schemas for category data.
- *
- * - `categoryBodySchema`: Validates the body data of a category.
- * - `categoryParamsSchema`: Validates the category ID in request parameters.
+ * @description Provides Joi validation schemas for category data in Express routes.
+ * These schemas are essential for ensuring that data related to categories is correctly formatted and adheres to defined constraints.
  */
 export const CategorySchema = {
     categoryBodySchema,

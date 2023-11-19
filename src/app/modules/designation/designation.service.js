@@ -1,7 +1,26 @@
-// Third-party libraries
-import { v4 as uuidv4 } from 'uuid';
+/**
+ * @fileoverview Services for Designation Operations.
+ *
+ * This module exports a set of services responsible for handling various operations related to designations in an Express application.
+ * Each service is an asynchronous function that interacts with the database, performs the specified operation, and generates a response or error message.
+ * The services also include error handling to ensure graceful handling of exceptions.
+ *
+ * @requires DatabaseMiddleware - Database connection middleware for interacting with the database.
+ * @requires DESIGNATION_COLLECTION_NAME - Configuration constant for the collection name in the database.
+ * @requires constants - Constants used for defining status codes and messages.
+ * @requires DESIGNATION_CONSTANTS - Constants specific to designation operations.
+ * @requires isValidRequest - Shared utility function to validate incoming requests.
+ * @requires logger - Shared utility for logging.
+ * @requires deleteByField - Shared utility for deleting data from the database by a specific field.
+ * @requires generateResponseData - Shared utility for generating consistent response data.
+ * @requires findByField - Shared utility for finding data in the database by a specific field.
+ * @requires createByDetails - Shared utility for creating data in the database with provided details.
+ * @requires updateById - Shared utility for updating data in the database by ID.
+ * @requires getAllData - Shared utility for fetching all data from a collection.
+ * @module DesignationService - Exported services for designation operations in the application.
+ */
 
-// Configuration and Constants
+import { v4 as uuidv4 } from 'uuid';
 import { DESIGNATION_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -12,8 +31,6 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { DESIGNATION_CONSTANTS } from "./designation.constants.js";
-
-// Shared utilities and functions
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
@@ -186,7 +203,8 @@ const deleteADesignationService = async (db, adminId, designationId) => {
 
 /**
  * @namespace DesignationService
- * @description Group of services related to designation operations.
+ * @description Provides a set of services for handling CRUD operations related to designations.
+ * These services encapsulate the business logic required for designation operations and include error handling for robust functionality.
  */
 export const DesignationService = {
     createDesignationService,
