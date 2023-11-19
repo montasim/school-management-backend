@@ -58,6 +58,7 @@ downloadRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
+    DownloadValidationService.validateDownloadFile,
     DownloadController.createDownloadController
 ]);
 
