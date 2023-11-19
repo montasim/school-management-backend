@@ -18,8 +18,7 @@
 import Joi from "joi";
 import { CATEGORY_CONSTANTS } from './category.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
-import {BLOG_PROPERTY_TITLE_MAX_LENGTH, BLOG_PROPERTY_TITLE_MIN_LENGTH} from "../../../constants/constants.js";
-import {JoiSchemaGenerators} from "../../../shared/joiSchemaGenerators.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 
 /**
  * Validation schema for category ID parameters.

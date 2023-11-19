@@ -38,6 +38,9 @@ const MIME_TYPE_PNG = "image/png";
 const MIME_TYPE_ICO = "image/x-icon";
 const MIME_TYPE_MP4 = "application/mp4";
 
+// File size
+const MAXIMUM_FILE_SIZE = 1024 * 1024 * 1.1 // 1.1MB
+
 // Log related
 const LOG_LEVELS = {
     error: 0,
@@ -89,6 +92,7 @@ export {
     FILE_EXTENSION_TYPE_MP4,
     MAX_PDF_FILE_SIZE,
     MAX_IMAGE_FILE_SIZE,
+    MAXIMUM_FILE_SIZE,
     LOG_LEVELS,
     LOG_COLORS,
     MIME_TYPE_PDF,

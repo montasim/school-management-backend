@@ -56,10 +56,10 @@ const downloadRouter = express.Router();
  */
 downloadRouter.post("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('file'),
+    fileUploadMiddleware?.single('file'),
     multerErrorHandlerMiddleware,
-    DownloadValidationService.validateDownloadFile,
-    DownloadController.createDownloadController
+    DownloadValidationService?.validateDownloadFile,
+    DownloadController?.createDownloadController
 ]);
 
 /**

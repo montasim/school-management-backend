@@ -23,18 +23,27 @@ import {
     MIME_TYPE_JPG,
     MIME_TYPE_PNG
 } from "../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../helpers/validateDataWithFileSchema.js";
 
 /**
  * Validates the details of an administration against a predefined schema.
  *
  * @async
  * @function validateNewAdministrationDetails
- * @description Middleware to validate the administration post's body data using Joi schemas.
+ * @description Middleware to validate the administration post's body and file data using Joi schemas.
  * @param {Object} req - Express request object containing the administration post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateNewAdministrationDetails = await validateDataWithSchema(AdministrationValidationSchemas.newAdministrationValidationSchema, 'body');
+const validateNewAdministrationDetails = await validateDataWithFileSchema(
+    AdministrationValidationSchemas.newAdministrationValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "image",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG]
+    ),
+    true
+);
 
 /**
  * Validates the details of an administration against a predefined schema.
@@ -46,7 +55,15 @@ const validateNewAdministrationDetails = await validateDataWithSchema(Administra
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateUpdatedAdministrationDetails = await validateDataWithSchema(AdministrationValidationSchemas.updateAdministrationValidationSchema, 'body');
+const validateUpdatedAdministrationDetails = await validateDataWithFileSchema(
+    AdministrationValidationSchemas.updateAdministrationValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "image",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG]
+    ),
+    false
+);
 
 /**
  * Validates the details of an administration post against a predefined schema.

@@ -21,6 +21,7 @@ import {
     FILE_EXTENSION_TYPE_PDF,
     FILE_EXTENSION_TYPE_PNG,
     FILE_EXTENSION_TYPE_JPG,
+    MAXIMUM_FILE_SIZE,
     BLOG_PROPERTY_TITLE_MIN_LENGTH,
     BLOG_PROPERTY_TITLE_MAX_LENGTH,
     BLOG_PROPERTY_CATEGORY_MIN_LENGTH,
@@ -94,38 +95,38 @@ const fileValidationSchema = (allowedFieldname, allowedExtensions = [FILE_EXTENS
           .required()
           .messages({
               'string.base': `"fieldname" should be a type of 'text'`,
-              'any.only': `"fieldname" should be one of [${allowedFieldname}]`,
-              'any.required': `"fieldname" is a required field`
+              'any.only': `"File should be one of [${allowedFieldname}]`,
+              'any.required': `Invalid or empty file`
           }),
       originalname: createFileNameSchema(allowedExtensions)
           .messages({
-              'string.pattern.base': `"originalname" should have one of the following extensions: ${allowedExtensions.join(', ')}`,
-              'any.required': `"originalname" is a required field`
+              'string.pattern.base': `File should have one of the following extensions: ${allowedExtensions.join(', ')}`,
+              'any.required': `Invalid or empty file`
           }),
       encoding: Joi.string()
           .valid('7bit')
           .required()
           .messages({
               'string.base': `"encoding" should be a type of 'text'`,
-              'any.only': `"encoding" should be '7bit'`,
-              'any.required': `"encoding" is a required field`
+              'any.only': `Invalid or empty file`,
+              'any.required': `Invalid or empty file`
           }),
       mimetype: Joi.string()
           .valid(...validMimeTypes)
           .required()
           .messages({
               'string.base': `"mimetype" should be a type of 'text'`,
-              'any.only': `"mimetype" should be one of [${validMimeTypes.join(', ')}]`,
-              'any.required': `"mimetype" is a required field`
+              'any.only': `Invalid or empty file`,
+              'any.required': `Invalid or empty file`
           }),
       buffer: fileBufferValidationSchema(),
       size: Joi.number()
-          .max(1024 * 1024 * 25)
+          .max(MAXIMUM_FILE_SIZE) //
           .required()
           .messages({
               'number.base': `"size" should be a number`,
-              'number.max': `"size" must not exceed 25MB`,
-              'any.required': `"size" is a required field`
+              'number.max': `"size" must not exceed 1.1MB`,
+              'any.required': `Invalid or empty file`
           })
   }).description('File to be uploaded with validated MIME type and size.')
 };
