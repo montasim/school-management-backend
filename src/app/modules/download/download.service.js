@@ -30,7 +30,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./download.constants.js";
+import { DOWNLOAD_CONSTANTS } from "./download.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
@@ -67,7 +67,7 @@ const createDownloadService = async (db, newDownloadDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const downloadDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.DOWNLOAD_PREFIX),
+            id: generateUniqueID(DOWNLOAD_CONSTANTS?.DOWNLOAD_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
