@@ -30,7 +30,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
-import { ID_CONSTANTS } from "./admissionForm.constants.js";
+import { ADMISSION_FORM_CONSTANTS } from "./admissionForm.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import logger from "../../../../shared/logger.js";
@@ -67,7 +67,7 @@ const createAdmissionFormService = async (db, newAdmissionFormDetails, file) => 
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const admissionFormDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.ADMISSION_FORM_PREFIX),
+            id: generateUniqueID(ADMISSION_FORM_CONSTANTS?.ADMISSION_FORM_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,

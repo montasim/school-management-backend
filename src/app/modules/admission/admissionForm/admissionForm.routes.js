@@ -57,8 +57,7 @@ const admissionFormRouter = express.Router();
 admissionFormRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
-    multerErrorHandlerMiddleware,
-    AdmissionFormValidationService.validateAdmissionFormFile,
+    AdmissionFormValidationService.validateNewAdmissionFormDetails,
     AdmissionFormController.createAdmissionFormController
 ]);
 

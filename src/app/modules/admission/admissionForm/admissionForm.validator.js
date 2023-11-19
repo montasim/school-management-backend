@@ -17,6 +17,7 @@ import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.j
 import { AdmissionFormValidationSchemas } from "./admissionForm.schema.js";
 import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../../helpers/validateDataWithFileSchema.js";
 
 /**
  * Validates the details of an AdmissionForm against a predefined schema.
@@ -28,11 +29,15 @@ import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../../constants/co
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateAdmissionFormFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema(
-    "file",
-    [FILE_EXTENSION_TYPE_PDF],
-    [MIME_TYPE_PDF]
-), "file");
+const validateNewAdmissionFormDetails = await validateDataWithFileSchema(
+    AdmissionFormValidationSchemas?.newAdmissionFormValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "file",
+        [FILE_EXTENSION_TYPE_PDF],
+        [MIME_TYPE_PDF],
+    ),
+    true
+);
 
 /**
  * @function
@@ -59,6 +64,6 @@ const validateAdmissionFormParams = validateDataWithSchema(
  * @description Exported admissionForm validators to be used in routes.
  */
 export const AdmissionFormValidationService = {
-    validateAdmissionFormFile,
+    validateNewAdmissionFormDetails,
     validateAdmissionFormParams,
 };
