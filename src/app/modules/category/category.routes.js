@@ -20,6 +20,12 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Category successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
  */
 router.post("/", [
     authTokenMiddleware,
@@ -36,6 +42,10 @@ router.post("/", [
  *     responses:
  *       200:
  *         description: A list of category.
+ *       404:
+ *         description: Category not found.
+ *       500:
+ *         description: Internal server error.
  */
 router.get("/", [
     CategoryController.getCategoryListController
@@ -57,6 +67,10 @@ router.get("/", [
  *     responses:
  *       200:
  *         description: Category details.
+ *       404:
+ *         description: Category not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
  */
 router.get("/:categoryId", [
     CategoryValidators.categoryParamsValidator,
@@ -84,6 +98,12 @@ router.get("/:categoryId", [
  *     responses:
  *       200:
  *         description: Category successfully updated.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
  */
 router.put("/:categoryId", [
     authTokenMiddleware,
@@ -108,6 +128,12 @@ router.put("/:categoryId", [
  *     responses:
  *       200:
  *         description: Category successfully deleted.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       404:
+ *         description: Category not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
  */
 router.delete("/:categoryId", [
     authTokenMiddleware,
