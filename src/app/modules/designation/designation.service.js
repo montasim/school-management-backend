@@ -11,7 +11,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./designation.constants.js";
+import { DESIGNATION_CONSTANTS } from "./designation.constants.js";
 
 // Shared utilities and functions
 import isValidRequest from "../../../shared/isValidRequest.js";
@@ -43,7 +43,7 @@ const createDesignationService = async (db, newDesignationDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const designationDetails = {
-            id: `${ID_CONSTANTS?.LEVEL_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: `${DESIGNATION_CONSTANTS?.DESIGNATION_ID_PREFIX}-${uuidv4().substr(0, 6)}`,
             name,
             createdBy: adminId,
             createdAt: new Date(),
