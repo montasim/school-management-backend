@@ -34,7 +34,7 @@ import {
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateHomePagePostDetails = await validateDataWithSchema(JoiSchemaGenerators.postBodyValidationSchema(), 'body');
+const validateHomePagePostDetails = await validateDataWithSchema(JoiSchemaGenerators.newPostBodyValidationSchema(), 'body');
 
 /**
  * Validates the details of a homePagePost post against a predefined schema.

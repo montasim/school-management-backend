@@ -1,7 +1,3 @@
-// Third-party libraries
-import { v4 as uuidv4 } from 'uuid';
-
-// Configuration and Constants
 import { LEVEL_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -12,8 +8,6 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./level.constants.js";
-
-// Shared utilities and functions
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
@@ -22,6 +16,7 @@ import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new level entry in the database.
@@ -43,7 +38,7 @@ const createLevelService = async (db, newLevelDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const levelDetails = {
-            id: `${ID_CONSTANTS?.LEVEL_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.LEVEL_PREFIX),
             name,
             createdBy: adminId,
             createdAt: new Date(),

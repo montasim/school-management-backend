@@ -7,7 +7,6 @@
  * These services abstract the database and file system interactions, providing a
  * clean interface for the controller layer to perform CRUD operations on administration data.
  *
- * @requires uuid - Module for generating unique identifiers.
  * @requires config - Configuration file for application settings.
  * @requires constants - Application constants for status messages and codes.
  * @requires isValidRequest - Utility function to validate requests.
@@ -16,7 +15,6 @@
  * @module AdministrationService - Exported services for administration operations.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { ADMINISTRATION_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -35,6 +33,7 @@ import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new administration entry in the database.
@@ -69,7 +68,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
 
         // Prepare administration details for database insertion
         const administrationDetails = {
-            id: `${ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX),
             name: name,
             category: Array.isArray(category) ? category : [category], // Ensure category is an array
             designation: designation,

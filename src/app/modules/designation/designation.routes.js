@@ -1,3 +1,21 @@
+/**
+ * @fileoverview Router for Designation-Related Operations in Express.
+ *
+ * This module sets up the Express router for handling various endpoints related to Designations.
+ * It includes routes for creating a new designation, retrieving a list of all designations,
+ * retrieving a specific designation by ID, updating a designation, and deleting a designation.
+ * Each route is equipped with necessary middleware for authentication, validation of request data,
+ * and respective controller functions to handle the request. This modular approach ensures separation
+ * of concerns, with the router only handling routing logic, while business logic is handled in controllers
+ * and validation logic in validators.
+ *
+ * @requires express - Express framework to create router.
+ * @requires authTokenMiddleware - Middleware for authentication.
+ * @requires DesignationValidators - Validators for designation-related operations.
+ * @requires DesignationController - Controllers for designation-related operations.
+ * @module DesignationRouter - Exported router for designation endpoints.
+ */
+
 import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { DesignationValidators } from "./designation.validator.js";
@@ -20,6 +38,12 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Designation successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
  */
 router.post("/", [
     authTokenMiddleware,
@@ -36,6 +60,10 @@ router.post("/", [
  *     responses:
  *       200:
  *         description: A list of designation.
+ *       404:
+ *         description: Designation not found.
+ *       500:
+ *         description: Internal server error.
  */
 router.get("/", [
     DesignationController.getDesignationListController
@@ -57,6 +85,10 @@ router.get("/", [
  *     responses:
  *       200:
  *         description: Designation details.
+ *       404:
+ *         description: Designation not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
  */
 router.get("/:designationId", [
     DesignationValidators.designationParamsValidator,
@@ -84,6 +116,12 @@ router.get("/:designationId", [
  *     responses:
  *       200:
  *         description: Designation successfully updated.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
  */
 router.put("/:designationId", [
     authTokenMiddleware,
@@ -108,6 +146,12 @@ router.put("/:designationId", [
  *     responses:
  *       200:
  *         description: Designation successfully deleted.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       404:
+ *         description: Designation not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
  */
 router.delete("/:designationId", [
     authTokenMiddleware,

@@ -9,7 +9,6 @@
  * the authentication and account management features of the application.
  *
  * @requires bcrypt - Module for hashing passwords.
- * @requires uuid - Module for generating unique identifiers.
  * @requires database - Database connection module.
  * @requires constants - Application constants for status codes and messages.
  * @requires logger - Logger module for logging errors and information.
@@ -17,7 +16,6 @@
  * @module UserService - Exported user service functions for the application.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import { ADMIN_COLLECTION_NAME, MAX_CONCURRENT_LOGINS } from "../../../config/config.js";
 import {
@@ -41,6 +39,8 @@ import incrementFailedAttempts from "../../../helpers/incrementFailedAttempts.js
 import checkIfAccountIsLocked from "../../../helpers/checkIfAccountIsLocked.js";
 import addCurrentlyLoggedInDevice from "../../../shared/addCurrentlyLoggedInDevice.js";
 import removeTokenId from "../../../helpers/removeTokenId.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import {ADMIN_CONSTANTS} from "./authentication.constants.js";
 
 /**
  * Handles the login process for an admin user.
@@ -198,7 +198,7 @@ const signupService = async (db, signupDetails) => {
                 const salt = await bcrypt.genSalt(10);
                 const hashedPassword = await bcrypt.hash(password, salt);
                 const prepareNewUserDetails = {
-                    id: `admin-${uuidv4().substr(0, 6)}`,
+                    id: generateUniqueID(ADMIN_CONSTANTS?.ADMIN_ID_PREFIX),
                     name: name,
                     userName: userName,
                     password: hashedPassword,

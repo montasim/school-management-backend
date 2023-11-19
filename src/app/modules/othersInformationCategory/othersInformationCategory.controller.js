@@ -1,6 +1,7 @@
 import { OthersInformationCategoryService } from "./othersInformationCategory.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+import logger from "../../../shared/logger.js";
 
 /**
  * @async
@@ -11,10 +12,16 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createOthersInformationCategory = async (req, res) => {
-    const { name, adminId, db } = extractFromRequest(req, ['name']);
-    const newOthersInformationCategory = { name, adminId };
+    try {
+        const { name, adminId, db } = extractFromRequest(req, ['name']);
+        const newOthersInformationCategory = { name, adminId };
 
-    await handleServiceResponse(res, OthersInformationCategoryService.createOthersInformationCategory, db, newOthersInformationCategory);
+        await handleServiceResponse(res, OthersInformationCategoryService.createOthersInformationCategory, db, newOthersInformationCategory);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -26,7 +33,13 @@ const createOthersInformationCategory = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getOthersInformationCategoryList = async (req, res) => {
-    await handleServiceResponse(res, OthersInformationCategoryService.getOthersInformationCategoryList, req?.db);
+    try {
+        await handleServiceResponse(res, OthersInformationCategoryService.getOthersInformationCategoryList, req?.db);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -38,9 +51,15 @@ const getOthersInformationCategoryList = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getAOthersInformationCategory = async (req, res) => {
-    const { othersInformationCategoryId, db } = extractFromRequest(req, [], ['othersInformationCategoryId']);
+    try {
+        const { othersInformationCategoryId, db } = extractFromRequest(req, [], ['othersInformationCategoryId']);
 
-    await handleServiceResponse(res, OthersInformationCategoryService.getAOthersInformationCategory, db, othersInformationCategoryId);
+        await handleServiceResponse(res, OthersInformationCategoryService.getAOthersInformationCategory, db, othersInformationCategoryId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -52,10 +71,16 @@ const getAOthersInformationCategory = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAOthersInformationCategory = async (req, res) => {
-    const { othersInformationCategoryId, name, adminId, db } = extractFromRequest(req, ['name'], ['othersInformationCategoryId']);
-    const updatedOthersInformationCategoryDetails = { name, adminId };
+    try {
+        const { othersInformationCategoryId, name, adminId, db } = extractFromRequest(req, ['name'], ['othersInformationCategoryId']);
+        const updatedOthersInformationCategoryDetails = { name, adminId };
 
-    await handleServiceResponse(res, OthersInformationCategoryService.updateAOthersInformationCategory, db, othersInformationCategoryId, updatedOthersInformationCategoryDetails);
+        await handleServiceResponse(res, OthersInformationCategoryService.updateAOthersInformationCategory, db, othersInformationCategoryId, updatedOthersInformationCategoryDetails);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -67,9 +92,15 @@ const updateAOthersInformationCategory = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAOthersInformationCategory = async (req, res) => {
-    const { othersInformationCategoryId, adminId, db } = extractFromRequest(req, [], ['othersInformationCategoryId']);
+    try {
+        const { othersInformationCategoryId, adminId, db } = extractFromRequest(req, [], ['othersInformationCategoryId']);
 
-    await handleServiceResponse(res, OthersInformationCategoryService.deleteAOthersInformationCategory, db, adminId, othersInformationCategoryId);
+        await handleServiceResponse(res, OthersInformationCategoryService.deleteAOthersInformationCategory, db, adminId, othersInformationCategoryId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**

@@ -1,10 +1,4 @@
-// Third-party modules
-import { v4 as uuidv4 } from 'uuid';
-
-// Configuration
 import { ANNOUNCEMENT_COLLECTION_NAME } from "../../../config/config.js";
-
-// Constants
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -14,8 +8,6 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./announcement.constants.js";
-
-// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -23,9 +15,8 @@ import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
-
-// Logger
 import logger from "../../../shared/logger.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new announcement entry in the database.
@@ -44,7 +35,7 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const announcementDetails = {
-            id: `${ID_CONSTANTS?.ANNOUNCEMENT_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.ANNOUNCEMENT_PREFIX),
             name,
             createdBy: adminId,
             createdAt: new Date(),

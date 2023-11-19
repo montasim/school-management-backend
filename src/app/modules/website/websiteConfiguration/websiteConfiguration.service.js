@@ -7,7 +7,6 @@
  * updating configurations, and deleting configurations. These functions are used by the
  * controllers to handle requests related to website configurations.
  *
- * @requires uuid - For generating unique identifiers.
  * @requires config - Application configuration settings.
  * @requires constants - Application-wide constants.
  * @requires GoogleDriveFileOperations - Helper functions for interacting with Google Drive.
@@ -15,7 +14,6 @@
  * @module WebsiteConfigurationService - Exports service functions for website configurations.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { WEBSITE_CONFIGURATION_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -33,6 +31,7 @@ import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
 import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
+import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 
 /**
  * Service function to create a new website configuration.
@@ -65,7 +64,7 @@ const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const prepareWebsiteDetails = {
-            id: `${ID_CONSTANTS?.WEBSITE_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.WEBSITE_PREFIX),
             name: name,
             slogan: slogan,
             googleDriveWebsiteLogoFileId: uploadGoogleDriveFileResponse?.fileId,

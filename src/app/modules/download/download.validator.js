@@ -15,6 +15,24 @@
 
 import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { DownloadValidationSchemas } from "./download.schema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
+import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../constants/constants.js";
+
+/**
+ * Validates the details of an administration post against a predefined schema.
+ *
+ * @async
+ * @function validateDownloadFile
+ * @description Middleware to validate the file data using Joi schemas.
+ * @param {Object} req - Express request object containing the download file details.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const validateDownloadFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema(
+    "image",
+    [FILE_EXTENSION_TYPE_PDF],
+    [MIME_TYPE_PDF]
+), "file");
 
 /**
  * @function
@@ -38,5 +56,6 @@ const validateDownloadParams = validateDataWithSchema(DownloadValidationSchemas.
  * @description Exported download validators to be used in routes.
  */
 export const DownloadValidationService = {
+    validateDownloadFile,
     validateDownloadParams,
 };

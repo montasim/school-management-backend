@@ -1,10 +1,26 @@
-// Third-party modules
-import { v4 as uuidv4 } from 'uuid';
+/**
+ * @fileoverview Services for Category Operations.
+ *
+ * This module exports a set of services responsible for handling various operations related to categories in an Express application.
+ * Each service is an asynchronous function that interacts with the database, performs the specified operation, and generates a response or error message.
+ * The services also include error handling to ensure graceful handling of exceptions.
+ *
+ * @requires DatabaseMiddleware - Database connection middleware for interacting with the database.
+ * @requires CATEGORY_COLLECTION_NAME - Configuration constant for the collection name in the database.
+ * @requires constants - Constants used for defining status codes and messages.
+ * @requires CATEGORY_CONSTANTS - Constants specific to category operations.
+ * @requires isValidRequest - Shared utility function to validate incoming requests.
+ * @requires logger - Shared utility for logging.
+ * @requires deleteByField - Shared utility for deleting data from the database by a specific field.
+ * @requires generateResponseData - Shared utility for generating consistent response data.
+ * @requires findByField - Shared utility for finding data in the database by a specific field.
+ * @requires createByDetails - Shared utility for creating data in the database with provided details.
+ * @requires updateById - Shared utility for updating data in the database by ID.
+ * @requires getAllData - Shared utility for fetching all data from a collection.
+ * @module CategoryService - Exported services for category operations in the application.
+ */
 
-// Configurations
 import { CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
-
-// Constants
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -13,9 +29,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./category.constants.js";
-
-// Shared utilities
+import { CATEGORY_CONSTANTS } from "./category.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
@@ -24,6 +38,7 @@ import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new category entry in the database.
@@ -45,7 +60,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const categoryDetails = {
-            id: `${ID_CONSTANTS?.CATEGORY_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(CATEGORY_CONSTANTS?.CATEGORY_ID_PREFIX),
             name,
             createdBy: adminId,
             createdAt: new Date(),
@@ -187,7 +202,8 @@ const deleteACategoryService = async (db, adminId, categoryId) => {
 
 /**
  * @namespace CategoryService
- * @description Group of services related to category operations.
+ * @description Provides a set of services for handling CRUD operations related to categories.
+ * These services encapsulate the business logic required for category operations and include error handling for robust functionality.
  */
 export const CategoryService = {
     createCategoryService,

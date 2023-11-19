@@ -7,7 +7,6 @@
  * These services abstract the database and file system interactions, providing a
  * clean interface for the controller layer to perform CRUD operations on videoGallery data.
  *
- * @requires uuid - Module for generating unique identifiers.
  * @requires config - Configuration file for application settings.
  * @requires constants - Application constants for status messages and codes.
  * @requires isValidRequest - Utility function to validate requests.
@@ -16,7 +15,6 @@
  * @module VideoGalleryService - Exported services for videoGallery operations.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { VIDEO_GALLERY_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -35,6 +33,7 @@ import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
 import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
+import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new videoGallery entry in the database.
@@ -58,7 +57,7 @@ const createVideoGalleryService = async (db, newVideoGalleryDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const videoGalleryDetails = {
-            id: `${ID_CONSTANTS?.VIDEO_GALLERY_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.VIDEO_GALLERY_PREFIX),
             title: title,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
@@ -117,7 +116,7 @@ const getVideoGalleryListService = async (db) => {
  */
 const getAVideoGalleryService = async (db, videoGalleryId) => {
     try {
-        const videoGallery = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryId);
+        const videoGallery = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, 'id', videoGalleryId);
 
         delete videoGallery?.createdBy;
         delete videoGallery?.modifiedBy;
@@ -148,7 +147,7 @@ const deleteAVideoGalleryService = async (db, adminId, videoGalleryId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, videoGalleryId);
+        const oldDetails = await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, 'id', videoGalleryId);
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${videoGalleryId} not found`);

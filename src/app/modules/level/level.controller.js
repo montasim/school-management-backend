@@ -1,6 +1,7 @@
 import { LevelService } from "./level.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+import logger from "../../../shared/logger.js";
 
 /**
  * @async
@@ -11,10 +12,16 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createLevelController = async (req, res) => {
-    const { name, adminId, db } = extractFromRequest(req, ['name']);
-    const newLevel = { name, adminId };
+    try {
+        const { name, adminId, db } = extractFromRequest(req, ['name']);
+        const newLevel = { name, adminId };
 
-    await handleServiceResponse(res, LevelService.createLevelService, db, newLevel);
+        await handleServiceResponse(res, LevelService.createLevelService, db, newLevel);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -26,7 +33,13 @@ const createLevelController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getLevelListController = async (req, res) => {
-    await handleServiceResponse(res, LevelService.getLevelListService, req?.db);
+    try {
+        await handleServiceResponse(res, LevelService.getLevelListService, req?.db);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -38,9 +51,15 @@ const getLevelListController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getALevelController = async (req, res) => {
-    const { levelId, db } = extractFromRequest(req, [], ['levelId']);
+    try {
+        const { levelId, db } = extractFromRequest(req, [], ['levelId']);
 
-    await handleServiceResponse(res, LevelService.getALevelService, db, levelId);
+        await handleServiceResponse(res, LevelService.getALevelService, db, levelId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -52,10 +71,16 @@ const getALevelController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateALevelController = async (req, res) => {
-    const { levelId, name, adminId, db } = extractFromRequest(req, ['name'], ['levelId']);
-    const updatedLevelDetails = { name, adminId };
+    try {
+        const { levelId, name, adminId, db } = extractFromRequest(req, ['name'], ['levelId']);
+        const updatedLevelDetails = { name, adminId };
 
-    await handleServiceResponse(res, LevelService.updateALevelService, db, levelId, updatedLevelDetails);
+        await handleServiceResponse(res, LevelService.updateALevelService, db, levelId, updatedLevelDetails);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -67,9 +92,15 @@ const updateALevelController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteALevelController = async (req, res) => {
-    const { levelId, adminId, db } = extractFromRequest(req, [], ['levelId']);
+    try {
+        const { levelId, adminId, db } = extractFromRequest(req, [], ['levelId']);
 
-    await handleServiceResponse(res, LevelService.deleteALevelService, db, adminId, levelId);
+        await handleServiceResponse(res, LevelService.deleteALevelService, db, adminId, levelId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**

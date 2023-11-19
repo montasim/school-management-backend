@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -17,6 +16,7 @@ import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new othersInformationCategory entry in the database.
@@ -38,7 +38,7 @@ const createOthersInformationCategory = async (db, newOthersInformationCategoryD
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const othersInformationCategoryDetails = {
-            id: `${ID_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_PREFIX),
             name,
             createdBy: adminId,
             createdAt: new Date(),
