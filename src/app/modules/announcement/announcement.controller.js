@@ -1,6 +1,7 @@
 import { AnnouncementService } from "./announcement.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+import logger from "../../../shared/logger.js";
 
 /**
  * @async
@@ -11,10 +12,16 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createAnnouncementController = async (req, res) => {
-    const { name, adminId, db } = extractFromRequest(req, ['name']);
-    const newAnnouncement = { name, adminId };
+    try {
+        const { name, adminId, db } = extractFromRequest(req, ['name']);
+        const newAnnouncement = { name, adminId };
 
-    await handleServiceResponse(res, AnnouncementService.createAnnouncementService, db, newAnnouncement);
+        await handleServiceResponse(res, AnnouncementService.createAnnouncementService, db, newAnnouncement);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -26,7 +33,13 @@ const createAnnouncementController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getAnnouncementListController = async (req, res) => {
-    await handleServiceResponse(res, AnnouncementService.getAnnouncementListService, req?.db);
+    try {
+        await handleServiceResponse(res, AnnouncementService.getAnnouncementListService, req?.db);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -38,9 +51,15 @@ const getAnnouncementListController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getAAnnouncementController = async (req, res) => {
-    const { announcementId, db } = extractFromRequest(req, [], ['announcementId']);
+    try {
+        const { announcementId, db } = extractFromRequest(req, [], ['announcementId']);
 
-    await handleServiceResponse(res, AnnouncementService.getAAnnouncementService, db, announcementId);
+        await handleServiceResponse(res, AnnouncementService.getAAnnouncementService, db, announcementId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -52,10 +71,16 @@ const getAAnnouncementController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAAnnouncementController = async (req, res) => {
-    const { announcementId, name, adminId, db } = extractFromRequest(req, ['name'], ['announcementId']);
-    const updatedAnnouncementDetails = { name, adminId };
+    try {
+        const { announcementId, name, adminId, db } = extractFromRequest(req, ['name'], ['announcementId']);
+        const updatedAnnouncementDetails = { name, adminId };
 
-    await handleServiceResponse(res, AnnouncementService.updateAAnnouncementService, db, announcementId, updatedAnnouncementDetails);
+        await handleServiceResponse(res, AnnouncementService.updateAAnnouncementService, db, announcementId, updatedAnnouncementDetails);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -67,9 +92,15 @@ const updateAAnnouncementController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAAnnouncementController = async (req, res) => {
-    const { announcementId, adminId, db } = extractFromRequest(req, [], ['announcementId']);
+    try {
+        const { announcementId, adminId, db } = extractFromRequest(req, [], ['announcementId']);
 
-    await handleServiceResponse(res, AnnouncementService.deleteAAnnouncementService, db, adminId, announcementId);
+        await handleServiceResponse(res, AnnouncementService.deleteAAnnouncementService, db, adminId, announcementId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**

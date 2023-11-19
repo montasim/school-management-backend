@@ -1,6 +1,7 @@
 import { OthersInformationService } from "./othersInformation.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
+import logger from "../../../shared/logger.js";
 
 /**
  * @async
@@ -11,10 +12,16 @@ import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const createOthersInformationController = async (req, res) => {
-    const { title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description']);
-    const newOthersInformation = { title, category, description, adminId };
+    try {
+        const { title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description']);
+        const newOthersInformation = { title, category, description, adminId };
 
-    await handleServiceResponse(res, OthersInformationService.createOthersInformationService, db, newOthersInformation);
+        await handleServiceResponse(res, OthersInformationService.createOthersInformationService, db, newOthersInformation);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -26,7 +33,13 @@ const createOthersInformationController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getOthersInformationListController = async (req, res) => {
-    await handleServiceResponse(res, OthersInformationService.getOthersInformationListService, req?.db);
+    try {
+        await handleServiceResponse(res, OthersInformationService.getOthersInformationListService, req?.db);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -38,9 +51,15 @@ const getOthersInformationListController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const getAOthersInformationController = async (req, res) => {
-    const { othersInformationId, db } = extractFromRequest(req, [], ['othersInformationId']);
+    try {
+        const { othersInformationId, db } = extractFromRequest(req, [], ['othersInformationId']);
 
-    await handleServiceResponse(res, OthersInformationService.getAOthersInformationService, db, othersInformationId);
+        await handleServiceResponse(res, OthersInformationService.getAOthersInformationService, db, othersInformationId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -52,10 +71,16 @@ const getAOthersInformationController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const updateAOthersInformationController = async (req, res) => {
-    const { othersInformationId, title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description'], ['othersInformationId']);
-    const updatedOthersInformationDetails = { title, category, description, adminId };
+    try {
+        const { othersInformationId, title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description'], ['othersInformationId']);
+        const updatedOthersInformationDetails = { title, category, description, adminId };
 
-    await handleServiceResponse(res, OthersInformationService.updateAOthersInformationService, db, othersInformationId, updatedOthersInformationDetails);
+        await handleServiceResponse(res, OthersInformationService.updateAOthersInformationService, db, othersInformationId, updatedOthersInformationDetails);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
@@ -67,9 +92,15 @@ const updateAOthersInformationController = async (req, res) => {
  * @param {express.Response} res - Express response object to send data back to client.
  */
 const deleteAOthersInformationController = async (req, res) => {
-    const { othersInformationId, adminId, db } = extractFromRequest(req, [], ['othersInformationId']);
+    try {
+        const { othersInformationId, adminId, db } = extractFromRequest(req, [], ['othersInformationId']);
 
-    await handleServiceResponse(res, OthersInformationService.deleteAOthersInformationService, db, adminId, othersInformationId);
+        await handleServiceResponse(res, OthersInformationService.deleteAOthersInformationService, db, adminId, othersInformationId);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
 };
 
 /**
