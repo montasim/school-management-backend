@@ -19,7 +19,6 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { AdmissionFormValidationService } from "./admissionForm.validator.js";
 import { AdmissionFormController } from "./admissionForm.controller.js";
-import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
 const admissionFormRouter = express.Router();
 

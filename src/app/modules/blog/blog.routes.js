@@ -22,7 +22,6 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { BlogValidationService } from "./blog.validator.js";
 import { BlogController } from "./blog.controller.js";
-import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
 const blogRouter = express.Router();
 
@@ -68,9 +67,7 @@ const blogRouter = express.Router();
 blogRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
-    multerErrorHandlerMiddleware,
     BlogValidationService.validateNewBlogDetails,
-    BlogValidationService.validateBlogFile,
     BlogController.createBlogController
 ]);
 
@@ -168,10 +165,8 @@ blogRouter.get("/:blogId", [
 blogRouter.put("/:blogId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
-    multerErrorHandlerMiddleware,
     BlogValidationService.validateBlogParams,
     BlogValidationService.validateUpdateBlogDetails,
-    BlogValidationService.validateBlogFile,
     BlogController.updateABlogController
 ]);
 
