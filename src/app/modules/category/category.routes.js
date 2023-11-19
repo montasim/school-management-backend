@@ -1,3 +1,20 @@
+/**
+ * @fileoverview Express Router for Category Entity.
+ *
+ * This module sets up an Express router for handling various HTTP requests related to the 'Category' entity.
+ * It defines routes for creating, retrieving, updating, and deleting categories. Each route is configured
+ * with appropriate middleware for validation and authentication, ensuring that requests are processed correctly
+ * and securely. The router leverages controllers and validators to handle the business logic and data validation
+ * for each operation. This modular approach promotes clean code organization and separation of concerns,
+ * making the API easier to understand and maintain.
+ *
+ * @requires express - Express framework to create route handlers.
+ * @requires authTokenMiddleware - Middleware for validating authentication tokens.
+ * @requires CategoryValidators - Validators for ensuring the integrity of category-related data.
+ * @requires CategoryController - Controllers that contain the logic for handling category-related operations.
+ * @module categoryRouter - Exported Express router for category routes.
+ */
+
 import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { CategoryValidators } from "./category.validator.js";
