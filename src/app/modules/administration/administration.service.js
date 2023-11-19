@@ -15,7 +15,7 @@
  * @module AdministrationService - Exported services for administration operations.
  */
 
-import { ADMINISTRATION_COLLECTION_NAME } from "../../../config/config.js";
+import {ADMINISTRATION_COLLECTION_NAME, CATEGORY_COLLECTION_NAME} from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -60,6 +60,19 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
+        // Process and prepare categories from the provided string
+        const processedCategories = typeof category === 'string'
+            ? category.split(',').map(cat => cat.trim())
+            : Array.isArray(category) ? category : [category];
+
+        // Check if each category exists in the database
+        for (const category of processedCategories) {
+            const categoryExists = await findByField(db, CATEGORY_COLLECTION_NAME, 'name', category);
+            if (!categoryExists) {
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Category '${category}' does not exist.`);
+            }
+        }
+
         // Upload the file to Google Drive and handle the response
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
         if (!uploadGoogleDriveFileResponse?.shareableLink) {
@@ -69,9 +82,9 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
         // Prepare administration details for database insertion
         const administrationDetails = {
             id: generateUniqueID(ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX),
-            name: name,
-            category: Array.isArray(category) ? category : [category], // Ensure category is an array
-            designation: designation,
+            name,
+            category: processedCategories,
+            designation,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
             createdBy: adminId,
@@ -90,13 +103,12 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
         delete latestData?.modifiedBy;
         delete latestData?.googleDriveFileId;
 
-        // Return the appropriate response based on the database operation result
+        // Return the appropriate response
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${name} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
@@ -189,6 +201,19 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        // Process and prepare categories from the provided string
+        const processedCategories = typeof category === 'string'
+            ? category.split(',').map(cat => cat.trim())
+            : Array.isArray(category) ? category : [category];
+
+        // Check if each category exists in the database
+        for (const category of processedCategories) {
+            const categoryExists = await findByField(db, CATEGORY_COLLECTION_NAME, 'name', category);
+            if (!categoryExists) {
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Category '${category}' does not exist.`);
+            }
+        }
+
         // Retrieve the current details of the administration
         const oldDetails = await findByField(db, ADMINISTRATION_COLLECTION_NAME, 'id', administrationId);
 
@@ -212,7 +237,11 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
 
         // Update name, category, and designation if provided
         if (name) updatedAdministrationDetails.name = name;
-        if (category) updatedAdministrationDetails.category = category;
+        // Process and update category
+        if (typeof category === 'string') {
+            const newCategories = category.split(',').map(cat => cat.trim());
+            updatedAdministrationDetails.category = Array.from(new Set([...(updatedAdministrationDetails.category || []), ...newCategories]));
+        }
         if (designation) updatedAdministrationDetails.designation = designation;
 
         // Update modifiedBy and modifiedAt
