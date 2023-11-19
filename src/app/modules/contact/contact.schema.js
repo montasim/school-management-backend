@@ -39,7 +39,7 @@ const sendEmailBodySchema = Joi.object({
         CONTACT_CONSTANTS?.PROPERTY_LAST_NAME_MAX_LENGTH
     ).required(),
     phone: Joi.string()
-        .pattern(/^(?:\+880)?01[3-9]\d{8}$/)
+        .pattern(/^(?:\+8801|01)[3-9]\d{8}$/)
         .min(CONTACT_CONSTANTS?.PROPERTY_PHONE_MIN_LENGTH)
         .max(CONTACT_CONSTANTS?.PROPERTY_PHONE_MAX_LENGTH)
         .required()

@@ -283,8 +283,8 @@ const uriValidationSchema = () => {
  */
 const createStringSchema = (fieldName, minLength, maxLength) => {
     return Joi.string()
-        // Allows alphanumeric characters and Bangli language characters
-        .pattern(new RegExp('^[A-Za-z0-9\u0980-\u09FF ]+$'))
+        // Allows alphanumeric characters, Bangla language characters, and common punctuation
+        .pattern(new RegExp('^[A-Za-z0-9\u0980-\u09FF,.!?\\s-]+$'))
         .min(minLength) // Minimum length
         .max(maxLength) // Maximum length
         .trim() // Trims leading and trailing whitespace
