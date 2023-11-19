@@ -72,6 +72,7 @@ const createAdmissionFormService = async (db, newAdmissionFormDetails, file) => 
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
             createdBy: adminId,
             createdAt: new Date(),
         };

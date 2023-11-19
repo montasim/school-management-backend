@@ -61,6 +61,7 @@ const createPhotoGalleryService = async (db, newPhotoGalleryDetails, file) => {
             title: title,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
             createdBy: adminId,
             createdAt: new Date(),
         };

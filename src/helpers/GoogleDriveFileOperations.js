@@ -42,11 +42,11 @@ const uploadFileToDrive = async (file) => {
         };
         const fileStream = new Readable();
 
-        fileStream.push(file.buffer);
-        fileStream.push(null);
+        fileStream?.push(file.buffer);
+        fileStream?.push(null);
 
         // Upload the file
-        const { data: fileData } = await drive.files.create({
+        const { data: fileData } = await drive?.files?.create({
             requestBody: fileMetaData,
             media: {
                 body: fileStream,
@@ -57,7 +57,7 @@ const uploadFileToDrive = async (file) => {
 
         // Set the file permissions to 'anyone with the link can view'
         await drive.permissions.create({
-            fileId: fileData.id,
+            fileId: fileData?.id,
             requestBody: {
                 role: 'reader',
                 type: 'anyone',
@@ -65,14 +65,15 @@ const uploadFileToDrive = async (file) => {
         });
 
         // Get the shareable link
-        const { data: fileInfo } = await drive.files.get({
-            fileId: fileData.id,
+        const { data: fileInfo } = await drive?.files.get({
+            fileId: fileData?.id,
             fields: 'webViewLink',
         });
 
         return {
-            fileId: fileData.id,
-            shareableLink: fileInfo.webViewLink
+            fileId: fileData?.id,
+            shareableLink: fileInfo?.webViewLink,
+            downloadLink: `https://drive.google.com/u/1/uc?id=${fileData?.id}&export=download`,
         };
     } catch (error) {
         logger.error(error);

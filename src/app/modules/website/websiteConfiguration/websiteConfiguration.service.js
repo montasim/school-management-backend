@@ -69,6 +69,7 @@ const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
             slogan: slogan,
             googleDriveWebsiteLogoFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveWebsiteLogoShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -165,6 +166,7 @@ const updateWebsiteConfigurationService = async (db, websiteDetails, file) => {
 
             updatedWebsiteDetails.googleDriveWebsiteLogoFileId = uploadGoogleDriveFileResponse.fileId;
             updatedWebsiteDetails.googleDriveWebsiteLogoShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+            updatedWebsiteDetails.downloadLink = uploadGoogleDriveFileResponse.downloadLink;
         }
 
         // Update modifiedBy and modifiedAt

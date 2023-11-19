@@ -63,6 +63,7 @@ const createStudentService = async (db, newStudentDetails, file) => {
             level: level,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -177,6 +178,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
 
             updatedStudentDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
             updatedStudentDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+            updatedStudentDetails.downloadLink = uploadGoogleDriveFileResponse.downloadLink;
         }
 
         // Update modifiedBy and modifiedAt

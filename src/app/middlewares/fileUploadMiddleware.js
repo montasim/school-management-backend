@@ -16,6 +16,7 @@
  */
 
 import multer from 'multer';
+import { MAXIMUM_FILE_SIZE } from "../../constants/constants.js";
 
 /**
  * Configures multer's memory storage.
@@ -36,6 +37,9 @@ const storage = multer.memoryStorage();
  */
 const fileUploadMiddleware = multer({
     storage: storage,
+    limits: {
+        fileSize: MAXIMUM_FILE_SIZE,
+    },
 });
 
 export default fileUploadMiddleware;

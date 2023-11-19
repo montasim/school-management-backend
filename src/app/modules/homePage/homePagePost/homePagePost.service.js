@@ -66,6 +66,7 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
             category: category,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
+            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
             description: description,
             createdBy: adminId,
             createdAt: new Date(),
@@ -190,6 +191,7 @@ const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage)
 
             updatedHomePagePostDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
             updatedHomePagePostDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
+            updatedHomePagePostDetails.downloadLink = uploadGoogleDriveFileResponse.downloadLink;
         }
 
         // Update title, category, and description if provided
