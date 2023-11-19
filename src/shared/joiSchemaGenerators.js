@@ -20,7 +20,13 @@ import {
     MIME_TYPE_JPG,
     FILE_EXTENSION_TYPE_PDF,
     FILE_EXTENSION_TYPE_PNG,
-    FILE_EXTENSION_TYPE_JPG
+    FILE_EXTENSION_TYPE_JPG,
+    BLOG_PROPERTY_TITLE_MIN_LENGTH,
+    BLOG_PROPERTY_TITLE_MAX_LENGTH,
+    BLOG_PROPERTY_CATEGORY_MIN_LENGTH,
+    BLOG_PROPERTY_DESCRIPTION_MIN_LENGTH,
+    BLOG_PROPERTY_DESCRIPTION_MAX_LENGTH,
+    BLOG_PROPERTY_CATEGORY_MAX_LENGTH
 } from "../constants/constants.js";
 
 /**
@@ -160,11 +166,51 @@ const websiteConfigurationBodyValidationSchema = () => {
  * - `category`: Should be a string with a minimum length of 3 and a maximum length of 100.
  * - `description`: Should be a string with a minimum length of 3 and a maximum length of 5000.
  */
-const postBodyValidationSchema = () => {
+const newPostBodyValidationSchema = () => {
     return Joi.object({
-        title: JoiSchemaGenerators.createStringSchema('title', 3, 200),
-        category: JoiSchemaGenerators.createStringSchema('category', 3, 100),
-        description: JoiSchemaGenerators.createStringSchema('description', 3, 5000),
+        title: JoiSchemaGenerators.createStringSchema(
+            'title',
+            BLOG_PROPERTY_TITLE_MIN_LENGTH,
+            BLOG_PROPERTY_TITLE_MAX_LENGTH
+        ).required(),
+        category: JoiSchemaGenerators.createStringSchema(
+            'category',
+            BLOG_PROPERTY_CATEGORY_MIN_LENGTH,
+            BLOG_PROPERTY_CATEGORY_MAX_LENGTH
+        ).required(),
+        description: JoiSchemaGenerators.createStringSchema(
+            'description',
+            BLOG_PROPERTY_DESCRIPTION_MIN_LENGTH,
+            BLOG_PROPERTY_DESCRIPTION_MAX_LENGTH
+        ).required(),
+    });
+}
+
+/**
+ * @description Joi validation schema for updating blogPost body data.
+ * Validates the title, category, and description fields.
+ *
+ * - `title`: Should be a string with a minimum length of 3 and a maximum length of 1000.
+ * - `category`: Should be a string with a minimum length of 3 and a maximum length of 100.
+ * - `description`: Should be a string with a minimum length of 3 and a maximum length of 5000.
+ */
+const updatePostBodyValidationSchema = () => {
+    return Joi.object({
+        title: JoiSchemaGenerators.createStringSchema(
+            'title',
+            BLOG_PROPERTY_TITLE_MIN_LENGTH,
+            BLOG_PROPERTY_TITLE_MAX_LENGTH
+        ),
+        category: JoiSchemaGenerators.createStringSchema(
+            'category',
+            BLOG_PROPERTY_CATEGORY_MIN_LENGTH,
+            BLOG_PROPERTY_CATEGORY_MAX_LENGTH
+        ),
+        description: JoiSchemaGenerators.createStringSchema(
+            'description',
+            BLOG_PROPERTY_DESCRIPTION_MIN_LENGTH,
+            BLOG_PROPERTY_DESCRIPTION_MAX_LENGTH
+        ),
     });
 }
 
@@ -256,7 +302,8 @@ export const JoiSchemaGenerators = {
   fileValidationSchema,
   fileWithTitleValidationSchema,
   createFileNameSchema,
-  postBodyValidationSchema,
+  newPostBodyValidationSchema,
+  updatePostBodyValidationSchema,
   uriValidationSchema,
   createStringSchema,
   websiteConfigurationBodyValidationSchema,

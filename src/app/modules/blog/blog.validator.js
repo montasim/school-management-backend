@@ -28,13 +28,25 @@ import {
  * Validates the details of a blog post against a predefined schema.
  *
  * @async
- * @function validateBlogDetails
+ * @function validateNewBlogDetails
  * @description Middleware to validate the blog post's body data using Joi schemas.
  * @param {Object} req - Express request object containing the blog post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateBlogDetails = await validateDataWithSchema(JoiSchemaGenerators.postBodyValidationSchema(), 'body');
+const validateNewBlogDetails = await validateDataWithSchema(JoiSchemaGenerators.newPostBodyValidationSchema(), 'body');
+
+/**
+ * Validates the details of an update blog post against a predefined schema.
+ *
+ * @async
+ * @function validateUpdateBlogDetails
+ * @description Middleware to validate the blog post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the blog post's details.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const validateUpdateBlogDetails = await validateDataWithSchema(JoiSchemaGenerators.updatePostBodyValidationSchema(), 'body');
 
 /**
  * Validates the details of a blog post against a predefined schema.
@@ -65,7 +77,8 @@ const validateBlogParams = await validateDataWithSchema(BlogValidationSchemas.bl
  * @description Provides validation services for blog-related data in routes. This includes validation for blog details, blog files, and blog parameters.
  */
 export const BlogValidationService = {
-    validateBlogDetails,
+    validateNewBlogDetails,
+    validateUpdateBlogDetails,
     validateBlogFile,
     validateBlogParams,
 };

@@ -69,7 +69,7 @@ blogRouter.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
     multerErrorHandlerMiddleware,
-    BlogValidationService.validateBlogDetails,
+    BlogValidationService.validateNewBlogDetails,
     BlogValidationService.validateBlogFile,
     BlogController.createBlogController
 ]);
@@ -170,6 +170,8 @@ blogRouter.put("/:blogId", [
     fileUploadMiddleware.single('postImage'),
     multerErrorHandlerMiddleware,
     BlogValidationService.validateBlogParams,
+    BlogValidationService.validateUpdateBlogDetails,
+    BlogValidationService.validateBlogFile,
     BlogController.updateABlogController
 ]);
 
