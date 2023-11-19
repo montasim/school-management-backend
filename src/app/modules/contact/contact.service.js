@@ -1,20 +1,39 @@
+/**
+ * @fileoverview Service for Handling Email Sending Operations in Express Application.
+ *
+ * This module exports the `ContactService`, which includes the `sendEmailService` function.
+ * The `sendEmailService` is an asynchronous function designed to handle email sending operations.
+ * It constructs email content based on provided details like the sender's name, phone number, email, subject,
+ * and message. The service uses a helper function `sendEmailToProvidedEmailAddress` to send emails to both
+ * the school management and the sender, confirming the receipt of their message. It is designed to be used by
+ * the controller layer for processing email sending requests.
+ *
+ * @module ContactService - Exported services for handling email sending operations.
+ * @requires sendEmailToProvidedEmailAddress - Helper function to send emails.
+ * @requires generateResponseData - Utility to generate standardized response data.
+ * @requires config - Configuration settings including email recipient details.
+ * @requires logger - Shared logging utility for error logging.
+ */
+
 import logger from "../../../shared/logger.js";
-import sendEmailToDefaultEmailAddress from "../../../helpers/sendEmailToDefaultEmailAddress.js";
+import sendEmailToProvidedEmailAddress from "../../../helpers/sendEmailToProvidedEmailAddress.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import { EMAIL_SERVICE_DESTINATION_OWNER_NAME, EMAIL_SERVICE_DESTINATION_EMAIL } from "../../../config/config.js";
 import { STATUS_OK } from "../../../constants/constants.js";
 
 /**
- * Send email.
+ * Asynchronously sends emails based on provided details.
  *
  * @async
- * @param emailDetails
- * @returns {Object} - The response after attempting to send email.
- * @throws {Error} Throws an error if any.
+ * @function sendEmailService
+ * @description Service function to send emails. It sends an email to the school management team and a confirmation email to the sender.
+ * @param {Object} emailDetails - The details of the email to be sent, including sender's info and message content.
+ * @returns {Promise<Object>} A promise that resolves to the response object after sending the email.
+ * @throws {Error} If an error occurs during email sending.
  */
 const sendEmailService = async ( emailDetails ) => {
     try {
-        const {firstName, lastName, phone, email, subject, message } = emailDetails;
+        const { firstName, lastName, phone, email, subject, message } = emailDetails;
         const emailSubject = `School Management: ${subject}`
         const html = `
             <h3>Dear ${EMAIL_SERVICE_DESTINATION_OWNER_NAME},</h3>
@@ -39,7 +58,6 @@ const sendEmailService = async ( emailDetails ) => {
             <p>Warm regards,</p>
             <p>Your School Management Team</p>
         `;
-
         const receiverEmailSubject = `Thank you for reaching out to us!`
         const receiverHtml = `
             <h3>Dear ${firstName} ${lastName},</h3>
@@ -57,8 +75,8 @@ const sendEmailService = async ( emailDetails ) => {
             <p>School Management Team</p>
         `;
 
-        await sendEmailToDefaultEmailAddress(EMAIL_SERVICE_DESTINATION_EMAIL, emailSubject, html);
-        await sendEmailToDefaultEmailAddress(email, receiverEmailSubject, receiverHtml);
+        await sendEmailToProvidedEmailAddress(EMAIL_SERVICE_DESTINATION_EMAIL, emailSubject, html);
+        await sendEmailToProvidedEmailAddress(email, receiverEmailSubject, receiverHtml);
 
         return generateResponseData({}, true, STATUS_OK, `Email sent successfully`);
     } catch (error) {
@@ -69,8 +87,8 @@ const sendEmailService = async ( emailDetails ) => {
 }
 
 /**
+ * Namespace for services related to contact and email operations.
  * @namespace ContactService
- * @description Group of services related to contact operations.
  */
 export const ContactService = {
     sendEmailService,

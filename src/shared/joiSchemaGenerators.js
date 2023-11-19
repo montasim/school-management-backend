@@ -283,13 +283,18 @@ const uriValidationSchema = () => {
  */
 const createStringSchema = (fieldName, minLength, maxLength) => {
     return Joi.string()
-        .min(minLength)
-        .max(maxLength)
+        // Allows alphanumeric characters and Bangli language characters
+        .pattern(new RegExp('^[A-Za-z0-9\u0980-\u09FF ]+$'))
+        .min(minLength) // Minimum length
+        .max(maxLength) // Maximum length
+        .trim() // Trims leading and trailing whitespace
         .messages({
             'string.base': `"${fieldName}" should be a type of "text"`,
             'string.empty': `"${fieldName}" cannot be an empty field`,
             'string.min': `"${fieldName}" should have a minimum length of {#limit}`,
             'string.max': `"${fieldName}" should have a maximum length of {#limit}`,
+            'string.pattern.base': `"${fieldName}" contains invalid characters`,
+            'string.trim': `"${fieldName}" should not have leading or trailing spaces`,
         });
 };
 
