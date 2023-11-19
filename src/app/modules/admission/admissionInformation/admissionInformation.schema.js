@@ -1,16 +1,16 @@
 /**
- * @fileoverview Joi Validation Schemas for AdmissionInformation Posts.
+ * @fileoverview Joi Validation Schemas for Admission Information Posts.
  *
- * This module provides Joi schemas for validating various aspects of admissionInformation posts in the application.
- * It includes schemas for validating admissionInformation post parameters such as IDs, ensuring they adhere to
- * the expected format and constraints. The schemas utilize custom validation functions and constants
- * to provide accurate and efficient validation. Centralizing these schemas in a single module
- * allows for consistent validation logic across admissionInformation-related routes and services.
+ * This module provides Joi schemas for validating different aspects of admission information entities in the application.
+ * It includes schemas for validating admission information post IDs, ensuring adherence to expected formats and constraints,
+ * and for validating the content of admission information posts, such as title, description, fees, submission dates, and contact details.
+ * These schemas are essential for maintaining data integrity and ensuring that admission information data complies with the specified requirements.
  *
  * @requires Joi - Library for schema description and data validation.
- * @requires ADMISSION_INFORMATION_CONSTANTS - Constants related to ID generation and validation.
- * @requires createIdSchema - Shared utility function for creating ID validation schemas.
- * @module AdmissionInformationValidationSchemas - Exported Joi validation schemas for admissionInformation post data.
+ * @requires ADMISSION_INFORMATION_CONSTANTS - Constants defining validation criteria for admission information properties.
+ * @requires createIdSchema - Utility function to create a Joi schema for ID validation.
+ * @requires JoiSchemaGenerators - Utility functions to generate common Joi schemas.
+ * @module AdmissionInformationValidationSchemas - Exported Joi validation schemas for admission information data.
  */
 
 import Joi from "joi";
@@ -32,6 +32,12 @@ const admissionInformationParamsValidationSchema = Joi.object({
     ).required()
 });
 
+/**
+ * Joi schema for validating new admission information post details.
+ * Ensures all required fields are present and adhere to specified length constraints.
+ *
+ * @type {Joi.ObjectSchema} - Joi schema object for validating new admission information parameters.
+ */
 const newAdmissionInformationValidationSchema = Joi.object({
     title: JoiSchemaGenerators.createStringSchema(
         'title',
@@ -65,6 +71,12 @@ const newAdmissionInformationValidationSchema = Joi.object({
     ).required(),
 });
 
+/**
+ * Joi schema for validating updated admission information post details.
+ * Allows optional updates to each field while enforcing their length constraints.
+ *
+ * @type {Joi.ObjectSchema} - Joi schema object for validating update admission information parameters.
+ */
 const updateAdmissionInformationValidationSchema = Joi.object({
     title: JoiSchemaGenerators.createStringSchema(
         'title',
@@ -100,9 +112,8 @@ const updateAdmissionInformationValidationSchema = Joi.object({
 
 /**
  * @namespace AdmissionInformationValidationSchemas
- * @description Exported Joi validation schemas for admissionInformationPost data.
- *
- * - `admissionInformationParamsValidationSchema`: Schema for validating admissionInformation post ID parameters.
+ * @description Provides Joi validation schemas for handling admission information data.
+ * Includes schemas for validating new and updated admission information details and admission information ID parameters.
  */
 export const AdmissionInformationValidationSchemas = {
     newAdmissionInformationValidationSchema,
