@@ -20,7 +20,7 @@ import { WebsiteConfigurationController } from "./websiteConfiguration.controlle
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
-const websiteConfigurationRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -57,7 +57,7 @@ const websiteConfigurationRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteConfigurationRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteLogo'),
     multerErrorHandlerMiddleware,
@@ -80,7 +80,7 @@ websiteConfigurationRouter.post("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteConfigurationRouter.get("/", [
+router.get("/", [
     WebsiteConfigurationController.getWebsiteConfigurationController
 ]);
 
@@ -119,7 +119,7 @@ websiteConfigurationRouter.get("/", [
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteConfigurationRouter.put("/", [
+router.put("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteLogo'),
     multerErrorHandlerMiddleware,
@@ -142,9 +142,9 @@ websiteConfigurationRouter.put("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteConfigurationRouter.delete("/", [
+router.delete("/", [
     authTokenMiddleware,
     WebsiteConfigurationController.deleteWebsiteConfigurationController
 ]);
 
-export default websiteConfigurationRouter;
+export default router;

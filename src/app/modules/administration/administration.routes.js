@@ -23,7 +23,7 @@ import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { AdministrationValidationService } from "./administration.validator.js";
 import { AdministrationController } from "./administration.controller.js";
 
-const administrationRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -60,7 +60,7 @@ const administrationRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-administrationRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
     AdministrationValidationService.validateNewAdministrationDetails,
@@ -84,7 +84,7 @@ administrationRouter.post("/", [
  * @description Handles GET request for retrieving a list of all administrations.
  * @route GET /
  */
-administrationRouter.get("/", [
+router.get("/", [
     AdministrationController.getAdministrationListController
 ]);
 
@@ -110,7 +110,7 @@ administrationRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific administration.
  * @route GET /{administrationId}
  */
-administrationRouter.get("/:administrationId", [
+router.get("/:administrationId", [
     AdministrationValidationService.validateAdministrationParams,
     AdministrationController.getAAdministrationController
 ]);
@@ -150,7 +150,7 @@ administrationRouter.get("/:administrationId", [
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-administrationRouter.put("/:administrationId", [
+router.put("/:administrationId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
     AdministrationValidationService.validateAdministrationParams,
@@ -183,10 +183,10 @@ administrationRouter.put("/:administrationId", [
  * Requires authentication.
  * @route DELETE /{administrationId}
  */
-administrationRouter.delete("/:administrationId", [
+router.delete("/:administrationId", [
     authTokenMiddleware,
     AdministrationValidationService.validateAdministrationParams,
     AdministrationController.deleteAAdministrationController
 ]);
 
-export default administrationRouter;
+export default router;

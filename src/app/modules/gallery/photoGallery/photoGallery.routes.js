@@ -24,7 +24,7 @@ import { PhotoGalleryValidationService } from "./photoGallery.validator.js";
 import { PhotoGalleryController } from "./photoGallery.controller.js";
 import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
-const photoGalleryRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -57,7 +57,7 @@ const photoGalleryRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-photoGalleryRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('galleryImage'),
     multerErrorHandlerMiddleware,
@@ -81,7 +81,7 @@ photoGalleryRouter.post("/", [
  * @description Handles GET request for retrieving a list of all photoGallery.
  * @route GET /
  */
-photoGalleryRouter.get("/", [
+router.get("/", [
     PhotoGalleryController.getPhotoGalleryListController
 ]);
 
@@ -107,7 +107,7 @@ photoGalleryRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific photoGallery.
  * @route GET /{photoGalleryId}
  */
-photoGalleryRouter.get("/:photoGalleryId", [
+router.get("/:photoGalleryId", [
     PhotoGalleryValidationService.validatePhotoGalleryParams,
     PhotoGalleryController.getAPhotoGalleryController
 ]);
@@ -137,10 +137,10 @@ photoGalleryRouter.get("/:photoGalleryId", [
  * Requires authentication.
  * @route DELETE /{photoGalleryId}
  */
-photoGalleryRouter.delete("/:photoGalleryId", [
+router.delete("/:photoGalleryId", [
     authTokenMiddleware,
     PhotoGalleryValidationService.validatePhotoGalleryParams,
     PhotoGalleryController.deleteAPhotoGalleryController
 ]);
 
-export default photoGalleryRouter;
+export default router;

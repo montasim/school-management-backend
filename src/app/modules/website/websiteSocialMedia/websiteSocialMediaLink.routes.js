@@ -20,7 +20,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteSocialMediaLinkValidators } from "./websiteSocialMediaLink.validator.js";
 import { WebsiteSocialMediaLinkController } from "./websiteSocialMediaLink.controller.js";
 
-const websiteSocialMediaLinkRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -53,7 +53,7 @@ const websiteSocialMediaLinkRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteSocialMediaLinkRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkBodyValidator,
     WebsiteSocialMediaLinkController.createWebsiteSocialMediaLinkController
@@ -73,7 +73,7 @@ websiteSocialMediaLinkRouter.post("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteSocialMediaLinkRouter.get("/", [
+router.get("/", [
     WebsiteSocialMediaLinkController.getWebsiteSocialMediaLinkListController
 ]);
 
@@ -91,7 +91,7 @@ websiteSocialMediaLinkRouter.get("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteSocialMediaLinkRouter.get("/:websiteSocialMediaLinkId", [
+router.get("/:websiteSocialMediaLinkId", [
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkParamsValidator,
     WebsiteSocialMediaLinkController.getAWebsiteSocialMediaLinkController
 ]);
@@ -127,7 +127,7 @@ websiteSocialMediaLinkRouter.get("/:websiteSocialMediaLinkId", [
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteSocialMediaLinkRouter.put("/:websiteSocialMediaLinkId", [
+router.put("/:websiteSocialMediaLinkId", [
     authTokenMiddleware,
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkParamsValidator,
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkBodyValidator,
@@ -150,10 +150,10 @@ websiteSocialMediaLinkRouter.put("/:websiteSocialMediaLinkId", [
  *       500:
  *         description: Internal server error.
  */
-websiteSocialMediaLinkRouter.delete("/:websiteSocialMediaLinkId", [
+router.delete("/:websiteSocialMediaLinkId", [
     authTokenMiddleware,
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkParamsValidator,
     WebsiteSocialMediaLinkController.deleteAWebsiteSocialMediaLinkController
 ]);
 
-export default websiteSocialMediaLinkRouter;
+export default router;

@@ -23,7 +23,7 @@ import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { BlogValidationService } from "./blog.validator.js";
 import { BlogController } from "./blog.controller.js";
 
-const blogRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -64,7 +64,7 @@ const blogRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-blogRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
     BlogValidationService.validateNewBlogDetails,
@@ -88,7 +88,7 @@ blogRouter.post("/", [
  * @description Handles GET request for retrieving a list of all blogs.
  * @route GET /
  */
-blogRouter.get("/", [
+router.get("/", [
     BlogController.getBlogListController
 ]);
 
@@ -114,7 +114,7 @@ blogRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific blog.
  * @route GET /{blogId}
  */
-blogRouter.get("/:blogId", [
+router.get("/:blogId", [
     BlogValidationService.validateBlogParams,
     BlogController.getABlogController
 ]);
@@ -162,7 +162,7 @@ blogRouter.get("/:blogId", [
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-blogRouter.put("/:blogId", [
+router.put("/:blogId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
     BlogValidationService.validateBlogParams,
@@ -195,10 +195,10 @@ blogRouter.put("/:blogId", [
  * Requires authentication.
  * @route DELETE /{blogId}
  */
-blogRouter.delete("/:blogId", [
+router.delete("/:blogId", [
     authTokenMiddleware,
     BlogValidationService.validateBlogParams,
     BlogController.deleteABlogController
 ]);
 
-export default blogRouter;
+export default router;

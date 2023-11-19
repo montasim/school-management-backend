@@ -21,7 +21,7 @@ import { RoutineValidationService } from "./routine.validator.js";
 import { RoutineController } from "./routine.controller.js";
 import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
-const routineRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ const routineRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-routineRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     multerErrorHandlerMiddleware,
@@ -78,7 +78,7 @@ routineRouter.post("/", [
  * @description Handles GET request for retrieving a list of all routines.
  * @route GET /
  */
-routineRouter.get("/", [
+router.get("/", [
     RoutineController.getRoutineListController
 ]);
 
@@ -104,7 +104,7 @@ routineRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific routine.
  * @route GET /{fileName}
  */
-routineRouter.get("/:fileName", [
+router.get("/:fileName", [
     RoutineValidationService.validateRoutineParams,
     RoutineController.getARoutineController
 ]);
@@ -134,10 +134,10 @@ routineRouter.get("/:fileName", [
  * Requires authentication.
  * @route DELETE /{fileName}
  */
-routineRouter.delete("/:fileName", [
+router.delete("/:fileName", [
     authTokenMiddleware,
     RoutineValidationService.validateRoutineParams,
     RoutineController.deleteARoutineController
 ]);
 
-export default routineRouter;
+export default router;

@@ -24,7 +24,7 @@ import { HomePagePostValidationService } from "./homePagePost.validator.js";
 import { HomePagePostController } from "./homePagePost.controller.js";
 import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
-const homePagePostRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -65,7 +65,7 @@ const homePagePostRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-homePagePostRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
     multerErrorHandlerMiddleware,
@@ -89,7 +89,7 @@ homePagePostRouter.post("/", [
  * @description Handles GET request for retrieving a list of all homePagePosts.
  * @route GET /
  */
-homePagePostRouter.get("/", [
+router.get("/", [
     HomePagePostController.getHomePagePostListController
 ]);
 
@@ -115,7 +115,7 @@ homePagePostRouter.get("/", [
  * @description Handles GET request for retrieving details of a specific homePagePost.
  * @route GET /{homePagePostId}
  */
-homePagePostRouter.get("/:homePagePostId", [
+router.get("/:homePagePostId", [
     HomePagePostValidationService.validateHomePagePostParams,
     HomePagePostController.getAHomePagePostController
 ]);
@@ -163,7 +163,7 @@ homePagePostRouter.get("/:homePagePostId", [
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-homePagePostRouter.put("/:homePagePostId", [
+router.put("/:homePagePostId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
     multerErrorHandlerMiddleware,
@@ -196,10 +196,10 @@ homePagePostRouter.put("/:homePagePostId", [
  * Requires authentication.
  * @route DELETE /{homePagePostId}
  */
-homePagePostRouter.delete("/:homePagePostId", [
+router.delete("/:homePagePostId", [
     authTokenMiddleware,
     HomePagePostValidationService.validateHomePagePostParams,
     HomePagePostController.deleteAHomePagePostController
 ]);
 
-export default homePagePostRouter;
+export default router;

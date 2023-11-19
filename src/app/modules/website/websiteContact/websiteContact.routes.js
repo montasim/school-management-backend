@@ -19,7 +19,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteContactValidationService } from "./websiteContact.validator.js";
 import { WebsiteContactController } from "./websiteContact.controller.js";
 
-const websiteContactRouter = express.Router();
+const router = express.Router();
 
 /**
  * @swagger
@@ -68,7 +68,7 @@ const websiteContactRouter = express.Router();
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteContactRouter.post("/", [
+router.post("/", [
     authTokenMiddleware,
     WebsiteContactValidationService.validateWebsiteContactDetails,
     WebsiteContactController.createWebsiteContactController
@@ -88,7 +88,7 @@ websiteContactRouter.post("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteContactRouter.get("/", [
+router.get("/", [
     WebsiteContactController.getWebsiteContactController
 ]);
 
@@ -139,7 +139,7 @@ websiteContactRouter.get("/", [
  * Applies authentication and file upload middleware.
  * @route POST /
  */
-websiteContactRouter.put("/", [
+router.put("/", [
     authTokenMiddleware,
     WebsiteContactValidationService.validateWebsiteContactDetails,
     WebsiteContactController.updateWebsiteContactController
@@ -161,9 +161,9 @@ websiteContactRouter.put("/", [
  *       500:
  *         description: Internal server error.
  */
-websiteContactRouter.delete("/", [
+router.delete("/", [
     authTokenMiddleware,
     WebsiteContactController.deleteWebsiteContactController
 ]);
 
-export default websiteContactRouter;
+export default router;
