@@ -7,7 +7,6 @@
  * business logic operations, ensuring proper management and retrieval of result data. Additionally, these services
  * handle interactions with external storage services, like Google Drive, for file uploads and deletions.
  *
- * @requires uuid - Module to generate unique identifiers.
  * @requires RESULT_COLLECTION_NAME - Configured collection name for results in the database.
  * @requires constants - Application constants for various status codes and messages.
  * @requires ID_CONSTANTS - Constants for prefixing identifiers in the result module.
@@ -22,7 +21,6 @@
  * @module ResultService - Exported object containing result-related service functions.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { RESULT_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -41,6 +39,7 @@ import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOpera
 import findByField from "../../../shared/findByField.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import getAllData from "../../../shared/getAllData.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new result entry in the database.
@@ -68,7 +67,7 @@ const createResultService = async (db, newResultDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const resultDetails = {
-            id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.DOWNLOAD_PREFIX),
             title: title,
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,

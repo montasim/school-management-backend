@@ -7,7 +7,6 @@
  * business logic operations, ensuring proper management and retrieval of admissionForm data. Additionally, these services
  * handle interactions with external storage services, like Google Drive, for file uploads and deletions.
  *
- * @requires uuid - Module to generate unique identifiers.
  * @requires ADMISSION_FORM_COLLECTION_NAME - Configured collection name for admissionForms in the database.
  * @requires constants - Application constants for various status codes and messages.
  * @requires ID_CONSTANTS - Constants for prefixing identifiers in the admissionForm module.
@@ -22,7 +21,6 @@
  * @module AdmissionFormService - Exported object containing admissionForm-related service functions.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { ADMISSION_FORM_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -41,6 +39,7 @@ import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import deleteByField from "../../../../shared/deleteByField.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js";
+import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new admissionForm entry in the database.
@@ -68,7 +67,7 @@ const createAdmissionFormService = async (db, newAdmissionFormDetails, file) => 
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const admissionFormDetails = {
-            id: `${ID_CONSTANTS?.ADMISSION_FORM_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.ADMISSION_FORM_PREFIX),
             title: title,
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,

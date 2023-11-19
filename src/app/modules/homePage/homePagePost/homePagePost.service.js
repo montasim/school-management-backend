@@ -7,7 +7,6 @@
  * These services abstract database and file system interactions, providing a
  * streamlined interface for the controller layer to perform CRUD operations on HomePagePost data.
  *
- * @requires uuid - Module for generating unique identifiers.
  * @requires config - Configuration file for application settings.
  * @requires constants - Application constants for status messages and codes.
  * @requires isValidRequest - Utility function to validate requests.
@@ -16,7 +15,6 @@
  * @module HomePagePostService - Exported services for HomePagePost operations.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { HOME_PAGE_POST_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE, STATUS_BAD_REQUEST,
@@ -36,6 +34,7 @@ import findByField from "../../../../shared/findByField.js";
 import createByDetails from "../../../../shared/createByDetails.js";
 import updateById from "../../../../shared/updateById.js";
 import getAllData from "../../../../shared/getAllData.js";
+import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new HomePagePost entry in the database.
@@ -62,7 +61,7 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const homePagePostDetails = {
-            id: `${ID_CONSTANTS?.HOME_PAGE_POST_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX),
             title: title,
             category: category,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,

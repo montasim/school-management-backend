@@ -19,7 +19,6 @@
  * @module WebsiteSocialMediaLinkService - Exported services for website important information link operations.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -38,6 +37,7 @@ import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import updateById from "../../../../shared/updateById.js";
 import deleteByField from "../../../../shared/deleteByField.js";
+import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new entry for a website important information link in the database.
@@ -57,7 +57,7 @@ const createWebsiteSocialMediaLinkService = async (db, newWebsiteSocialMediaLink
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const websiteSocialMediaLinkDetails = {
-            id: `${ID_CONSTANTS?.WEBSITE_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.WEBSITE_PREFIX),
             socialMediaLinkTitle: socialMediaLinkTitle,
             socialMediaLink: socialMediaLink,
             createdBy: adminId,

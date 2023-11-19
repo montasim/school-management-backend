@@ -16,7 +16,6 @@
  * @module WebsiteContactService - Exports service functions for website contact operations.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { WEBSITE_CONTACT_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -33,6 +32,7 @@ import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
 import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
+import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 
 /**
  * Service Function for Creating Website Contact.
@@ -53,7 +53,7 @@ const createWebsiteContactService = async (db, websiteContactDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const prepareWebsiteDetails = {
-            id: `${ID_CONSTANTS?.WEBSITE_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.WEBSITE_PREFIX),
             address: address,
             googleMapLocation: googleMapLocation,
             mobile: mobile,

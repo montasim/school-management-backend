@@ -1,10 +1,4 @@
-// Third-party modules
-import { v4 as uuidv4 } from 'uuid';
-
-// Configurations
 import { OTHERS_INFORMATION_COLLECTION_NAME } from "../../../config/config.js";
-
-// Constants
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -14,8 +8,6 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./othersInformation.constants.js";
-
-// Shared utilities
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
@@ -24,6 +16,7 @@ import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new othersInformation entry in the database.
@@ -42,7 +35,7 @@ const createOthersInformationService = async (db, newOthersInformationDetails) =
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const othersInformationDetails = {
-            id: `${ID_CONSTANTS?.OTHERS_INFORMATION_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.OTHERS_INFORMATION_PREFIX),
             title,
             category,
             description,

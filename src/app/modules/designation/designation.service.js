@@ -20,7 +20,6 @@
  * @module DesignationService - Exported services for designation operations in the application.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { DESIGNATION_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -39,6 +38,7 @@ import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new designation entry in the database.
@@ -60,7 +60,7 @@ const createDesignationService = async (db, newDesignationDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const designationDetails = {
-            id: `${DESIGNATION_CONSTANTS?.DESIGNATION_ID_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(DESIGNATION_CONSTANTS?.DESIGNATION_ID_PREFIX),
             name,
             createdBy: adminId,
             createdAt: new Date(),

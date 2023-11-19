@@ -7,7 +7,6 @@
  * business logic operations, ensuring proper management and retrieval of notice data. Additionally, these services
  * handle interactions with external storage services, like Google Drive, for file uploads and deletions.
  *
- * @requires uuid - Module to generate unique identifiers.
  * @requires NOTICE_COLLECTION_NAME - Configured collection name for notices in the database.
  * @requires constants - Application constants for various status codes and messages.
  * @requires ID_CONSTANTS - Constants for prefixing identifiers in the notice module.
@@ -22,7 +21,6 @@
  * @module NoticeService - Exported object containing notice-related service functions.
  */
 
-import { v4 as uuidv4 } from 'uuid';
 import { NOTICE_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -41,6 +39,7 @@ import findByField from "../../../shared/findByField.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
  * Creates a new notice entry in the database.
@@ -68,7 +67,7 @@ const createNoticeService = async (db, newNoticeDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const noticeDetails = {
-            id: `${ID_CONSTANTS?.DOWNLOAD_PREFIX}-${uuidv4().substr(0, 6)}`,
+            id: generateUniqueID(ID_CONSTANTS?.DOWNLOAD_PREFIX),
             title: title,
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
