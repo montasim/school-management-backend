@@ -18,6 +18,8 @@
 import Joi from "joi";
 import { CATEGORY_CONSTANTS } from './category.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
+import {BLOG_PROPERTY_TITLE_MAX_LENGTH, BLOG_PROPERTY_TITLE_MIN_LENGTH} from "../../../constants/constants.js";
+import {JoiSchemaGenerators} from "../../../shared/joiSchemaGenerators.js";
 
 /**
  * Validation schema for category ID parameters.
@@ -32,7 +34,11 @@ const categoryParamsSchema = Joi.object({
  * Ensures that the body data for category-related requests is structured correctly.
  */
 const categoryBodySchema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
+    name: JoiSchemaGenerators.createStringSchema(
+        'name',
+        CATEGORY_CONSTANTS?.CATEGORY_NAME_MIN_LENGTH,
+        CATEGORY_CONSTANTS?.CATEGORY_NAME_MAX_LENGTH,
+    ),
 });
 
 /**

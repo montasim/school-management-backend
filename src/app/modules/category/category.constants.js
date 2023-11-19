@@ -17,6 +17,9 @@ const CATEGORY_ID_PREFIX = 'category';
 const CATEGORY_ID_MIN_LENGTH = 15;
 const CATEGORY_ID_MAX_LENGTH = 15;
 
+const CATEGORY_NAME_MIN_LENGTH = 3;
+const CATEGORY_NAME_MAX_LENGTH = 30;
+
 /**
  * @constant CATEGORY_CONSTANTS
  * @description Provides constants for Category ID creation and validation.
@@ -29,4 +32,6 @@ export const CATEGORY_CONSTANTS = {
     CATEGORY_ID_PREFIX,
     CATEGORY_ID_MIN_LENGTH,
     CATEGORY_ID_MAX_LENGTH,
+    CATEGORY_NAME_MIN_LENGTH,
+    CATEGORY_NAME_MAX_LENGTH,
 };
