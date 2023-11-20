@@ -79,7 +79,6 @@ const createStudentService = async (db, newStudentDetails, file) => {
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${name} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
-
     } catch (error) {
         logger.error(error);
 
@@ -200,7 +199,6 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${studentId} updated successfully`)
             : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${studentId} not updated`);
-
     } catch (error) {
         logger.error(error);
 
