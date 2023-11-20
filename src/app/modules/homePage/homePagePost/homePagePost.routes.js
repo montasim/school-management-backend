@@ -22,7 +22,6 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { HomePagePostValidationService } from "./homePagePost.validator.js";
 import { HomePagePostController } from "./homePagePost.controller.js";
-import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
 const router = express.Router();
 
