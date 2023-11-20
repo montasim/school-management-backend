@@ -111,7 +111,7 @@ const loginService = async (db, loginDetails) => {
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Failed to create token");
 
         // Reset failed attempts on successful login
-        await resetFailedAttempts(db, userName);
+        await resetFailedAttempts(db, foundAdminDetails);
         // Add currently logged in device
         await addCurrentlyLoggedInDevice(db, foundAdminDetails);
 

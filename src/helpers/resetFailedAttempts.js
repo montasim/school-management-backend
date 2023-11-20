@@ -12,7 +12,8 @@
  */
 
 import logger from "../shared/logger.js";
-import { ADMIN_COLLECTION_NAME } from "../config/config.js";
+import { ADMIN_COLLECTION_NAME, MAX_FAILED_ATTEMPTS } from "../config/config.js";
+import updateById from "../shared/updateById.js";
 
 /**
  * Resets the count of failed login attempts for a user.
@@ -24,17 +25,15 @@ import { ADMIN_COLLECTION_NAME } from "../config/config.js";
  * @async
  * @function resetFailedAttempts
  * @param {Object} db - The database connection object.
- * @param {string} userName - The username of the account for which to reset the failed attempts.
+ * @param {Object} adminDetails - The admin details object.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
-const resetFailedAttempts = async (db, userName) => {
+const resetFailedAttempts = async (db, adminDetails) => {
     try {
-        const resetAttemptsDetails = {
-            allowedFailedAttempts: 3,
-            lastFailedAttempts: null,
-        };
+        adminDetails.allowedFailedAttempts = MAX_FAILED_ATTEMPTS;
+        adminDetails.lastFailedAttempts = null;
 
-        await db.collection(ADMIN_COLLECTION_NAME).updateOne({ userName: userName }, { $set: resetAttemptsDetails });
+        await updateById(db, ADMIN_COLLECTION_NAME, adminDetails?.id, adminDetails);
     } catch (error) {
         logger.error(error);
 
