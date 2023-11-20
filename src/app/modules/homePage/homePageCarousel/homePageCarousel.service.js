@@ -24,7 +24,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
-import { ID_CONSTANTS } from "./homePageCarousel.constants.js";
+import { HOME_PAGE_CAROUSEL_CONSTANTS } from "./homePageCarousel.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
@@ -57,7 +57,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails, fil
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const homePageCarouselDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.HOME_PAGE_CAROUSEL_PREFIX),
+            id: generateUniqueID(HOME_PAGE_CAROUSEL_CONSTANTS?.HOME_PAGE_CAROUSEL_ID_PREFIX),
             title: title,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,

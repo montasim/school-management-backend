@@ -23,30 +23,27 @@ import {
     MIME_TYPE_JPG,
     MIME_TYPE_PNG
 } from "../../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../../helpers/validateDataWithFileSchema.js";
 
 /**
- * Validates the details of a homePageCarousel post against a predefined schema.
+ * Validates the details of a home page carousel against a predefined schema.
  *
  * @async
- * @function validateHomePageCarouselDetails
- * @description Middleware to validate the homePageCarousel post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the homePageCarousel post's details.
+ * @function validateNewBlogDetails
+ * @description Middleware to validate the blog post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the blog post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateHomePageCarouselDetails = await validateDataWithSchema(JoiSchemaGenerators.carouselBodyValidationSchema(), 'body');
-
-/**
- * Validates the details of a homePageCarousel post against a predefined schema.
- *
- * @async
- * @function validateHomePageCarouselDetails
- * @description Middleware to validate the homePageCarousel post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the homePageCarousel post's details.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-const validateHomePageCarouselFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema("carouselImage", [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], [MIME_TYPE_PNG, MIME_TYPE_JPG]), "file");
+const validateNewHomePageCarouselDetails = await validateDataWithFileSchema(
+    HomePageCarouselValidationSchemas.newHomePageCarouselBodyValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "carouselImage",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG],
+    ),
+    true
+);
 
 /**
  * Validates the homePageCarousel post ID in request parameters.
@@ -65,7 +62,6 @@ const validateHomePageCarouselParams = await validateDataWithSchema(HomePageCaro
  * @description Provides validation services for homePageCarousel-related data in routes. This includes validation for homePageCarousel details, homePageCarousel files, and homePageCarousel parameters.
  */
 export const HomePageCarouselValidationService = {
-    validateHomePageCarouselDetails,
-    validateHomePageCarouselFile,
+    validateNewHomePageCarouselDetails,
     validateHomePageCarouselParams,
 };
