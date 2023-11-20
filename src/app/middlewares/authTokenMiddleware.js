@@ -80,10 +80,10 @@ const authTokenMiddleware = async (req, res, next) => {
         if (userAgent !== verified?.userAgent)
             return res?.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
 
-        req.adminId = verified.id;
-        req.tokenId = verified.tokenId;
-        req.adminUserName = verified.userName;
-        req.name = verified.name;
+        req.adminId = verified?.id;
+        req.tokenId = verified?.tokenId;
+        req.adminUserName = verified?.userName;
+        req.name = verified?.name;
 
         next();
     } catch (error) {

@@ -17,7 +17,8 @@
 import findByField from "../shared/findByField.js";
 import { ADMIN_COLLECTION_NAME } from "../config/config.js";
 import logger from "../shared/logger.js";
-import removeTokenId from "./removeTokenId.js";
+import removeTokenDetails from "./removeTokenId.js";
+import updateById from "../shared/updateById.js";
 
 /**
  * Checks if a given token is revoked for a specified admin user.
@@ -37,17 +38,40 @@ const isTokenRevoked = async (db, adminId, jti) => {
     try {
         const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);
 
-        // Check if tokenId array exists and contains the provided jti
-        if (foundAdminDetails?.tokenId?.includes(jti)) {
-            return false;
-        } else {
-            await removeTokenId(db, foundAdminDetails, jti);
+        if (!foundAdminDetails?.tokenDetails) {
+            return true; // If there's no tokenDetails array, consider the token revoked.
         }
-        return !foundAdminDetails?.tokenId?.includes(jti);
+
+        let tokenRevoked = true; // Assume the token is revoked by default.
+        let validTokenCount = 0; // Counter for valid tokens
+
+        for (let tokenDetails of foundAdminDetails.tokenDetails) {
+            const tokenTimestamp = new Date(tokenDetails?.tokenTimestamp);
+            const tokenId = tokenDetails?.tokenId;
+            const currentTime = new Date();
+            const hoursDifference = (currentTime - tokenTimestamp) / (1000 * 60 * 60); // Convert milliseconds to hours
+
+            if (hoursDifference <= 12) {
+                if (tokenId === jti) {
+                    tokenRevoked = false; // Valid and non-expired token found.
+                }
+                validTokenCount++; // Increment valid token count
+            } else {
+                // Remove expired tokens
+                await removeTokenDetails(db, foundAdminDetails, tokenId, validTokenCount);
+            }
+        }
+
+        // Update the currentlyLoggedInDevice count
+        foundAdminDetails.currentlyLoggedInDevice = validTokenCount;
+
+        await updateById(db, ADMIN_COLLECTION_NAME, adminId, foundAdminDetails);
+
+        return tokenRevoked;
     } catch (error) {
         logger.error(error);
 
-        return false;
+        return true; // In case of error, consider the token revoked.
     }
 };
 

@@ -39,16 +39,19 @@ import updateById from "../shared/updateById.js";
  */
 const createAuthenticationToken = async (db, userAgent, adminDetails = {}) => {
     try {
-        const { id, name, userName, tokenId } = adminDetails;
-        const newTokenId = uuidv4(); // Generate a unique identifier for this token
+        const { id, name, userName, tokenDetails } = adminDetails;
+        const newTokenDetails = {
+            tokenId: uuidv4(), // Generate a unique identifier for this token
+            tokenTimestamp: new Date().toISOString() // Current timestamp
+        };
 
         // Initialize tokenId array if it doesn't exist
-        if (!tokenId) {
-            adminDetails.tokenId = [];
+        if (!tokenDetails) {
+            adminDetails.tokenDetails = [];
         }
 
         // Append new token ID
-        adminDetails?.tokenId?.push(newTokenId);
+        adminDetails?.tokenDetails?.push(newTokenDetails);
 
         /**
          * Limit the number of stored token IDs
@@ -57,8 +60,8 @@ const createAuthenticationToken = async (db, userAgent, adminDetails = {}) => {
          * This is especially important in cases where the value might start with 0
          * (which could be incorrectly interpreted as an octal number) or include non-numeric characters.
          */
-        if (adminDetails?.tokenId?.length > parseInt(MAX_CONCURRENT_LOGINS, 10)) {
-            adminDetails?.tokenId?.shift(); // Remove the oldest token ID
+        if (adminDetails?.tokenDetails?.length > parseInt(MAX_CONCURRENT_LOGINS, 10)) {
+            adminDetails?.tokenDetails?.shift(); // Remove the oldest token ID
         }
 
         await updateById(db, ADMIN_COLLECTION_NAME, id, adminDetails);
@@ -66,7 +69,8 @@ const createAuthenticationToken = async (db, userAgent, adminDetails = {}) => {
         // Sign and return the JWT token with user details and secret
         return jwt.sign(
             {
-                tokenId: newTokenId,
+                tokenId: newTokenDetails?.tokenId,
+                tokenTimestamp: newTokenDetails?.tokenTimestamp,
                 id: id,
                 userName: userName,
                 name: name,
@@ -74,7 +78,7 @@ const createAuthenticationToken = async (db, userAgent, adminDetails = {}) => {
             },
             SECRET_TOKEN,
             {
-                expiresIn: '1d',
+                expiresIn: '12h', // Token expires in 12 hours
             }
         );
     } catch (error) {

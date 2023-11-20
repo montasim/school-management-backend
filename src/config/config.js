@@ -49,6 +49,7 @@ export const {
     SECRET_KEY,
     SECRET_TOKEN,
     MAX_CONCURRENT_LOGINS,
+    MAX_FAILED_ATTEMPTS,
 } = process.env;
 
 /**

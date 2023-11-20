@@ -13,6 +13,7 @@
 
 import logger from "../shared/logger.js";
 import { ADMIN_COLLECTION_NAME } from "../config/config.js";
+import updateById from "../shared/updateById.js";
 
 /**
  * Resets the count of failed login attempts for a user.
@@ -33,7 +34,7 @@ const incrementFailedAttempts = async (db, userDetails) => {
         userDetails.allowedFailedAttempts -= 1;
         userDetails.lastFailedAttempts = new Date();
 
-        await db.collection(ADMIN_COLLECTION_NAME).updateOne({ userName: userDetails?.userName }, { $set: userDetails });
+        await updateById(db, ADMIN_COLLECTION_NAME, userDetails?.id, userDetails);
     } catch (error) {
         logger.error(error);
 
