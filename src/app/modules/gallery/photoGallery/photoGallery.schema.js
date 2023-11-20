@@ -14,12 +14,12 @@
  */
 
 import Joi from "joi";
-import { PHOTO_GALLERY_CONSTANTS } from './photoGallery.constants.js';
 import createIdSchema from "../../../../shared/createIdSchema.js";
+import { PHOTO_GALLERY_CONSTANTS } from './photoGallery.constants.js';
 import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 
 /**
- * Validation schema for creating a new admission form.
+ * Validation schema for creating a new photo gallery.
  * Ensures the 'title' field meets specified length requirements and is required.
  */
 const newPhotoGalleryValidationSchema = Joi.object({

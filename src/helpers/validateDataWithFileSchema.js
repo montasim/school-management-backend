@@ -12,7 +12,11 @@
  */
 
 import Joi from "joi";
-import { STATUS_BAD_REQUEST, STATUS_INTERNAL_SERVER_ERROR } from "../constants/constants.js";
+import {
+    MAXIMUM_FILE_SIZE,
+    STATUS_BAD_REQUEST,
+    STATUS_INTERNAL_SERVER_ERROR
+} from "../constants/constants.js";
 import logger from "../shared/logger.js";
 
 /**
@@ -40,13 +44,23 @@ const validateDataWithFileSchema = (bodyValidationSchema, fileValidationSchema, 
 
         // Add file to validation object if present, or if file is mandatory but missing, return error
         if (req?.file) {
-            dataToValidate.file = req.file;
+            dataToValidate.file = req?.file;
+
+            // Check if file size exceeds 1.1 MB
+            if (req?.file?.size > MAXIMUM_FILE_SIZE) {
+                return res?.status(STATUS_BAD_REQUEST).json({
+                    data: {},
+                    success: false,
+                    status: STATUS_BAD_REQUEST,
+                    message: `File size exceeds the ${MAXIMUM_FILE_SIZE}MB limit`
+                });
+            }
         } else if (isFileRequired) {
-            return res.status(STATUS_BAD_REQUEST).json({
+            return res?.status(STATUS_BAD_REQUEST).json({
                 data: {},
                 success: false,
                 status: STATUS_BAD_REQUEST,
-                message: 'Image file is missing'
+                message: 'File is missing'
             });
         }
 
@@ -60,7 +74,7 @@ const validateDataWithFileSchema = (bodyValidationSchema, fileValidationSchema, 
         const { error } = combinedValidationSchema.validate(dataToValidate, { allowUnknown: true, abortEarly: false });
 
         if (error) {
-            const messages = error.details.map(detail => detail.message).join(', ');
+            const messages = error?.details.map(detail => detail.message).join(', ');
             return res.status(STATUS_BAD_REQUEST).json({
                 data: {},
                 success: false,
@@ -72,7 +86,8 @@ const validateDataWithFileSchema = (bodyValidationSchema, fileValidationSchema, 
         next();
     } catch (error) {
         logger.error(error);
-        return res.status(STATUS_INTERNAL_SERVER_ERROR).json(error);
+
+        return res?.status(STATUS_INTERNAL_SERVER_ERROR).json(error);
     }
 };
 

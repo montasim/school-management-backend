@@ -17,6 +17,7 @@ import { VideoGalleryService } from "./videoGallery.service.js";
 import extractFromRequest from "../../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../../helpers/handleServiceResponse.js";
 import logger from "../../../../shared/logger.js";
+import {MAXIMUM_FILE_SIZE} from "../../../../constants/constants.js";
 
 /**
  * @async
@@ -29,6 +30,10 @@ const createVideoGalleryController = async (req, res) => {
     try {
         const { title, adminId, db } = extractFromRequest(req, ['title']);
         const newVideoGalleryDetails = { title, adminId };
+
+        console.log(req.file?.buffer)
+        console.log(req.file?.size)
+        console.log(req.file?.size, MAXIMUM_FILE_SIZE)
 
         await handleServiceResponse(res, VideoGalleryService.createVideoGalleryService, db, newVideoGalleryDetails, req?.file);
     } catch (error) {
