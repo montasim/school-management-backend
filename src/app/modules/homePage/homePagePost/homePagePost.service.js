@@ -55,6 +55,11 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
+        const homePagePost = await getAllData(db, HOME_PAGE_POST_COLLECTION_NAME);
+
+        if (homePagePost?.length >= 3)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Can not add more that 3 post');
+
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
         if (!uploadGoogleDriveFileResponse?.shareableLink)
