@@ -55,7 +55,7 @@ const createAdmissionInformationService = async (db, newAdmissionInformationDeta
             id: generateUniqueID(ADMISSION_INFORMATION_CONSTANTS?.ADMISSION_INFORMATION_ID_PREFIX),
             title: title,
             description: description,
-            formFee: formPrice,
+            formPrice: formPrice,
             admissionFee: admissionFee,
             lastFormSubmissionData: lastFormSubmissionData,
             contact: contact,
@@ -162,7 +162,7 @@ const updateAAdmissionInformationService = async (db, admissionInformationId, ne
 
         if (title) updatedAdmissionInformationDetails.title = title;
         if (description) updatedAdmissionInformationDetails.description = description;
-        if (formPrice) updatedAdmissionInformationDetails.formFee = formPrice;
+        if (formPrice) updatedAdmissionInformationDetails.formPrice = formPrice;
         if (admissionFee) updatedAdmissionInformationDetails.admissionFee = admissionFee;
         if (lastFormSubmissionData) updatedAdmissionInformationDetails.lastFormSubmissionData = lastFormSubmissionData;
         if (contact) updatedAdmissionInformationDetails.contact = contact;
