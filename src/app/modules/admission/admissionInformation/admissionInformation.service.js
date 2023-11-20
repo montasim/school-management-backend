@@ -46,7 +46,7 @@ import generateUniqueID from "../../../../helpers/generateUniqueID.js";
  */
 const createAdmissionInformationService = async (db, newAdmissionInformationDetails) => {
     try {
-        const { title, description, formFee, admissionFee, lastFormSubmissionData, contact, adminId } = newAdmissionInformationDetails;
+        const { title, description, formPrice, admissionFee, lastFormSubmissionData, contact, adminId } = newAdmissionInformationDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -55,7 +55,7 @@ const createAdmissionInformationService = async (db, newAdmissionInformationDeta
             id: generateUniqueID(ADMISSION_INFORMATION_CONSTANTS?.ADMISSION_INFORMATION_ID_PREFIX),
             title: title,
             description: description,
-            formFee: formFee,
+            formFee: formPrice,
             admissionFee: admissionFee,
             lastFormSubmissionData: lastFormSubmissionData,
             contact: contact,
@@ -147,7 +147,7 @@ const getAAdmissionInformationService = async (db, admissionInformationId) => {
  */
 const updateAAdmissionInformationService = async (db, admissionInformationId, newAdmissionInformationDetails) => {
     try {
-        const { title, description, formFee, admissionFee, lastFormSubmissionData, contact, adminId } = newAdmissionInformationDetails;
+        const { title, description, formPrice, admissionFee, lastFormSubmissionData, contact, adminId } = newAdmissionInformationDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -162,7 +162,7 @@ const updateAAdmissionInformationService = async (db, admissionInformationId, ne
 
         if (title) updatedAdmissionInformationDetails.title = title;
         if (description) updatedAdmissionInformationDetails.description = description;
-        if (formFee) updatedAdmissionInformationDetails.formFee = formFee;
+        if (formPrice) updatedAdmissionInformationDetails.formFee = formPrice;
         if (admissionFee) updatedAdmissionInformationDetails.admissionFee = admissionFee;
         if (lastFormSubmissionData) updatedAdmissionInformationDetails.lastFormSubmissionData = lastFormSubmissionData;
         if (contact) updatedAdmissionInformationDetails.contact = contact;
