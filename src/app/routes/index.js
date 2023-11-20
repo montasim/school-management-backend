@@ -19,14 +19,14 @@
 
 import express from "express";
 import fs from "fs";
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
 import swaggerUi from 'swagger-ui-express';
 import { API_VERSION } from "../../config/config.js";
 import indexRoutes from "../modules/index/index.routes.js";
-import statusRoutes from "../modules/status/status.routes.js";
+import statusRoutes from "../modules/status/status/status.routes.js";
 import apiRoutes from "./api.routes.js";
 import undefinedRoutes from "../modules/undefined/undefined.routes.js";
-import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
