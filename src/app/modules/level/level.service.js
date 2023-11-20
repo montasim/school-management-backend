@@ -1,3 +1,17 @@
+/**
+ * @fileoverview Service Layer for 'Level' Data Management in the Application.
+ *
+ * This file provides a set of services related to the 'level' entity in the application.
+ * It includes operations such as creating, retrieving, updating, and deleting levels.
+ * Each service interacts with the database, performs necessary logic, and handles
+ * exceptions. These services are designed to be used by controllers to abstract
+ * complex business logic away from the request-handling layer.
+ *
+ * The services use shared utility functions like findByField, createByDetails,
+ * and generateResponseData to perform their tasks, ensuring consistency and
+ * reusability across different parts of the application.
+ */
+
 import { LEVEL_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -7,7 +21,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./level.constants.js";
+import { LEVEL_CONSTANTS } from "./level.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
@@ -38,7 +52,7 @@ const createLevelService = async (db, newLevelDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const levelDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.LEVEL_PREFIX),
+            id: generateUniqueID(LEVEL_CONSTANTS?.LEVEL_ID_PREFIX),
             name,
             createdBy: adminId,
             createdAt: new Date(),

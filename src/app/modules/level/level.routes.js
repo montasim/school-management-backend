@@ -1,3 +1,18 @@
+/**
+ * @fileoverview Express router setup for managing 'levels' in the application.
+ *
+ * This file defines routes for various operations related to 'levels',
+ * such as creating, retrieving, updating, and deleting levels. It includes
+ * routes for getting all levels, a specific level by ID, adding a new level,
+ * updating a level, and deleting a level. Each route is associated with
+ * specific middleware for authentication and validation, ensuring secure and
+ * robust handling of requests.
+ *
+ * Swagger annotations are included for each route to facilitate the generation
+ * of API documentation, providing details like summaries, descriptions,
+ * parameter specifications, and expected responses for each endpoint.
+ */
+
 import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { LevelValidators } from "./level.validator.js";
@@ -20,6 +35,12 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Level successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
  */
 router.post("/", [
     authTokenMiddleware,
@@ -36,6 +57,10 @@ router.post("/", [
  *     responses:
  *       200:
  *         description: A list of level.
+ *       404:
+ *         description: Level not found.
+ *       500:
+ *         description: Internal server error.
  */
 router.get("/", [
     LevelController.getLevelListController
@@ -57,6 +82,10 @@ router.get("/", [
  *     responses:
  *       200:
  *         description: Level details.
+ *       404:
+ *         description: Level not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
  */
 router.get("/:levelId", [
     LevelValidators.levelParamsValidator,
@@ -84,6 +113,12 @@ router.get("/:levelId", [
  *     responses:
  *       200:
  *         description: Level successfully updated.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
  */
 router.put("/:levelId", [
     authTokenMiddleware,
@@ -108,6 +143,12 @@ router.put("/:levelId", [
  *     responses:
  *       200:
  *         description: Level successfully deleted.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       404:
+ *         description: Level not found with the provided ID.
+ *       500:
+ *         description: Internal server error.
  */
 router.delete("/:levelId", [
     authTokenMiddleware,

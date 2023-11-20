@@ -1,9 +1,37 @@
-import Joi from "joi";
-import { ID_CONSTANTS } from './level.constants.js';
-import createIdSchema from "../../../shared/createIdSchema.js";
+/**
+ * @fileoverview Joi Validation Schemas for 'Level' Data.
+ *
+ * This file contains definitions for Joi validation schemas used to validate 'level' data
+ * within the application. These schemas are crucial for ensuring that the data provided
+ * for levels, such as names and IDs, adhere to the expected format and constraints.
+ *
+ * It includes:
+ * - `levelBodySchema` for validating the body of level-related requests, ensuring that
+ *   the level data (like name and image) meets specific criteria such as length and pattern.
+ * - `levelParamsSchema` for validating the level ID provided in request parameters,
+ *   ensuring it follows predefined ID format and length constraints.
+ *
+ * Utilizing these schemas in route middleware enhances the application's robustness by
+ * preventing the processing of invalid or improperly formatted data.
+ */
 
+import Joi from "joi";
+import createIdSchema from "../../../shared/createIdSchema.js";
+import { LEVEL_CONSTANTS } from './level.constants.js';
+import {JoiSchemaGenerators} from "../../../shared/joiSchemaGenerators.js";
+
+/**
+ * Joi validation schema for Level ID parameters.
+ * Validates the 'levelId' parameter in request using a custom ID schema.
+ * @constant levelParamsSchema
+ * @type {Joi.ObjectSchema}
+ */
 const levelParamsSchema = Joi.object({
-    levelId: createIdSchema(ID_CONSTANTS?.LEVEL_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
+    levelId: createIdSchema(
+        LEVEL_CONSTANTS?.LEVEL_ID_PREFIX,
+        LEVEL_CONSTANTS?.LEVEL_ID_MIN_LENGTH,
+        LEVEL_CONSTANTS?.LEVEL_ID_MAX_LENGTH
+    ).required()
 });
 
 /**
@@ -15,7 +43,11 @@ const levelParamsSchema = Joi.object({
  * - `image`: Should be a string that matches the IMAGE_PATTERN.
  */
 const levelBodySchema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
+    name: JoiSchemaGenerators.createStringSchema(
+        'name',
+        LEVEL_CONSTANTS?.PROPERTY_NAME_MIN_LENGTH,
+        LEVEL_CONSTANTS?.PROPERTY_NAME_MAX_LENGTH
+    ).required()
 });
 
 /**
