@@ -30,8 +30,11 @@ import updateById from "../shared/updateById.js";
  */
 const incrementFailedAttempts = async (db, userDetails) => {
     try {
-        // Decrement the allowed attempts
-        userDetails.allowedFailedAttempts -= 1;
+        if (userDetails?.allowedFailedAttempts > 0) {
+            // Decrement the allowed attempts
+            userDetails.allowedFailedAttempts -= 1;
+        }
+
         userDetails.lastFailedAttempts = new Date();
 
         await updateById(db, ADMIN_COLLECTION_NAME, userDetails?.id, userDetails);
