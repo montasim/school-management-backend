@@ -8,14 +8,27 @@
  * allows for consistent validation logic across photoGallery-related routes and services.
  *
  * @requires Joi - Library for schema description and data validation.
- * @requires ID_CONSTANTS - Constants related to ID generation and validation.
+ * @requires PHOTO_GALLERY_CONSTANTS - Constants related to ID generation and validation.
  * @requires createIdSchema - Shared utility function for creating ID validation schemas.
  * @module PhotoGalleryValidationSchemas - Exported Joi validation schemas for photoGallery post data.
  */
 
 import Joi from "joi";
-import { ID_CONSTANTS } from './photoGallery.constants.js';
+import { PHOTO_GALLERY_CONSTANTS } from './photoGallery.constants.js';
 import createIdSchema from "../../../../shared/createIdSchema.js";
+import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
+
+/**
+ * Validation schema for creating a new admission form.
+ * Ensures the 'title' field meets specified length requirements and is required.
+ */
+const newPhotoGalleryValidationSchema = Joi.object({
+    title: JoiSchemaGenerators?.createStringSchema(
+        "title",
+        PHOTO_GALLERY_CONSTANTS?.PROPERTY_TITLE_MIN_LENGTH,
+        PHOTO_GALLERY_CONSTANTS?.PROPERTY_TITLE_MAX_LENGTH
+    ).required(),
+})
 
 /**
  * Joi validation schema for photoGallery post parameters.
@@ -24,15 +37,20 @@ import createIdSchema from "../../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating photoGallery post parameters.
  */
 const photoGalleryParamsValidationSchema = Joi.object({
-    photoGalleryId: createIdSchema(ID_CONSTANTS?.PHOTO_GALLERY_PREFIX, ID_CONSTANTS).required()
+    photoGalleryId: createIdSchema(
+        PHOTO_GALLERY_CONSTANTS?.PHOTO_GALLERY_ID_PREFIX,
+        PHOTO_GALLERY_CONSTANTS?.PHOTO_GALLERY_ID_MIN_LENGTH,
+        PHOTO_GALLERY_CONSTANTS?.PHOTO_GALLERY_ID_MAX_LENGTH,
+    ).required()
 });
 
 /**
  * @namespace PhotoGalleryValidationSchemas
  * @description Exported Joi validation schemas for photoGalleryPost data.
- *
+ * - `newPhotoGalleryValidationSchema`: Schema for validating the body of a new photo gallery request.
  * - `photoGalleryParamsValidationSchema`: Schema for validating photoGallery post ID parameters.
  */
 export const PhotoGalleryValidationSchemas = {
+    newPhotoGalleryValidationSchema,
     photoGalleryParamsValidationSchema,
 };

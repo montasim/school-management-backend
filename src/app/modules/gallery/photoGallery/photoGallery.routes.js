@@ -22,7 +22,6 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { PhotoGalleryValidationService } from "./photoGallery.validator.js";
 import { PhotoGalleryController } from "./photoGallery.controller.js";
-import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
 const router = express.Router();
 
@@ -59,9 +58,9 @@ const router = express.Router();
  */
 router.post("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('galleryImage'),
-    multerErrorHandlerMiddleware,
-    PhotoGalleryController.createPhotoGalleryController
+    fileUploadMiddleware?.single('galleryImage'),
+    PhotoGalleryValidationService?.validateNewPhotoGalleryDetails,
+    PhotoGalleryController?.createPhotoGalleryController
 ]);
 
 /**

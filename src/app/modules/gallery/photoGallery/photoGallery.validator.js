@@ -23,30 +23,27 @@ import {
     MIME_TYPE_JPG,
     MIME_TYPE_PNG
 } from "../../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../../helpers/validateDataWithFileSchema.js";
 
 /**
- * Validates the details of a photoGallery post against a predefined schema.
+ * Validates the details of an PhotoGallery against a predefined schema.
  *
  * @async
- * @function validatePhotoGalleryDetails
- * @description Middleware to validate the photoGallery post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the photoGallery post's details.
+ * @function validateNewPhotoGalleryDetails
+ * @description Middleware to validate the PhotoGallery body data using Joi schemas.
+ * @param {Object} req - Express request object containing the PhotoGallery details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validatePhotoGalleryDetails = await validateDataWithSchema(JoiSchemaGenerators.carouselBodyValidationSchema(), 'body');
-
-/**
- * Validates the details of a photoGallery post against a predefined schema.
- *
- * @async
- * @function validatePhotoGalleryDetails
- * @description Middleware to validate the photoGallery post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the photoGallery post's details.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-const validatePhotoGalleryFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema("galleryImage", [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], [MIME_TYPE_PNG, MIME_TYPE_JPG]), "file");
+const validateNewPhotoGalleryDetails = await validateDataWithFileSchema(
+    PhotoGalleryValidationSchemas?.newPhotoGalleryValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "galleryImage",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG],
+    ),
+    true
+);
 
 /**
  * Validates the photoGallery post ID in request parameters.
@@ -65,7 +62,6 @@ const validatePhotoGalleryParams = await validateDataWithSchema(PhotoGalleryVali
  * @description Provides validation services for photoGallery-related data in routes. This includes validation for photoGallery details, photoGallery files, and photoGallery parameters.
  */
 export const PhotoGalleryValidationService = {
-    validatePhotoGalleryDetails,
-    validatePhotoGalleryFile,
+    validateNewPhotoGalleryDetails,
     validatePhotoGalleryParams,
 };

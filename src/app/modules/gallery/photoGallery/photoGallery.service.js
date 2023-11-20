@@ -24,7 +24,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
-import { ID_CONSTANTS } from "./photoGallery.constants.js";
+import { PHOTO_GALLERY_CONSTANTS } from "./photoGallery.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
@@ -57,7 +57,7 @@ const createPhotoGalleryService = async (db, newPhotoGalleryDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const photoGalleryDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.PHOTO_GALLERY_PREFIX),
+            id: generateUniqueID(PHOTO_GALLERY_CONSTANTS?.PHOTO_GALLERY_ID_PREFIX),
             title: title,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
