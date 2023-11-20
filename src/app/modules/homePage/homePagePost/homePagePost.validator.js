@@ -23,30 +23,47 @@ import {
     MIME_TYPE_JPG,
     MIME_TYPE_PNG
 } from "../../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../../helpers/validateDataWithFileSchema.js";
 
 /**
- * Validates the details of a homePagePost post against a predefined schema.
+ * Validates the details of a blog post against a predefined schema.
  *
  * @async
- * @function validateHomePagePostDetails
- * @description Middleware to validate the homePagePost post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the homePagePost post's details.
+ * @function validateNewHomePagePostDetails
+ * @description Middleware to validate the home page post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the home page post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateHomePagePostDetails = await validateDataWithSchema(JoiSchemaGenerators.newPostBodyValidationSchema(), 'body');
+const validateNewHomePagePostDetails = await validateDataWithFileSchema(
+    JoiSchemaGenerators.newPostBodyValidationSchema(),
+    JoiSchemaGenerators.fileValidationSchema(
+        "postImage",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG],
+    ),
+    true
+);
 
 /**
- * Validates the details of a homePagePost post against a predefined schema.
+ * Validates the details of an update home page post against a predefined schema.
  *
  * @async
- * @function validateHomePagePostDetails
- * @description Middleware to validate the homePagePost post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the homePagePost post's details.
+ * @function validateUpdateHomePagePostDetails
+ * @description Middleware to validate the home page post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the home page post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateHomePagePostFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema("postImage", [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], [MIME_TYPE_PNG, MIME_TYPE_JPG]), "file");
+const validateUpdateHomePagePostDetails = await validateDataWithFileSchema(
+    JoiSchemaGenerators.updatePostBodyValidationSchema(),
+    JoiSchemaGenerators.fileValidationSchema(
+        "postImage",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG],
+    ),
+    false
+);
 
 /**
  * Validates the homePagePost post ID in request parameters.
@@ -58,14 +75,17 @@ const validateHomePagePostFile = await validateDataWithSchema(JoiSchemaGenerator
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateHomePagePostParams = await validateDataWithSchema(HomePagePostValidationSchemas.homePagePostParamsValidationSchema, 'params');
+const validateHomePagePostParams = await validateDataWithSchema(
+    HomePagePostValidationSchemas.homePagePostParamsValidationSchema,
+    'params'
+);
 
 /**
  * @namespace HomePagePostValidationService
  * @description Provides validation services for homePagePost-related data in routes. This includes validation for homePagePost details, homePagePost files, and homePagePost parameters.
  */
 export const HomePagePostValidationService = {
-    validateHomePagePostDetails,
-    validateHomePagePostFile,
+    validateNewHomePagePostDetails,
+    validateUpdateHomePagePostDetails,
     validateHomePagePostParams,
 };
