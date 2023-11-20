@@ -24,6 +24,7 @@ import updateById from "../shared/updateById.js";
  * @param {Object} db - The database connection object.
  * @param {Object} foundAdminDetails - The admin record from the database.
  * @param {string} tokenId - The token ID to remove from the admin record.
+ * @param {number} validToken - The valid token number in the database
  * @returns {Promise<void>} A promise indicating the completion of the operation. Errors are logged and returned.
  */
 const removeTokenDetails = async (db, foundAdminDetails, tokenId, validToken = 0) => {
