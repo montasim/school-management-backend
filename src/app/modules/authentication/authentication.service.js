@@ -17,7 +17,11 @@
  */
 
 import bcrypt from 'bcrypt';
-import { ADMIN_COLLECTION_NAME, MAX_CONCURRENT_LOGINS } from "../../../config/config.js";
+import {
+    ADMIN_COLLECTION_NAME,
+    MAX_CONCURRENT_LOGINS,
+    MAX_FAILED_ATTEMPTS
+} from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -84,9 +88,13 @@ const loginService = async (db, loginDetails) => {
          * (which could be incorrectly interpreted as an octal number) or include non-numeric characters.
          */
         if (foundAdminDetails?.currentlyLoggedInDevice >= parseInt(MAX_CONCURRENT_LOGINS, 10))
-            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that 3 devices at a time. Please log out from any of the login device and try again");
+            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that 'MAX_CONCURRENT_LOGINS' devices at a time. Please log out from any of the login device and try again");
 
-        await checkIfAccountIsLocked(foundAdminDetails);
+        // Check if the account is locked
+        const accountLockResponse = checkIfAccountIsLocked(foundAdminDetails);
+
+        if (accountLockResponse)
+            return accountLockResponse; // Return the lock response immediately if the account is locked
 
         const isPasswordMatch = await bcrypt.compare(password, foundAdminDetails?.password);
 
@@ -205,7 +213,7 @@ const signupService = async (db, signupDetails) => {
                     currentlyLoggedInDevice: 0,
                     tokenId: [],
                     lastLoginAt: null,
-                    allowedFailedAttempts: 3,
+                    allowedFailedAttempts: MAX_FAILED_ATTEMPTS,
                     lastFailedAttempts: null,
                     createdAt: new Date(),
                 };
@@ -347,14 +355,15 @@ const logoutService = async (db, adminId, tokenId) => {
  * @async
  * @function deleteUserService
  * @param {Object} db - The database connection object.
- * @param {Object} deleteAdminDetails - The details of the admin user to be deleted.
- * @param {string} deleteAdminDetails.adminId - The unique identifier of the admin user to be deleted.
+ * @param {Object} adminDetails - The details of the admin user to be deleted.
+ * @param {string} adminDetails.adminId - The unique identifier of the admin user to be deleted.
  * @returns {Promise<Object>} A promise that resolves with the response data after attempting to delete the admin user.
  * @throws {Error} Throws an error if the operation fails.
  */
-const deleteUserService = async (db, deleteAdminDetails) => {
+const deleteUserService = async (db, adminDetails) => {
     try {
-        const { adminId } = deleteAdminDetails;
+        const { adminId } = adminDetails;
+
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 

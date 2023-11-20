@@ -32,16 +32,19 @@ import generateResponseData from "../shared/generateResponseData.js";
 const checkIfAccountIsLocked = (foundAdminDetails) => {
     try {
         // Check if the account is locked due to failed attempts
-        if (foundAdminDetails?.allowedFailedAttempts <= 0 &&
-            new Date() - new Date(foundAdminDetails?.lastFailedAttempts) < 5 * 60 * 1000) {
+        const timeSinceLastFailedAttempt = new Date() - new Date(foundAdminDetails?.lastFailedAttempts);
 
+        if (foundAdminDetails?.allowedFailedAttempts <= 0 && timeSinceLastFailedAttempt < 5 * 60 * 1000) {
+            // Account is locked if there are no allowed failed attempts left and the last failed attempt was within the last 5 minutes
             return generateResponseData({}, false, STATUS_LOCKED, "Too many failed attempts. Your account has been locked. Please try again later after 5 minutes.");
         }
+
+        return null; // Return null or a similar indicator if the account is not locked
     } catch (error) {
         logger.error(error);
 
-        return error;
+        return generateResponseData({}, false, STATUS_LOCKED, "Error checking account lock status.");
     }
-}
+};
 
 export default checkIfAccountIsLocked;
