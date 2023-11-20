@@ -24,7 +24,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
-import { ID_CONSTANTS } from "./videoGallery.constants.js";
+import { VIDEO_GALLERY_CONSTANTS } from "./videoGallery.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
@@ -51,13 +51,13 @@ const createVideoGalleryService = async (db, newVideoGalleryDetails, file) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations?.uploadFileToDrive(file);
 
         if (!uploadGoogleDriveFileResponse?.shareableLink)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const videoGalleryDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.VIDEO_GALLERY_PREFIX),
+            id: generateUniqueID(VIDEO_GALLERY_CONSTANTS?.VIDEO_GALLERY_ID_PREFIX),
             title: title,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
@@ -76,7 +76,6 @@ const createVideoGalleryService = async (db, newVideoGalleryDetails, file) => {
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
-
     } catch (error) {
         logger.error(error);
 

@@ -22,7 +22,6 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { VideoGalleryValidationService } from "./videoGallery.validator.js";
 import { VideoGalleryController } from "./videoGallery.controller.js";
-import multerErrorHandlerMiddleware from "../../../middlewares/multerErrorHandlerMiddleware.js";
 
 const router = express.Router();
 
@@ -60,7 +59,6 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('galleryVideo'),
-    multerErrorHandlerMiddleware,
     VideoGalleryController.createVideoGalleryController
 ]);
 

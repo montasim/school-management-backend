@@ -17,34 +17,28 @@
 import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
 import { VideoGalleryValidationSchemas } from "./videoGallery.schema.js";
 import { JoiSchemaGenerators}  from "../../../../shared/joiSchemaGenerators.js";
-import {
-    FILE_EXTENSION_TYPE_MP4,
-    MIME_TYPE_MP4
-} from "../../../../constants/constants.js";
+import { FILE_EXTENSION_TYPE_MP4, MIME_TYPE_MP4 } from "../../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../../helpers/validateDataWithFileSchema.js";
 
 /**
- * Validates the details of a videoGallery post against a predefined schema.
+ * Validates the details of an PhotoGallery against a predefined schema.
  *
  * @async
- * @function validateVideoGalleryDetails
- * @description Middleware to validate the videoGallery post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the videoGallery post's details.
+ * @function validateNewPhotoGalleryDetails
+ * @description Middleware to validate the PhotoGallery body data using Joi schemas.
+ * @param {Object} req - Express request object containing the PhotoGallery details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateVideoGalleryDetails = await validateDataWithSchema(JoiSchemaGenerators.carouselBodyValidationSchema(), 'body');
-
-/**
- * Validates the details of a videoGallery post against a predefined schema.
- *
- * @async
- * @function validateVideoGalleryDetails
- * @description Middleware to validate the videoGallery post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the videoGallery post's details.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-const validateVideoGalleryFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema("galleryVideo", [FILE_EXTENSION_TYPE_MP4], [MIME_TYPE_MP4]), "file");
+const validateNewVideoGalleryDetails = await validateDataWithFileSchema(
+    VideoGalleryValidationSchemas?.newVideoGalleryValidationSchema,
+    JoiSchemaGenerators?.fileValidationSchema(
+        "galleryVideo",
+        [FILE_EXTENSION_TYPE_MP4],
+        [MIME_TYPE_MP4],
+    ),
+    true
+);
 
 /**
  * Validates the videoGallery post ID in request parameters.
@@ -56,14 +50,16 @@ const validateVideoGalleryFile = await validateDataWithSchema(JoiSchemaGenerator
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateVideoGalleryParams = await validateDataWithSchema(VideoGalleryValidationSchemas.videoGalleryParamsValidationSchema, 'params');
+const validateVideoGalleryParams = await validateDataWithSchema(
+    VideoGalleryValidationSchemas.videoGalleryParamsValidationSchema,
+    'params'
+);
 
 /**
  * @namespace VideoGalleryValidationService
  * @description Provides validation services for videoGallery-related data in routes. This includes validation for videoGallery details, videoGallery files, and videoGallery parameters.
  */
 export const VideoGalleryValidationService = {
-    validateVideoGalleryDetails,
-    validateVideoGalleryFile,
+    validateNewVideoGalleryDetails,
     validateVideoGalleryParams,
 };

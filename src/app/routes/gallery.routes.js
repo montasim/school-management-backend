@@ -10,7 +10,7 @@
  */
 
 import express from "express";
-import photoGalleryRoutes from "../modules/gallery/videoGallery/videoGallery.routes.js";
+import photoGalleryRoutes from "../modules/gallery/photoGallery/photoGallery.routes.js";
 import videoGalleryRoutes from "../modules/gallery/videoGallery/videoGallery.routes.js";
 
 const router = express.Router();
@@ -20,12 +20,12 @@ const router = express.Router();
  * All requests on the '/photo' path are forwarded to the photoGalleryRoutes module,
  * which contains specific endpoints and logic for handling photo gallery related operations.
  */
-router.use("/photo", photoGalleryRoutes);
+router.use("/photoGallery", photoGalleryRoutes);
 
 /**
  * Routes for the Video Gallery.
  * All requests on the '/video' path are forwarded to the videoGalleryRoutes module,
  * which contains specific endpoints and logic for handling video gallery related operations.
  */
-router.use("/video", videoGalleryRoutes);
+router.use("/videoGallery", videoGalleryRoutes);
 export default router;

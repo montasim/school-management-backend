@@ -36,7 +36,7 @@ const MIME_TYPE_PDF = "application/pdf";
 const MIME_TYPE_JPG = "image/jpeg";
 const MIME_TYPE_PNG = "image/png";
 const MIME_TYPE_ICO = "image/x-icon";
-const MIME_TYPE_MP4 = "application/mp4";
+const MIME_TYPE_MP4 = "video/mp4";
 
 // File size
 const MAXIMUM_FILE_SIZE = 1024 * 1024 * 1.1 // 1.1MB

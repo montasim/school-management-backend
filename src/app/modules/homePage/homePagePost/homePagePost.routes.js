@@ -68,7 +68,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
-    multerErrorHandlerMiddleware,
+    HomePagePostValidationService.validateNewHomePagePostDetails,
     HomePagePostController.createHomePagePostController
 ]);
 
@@ -166,8 +166,8 @@ router.get("/:homePagePostId", [
 router.put("/:homePagePostId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('postImage'),
-    multerErrorHandlerMiddleware,
     HomePagePostValidationService.validateHomePagePostParams,
+    HomePagePostValidationService.validateUpdateHomePagePostDetails,
     HomePagePostController.updateAHomePagePostController
 ]);
 

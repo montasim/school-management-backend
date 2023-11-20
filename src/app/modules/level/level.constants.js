@@ -1,22 +1,39 @@
 /**
- * @constant
- * @namespace ID_CONSTANTS
- * @description Constants related to ID generation and validation.
- * @property {string} ADMIN_PREFIX - Prefix for admin IDs.
- * @property {string} STUDENT_PREFIX - Prefix for level IDs.
- * @property {number} MIN_LENGTH - Minimum allowed length for IDs.
- * @property {number} MAX_LENGTH - Maximum allowed length for IDs.
+ * @fileoverview Constants for Level ID Generation and Validation.
+ *
+ * This module exports a set of constants used throughout the application for managing Level IDs.
+ * These constants include a designated prefix for Level IDs, and defined minimum and maximum lengths.
+ * They play a crucial role in standardizing the format of Level IDs across the application,
+ * ensuring consistency in ID structure and facilitating easier validation and management of these identifiers.
+ *
+ * The constants defined here are used in various parts of the application, particularly in validation schemas
+ * and wherever Level IDs are generated or processed. This centralized definition of ID-related constants
+ * helps maintain uniformity and reduces the likelihood of errors in ID handling.
+ *
+ * @module LEVEL_CONSTANTS - Exports constants for Level ID management.
  */
-export const ID_CONSTANTS = {
-    LEVEL_PREFIX: "level",
-    MIN_LENGTH: 9,
-    MAX_LENGTH: 30
-};
+
+const LEVEL_ID_PREFIX = 'level';
+const LEVEL_ID_MIN_LENGTH = 18;
+const LEVEL_ID_MAX_LENGTH = 18;
+
+const PROPERTY_NAME_MIN_LENGTH = 3;
+const PROPERTY_NAME_MAX_LENGTH = 40;
 
 /**
- * @constant
- * @type {RegExp}
- * @description Regular expression pattern for validating image filenames.
- * Expected to match filenames with alphanumeric characters and ending with jpg, png, jpeg, or gif extensions.
+ * @constant LEVEL_CONSTANTS
+ * @description Provides constants for Level ID creation and validation.
+ * - `LEVEL_ID_PREFIX`: The prefix to be used in Level IDs.
+ * - `LEVEL_ID_MIN_LENGTH`: The minimum length of a valid Level ID.
+ * - `LEVEL_ID_MAX_LENGTH`: The maximum length of a valid Level ID.
+ * - `PROPERTY_NAME_MIN_LENGTH`: The minimum length of a valid name.
+ * - `PROPERTY_NAME_MAX_LENGTH`: The maximum length of a valid name.
+ * Ensures consistency in the length and format of Level IDs across the application.
  */
-export const IMAGE_PATTERN = /[a-zA-Z0-9]+\.(jpg|png|jpeg|gif)$/;
+export const LEVEL_CONSTANTS = {
+    LEVEL_ID_PREFIX,
+    LEVEL_ID_MIN_LENGTH,
+    LEVEL_ID_MAX_LENGTH,
+    PROPERTY_NAME_MIN_LENGTH,
+    PROPERTY_NAME_MAX_LENGTH
+};

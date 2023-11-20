@@ -38,8 +38,9 @@ import userRateLimiter from "./app/middlewares/userRateLimiter.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import appRoutes from "./app/routes/index.js";
 import { SECRET_KEY } from "./config/config.js";
-import { STATUS_INTERNAL_SERVER_ERROR } from "./constants/constants.js";
+import {STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND} from "./constants/constants.js";
 import logger from "./shared/logger.js";
+import generateResponseData from "./shared/generateResponseData.js";
 
 const app = express();
 
@@ -153,7 +154,14 @@ app.use((error, req, res, next) => {
      */
     app.use(DatabaseMiddleware.disconnect);
 
-    return res?.status(STATUS_INTERNAL_SERVER_ERROR).send('Something broke on the app!');
+    return res?.status(STATUS_INTERNAL_SERVER_ERROR).json(
+        generateResponseData(
+            {},
+            false,
+            STATUS_INTERNAL_SERVER_ERROR,
+            `UNCAUGHT EXCEPTION FROM SERVER: "${error}"`
+        )
+    );
 });
 
 export default app;

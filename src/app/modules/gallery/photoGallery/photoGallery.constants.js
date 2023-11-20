@@ -1,22 +1,24 @@
 /**
- * @constant
- * @namespace ID_CONSTANTS
- * @description Constants related to ID generation and validation.
- * @property {string} ADMIN_PREFIX - Prefix for admin IDs.
- * @property {string} STUDENT_PREFIX - Prefix for photoGallery IDs.
- * @property {number} MIN_LENGTH - Minimum allowed length for IDs.
- * @property {number} MAX_LENGTH - Maximum allowed length for IDs.
+ * @fileoverview Constants for Photo Gallery Validation.
+ *
+ * This file defines a set of constants used throughout the application, specifically for
+ * validating photo gallery data. These constants include various parameters like ID prefixes,
+ * minimum and maximum lengths for different form fields such as the photo gallery ID and
+ * property titles. Defining these constants in a separate file ensures consistency and ease of
+ * maintenance, as they can be easily updated and reused across different parts of the application.
  */
-export const ID_CONSTANTS = {
-    PHOTO_GALLERY_PREFIX: "photoGallery",
-    MIN_LENGTH: 9,
-    MAX_LENGTH: 30
-};
 
-/**
- * @constant
- * @type {RegExp}
- * @description Regular expression pattern for validating image filenames.
- * Expected to match filenames with alphanumeric characters and ending with jpg, png, jpeg, or gif extensions.
- */
-export const IMAGE_PATTERN = /[a-zA-Z0-9]+\.(jpg|png|jpeg|gif)$/;
+const PHOTO_GALLERY_ID_PREFIX = 'photoGallery';
+const PHOTO_GALLERY_ID_MIN_LENGTH = 19;
+const PHOTO_GALLERY_ID_MAX_LENGTH = 19;
+
+const PROPERTY_TITLE_MIN_LENGTH = 3;
+const PROPERTY_TITLE_MAX_LENGTH = 200;
+
+export const PHOTO_GALLERY_CONSTANTS = {
+    PHOTO_GALLERY_ID_PREFIX,
+    PHOTO_GALLERY_ID_MIN_LENGTH,
+    PHOTO_GALLERY_ID_MAX_LENGTH,
+    PROPERTY_TITLE_MIN_LENGTH,
+    PROPERTY_TITLE_MAX_LENGTH,
+};

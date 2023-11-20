@@ -27,8 +27,8 @@ import logger from "../../../../shared/logger.js";
  */
 const createAdmissionInformationController = async (req, res) => {
     try {
-        const { title, description, formFee, admissionFee, lastFormSubmissionData, contact, adminId, db } = extractFromRequest(req, ['title', 'description', 'formFee', 'admissionFee', 'lastFormSubmissionData', 'contact']);
-        const newAdmissionInformationDetails = { title, description, formFee, admissionFee, lastFormSubmissionData, contact, adminId };
+        const { title, description, formPrice, admissionFee, lastFormSubmissionData, contact, adminId, db } = extractFromRequest(req, ['title', 'description', 'formPrice', 'admissionFee', 'lastFormSubmissionData', 'contact']);
+        const newAdmissionInformationDetails = { title, description, formPrice, admissionFee, lastFormSubmissionData, contact, adminId };
 
         await handleServiceResponse(res, AdmissionInformationService.createAdmissionInformationService, db, newAdmissionInformationDetails);
     } catch (error) {
@@ -86,8 +86,8 @@ const getAAdmissionInformationController = async (req, res) => {
  */
 const updateAAdmissionInformationController = async (req, res) => {
     try {
-        const { admissionInformationId, title, description, formFee, admissionFee, lastFormSubmissionData, contact, adminId, db } = extractFromRequest(req, ['title', 'description', 'formFee', 'admissionFee', 'lastFormSubmissionData', 'contact'], ['admissionInformationId']);
-        const updatedAdmissionInformationDetails = { title, description, formFee, admissionFee, lastFormSubmissionData, contact, adminId };
+        const { admissionInformationId, title, description, formPrice, admissionFee, lastFormSubmissionData, contact, adminId, db } = extractFromRequest(req, ['title', 'description', 'formPrice', 'admissionFee', 'lastFormSubmissionData', 'contact'], ['admissionInformationId']);
+        const updatedAdmissionInformationDetails = { title, description, formPrice, admissionFee, lastFormSubmissionData, contact, adminId };
 
         await handleServiceResponse(res, AdmissionInformationService.updateAAdmissionInformationService, db, admissionInformationId, updatedAdmissionInformationDetails);
     } catch (error) {

@@ -121,12 +121,12 @@ const fileValidationSchema = (allowedFieldname, allowedExtensions = [FILE_EXTENS
           }),
       buffer: fileBufferValidationSchema(),
       size: Joi.number()
-          .max(MAXIMUM_FILE_SIZE) //
+          .max(MAXIMUM_FILE_SIZE)
           .required()
           .messages({
               'number.base': `"size" should be a number`,
               'number.max': `"size" must not exceed 1.1MB`,
-              'any.required': `Invalid or empty file`
+              'any.required': `File must not exceed 1.1MB`
           })
   }).description('File to be uploaded with validated MIME type and size.')
 };

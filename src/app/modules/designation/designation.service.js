@@ -53,11 +53,11 @@ const createDesignationService = async (db, newDesignationDetails) => {
     try {
         const { name, adminId } = newDesignationDetails;
 
-        if (await findByField(db, DESIGNATION_COLLECTION_NAME, 'name', name))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
-
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+
+        if (await findByField(db, DESIGNATION_COLLECTION_NAME, 'name', name))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
 
         const designationDetails = {
             id: generateUniqueID(DESIGNATION_CONSTANTS?.DESIGNATION_ID_PREFIX),
@@ -75,7 +75,6 @@ const createDesignationService = async (db, newDesignationDetails) => {
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${designationDetails?.name} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
-
     } catch (error) {
         logger.error(error);
 
@@ -163,7 +162,6 @@ const updateADesignationService = async (db, designationId, newDesignationDetail
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${designationId} updated successfully`)
             : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${designationId} not updated`);
-
     } catch (error) {
         logger.error(error);
 

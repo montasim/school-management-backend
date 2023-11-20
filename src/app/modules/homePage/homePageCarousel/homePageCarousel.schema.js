@@ -14,8 +14,21 @@
  */
 
 import Joi from "joi";
-import { ID_CONSTANTS } from './homePageCarousel.constants.js';
 import createIdSchema from "../../../../shared/createIdSchema.js";
+import { HOME_PAGE_CAROUSEL_CONSTANTS } from './homePageCarousel.constants.js';
+import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
+
+/**
+ * Validation schema for creating a new home page carousel.
+ * Ensures the 'title' field meets specified length requirements and is required.
+ */
+const newHomePageCarouselBodyValidationSchema = Joi.object({
+    title: JoiSchemaGenerators?.createStringSchema(
+        "title",
+        HOME_PAGE_CAROUSEL_CONSTANTS?.PROPERTY_TITLE_MIN_LENGTH,
+        HOME_PAGE_CAROUSEL_CONSTANTS?.PROPERTY_TITLE_MAX_LENGTH
+    ).required(),
+})
 
 /**
  * Joi validation schema for homePageCarousel post parameters.
@@ -24,7 +37,11 @@ import createIdSchema from "../../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating homePageCarousel post parameters.
  */
 const homePageCarouselParamsValidationSchema = Joi.object({
-    homePageCarouselId: createIdSchema(ID_CONSTANTS?.HOME_PAGE_CAROUSEL_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
+    homePageCarouselId: createIdSchema(
+        HOME_PAGE_CAROUSEL_CONSTANTS?.HOME_PAGE_CAROUSEL_ID_PREFIX,
+        HOME_PAGE_CAROUSEL_CONSTANTS?.HOME_PAGE_CAROUSEL_ID_MIN_LENGTH,
+        HOME_PAGE_CAROUSEL_CONSTANTS?.HOME_PAGE_CAROUSEL_ID_MAX_LENGTH
+    ).required()
 });
 
 /**
@@ -34,5 +51,6 @@ const homePageCarouselParamsValidationSchema = Joi.object({
  * - `homePageCarouselParamsValidationSchema`: Schema for validating homePageCarousel post ID parameters.
  */
 export const HomePageCarouselValidationSchemas = {
+    newHomePageCarouselBodyValidationSchema,
     homePageCarouselParamsValidationSchema,
 };

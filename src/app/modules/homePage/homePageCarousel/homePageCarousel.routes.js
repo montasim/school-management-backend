@@ -60,9 +60,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('carouselImage'),
-    multerErrorHandlerMiddleware,
-    HomePageCarouselValidationService.validateHomePageCarouselDetails,
-    HomePageCarouselValidationService.validateHomePageCarouselFile,
+    HomePageCarouselValidationService.validateNewHomePageCarouselDetails,
     HomePageCarouselController.createHomePageCarouselController
 ]);
 

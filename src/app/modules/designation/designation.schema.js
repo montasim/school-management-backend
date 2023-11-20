@@ -17,6 +17,7 @@
 import Joi from "joi";
 import { DESIGNATION_CONSTANTS } from './designation.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 
 /**
  * Joi validation schema for Designation ID parameters.
@@ -25,7 +26,11 @@ import createIdSchema from "../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema}
  */
 const designationParamsSchema = Joi.object({
-    designationId: createIdSchema(DESIGNATION_CONSTANTS?.DESIGNATION_ID_PREFIX, DESIGNATION_CONSTANTS?.DESIGNATION_ID_MIN_LENGTH, DESIGNATION_CONSTANTS?.DESIGNATION_ID_MAX_LENGTH).required()
+    designationId: createIdSchema(
+        DESIGNATION_CONSTANTS?.DESIGNATION_ID_PREFIX,
+        DESIGNATION_CONSTANTS?.DESIGNATION_ID_MIN_LENGTH,
+        DESIGNATION_CONSTANTS?.DESIGNATION_ID_MAX_LENGTH
+    ).required()
 });
 
 /**
@@ -36,7 +41,11 @@ const designationParamsSchema = Joi.object({
  * @type {Joi.ObjectSchema}
  */
 const designationBodySchema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
+    name: JoiSchemaGenerators.createStringSchema(
+        'name',
+        DESIGNATION_CONSTANTS?.PROPERTY_NAME_MIN_LENGTH,
+        DESIGNATION_CONSTANTS?.PROPERTY_NAME_MAX_LENGTH
+    ).required()
 });
 
 /**
