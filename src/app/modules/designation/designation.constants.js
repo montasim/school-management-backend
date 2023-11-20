@@ -17,16 +17,23 @@ const DESIGNATION_ID_PREFIX = 'designation';
 const DESIGNATION_ID_MIN_LENGTH = 18;
 const DESIGNATION_ID_MAX_LENGTH = 18;
 
+const PROPERTY_NAME_MIN_LENGTH = 3;
+const PROPERTY_NAME_MAX_LENGTH = 40;
+
 /**
  * @constant DESIGNATION_CONSTANTS
  * @description Provides constants for Designation ID creation and validation.
  * - `DESIGNATION_ID_PREFIX`: The prefix to be used in Designation IDs.
  * - `DESIGNATION_ID_MIN_LENGTH`: The minimum length of a valid Designation ID.
  * - `DESIGNATION_ID_MAX_LENGTH`: The maximum length of a valid Designation ID.
+ * - `PROPERTY_NAME_MIN_LENGTH`: The minimum length of a valid name.
+ * - `PROPERTY_NAME_MAX_LENGTH`: The maximum length of a valid name.
  * Ensures consistency in the length and format of Designation IDs across the application.
  */
 export const DESIGNATION_CONSTANTS = {
     DESIGNATION_ID_PREFIX,
     DESIGNATION_ID_MIN_LENGTH,
     DESIGNATION_ID_MAX_LENGTH,
+    PROPERTY_NAME_MIN_LENGTH,
+    PROPERTY_NAME_MAX_LENGTH
 };
