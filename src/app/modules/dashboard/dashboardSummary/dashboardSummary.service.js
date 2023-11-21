@@ -58,10 +58,11 @@ import generateResponseData from "../../../../shared/generateResponseData.js";
  * It supports aggregation from a single specified collection or multiple collections.
  * @param {Object} db - Database connection object.
  * @param {string} adminId - Admin ID for validating the request.
+ * @param {string} filterBy - Optional filter to specify a particular collection for aggregation.
  * @returns {Promise<Object>} A promise that resolves to the aggregated summary data or an error message.
  * @throws {Error} If an error occurs during database operation or if invalid parameters are provided.
  */
-const getDashboardSummaryService = async (db, adminId) => {
+const getDashboardSummaryService = async (db, adminId, filterBy) => {
     try {
         if (!(await isValidRequest(db, adminId))) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -172,7 +173,13 @@ const getDashboardSummaryService = async (db, adminId) => {
             details: studentLevelCounts,
         };
 
-        return generateResponseData(returnData, true, STATUS_OK, "Summary fetched successfully");
+        if (filterBy) {
+            // If 'filterBy' is provided, return data for that filter
+            return generateResponseData(returnData[filterBy] || {}, true, STATUS_OK, "Summary fetched successfully");
+        } else {
+            // If no 'filterBy' is provided, return all data
+            return generateResponseData(returnData, true, STATUS_OK, "Summary fetched successfully");
+        }
     } catch (error) {
         logger.error(error);
         return error;
