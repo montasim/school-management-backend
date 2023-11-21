@@ -25,7 +25,11 @@ import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
  * Ensures that the category ID in request parameters matches the expected format.
  */
 const categoryParamsSchema = Joi.object({
-    categoryId: createIdSchema(CATEGORY_CONSTANTS?.CATEGORY_ID_PREFIX, CATEGORY_CONSTANTS?.CATEGORY_ID_MIN_LENGTH, CATEGORY_CONSTANTS?.CATEGORY_ID_MIN_LENGTH).required()
+    categoryId: createIdSchema(
+        CATEGORY_CONSTANTS?.CATEGORY_ID_PREFIX,
+        CATEGORY_CONSTANTS?.CATEGORY_ID_MIN_LENGTH,
+        CATEGORY_CONSTANTS?.CATEGORY_ID_MIN_LENGTH
+    ).required()
 });
 
 /**

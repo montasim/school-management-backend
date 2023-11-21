@@ -1,9 +1,36 @@
-import Joi from "joi";
-import { ID_CONSTANTS } from './othersInformationCategory.constants.js';
-import createIdSchema from "../../../shared/createIdSchema.js";
+/**
+ * @fileoverview Joi Validation Schemas for Others Information Category Data.
+ *
+ * This module provides Joi schemas for validating others information category-related data in Express routes.
+ * It offers a comprehensive way to ensure that data related to categories, both in request parameters (like IDs)
+ * and in the request body, adheres to the expected formats and constraints.
+ *
+ * The validation schemas help maintain consistency and integrity of data throughout the application.
+ * They are particularly useful in routes handling others information category creation, updates, and retrieval by ensuring
+ * that only valid and well-formed data is processed. This is crucial for both functionality and security.
+ *
+ * @requires Joi - Library for schema description and data validation.
+ * @requires CATEGORY_CONSTANTS - Constants related to ID generation and validation.
+ * @requires createIdSchema - Utility function for creating ID validation schemas.
+ * @module CategorySchema - Exported Joi validation schemas for others information category data.
+ */
 
+import Joi from "joi";
+import { OTHERS_INFORMATION_CATEGORY_CONSTANTS } from './othersInformationCategory.constants.js';
+import createIdSchema from "../../../shared/createIdSchema.js";
+import {JoiSchemaGenerators} from "../../../shared/joiSchemaGenerators.js";
+import {CATEGORY_CONSTANTS} from "../category/category.constants.js";
+
+/**
+ * Validation schema for othersInformationCategory ID parameters.
+ * Ensures that the othersInformationCategory ID in request parameters matches the expected format.
+ */
 const othersInformationCategoryParamsSchema = Joi.object({
-    othersInformationCategoryId: createIdSchema(ID_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
+    othersInformationCategoryId: createIdSchema(
+        OTHERS_INFORMATION_CATEGORY_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_ID_PREFIX,
+        OTHERS_INFORMATION_CATEGORY_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_ID_MIN_LENGTH,
+        OTHERS_INFORMATION_CATEGORY_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_ID_MAX_LENGTH
+    ).required()
 });
 
 /**
@@ -11,11 +38,13 @@ const othersInformationCategoryParamsSchema = Joi.object({
  * Validates the name, level, and image fields.
  *
  * - `name`: Should be a string with a minimum length of 3 and a maximum length of 30.
- * - `level`: Should be a string with a minimum length of 2 and a maximum length of 20.
- * - `image`: Should be a string that matches the IMAGE_PATTERN.
  */
 const othersInformationCategoryBodySchema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
+    name: JoiSchemaGenerators.createStringSchema(
+        'name',
+        OTHERS_INFORMATION_CATEGORY_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_NAME_MIN_LENGTH,
+        OTHERS_INFORMATION_CATEGORY_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_NAME_MAX_LENGTH,
+    ),
 });
 
 /**
