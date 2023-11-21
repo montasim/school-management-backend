@@ -11,6 +11,7 @@
 
 import express from "express";
 import dashboardDetailsRoutes from "../modules/dashboard/dashboardDetails/dashboardDetails.routes.js";
+import dashboardSummaryRoutes from "../modules/dashboard/dashboardSummary/dashboardSummary.routes.js";
 
 const router = express.Router();
 
@@ -26,5 +27,5 @@ router.use("/details", dashboardDetailsRoutes);
  * All requests on the '/video' path are forwarded to the videoDashboardRoutes module,
  * which contains specific endpoints and logic for handling video dashboard related operations.
  */
-router.use("/summary", dashboardDetailsRoutes);
+router.use("/summary", dashboardSummaryRoutes);
 export default router;

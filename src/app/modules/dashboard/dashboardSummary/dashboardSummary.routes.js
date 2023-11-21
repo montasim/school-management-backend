@@ -1,5 +1,5 @@
 /**
- * @fileoverview Routes for the Dashboard Details Module.
+ * @fileoverview Routes for the Dashboard Summary Module.
  *
  * This module sets up the Express router for the dashboard-related routes in the application.
  * It includes endpoints for fetching system summaries and other dashboard-related data.
@@ -9,13 +9,13 @@
  *
  * @requires express - Express framework to create router handlers.
  * @requires authTokenMiddleware - Middleware to authenticate and authorize users.
- * @requires DashboardDetailsController - Controller module for dashboard-related operations.
+ * @requires DashboardSummaryController - Controller module for dashboard-related operations.
  * @module dashboardRoutes - Express router instance for dashboard routes.
  */
 
 import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
-import { DashboardDetailsController } from "./dashboardDetails.controller.js";
+import { DashboardSummaryController } from "./dashboardSummary.controller.js";
 
 const router = express.Router();
 
@@ -23,11 +23,11 @@ const router = express.Router();
  * @swagger
  * /summary:
  *   get:
- *     summary: Get the dashboard details.
- *     description: Endpoint to get the details of the system.
+ *     summary: Get the dashboard summary.
+ *     description: Endpoint to get the summary of the system.
  *     responses:
  *       200:
- *         description: Details fetched successfully.
+ *         description: Summary fetched successfully.
  *       401:
  *         description: Unauthorized request due to missing or invalid token.
  *       500:
@@ -35,7 +35,7 @@ const router = express.Router();
  */
 router.get("/", [
     authTokenMiddleware,
-    DashboardDetailsController.getDashboardDetailsController
+    DashboardSummaryController.getDashboardSummaryController
 ]);
 
 
