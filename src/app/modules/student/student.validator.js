@@ -23,30 +23,47 @@ import {
     MIME_TYPE_JPG,
     MIME_TYPE_PNG
 } from "../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../helpers/validateDataWithFileSchema.js";
 
 /**
- * Validates the details of a student post against a predefined schema.
+ * Validates the details of a student against a predefined schema.
  *
  * @async
- * @function validateStudentDetails
+ * @function validateNewStudentDetails
+ * @description Middleware to validate the student post's body and file data using Joi schemas.
+ * @param {Object} req - Express request object containing the student post's details.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const validateNewStudentDetails = await validateDataWithFileSchema(
+    StudentValidationSchemas.newStudentValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "file",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG]
+    ),
+    true
+);
+
+/**
+ * Validates the details of a student against a predefined schema.
+ *
+ * @async
+ * @function validateUpdateStudentDetails
  * @description Middleware to validate the student post's body data using Joi schemas.
  * @param {Object} req - Express request object containing the student post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateStudentDetails = await validateDataWithSchema(JoiSchemaGenerators.studentBodyValidationSchema(), 'body');
-
-/**
- * Validates the details of a student post against a predefined schema.
- *
- * @async
- * @function validateStudentDetails
- * @description Middleware to validate the student post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the student post's details.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-const validateStudentFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema("image", [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], [MIME_TYPE_PNG, MIME_TYPE_JPG]), "file");
+const validateUpdateStudentDetails = await validateDataWithFileSchema(
+    StudentValidationSchemas.updateStudentValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "file",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG]
+    ),
+    false
+);
 
 /**
  * Validates the student post ID in request parameters.
@@ -65,7 +82,7 @@ const validateStudentParams = await validateDataWithSchema(StudentValidationSche
  * @description Provides validation services for student-related data in routes. This includes validation for student details, student files, and student parameters.
  */
 export const StudentValidationService = {
-    validateStudentDetails,
-    validateStudentFile,
+    validateNewStudentDetails,
+    validateUpdateStudentDetails,
     validateStudentParams,
 };

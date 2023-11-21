@@ -22,7 +22,6 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { StudentValidationService } from "./student.validator.js";
 import { StudentController } from "./student.controller.js";
-import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
 const router = express.Router();
 
@@ -68,7 +67,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
-    multerErrorHandlerMiddleware,
+    StudentValidationService.validateNewStudentDetails,
     StudentController.createStudentController
 ]);
 
@@ -166,8 +165,8 @@ router.get("/:studentId", [
 router.put("/:studentId", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
-    multerErrorHandlerMiddleware,
     StudentValidationService.validateStudentParams,
+    StudentValidationService.validateUpdateStudentDetails,
     StudentController.updateAStudentController
 ]);
 

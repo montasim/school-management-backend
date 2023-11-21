@@ -66,22 +66,6 @@ const validateUpdatedAdministrationDetails = await validateDataWithFileSchema(
 );
 
 /**
- * Validates the details of an administration post against a predefined schema.
- *
- * @async
- * @function validateAdministrationDetails
- * @description Middleware to validate the administration post's body data using Joi schemas.
- * @param {Object} req - Express request object containing the administration post's details.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-const validateAdministrationFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema(
-    "image",
-    [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
-    [MIME_TYPE_PNG, MIME_TYPE_JPG]
-), "file");
-
-/**
  * Validates the administration post ID in request parameters.
  *
  * @async
@@ -101,6 +85,5 @@ const validateAdministrationParams = await validateDataWithSchema(Administration
 export const AdministrationValidationService = {
     validateNewAdministrationDetails,
     validateUpdatedAdministrationDetails,
-    validateAdministrationFile,
     validateAdministrationParams,
 };

@@ -14,8 +14,59 @@
  */
 
 import Joi from "joi";
-import { ID_CONSTANTS } from './student.constants.js';
+import { STUDENT_CONSTANTS } from './student.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
+
+/**
+ * @description Joi validation schema for new student data.
+ * Validates the name, category, and designation fields of a student entry.
+ *
+ * - `name`: A string representing the name of the student, with a minimum length of 3 and a maximum length of 50 characters.
+ * - `category`: A string representing the category of the student, with a minimum length of 3 and a maximum length of 50 characters.
+ * - `designation`: A string representing the designation within the student, with a minimum length of 3 and a maximum length of 50 characters.
+ * Each field is required for the validation to pass.
+ */
+const newStudentValidationSchema = Joi.object({
+    name: JoiSchemaGenerators.createStringSchema(
+        'name',
+        STUDENT_CONSTANTS?.PROPERTY_NAME_MIN_LENGTH,
+        STUDENT_CONSTANTS?.PROPERTY_NAME_MAX_LENGTH
+    ).required(),
+    level: JoiSchemaGenerators.createStringSchema(
+        'level',
+        STUDENT_CONSTANTS?.PROPERTY_LEVEL_MIN_LENGTH,
+        STUDENT_CONSTANTS?.PROPERTY_LEVEL_MAX_LENGTH
+    ).required(),
+});
+
+/**
+ * @description Joi validation schema for updating student data.
+ * Validates the fields for updating an existing student entry.
+ * Fields include name, category, and designation of the student.
+ *
+ * This schema allows for partial updates, meaning each field is optional.
+ * If provided, each field must adhere to the specified length constraints.
+ *
+ * - `name`: An optional string representing the updated name of the student.
+ *   If provided, it must have a minimum length of 3 and a maximum length of 50 characters.
+ * - `category`: An optional string representing the updated category of the student.
+ *   If provided, it must have a minimum length of 3 and a maximum length of 50 characters.
+ * - `designation`: An optional string representing the updated designation within the student.
+ *   If provided, it must have a minimum length of 3 and a maximum length of 50 characters.
+ */
+const updateStudentValidationSchema = Joi.object({
+    name: JoiSchemaGenerators.createStringSchema(
+        'name',
+        STUDENT_CONSTANTS?.PROPERTY_NAME_MIN_LENGTH,
+        STUDENT_CONSTANTS?.PROPERTY_NAME_MAX_LENGTH
+    ),
+    level: JoiSchemaGenerators.createStringSchema(
+        'level',
+        STUDENT_CONSTANTS?.PROPERTY_LEVEL_MIN_LENGTH,
+        STUDENT_CONSTANTS?.PROPERTY_LEVEL_MAX_LENGTH
+    ),
+});
 
 /**
  * Joi validation schema for student post parameters.
@@ -24,7 +75,11 @@ import createIdSchema from "../../../shared/createIdSchema.js";
  * @type {Joi.ObjectSchema} - Joi schema object for validating student post parameters.
  */
 const studentParamsValidationSchema = Joi.object({
-    studentId: createIdSchema(ID_CONSTANTS?.STUDENT_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS?.MAX_LENGTH).required()
+    studentId: createIdSchema(
+        STUDENT_CONSTANTS?.STUDENT_ID_PREFIX,
+        STUDENT_CONSTANTS?.STUDENT_ID_MIN_LENGTH,
+        STUDENT_CONSTANTS?.STUDENT_ID_MAX_LENGTH,
+    ).required()
 });
 
 /**
@@ -34,5 +89,7 @@ const studentParamsValidationSchema = Joi.object({
  * - `studentParamsValidationSchema`: Schema for validating student post ID parameters.
  */
 export const StudentValidationSchemas = {
+    newStudentValidationSchema,
     studentParamsValidationSchema,
+    updateStudentValidationSchema,
 };
