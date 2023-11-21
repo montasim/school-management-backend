@@ -48,7 +48,6 @@ import {
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
-import getAllData from "../../../../shared/getAllData.js";
 
 /**
  * Retrieves and aggregates summary data from specified collections in the database.
@@ -59,80 +58,123 @@ import getAllData from "../../../../shared/getAllData.js";
  * It supports aggregation from a single specified collection or multiple collections.
  * @param {Object} db - Database connection object.
  * @param {string} adminId - Admin ID for validating the request.
- * @param {string} [collectionQuery] - Optional query parameter to specify a particular collection for aggregation.
  * @returns {Promise<Object>} A promise that resolves to the aggregated summary data or an error message.
  * @throws {Error} If an error occurs during database operation or if invalid parameters are provided.
  */
-const getDashboardSummaryService = async (db, adminId, collectionQuery) => {
+const getDashboardSummaryService = async (db, adminId) => {
     try {
         if (!(await isValidRequest(db, adminId))) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
-        // Define an array of all possible collection names
-        const allCollections = {
-            'administration': ADMINISTRATION_COLLECTION_NAME,
-            'admissionForm': ADMISSION_FORM_COLLECTION_NAME,
-            'admissionInfo': ADMISSION_INFORMATION_COLLECTION_NAME,
-            'announcement': ANNOUNCEMENT_COLLECTION_NAME,
-            'blog': BLOG_COLLECTION_NAME,
-            'category': CATEGORY_COLLECTION_NAME,
-            'designation': DESIGNATION_COLLECTION_NAME,
-            'download': DOWNLOAD_COLLECTION_NAME,
-            'homePageCarousel': HOME_PAGE_CAROUSEL_COLLECTION_NAME,
-            'homePagePost': HOME_PAGE_POST_COLLECTION_NAME,
-            'level': LEVEL_COLLECTION_NAME,
-            'notice': NOTICE_COLLECTION_NAME,
-            'othersInfoCategory': OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME,
-            'othersInfo': OTHERS_INFORMATION_COLLECTION_NAME,
-            'photoGallery': PHOTO_GALLERY_COLLECTION_NAME,
-            'result': RESULT_COLLECTION_NAME,
-            'routine': ROUTINE_COLLECTION_NAME,
-            'student': STUDENT_COLLECTION_NAME,
-            'videoGallery': VIDEO_GALLERY_COLLECTION_NAME,
-            'websiteConfig': WEBSITE_CONFIGURATION_COLLECTION_NAME,
-            'websiteContact': WEBSITE_CONTACT_COLLECTION_NAME,
-            'websiteInfoLink': WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME,
-            'websiteOfficialLink': WEBSITE_OFFICIAL_LINK_COLLECTION_NAME,
-            'websiteSocialMedia': WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME,
+        const collectionNames = [
+            ANNOUNCEMENT_COLLECTION_NAME,
+            ADMINISTRATION_COLLECTION_NAME,
+            CATEGORY_COLLECTION_NAME,
+            LEVEL_COLLECTION_NAME,
+            DOWNLOAD_COLLECTION_NAME,
+            NOTICE_COLLECTION_NAME,
+            RESULT_COLLECTION_NAME,
+            ROUTINE_COLLECTION_NAME,
+            STUDENT_COLLECTION_NAME,
+            ADMISSION_FORM_COLLECTION_NAME,
+            ADMISSION_INFORMATION_COLLECTION_NAME,
+            BLOG_COLLECTION_NAME,
+            DESIGNATION_COLLECTION_NAME,
+            HOME_PAGE_CAROUSEL_COLLECTION_NAME,
+            HOME_PAGE_POST_COLLECTION_NAME,
+            OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME,
+            OTHERS_INFORMATION_COLLECTION_NAME,
+            PHOTO_GALLERY_COLLECTION_NAME,
+            VIDEO_GALLERY_COLLECTION_NAME,
+            WEBSITE_CONFIGURATION_COLLECTION_NAME,
+            WEBSITE_CONTACT_COLLECTION_NAME,
+            WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME,
+            WEBSITE_OFFICIAL_LINK_COLLECTION_NAME,
+            WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME,
+        ];
+
+        const getCounts = async (collectionName) => {
+            const pipeline = [
+                {
+                    $group: {
+                        _id: null,
+                        count: { $sum: 1 },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        count: 1,
+                    },
+                },
+            ];
+
+            const result = await db.collection(collectionName).aggregate(pipeline).toArray();
+
+            return result.length > 0 ? result[0].count : 0;
         };
 
-        // Check if a specific collection name was provided in the query
-        if (collectionQuery && allCollections[collectionQuery]) {
-            const collectionName = allCollections[collectionQuery];
-            const collectionDetails = await getAllData(db, collectionName);
-
-            const returnData = {
-                [collectionQuery]: {
-                    total: collectionDetails?.length,
-                },
-            };
-
-            return generateResponseData(returnData, true, STATUS_OK, `Summary fetched successfully for ${collectionQuery}`);
-        } else {
-            // If no valid collectionQuery was provided, fetch data for all collections
-            const collectionDataPromises = Object.keys(allCollections).map(async (key) => {
-                const collectionName = allCollections[key];
-                const collectionDetails = await getAllData(db, collectionName);
-
-                return {
-                    [key]: {
-                        total: collectionDetails?.length,
+        const administrationCategoryCounts = await db
+            .collection(ADMINISTRATION_COLLECTION_NAME)
+            .aggregate([
+                {
+                    $group: {
+                        _id: "$category",
+                        count: { $sum: 1 },
                     },
-                };
-            });
+                },
+                {
+                    $project: {
+                        category: "$_id",
+                        count: 1,
+                        _id: 0,
+                    },
+                },
+            ])
+            .toArray();
 
-            // Wait for all promises to resolve
-            const collectionData = await Promise.all(collectionDataPromises);
+        const studentLevelCounts = await db
+            .collection(STUDENT_COLLECTION_NAME)
+            .aggregate([
+                {
+                    $group: {
+                        _id: "$level",
+                        count: { $sum: 1 },
+                    },
+                },
+                {
+                    $project: {
+                        level: "$_id",
+                        count: 1,
+                        _id: 0,
+                    },
+                },
+            ])
+            .toArray();
 
-            // Combine the results into a single object
-            const returnData = Object.assign({}, ...collectionData);
-
-            return generateResponseData(returnData, true, 200, "Summary fetched successfully for all collections");
+        const returnData = {};
+        for (const collectionName of collectionNames) {
+            returnData[collectionName] = {
+                total: await getCounts(collectionName),
+            };
         }
+
+        // Separate administration counts by category
+        returnData[ADMINISTRATION_COLLECTION_NAME] = {
+            total: administrationCategoryCounts.reduce((acc, item) => acc + item.count, 0),
+            details: administrationCategoryCounts,
+        };
+
+        // Separate student counts by level
+        returnData[STUDENT_COLLECTION_NAME] = {
+            total: studentLevelCounts.reduce((acc, item) => acc + item.count, 0),
+            details: studentLevelCounts,
+        };
+
+        return generateResponseData(returnData, true, STATUS_OK, "Summary fetched successfully");
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
