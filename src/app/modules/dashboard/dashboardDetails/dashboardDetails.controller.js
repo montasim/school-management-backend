@@ -6,21 +6,21 @@
  * of relevant data to the client. These functions typically extract necessary information from the request,
  * call the appropriate service functions, handle the response, and catch any errors that might occur during the process.
  *
- * @requires DashboardService - Service module that contains the business logic for dashboard operations.
+ * @requires DashboardDetailsService - Service module that contains the business logic for dashboard operations.
  * @requires extractFromRequest - Helper function to extract data from the request object.
  * @requires handleServiceResponse - Helper function to handle the response from service functions.
  * @requires logger - Shared logger utility for logging errors.
  * @module DashboardController - Exported dashboard controller functions.
  */
 
-import { DashboardService } from "./dashboard.service.js";
-import extractFromRequest from "../../../helpers/extractFromRequest.js";
-import handleServiceResponse from "../../../helpers/handleServiceResponse.js";
-import logger from "../../../shared/logger.js";
+import { DashboardDetailsService } from "./dashboardDetails.service.js";
+import extractFromRequest from "../../../../helpers/extractFromRequest.js";
+import handleServiceResponse from "../../../../helpers/handleServiceResponse.js";
+import logger from "../../../../shared/logger.js";
 
 /**
  * Controller function for fetching dashboard summary.
- * This function extracts necessary parameters from the request, calls the getSummaryService from the DashboardService,
+ * This function extracts necessary parameters from the request, calls the getSummaryService from the DashboardDetailsService,
  * handles the service response, and catches any errors during the process.
  *
  * @async
@@ -33,7 +33,7 @@ const getSummaryController = async (req, res) => {
         const { adminId, db } = extractFromRequest(req, [], []);
         const collectionQuery = req?.query?.for; // Extract 'for' query parameter
 
-        await handleServiceResponse(res, DashboardService.getSummaryService, db, adminId, collectionQuery);
+        await handleServiceResponse(res, DashboardDetailsService.getSummaryService, db, adminId, collectionQuery);
     } catch (error) {
         logger.error(error);
 
@@ -45,6 +45,6 @@ const getSummaryController = async (req, res) => {
  * @namespace DashboardController
  * @description Group of controllers for handling Summary operations.
  */
-export const DashboardController = {
+export const DashboardDetailsController = {
     getSummaryController,
 };

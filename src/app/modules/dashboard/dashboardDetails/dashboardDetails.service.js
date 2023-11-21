@@ -39,15 +39,15 @@ import {
     WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME,
     WEBSITE_OFFICIAL_LINK_COLLECTION_NAME,
     WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME,
-} from "../../../config/config.js";
+} from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
     STATUS_OK
-} from "../../../constants/constants.js";
-import isValidRequest from "../../../shared/isValidRequest.js";
-import logger from "../../../shared/logger.js";
-import generateResponseData from "../../../shared/generateResponseData.js";
+} from "../../../../constants/constants.js";
+import isValidRequest from "../../../../shared/isValidRequest.js";
+import logger from "../../../../shared/logger.js";
+import generateResponseData from "../../../../shared/generateResponseData.js";
 
 /**
  * Retrieves and aggregates summary data from specified collections in the database.
@@ -170,6 +170,6 @@ const getSummaryService = async (db, adminId, collectionQuery) => {
  * @namespace DashboardService
  * @description Group of services related to category operations.
  */
-export const DashboardService = {
+export const DashboardDetailsService = {
     getSummaryService,
 };
