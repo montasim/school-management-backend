@@ -13,8 +13,31 @@
  * @module ResultValidationService - Exported validators for result route handling.
  */
 
-import { ResultValidationSchemas } from "./result.schema.js";
 import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
+import { ResultValidationSchemas } from "./result.schema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
+import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../helpers/validateDataWithFileSchema.js";
+
+/**
+ * Validates the details of an administration post against a predefined schema.
+ *
+ * @async
+ * @function validateResultFile
+ * @description Middleware to validate the file data using Joi schemas.
+ * @param {Object} req - Express request object containing the result file details.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const validateNewResultDetails = await validateDataWithFileSchema(
+    ResultValidationSchemas?.newResultValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "file",
+        [FILE_EXTENSION_TYPE_PDF],
+        [MIME_TYPE_PDF],
+    ),
+    true
+);
 
 /**
  * @function
@@ -38,5 +61,6 @@ const validateResultParams = validateDataWithSchema(ResultValidationSchemas.resu
  * @description Exported result validators to be used in routes.
  */
 export const ResultValidationService = {
+    validateNewResultDetails,
     validateResultParams,
 };

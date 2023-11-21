@@ -17,6 +17,15 @@
 import Joi from "joi";
 import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
+import { RESULT_CONSTANTS } from "./result.constants.js";
+
+const newResultValidationSchema = Joi.object({
+    title: JoiSchemaGenerators?.createStringSchema(
+        "title",
+        RESULT_CONSTANTS?.PROPERTY_TITLE_MIN_LENGTH,
+        RESULT_CONSTANTS?.PROPERTY_TITLE_MAX_LENGTH
+    ).required(),
+})
 
 /**
  * @description Joi validation schema for result's params data.
@@ -33,5 +42,6 @@ const resultParamsValidationSchema = Joi.object({
  * - `resultParamsSchema`: Validates the result ID in request parameters.
  */
 export const ResultValidationSchemas = {
+    newResultValidationSchema,
     resultParamsValidationSchema,
 };

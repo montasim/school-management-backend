@@ -13,8 +13,31 @@
  * @module RoutineValidationService - Exported validators for routine route handling.
  */
 
-import { RoutineValidationSchemas } from "./routine.schema.js";
 import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
+import { RoutineValidationSchemas } from "./routine.schema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
+import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../helpers/validateDataWithFileSchema.js";
+
+/**
+ * Validates the details of an administration post against a predefined schema.
+ *
+ * @async
+ * @function validateRoutineFile
+ * @description Middleware to validate the file data using Joi schemas.
+ * @param {Object} req - Express request object containing the routine file details.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const validateNewRoutineDetails = await validateDataWithFileSchema(
+    RoutineValidationSchemas?.newRoutineValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "file",
+        [FILE_EXTENSION_TYPE_PDF],
+        [MIME_TYPE_PDF],
+    ),
+    true
+);
 
 /**
  * @function
@@ -38,5 +61,6 @@ const validateRoutineParams = validateDataWithSchema(RoutineValidationSchemas.ro
  * @description Exported routine validators to be used in routes.
  */
 export const RoutineValidationService = {
+    validateNewRoutineDetails,
     validateRoutineParams,
 };

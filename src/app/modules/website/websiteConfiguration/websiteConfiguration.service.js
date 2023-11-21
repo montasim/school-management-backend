@@ -23,7 +23,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
-import { ID_CONSTANTS } from "./websiteConfiguration.constants.js";
+import { WEBSITE_CONFIGURATION_CONSTANTS } from "./websiteConfiguration.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
@@ -64,7 +64,7 @@ const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const prepareWebsiteDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.WEBSITE_PREFIX),
+            id: generateUniqueID(WEBSITE_CONFIGURATION_CONSTANTS?.WEBSITE_CONFIGURATION_ID_PREFIX),
             name: name,
             slogan: slogan,
             googleDriveWebsiteLogoFileId: uploadGoogleDriveFileResponse?.fileId,

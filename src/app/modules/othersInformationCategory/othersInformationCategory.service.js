@@ -7,7 +7,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./othersInformationCategory.constants.js";
+import { OTHERS_INFORMATION_CATEGORY_CONSTANTS } from "./othersInformationCategory.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
@@ -38,7 +38,7 @@ const createOthersInformationCategory = async (db, newOthersInformationCategoryD
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const othersInformationCategoryDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_PREFIX),
+            id: generateUniqueID(OTHERS_INFORMATION_CATEGORY_CONSTANTS?.OTHERS_INFORMATION_CATEGORY_ID_PREFIX),
             name,
             createdBy: adminId,
             createdAt: new Date(),

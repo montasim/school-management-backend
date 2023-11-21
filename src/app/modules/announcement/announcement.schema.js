@@ -12,7 +12,6 @@ import Joi from "joi";
 import { ANNOUNCEMENT_CONSTANTS } from './announcement.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
 import {JoiSchemaGenerators} from "../../../shared/joiSchemaGenerators.js";
-import {CATEGORY_CONSTANTS} from "../category/category.constants.js";
 
 /**
  * @description Joi validation schema for announcement's parameters in the request.

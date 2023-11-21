@@ -1,3 +1,20 @@
+/**
+ * @fileoverview OthersInformation Service for Handling OthersInformation Data Operations.
+ *
+ * This module provides services for managing othersInformation-related operations in the application.
+ * It includes functions for creating, retrieving, updating, and deleting othersInformation posts,
+ * along with interactions with the Google Drive API for file management.
+ * These services abstract the database and file system interactions, providing a
+ * clean interface for the controller layer to perform CRUD operations on othersInformation data.
+ *
+ * @requires config - Configuration file for application settings.
+ * @requires constants - Application constants for status messages and codes.
+ * @requires isValidRequest - Utility function to validate requests.
+ * @requires GoogleDriveFileOperations - Helper module for Google Drive file operations.
+ * @requires logger - Shared logging utility for error handling.
+ * @module OthersInformationService - Exported services for othersInformation operations.
+ */
+
 import { OTHERS_INFORMATION_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -7,7 +24,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./othersInformation.constants.js";
+import { OTHERS_INFORMATION_CONSTANTS } from "./othersInformation.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
@@ -35,10 +52,10 @@ const createOthersInformationService = async (db, newOthersInformationDetails) =
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const othersInformationDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.OTHERS_INFORMATION_PREFIX),
-            title,
-            category,
-            description,
+            id: generateUniqueID(OTHERS_INFORMATION_CONSTANTS?.OTHERS_INFORMATION_ID_PREFIX),
+            title: title,
+            category: category,
+            description: description,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -56,7 +73,6 @@ const createOthersInformationService = async (db, newOthersInformationDetails) =
         return error;
     }
 };
-
 
 /**
  * Retrieves a list of all othersInformation from the database.

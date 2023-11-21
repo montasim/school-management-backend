@@ -12,47 +12,61 @@
  * @module WebsiteConfigurationValidationService - Exported validators for website configuration routes.
  */
 
-import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
-import {JoiSchemaGenerators} from "../../../../shared/joiSchemaGenerators.js";
+import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 import {
     FILE_EXTENSION_TYPE_JPG,
     FILE_EXTENSION_TYPE_PNG,
     MIME_TYPE_JPG,
     MIME_TYPE_PNG
 } from "../../../../constants/constants.js";
-
-
-/**
- * Validates the details of a website configuration request.
- *
- * @async
- * @function validateWebsiteConfigurationDetails
- * @description Validates the request body against a predefined Joi schema for website configuration.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- * @returns {Promise<void>} - Resolves when validation is successful, or sends an error response.
- */
-const validateWebsiteConfigurationDetails = await validateDataWithSchema(JoiSchemaGenerators.websiteConfigurationBodyValidationSchema(), 'body');
+import { WebsiteConfigurationValidationSchemas } from "./websiteConfiguration.schema.js";
+import validateDataWithFileSchema from "../../../../helpers/validateDataWithFileSchema.js";
 
 /**
- * Validates the website logo file in a website configuration request.
+ * Validates the details of a website configuration against a predefined schema.
  *
  * @async
- * @function validateWebsiteConfigurationFile
- * @description Validates the file object in the request against a predefined Joi schema for file uploads.
- * @param {Object} req - Express request object.
+ * @function validateNewWebsiteConfigurationDetails
+ * @description Middleware to validate the website configuration post's body and file data using Joi schemas.
+ * @param {Object} req - Express request object containing the website configuration post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
- * @returns {Promise<void>} - Resolves when validation is successful, or sends an error response.
  */
-const validateWebsiteConfigurationFile = await validateDataWithSchema(JoiSchemaGenerators.fileValidationSchema("websiteLogo", [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG], [MIME_TYPE_PNG, MIME_TYPE_JPG]), "file");
+const validateNewWebsiteConfigurationDetails = await validateDataWithFileSchema(
+    WebsiteConfigurationValidationSchemas.newWebsiteConfigurationValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "websiteLogo",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG]
+    ),
+    true
+);
+
+/**
+ * Validates the details of a website configuration against a predefined schema.
+ *
+ * @async
+ * @function validateUpdateWebsiteConfigurationDetails
+ * @description Middleware to validate the website configuration post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the website configuration post's details.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const validateUpdateWebsiteConfigurationDetails = await validateDataWithFileSchema(
+    WebsiteConfigurationValidationSchemas.updateWebsiteConfigurationValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "websiteLogo",
+        [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
+        [MIME_TYPE_PNG, MIME_TYPE_JPG]
+    ),
+    false
+);
 
 /**
  * @namespace WebsiteValidators
  * @description Exported website configuration validators to be used in routes.
  */
 export const WebsiteConfigurationValidationService = {
-    validateWebsiteConfigurationDetails,
-    validateWebsiteConfigurationFile
+    validateNewWebsiteConfigurationDetails,
+    validateUpdateWebsiteConfigurationDetails
 };

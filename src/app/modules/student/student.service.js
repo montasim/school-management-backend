@@ -24,7 +24,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./student.constants.js";
+import { STUDENT_CONSTANTS } from "./student.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
@@ -58,7 +58,7 @@ const createStudentService = async (db, newStudentDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const studentDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.STUDENT_PREFIX),
+            id: generateUniqueID(STUDENT_CONSTANTS?.STUDENT_ID_PREFIX),
             name: name,
             level: level,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,

@@ -30,15 +30,15 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./result.constants.js";
+import { RESULT_CONSTANTS } from "./result.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
 import createByDetails from "../../../shared/createByDetails.js";
-import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 import findByField from "../../../shared/findByField.js";
-import deleteByField from "../../../shared/deleteByField.js";
 import getAllData from "../../../shared/getAllData.js";
+import deleteByField from "../../../shared/deleteByField.js";
+import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
@@ -67,12 +67,12 @@ const createResultService = async (db, newResultDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const resultDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.DOWNLOAD_PREFIX),
+            id: generateUniqueID(RESULT_CONSTANTS?.RESULT_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            resultLink: uploadGoogleDriveFileResponse?.resultLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -159,6 +159,7 @@ const deleteAResultService = async (db, adminId, fileName) => {
 
         if (fileDetails) {
             await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
+
             const result = await deleteByField(db, RESULT_COLLECTION_NAME, 'fileName', fileName);
 
             return result

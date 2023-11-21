@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Level Controller Functions
+ *
+ * This module contains various controller functions for handling level-related operations,
+ * including creating, retrieving, updating, and deleting levels.
+ *
+ * @module LevelController
+ */
+
 import { LevelService } from "./level.service.js";
 import extractFromRequest from "../../../helpers/extractFromRequest.js";
 import handleServiceResponse from "../../../helpers/handleServiceResponse.js";

@@ -275,6 +275,52 @@ const uriValidationSchema = () => {
 }
 
 /**
+ * Creates a Joi mobile number schema with provided specifications.
+ *
+ * @param {number} minLength - The minimum length of the string.
+ * @param {number} maxLength - The maximum length of the string.
+ * @returns {Joi.StringSchema} - The Joi string schema.
+ */
+const createEmailSchema = (minLength, maxLength) => {
+    return Joi.string()
+        .email({ minDomainSegments: 2, tlds: { allow: true } })
+        .regex(/^((?!tempmail|mailinator|yopmail).)*$/, 'no-temp-email')
+        .min(minLength)
+        .max(maxLength)
+        .required()
+        .messages({
+            'string.email': '"email" must be a valid email address',
+            'string.min': `"email" should have a minimum length of ${minLength}`,
+            'string.max': `"email" should have a maximum length of ${maxLength}`,
+            'string.pattern.name': '"email" must not be a temporary email address',
+            'string.regex.no-temp-email': '"email" must not be from a temporary email provider (like tempmail, mailinator, or yopmail)',
+            'any.required': '"email" is a required field',
+        })
+};
+
+/**
+ * Creates a Joi mobile number schema with provided specifications.
+ *
+ * @param {string} fieldName - The name of the field to be validated.
+ * @param {number} minLength - The minimum length of the string.
+ * @param {number} maxLength - The maximum length of the string.
+ * @returns {Joi.StringSchema} - The Joi string schema.
+ */
+const createMobileNumberSchema = (fieldName, minLength, maxLength) => {
+    return Joi.string()
+        .pattern(/^(?:\+8801|01)[3-9]\d{8}$/)
+        .min(minLength)
+        .max(maxLength)
+        .required()
+        .messages({
+            'string.pattern.base': `"${fieldName}" must be a valid Bangladeshi phone number (country code +880 is optional)`,
+            'string.min': `"${fieldName}" should have a minimum length of 10 characters (without country code)`,
+            'string.max': `"${fieldName}" should have a maximum length of 14 characters (with country code +880)`,
+            'any.required': `"${fieldName}" is a required field`,
+        })
+};
+
+/**
  * Creates a Joi string schema with provided specifications.
  *
  * @param {string} fieldName - The name of the field to be validated.
@@ -309,6 +355,8 @@ export const JoiSchemaGenerators = {
   updatePostBodyValidationSchema,
   uriValidationSchema,
   createStringSchema,
+  createMobileNumberSchema,
+  createEmailSchema,
   websiteConfigurationBodyValidationSchema,
   admissionInformationBodyValidationSchema,
 };

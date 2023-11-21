@@ -19,7 +19,6 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { NoticeValidationService } from "./notice.validator.js";
 import { NoticeController } from "./notice.controller.js";
-import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
 const router = express.Router();
 
@@ -57,7 +56,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
-    multerErrorHandlerMiddleware,
+    NoticeValidationService.validateNewNoticeDetails,
     NoticeController.createNoticeController
 ]);
 

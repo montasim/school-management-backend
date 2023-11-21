@@ -38,31 +38,15 @@ const sendEmailBodySchema = Joi.object({
         CONTACT_CONSTANTS?.PROPERTY_LAST_NAME_MIN_LENGTH,
         CONTACT_CONSTANTS?.PROPERTY_LAST_NAME_MAX_LENGTH
     ).required(),
-    phone: Joi.string()
-        .pattern(/^(?:\+8801|01)[3-9]\d{8}$/)
-        .min(CONTACT_CONSTANTS?.PROPERTY_PHONE_MIN_LENGTH)
-        .max(CONTACT_CONSTANTS?.PROPERTY_PHONE_MAX_LENGTH)
-        .required()
-        .messages({
-            'string.pattern.base': '"phone" must be a valid Bangladeshi phone number (country code +880 is optional)',
-            'string.min': '"phone" should have a minimum length of 10 characters (without country code)',
-            'string.max': '"phone" should have a maximum length of 14 characters (with country code +880)',
-            'any.required': '"phone" is a required field',
-        }),
-    email: Joi.string()
-        .email({ minDomainSegments: 2, tlds: { allow: true } })
-        .regex(/^((?!tempmail|mailinator|yopmail).)*$/, 'no-temp-email')
-        .min(CONTACT_CONSTANTS?.PROPERTY_EMAIL_MIN_LENGTH)
-        .max(CONTACT_CONSTANTS?.PROPERTY_EMAIL_MAX_LENGTH)
-        .required()
-        .messages({
-            'string.email': '"email" must be a valid email address',
-            'string.min': '"email" should have a minimum length of {#limit}',
-            'string.max': '"email" should have a maximum length of {#limit}',
-            'string.pattern.name': '"email" must not be a temporary email address',
-            'string.regex.no-temp-email': '"email" must not be from a temporary email provider (like tempmail, mailinator, or yopmail)',
-            'any.required': '"email" is a required field',
-        }),
+    phone: JoiSchemaGenerators?.createMobileNumberSchema(
+        "phone",
+        CONTACT_CONSTANTS?.PROPERTY_PHONE_MIN_LENGTH,
+        CONTACT_CONSTANTS?.PROPERTY_PHONE_MAX_LENGTH
+    ),
+    email: JoiSchemaGenerators?.createEmailSchema(
+        CONTACT_CONSTANTS?.PROPERTY_EMAIL_MIN_LENGTH,
+        CONTACT_CONSTANTS?.PROPERTY_EMAIL_MAX_LENGTH,
+    ),
     subject: JoiSchemaGenerators.createStringSchema(
         'subject',
         CONTACT_CONSTANTS?.PROPERTY_SUBJECT_MIN_LENGTH,

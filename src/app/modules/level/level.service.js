@@ -9,7 +9,7 @@
  *
  * The services use shared utility functions like findByField, createByDetails,
  * and generateResponseData to perform their tasks, ensuring consistency and
- * reusability across different parts of the application.
+ * re-usability across different parts of the application.
  */
 
 import { LEVEL_COLLECTION_NAME } from "../../../config/config.js";
