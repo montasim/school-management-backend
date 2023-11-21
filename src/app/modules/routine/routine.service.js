@@ -30,7 +30,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./routine.constants.js";
+import { ROUTINE_CONSTANTS } from "./routine.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
@@ -67,12 +67,12 @@ const createRoutineService = async (db, newRoutineDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const routineDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.DOWNLOAD_PREFIX),
+            id: generateUniqueID(ROUTINE_CONSTANTS?.ROUTINE_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
             googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            routineLink: uploadGoogleDriveFileResponse?.routineLink,
             createdBy: adminId,
             createdAt: new Date(),
         };

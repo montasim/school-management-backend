@@ -19,7 +19,6 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { RoutineValidationService } from "./routine.validator.js";
 import { RoutineController } from "./routine.controller.js";
-import multerErrorHandlerMiddleware from "../../middlewares/multerErrorHandlerMiddleware.js";
 
 const router = express.Router();
 
@@ -56,9 +55,9 @@ const router = express.Router();
  */
 router.post("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('file'),
-    multerErrorHandlerMiddleware,
-    RoutineController.createRoutineController
+    fileUploadMiddleware?.single('file'),
+    RoutineValidationService?.validateNewRoutineDetails,
+    RoutineController?.createRoutineController
 ]);
 
 /**
