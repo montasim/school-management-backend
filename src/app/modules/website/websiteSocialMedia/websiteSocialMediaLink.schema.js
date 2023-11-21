@@ -15,7 +15,7 @@
  * @module WebsiteSocialMediaLinkSchema - Exported Joi validation schemas for website important information links.
  */
 
-import Joi from "joi";
+import Joi from "../../../../helpers/websiteValidator.js";
 import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 import { ID_CONSTANTS } from "./websiteSocialMediaLink.constants.js";
 import createIdSchema from "../../../../shared/createIdSchema.js";
@@ -30,7 +30,7 @@ import createIdSchema from "../../../../shared/createIdSchema.js";
  */
 const websiteSocialMediaLinkBodySchema = Joi.object({
     socialMediaLinkTitle: JoiSchemaGenerators.createStringSchema('socialMediaLinkTitle', 3, 200),
-    socialMediaLink: JoiSchemaGenerators.uriValidationSchema
+    socialMediaLink: Joi.website().required()
 });
 
 /**

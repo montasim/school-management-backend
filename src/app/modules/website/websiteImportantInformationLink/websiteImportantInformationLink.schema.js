@@ -15,7 +15,7 @@
  * @module WebsiteImportantInformationLinkSchema - Exported Joi validation schemas for website important information links.
  */
 
-import Joi from "joi";
+import Joi from "../../../../helpers/websiteValidator.js";
 import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 import { ID_CONSTANTS } from "./websiteImportantInformationLink.constants.js";
 import createIdSchema from "../../../../shared/createIdSchema.js";
@@ -30,7 +30,7 @@ import createIdSchema from "../../../../shared/createIdSchema.js";
  */
 const websiteImportantInformationLinkBodySchema = Joi.object({
     importantInformationLinkTitle: JoiSchemaGenerators.createStringSchema('importantInformationLinkTitle', 3, 200),
-    importantInformationLink: JoiSchemaGenerators.uriValidationSchema
+    importantInformationLink: Joi.website().required()
 });
 
 /**

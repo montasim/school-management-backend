@@ -15,7 +15,7 @@
  * @module WebsiteOfficialLinkSchema - Exported Joi validation schemas for website important information links.
  */
 
-import Joi from "joi";
+import Joi from "../../../../helpers/websiteValidator.js";
 import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
 import { ID_CONSTANTS } from "./websiteOfficialLink.constants.js";
 import createIdSchema from "../../../../shared/createIdSchema.js";
@@ -30,7 +30,7 @@ import createIdSchema from "../../../../shared/createIdSchema.js";
  */
 const websiteOfficialLinkBodySchema = Joi.object({
     officialLinkTitle: JoiSchemaGenerators.createStringSchema('officialLinkTitle', 3, 200),
-    officialLink: JoiSchemaGenerators.uriValidationSchema
+    officialLink: Joi.website().required()
 });
 
 /**
