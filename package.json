@@ -39,6 +39,7 @@
     "nodemon": "^3.0.1",
     "pdfkit": "^0.14.0",
     "rate-limit-mongo": "^2.3.2",
+    "ssl-checker": "^2.0.8",
     "swagger-ui-express": "^5.0.0",
     "user-agent-parser": "^0.6.0",
     "uuid": "^9.0.1",

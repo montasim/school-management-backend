@@ -12,8 +12,9 @@
  * @module WebsiteContactSchema - Exports Joi validation schemas for website contact information.
  */
 
-import Joi from "joi";
+import Joi from "../../../../helpers/websiteValidator.js";
 import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
+import { WEBSITE_CONTACT_CONSTANTS } from "./websiteContact.constants.js";
 
 /**
  * Joi Schema for Google Map Location.
@@ -24,8 +25,16 @@ import { JoiSchemaGenerators } from "../../../../shared/joiSchemaGenerators.js";
  * information to validate the location coordinates.
  */
 const googleMapLocationSchema = Joi.object({
-    latitude: JoiSchemaGenerators.createStringSchema("latitude", 3, 20),
-    longitude: JoiSchemaGenerators.createStringSchema("longitude", 3, 20),
+    latitude: JoiSchemaGenerators.createStringSchema(
+        "latitude",
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_LATITUDE_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_LATITUDE_MAX_LENGTH
+    ),
+    longitude: JoiSchemaGenerators.createStringSchema(
+        "longitude",
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_LONGITUDE_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_LONGITUDE_MAX_LENGTH
+    ),
 });
 
 /**
@@ -37,21 +46,61 @@ const googleMapLocationSchema = Joi.object({
  * validated to ensure it meets specific criteria like length, format, and
  * data type, providing comprehensive validation for website contact data.
  */
-const websiteContactBodySchema = Joi.object({
-    address: JoiSchemaGenerators.createStringSchema("address", 5, 255),
+const websiteNewContactValidationSchema = Joi.object({
+    address: JoiSchemaGenerators.createStringSchema(
+        'address',
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_ADDRESS_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_ADDRESS_MAX_LENGTH
+    ).required(),
+    googleMapLocation: googleMapLocationSchema.required(),
+    mobile: JoiSchemaGenerators.createMobileNumberSchema(
+        'mobile',
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_MOBILE_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_MOBILE_MAX_LENGTH
+    ).required(),
+    phone: JoiSchemaGenerators.createMobileNumberSchema(
+        'phone',
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_PHONE_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_PHONE_MAX_LENGTH
+    ).required(),
+    email: JoiSchemaGenerators.createEmailSchema(
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_EMAIL_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_EMAIL_MAX_LENGTH
+    ).required(),
+    website: Joi.website().required(),
+});
+
+/**
+ * Joi Schema for Website Contact Information.
+ *
+ * This schema validates the contact details of a website. It includes
+ * validations for address, Google Map location (latitude and longitude),
+ * mobile and phone numbers, email address, and website URL. Each field is
+ * validated to ensure it meets specific criteria like length, format, and
+ * data type, providing comprehensive validation for website contact data.
+ */
+const websiteUpdateContactValidationSchema = Joi.object({
+    address: JoiSchemaGenerators.createStringSchema(
+        'address',
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_ADDRESS_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_ADDRESS_MAX_LENGTH
+    ),
     googleMapLocation: googleMapLocationSchema,
-    mobile: Joi.string().pattern(new RegExp('^[0-9]{10,15}$')).required().messages({
-        'string.base': 'Mobile must be a string.',
-        'string.pattern.base': 'Mobile must be a valid phone number with 10-15 digits.',
-        'any.required': 'Mobile is required.'
-    }),
-    phone: Joi.string().pattern(new RegExp('^[0-9]{7,15}$')).required().messages({
-        'string.base': 'Phone must be a string.',
-        'string.pattern.base': 'Phone must be a valid phone number with 7-15 digits.',
-        'any.required': 'Phone is required.'
-    }),
-    email: JoiSchemaGenerators.createStringSchema("email", 1, 50).email(),
-    website: JoiSchemaGenerators.createStringSchema("website", 1, 50).uri(),
+    mobile: JoiSchemaGenerators.createMobileNumberSchema(
+        'mobile',
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_MOBILE_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_MOBILE_MAX_LENGTH
+    ),
+    phone: JoiSchemaGenerators.createMobileNumberSchema(
+        'phone',
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_PHONE_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_PHONE_MAX_LENGTH
+    ),
+    email: JoiSchemaGenerators.createEmailSchema(
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_EMAIL_MIN_LENGTH,
+        WEBSITE_CONTACT_CONSTANTS?.PROPERTY_EMAIL_MAX_LENGTH
+    ),
+    website: Joi.website(),
 });
 
 /**
@@ -62,5 +111,6 @@ const websiteContactBodySchema = Joi.object({
  * @namespace WebsiteContactSchema
  */
 export const WebsiteContactSchema = {
-    websiteContactBodySchema,
+    websiteNewContactValidationSchema,
+    websiteUpdateContactValidationSchema
 };

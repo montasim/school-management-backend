@@ -70,7 +70,7 @@ const router = express.Router();
  */
 router.post("/", [
     authTokenMiddleware,
-    WebsiteContactValidationService.validateWebsiteContactDetails,
+    WebsiteContactValidationService.validateNewWebsiteContactDetails,
     WebsiteContactController.createWebsiteContactController
 ]);
 
@@ -141,7 +141,7 @@ router.get("/", [
  */
 router.put("/", [
     authTokenMiddleware,
-    WebsiteContactValidationService.validateWebsiteContactDetails,
+    WebsiteContactValidationService.validateUpdateWebsiteContactDetails,
     WebsiteContactController.updateWebsiteContactController
 ]);
 

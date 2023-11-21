@@ -25,7 +25,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
-import { ID_CONSTANTS } from "./websiteContact.constants.js";
+import { WEBSITE_CONTACT_CONSTANTS } from "./websiteContact.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
@@ -53,7 +53,7 @@ const createWebsiteContactService = async (db, websiteContactDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const prepareWebsiteDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.WEBSITE_PREFIX),
+            id: generateUniqueID(WEBSITE_CONTACT_CONSTANTS?.WEBSITE_CONTACT_ID_PREFIX),
             address: address,
             googleMapLocation: googleMapLocation,
             mobile: mobile,
