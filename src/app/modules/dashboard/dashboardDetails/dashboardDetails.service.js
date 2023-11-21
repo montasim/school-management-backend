@@ -53,7 +53,7 @@ import generateResponseData from "../../../../shared/generateResponseData.js";
  * Retrieves and aggregates summary data from specified collections in the database.
  *
  * @async
- * @function getSummaryService
+ * @function getDashboardDetailsService
  * @description Aggregates summary data from various collections in the database based on the request parameters.
  * It supports aggregation from a single specified collection or multiple collections.
  * @param {Object} db - Database connection object.
@@ -62,7 +62,7 @@ import generateResponseData from "../../../../shared/generateResponseData.js";
  * @returns {Promise<Object>} A promise that resolves to the aggregated summary data or an error message.
  * @throws {Error} If an error occurs during database operation or if invalid parameters are provided.
  */
-const getSummaryService = async (db, adminId, collectionQuery) => {
+const getDashboardDetailsService = async (db, adminId, collectionQuery) => {
     try {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -171,5 +171,5 @@ const getSummaryService = async (db, adminId, collectionQuery) => {
  * @description Group of services related to category operations.
  */
 export const DashboardDetailsService = {
-    getSummaryService,
+    getDashboardDetailsService,
 };

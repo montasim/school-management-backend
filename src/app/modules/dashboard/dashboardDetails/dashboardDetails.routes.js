@@ -31,9 +31,9 @@ const router = express.Router();
  *       500:
  *         description: Internal server error.
  */
-router.get("/summary", [
+router.get("/", [
     authTokenMiddleware,
-    DashboardDetailsController.getSummaryController
+    DashboardDetailsController.getDashboardDetailsController
 ]);
 
 
