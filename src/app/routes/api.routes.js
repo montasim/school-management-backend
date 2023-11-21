@@ -35,7 +35,7 @@ import authenticationRoutes from "../modules/authentication/authentication.route
 import blogRoutes from "../modules/blog/blog.routes.js";
 import categoryRoutes from "../modules/category/category.routes.js";
 import contactRoutes from "../modules/contact/contact.routes.js";
-import dashboardRoutes from "../modules/dashboard/dashboard.routes.js";
+import dashboardRoutes from "./dashboard.routes.js";
 import designationRoutes from "../modules/designation/designation.routes.js";
 import downloadRoutes from "../modules/download/download.routes.js";
 import levelRoutes from "../modules/level/level.routes.js";
@@ -135,7 +135,6 @@ router.use("/contact", contactRoutes);
  * @memberof module:routes
  */
 router.use(`/dashboard`, dashboardRoutes);
-router.use("/contact", contactRoutes);
 
 /**
  * Sets up routing for the designation module.
