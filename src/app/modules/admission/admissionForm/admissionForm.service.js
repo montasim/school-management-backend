@@ -155,7 +155,7 @@ const deleteAAdmissionFormService = async (db, adminId, fileName) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const fileDetails = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'id', fileName);
+        const fileDetails = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'fileName', fileName);
 
         if (fileDetails) {
             await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
