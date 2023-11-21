@@ -17,6 +17,15 @@
 import Joi from "joi";
 import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 import { FILE_EXTENSION_TYPE_PDF } from "../../../constants/constants.js";
+import { NOTICE_CONSTANTS } from "./notice.constants.js";
+
+const newNoticeValidationSchema = Joi.object({
+    title: JoiSchemaGenerators?.createStringSchema(
+        "title",
+        NOTICE_CONSTANTS?.PROPERTY_TITLE_MIN_LENGTH,
+        NOTICE_CONSTANTS?.PROPERTY_TITLE_MAX_LENGTH
+    ).required(),
+})
 
 /**
  * @description Joi validation schema for notice's params data.
@@ -27,11 +36,12 @@ const noticeParamsValidationSchema = Joi.object({
 
 /**
  * @namespace NoticeValidationSchemas
- * @description Exported Joi validation schemas for notice data.
+ * @description Exported Joi validation schemas for download data.
  *
- * - `noticeBodySchema`: Validates the body data of a notice.
- * - `noticeParamsSchema`: Validates the notice ID in request parameters.
+ * - `newNoticeValidationSchema`: Validates the body data of a notice.
+ * - `noticeParamsValidationSchema`: Validates the notice ID in request parameters.
  */
 export const NoticeValidationSchemas = {
+    newNoticeValidationSchema,
     noticeParamsValidationSchema,
 };

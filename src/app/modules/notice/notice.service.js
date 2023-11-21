@@ -30,7 +30,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./notice.constants.js";
+import { NOTICE_CONSTANTS } from "./notice.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
 import logger from "../../../shared/logger.js";
@@ -67,7 +67,7 @@ const createNoticeService = async (db, newNoticeDetails, file) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
         const noticeDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.DOWNLOAD_PREFIX),
+            id: generateUniqueID(NOTICE_CONSTANTS?.NOTICE_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
             googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,

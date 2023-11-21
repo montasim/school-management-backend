@@ -13,8 +13,31 @@
  * @module NoticeValidationService - Exported validators for notice route handling.
  */
 
-import { NoticeValidationSchemas } from "./notice.schema.js";
 import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
+import { NoticeValidationSchemas } from "./notice.schema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
+import { FILE_EXTENSION_TYPE_PDF, MIME_TYPE_PDF } from "../../../constants/constants.js";
+import validateDataWithFileSchema from "../../../helpers/validateDataWithFileSchema.js";
+
+/**
+ * Validates the details of a notice post against a predefined schema.
+ *
+ * @async
+ * @function validateDownloadFile
+ * @description Middleware to validate the file data using Joi schemas.
+ * @param {Object} req - Express request object containing the notice file details.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const validateNewNoticeDetails = await validateDataWithFileSchema(
+    NoticeValidationSchemas?.newNoticeValidationSchema,
+    JoiSchemaGenerators.fileValidationSchema(
+        "file",
+        [FILE_EXTENSION_TYPE_PDF],
+        [MIME_TYPE_PDF],
+    ),
+    true
+);
 
 /**
  * @function
@@ -38,5 +61,6 @@ const validateNoticeParams = validateDataWithSchema(NoticeValidationSchemas.noti
  * @description Exported notice validators to be used in routes.
  */
 export const NoticeValidationService = {
+    validateNewNoticeDetails,
     validateNoticeParams,
 };
