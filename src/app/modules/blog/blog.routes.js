@@ -66,7 +66,7 @@ const router = express.Router();
  */
 router.post("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('postImage'),
+    fileUploadMiddleware.single('blogImage'),
     BlogValidationService.validateNewBlogDetails,
     BlogController.createBlogController
 ]);
@@ -164,7 +164,7 @@ router.get("/:blogId", [
  */
 router.put("/:blogId", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('postImage'),
+    fileUploadMiddleware.single('blogImage'),
     BlogValidationService.validateBlogParams,
     BlogValidationService.validateUpdateBlogDetails,
     BlogController.updateABlogController

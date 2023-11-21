@@ -38,7 +38,7 @@ import validateDataWithFileSchema from "../../../helpers/validateDataWithFileSch
 const validateNewBlogDetails = await validateDataWithFileSchema(
     JoiSchemaGenerators.newPostBodyValidationSchema(),
     JoiSchemaGenerators.fileValidationSchema(
-        "postImage",
+        "blogImage",
         [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
         [MIME_TYPE_PNG, MIME_TYPE_JPG],
     ),
@@ -58,7 +58,7 @@ const validateNewBlogDetails = await validateDataWithFileSchema(
 const validateUpdateBlogDetails = await validateDataWithFileSchema(
     JoiSchemaGenerators.updatePostBodyValidationSchema(),
     JoiSchemaGenerators.fileValidationSchema(
-        "postImage",
+        "blogImage",
         [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
         [MIME_TYPE_PNG, MIME_TYPE_JPG],
     ),
