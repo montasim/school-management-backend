@@ -1,45 +1,64 @@
+/**
+ * @fileoverview Middleware Validators for OthersInformation Post Data.
+ *
+ * This module contains middleware functions for validating othersInformation post data in Express routes.
+ * It leverages Joi schemas defined in the OthersInformationSchema module to validate the format and content
+ * of othersInformation post-related data, such as othersInformation post IDs in request parameters. These validators ensure
+ * that incoming data for othersInformation posts adheres to the expected structure and types before further processing.
+ * Each validator function is designed to be used as Express middleware, checking the validity of the
+ * data and passing control to the next middleware if validation succeeds, or sending an error response
+ * if it fails.
+ *
+ * @requires validateDataWithSchema - Generic utility to validate data with a Joi schema.
+ * @requires OthersInformationValidationSchemas - Schemas for validating othersInformation post data.
+ * @module OthersInformationValidationService - Exported validators for othersInformation post route handling.
+ */
+
 import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
-import { OthersInformationSchema } from "./othersInformation.schema.js";
+import { OthersInformationValidationSchemas } from "./othersInformation.schema.js";
 
 /**
- * @function
+ * Validates the details of a othersInformation post against a predefined schema.
+ *
  * @async
- * @description Middleware validator for othersInformation's body data.
- *
- * Uses the othersInformationBodySchema from the HomePagePostSchema to validate
- * the body of the incoming request. This ensures that the othersInformation's
- * information is in the correct format before processing.
- *
- * @param {Object} req - Express request object.
+ * @function validateOthersInformationDetails
+ * @description Middleware to validate the othersInformation post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the othersInformation post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
- *
- * @returns {void}
  */
-const othersInformationBodyValidator = validateDataWithSchema(OthersInformationSchema.othersInformationBodySchema, 'body');
+const validateNewOthersInformationDetails = await validateDataWithSchema(OthersInformationValidationSchemas.newOthersInformationValidationSchema, 'body');
 
 /**
- * @function
+ * Validates the details of a othersInformation post against a predefined schema.
+ *
  * @async
- * @description Middleware validator for othersInformation's ID in request parameters.
- *
- * Uses the othersInformationParamsSchema from the HomePagePostSchema to validate
- * the othersInformation ID provided in the request parameters. This ensures that
- * the othersInformation ID is in the correct format for further processing.
- *
- * @param {Object} req - Express request object.
+ * @function validateOthersInformationDetails
+ * @description Middleware to validate the othersInformation post's body data using Joi schemas.
+ * @param {Object} req - Express request object containing the othersInformation post's details.
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
- *
- * @returns {void}
  */
-const othersInformationParamsValidator = await validateDataWithSchema(OthersInformationSchema.othersInformationParamsSchema, 'params');
+const validateUpdateOthersInformationDetails = await validateDataWithSchema(OthersInformationValidationSchemas.updateOthersInformationValidationSchema, 'body');
 
 /**
- * @namespace OthersInformationValidators
- * @description Exported othersInformation validators to be used in routes.
+ * Validates the othersInformation post ID in request parameters.
+ *
+ * @async
+ * @function validateOthersInformationParams
+ * @description Middleware to validate the othersInformation post's ID in the request parameters.
+ * @param {Object} req - Express request object containing the othersInformation post ID.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
  */
-export const OthersInformationValidators = {
-    othersInformationBodyValidator,
-    othersInformationParamsValidator,
+const validateOthersInformationParams = await validateDataWithSchema(OthersInformationValidationSchemas.othersInformationParamsValidationSchema, 'params');
+
+/**
+ * @namespace OthersInformationValidationService
+ * @description Provides validation services for othersInformation-related data in routes. This includes validation for othersInformation details, othersInformation files, and othersInformation parameters.
+ */
+export const OthersInformationValidationService = {
+    validateNewOthersInformationDetails,
+    validateUpdateOthersInformationDetails,
+    validateOthersInformationParams,
 };

@@ -1,64 +1,92 @@
+/**
+ * @fileoverview Joi Validation Schemas for Others Information Posts.
+ *
+ * This module provides Joi schemas for validating different aspects of others information entities in the application.
+ * It includes schemas for validating others information post IDs, ensuring adherence to expected formats and constraints,
+ * and for validating the content of others information posts, such as title, description, fees, submission dates, and contact details.
+ * These schemas are essential for maintaining data integrity and ensuring that others information data complies with the specified requirements.
+ *
+ * @requires Joi - Library for schema description and data validation.
+ * @requires OTHERS_INFORMATION_CONSTANTS - Constants defining validation criteria for others information properties.
+ * @requires createIdSchema - Utility function to create a Joi schema for ID validation.
+ * @requires JoiSchemaGenerators - Utility functions to generate common Joi schemas.
+ * @module OthersInformationValidationSchemas - Exported Joi validation schemas for others information data.
+ */
+
 import Joi from "joi";
-import { ID_CONSTANTS } from './othersInformation.constants.js';
+import { OTHERS_INFORMATION_CONSTANTS } from './othersInformation.constants.js';
 import createIdSchema from "../../../shared/createIdSchema.js";
+import { JoiSchemaGenerators } from "../../../shared/joiSchemaGenerators.js";
 
-const othersInformationParamsSchema = Joi.object({
-    othersInformationId: createIdSchema(ID_CONSTANTS?.OTHERS_INFORMATION_PREFIX, ID_CONSTANTS?.MIN_LENGTH, ID_CONSTANTS.MAX_LENGTH).required()
+/**
+ * Joi validation schema for othersInformation post parameters.
+ * Validates the 'othersInformationId' parameter in request using a custom ID schema.
+ *
+ * @type {Joi.ObjectSchema} - Joi schema object for validating othersInformation post parameters.
+ */
+const othersInformationParamsValidationSchema = Joi.object({
+    othersInformationId: createIdSchema(
+        OTHERS_INFORMATION_CONSTANTS?.OTHERS_INFORMATION_ID_PREFIX,
+        OTHERS_INFORMATION_CONSTANTS?.OTHERS_INFORMATION_ID_MIN_LENGTH,
+        OTHERS_INFORMATION_CONSTANTS?.OTHERS_INFORMATION_ID_MAX_LENGTH
+    ).required()
 });
 
 /**
- * @description Joi validation schema for othersInformation's body data.
- * Validates the title, category, and description fields.
+ * Joi schema for validating new others information post details.
+ * Ensures all required fields are present and adhere to specified length constraints.
  *
- * - `title`: Should be a string with a minimum length of 3 and a maximum length of 1000.
- * - `category`: Should be a string with a minimum length of 3 and a maximum length of 100.
- * - `description`: Should be a string with a minimum length of 3 and a maximum length of 5000.
+ * @type {Joi.ObjectSchema} - Joi schema object for validating new others information parameters.
  */
-const othersInformationBodySchema = Joi.object({
-    title: Joi.string()
-        .min(3)
-        .max(1000)
-        .required()
-        .messages({
-            'string.base': '"title" should be a type of "text"',
-            'string.empty': '"title" cannot be an empty field',
-            'string.min': '"title" should have a minimum length of {#limit}',
-            'string.max': '"title" should have a maximum length of {#limit}',
-            'any.required': '"title" is a required field'
-        }),
-    category: Joi.string()
-        .min(3)
-        .max(100)
-        .required()
-        .messages({
-            'string.base': '"category" should be a type of "text"',
-            'string.empty': '"category" cannot be an empty field',
-            'string.min': '"category" should have a minimum length of {#limit}',
-            'string.max': '"category" should have a maximum length of {#limit}',
-            'any.required': '"category" is a required field'
-        }),
-    description: Joi.string()
-        .min(3)
-        .max(5000)
-        .required()
-        .messages({
-            'string.base': '"description" should be a type of "text"',
-            'string.empty': '"description" cannot be an empty field',
-            'string.min': '"description" should have a minimum length of {#limit}',
-            'string.max': '"description" should have a maximum length of {#limit}',
-            'any.required': '"description" is a required field'
-        }),
+const newOthersInformationValidationSchema = Joi.object({
+    title: JoiSchemaGenerators.createStringSchema(
+        'title',
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_TITLE_MIN_LENGTH,
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_TITLE_MAX_LENGTH
+    ).required(),
+    category: JoiSchemaGenerators.createStringSchema(
+        'category',
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_CATEGORY_MIN_LENGTH,
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_CATEGORY_MAX_LENGTH
+    ).required(),
+    description: JoiSchemaGenerators.createStringSchema(
+        'description',
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_DESCRIPTION_MIN_LENGTH,
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_DESCRIPTION_MAX_LENGTH
+    ).required(),
 });
 
 /**
- * @namespace OthersInformationSchema
- * @description Exported Joi validation schemas for othersInformation data.
+ * Joi schema for validating updated others information post details.
+ * Allows optional updates to each field while enforcing their length constraints.
  *
- * - `othersInformationBodySchema`: Validates the body data of an othersInformation.
- * - `othersInformationParamsSchema`: Validates the othersInformation ID in request parameters.
- * - `deleteOthersInformationQuerySchema`: Validates the admin ID in the query.
+ * @type {Joi.ObjectSchema} - Joi schema object for validating update others information parameters.
  */
-export const OthersInformationSchema = {
-    othersInformationBodySchema,
-    othersInformationParamsSchema,
+const updateOthersInformationValidationSchema = Joi.object({
+    title: JoiSchemaGenerators.createStringSchema(
+        'title',
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_TITLE_MIN_LENGTH,
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_TITLE_MAX_LENGTH
+    ),
+    category: JoiSchemaGenerators.createStringSchema(
+        'category',
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_CATEGORY_MIN_LENGTH,
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_CATEGORY_MAX_LENGTH
+    ),
+    description: JoiSchemaGenerators.createStringSchema(
+        'description',
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_DESCRIPTION_MIN_LENGTH,
+        OTHERS_INFORMATION_CONSTANTS?.PROPERTY_DESCRIPTION_MAX_LENGTH
+    ),
+});
+
+/**
+ * @namespace OthersInformationValidationSchemas
+ * @description Provides Joi validation schemas for handling others information data.
+ * Includes schemas for validating new and updated others information details and others information ID parameters.
+ */
+export const OthersInformationValidationSchemas = {
+    newOthersInformationValidationSchema,
+    othersInformationParamsValidationSchema,
+    updateOthersInformationValidationSchema,
 };
