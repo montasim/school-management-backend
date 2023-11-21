@@ -33,7 +33,6 @@ import generateResponseData from "../../../shared/generateResponseData.js";
 import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
-import getAllData from "../../../shared/getAllData.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 /**
