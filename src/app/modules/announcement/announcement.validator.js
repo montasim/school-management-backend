@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Announcement Validators Middleware
+ *
+ * This module contains middleware functions for validating announcement-related data.
+ * These middleware functions are used in the announcement routes to ensure that the
+ * request data conforms to the expected schema before further processing.
+ *
+ * @module AnnouncementValidatorsMiddleware
+ */
+
 import validateDataWithSchema from "../../../helpers/validateDataWithSchema.js";
 import { AnnouncementSchema } from "./announcement.schema.js";
 

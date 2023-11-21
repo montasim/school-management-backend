@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Announcement Service Functions
+ *
+ * This module contains various service functions related to announcements, including
+ * creation, retrieval, update, and deletion of announcement data in the database.
+ *
+ * @module AnnouncementService
+ */
+
 import { ANNOUNCEMENT_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
@@ -7,7 +16,7 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ID_CONSTANTS } from "./announcement.constants.js";
+import { ANNOUNCEMENT_CONSTANTS } from "./announcement.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -35,7 +44,7 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const announcementDetails = {
-            id: generateUniqueID(ID_CONSTANTS?.ANNOUNCEMENT_PREFIX),
+            id: generateUniqueID(ANNOUNCEMENT_CONSTANTS?.ANNOUNCEMENT_ID_PREFIX),
             name,
             createdBy: adminId,
             createdAt: new Date(),
