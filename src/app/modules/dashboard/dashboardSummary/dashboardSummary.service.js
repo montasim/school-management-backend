@@ -108,7 +108,7 @@ const getDashboardSummaryService = async (db, adminId, collectionQuery) => {
                 },
             };
 
-            return generateResponseData(returnData, true, 200, `Summary fetched successfully for ${collectionQuery}`);
+            return generateResponseData(returnData, true, STATUS_OK, `Summary fetched successfully for ${collectionQuery}`);
         } else {
             // If no valid collectionQuery was provided, fetch data for all collections
             const collectionDataPromises = Object.keys(allCollections).map(async (key) => {

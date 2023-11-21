@@ -48,7 +48,10 @@ const createStudentController = async (req, res) => {
  */
 const getStudentListController = async (req, res) => {
     try {
-        await handleServiceResponse(res, StudentService.getStudentListService, req?.db);
+        // Extract 'filterBy' parameter and split by '&' to support multiple level
+        const categoryFilter = req?.query?.filterBy ? req?.query?.filterBy.split('&') : [];
+
+        await handleServiceResponse(res, StudentService.getStudentListService, req?.db, categoryFilter);
     } catch (error) {
         logger.error(error);
 

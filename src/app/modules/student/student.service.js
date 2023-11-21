@@ -91,12 +91,24 @@ const createStudentService = async (db, newStudentDetails, file) => {
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
+ * @param categoryFilter
  * @returns {Object} - The list of homePageStudent or an error message.
  * @throws {Error} Throws an error if any.
  */
-const getStudentListService = async (db) => {
+const getStudentListService = async (db, categoryFilter) => {
     try {
-        const student = await getAllData(db, STUDENT_COLLECTION_NAME);
+        let query = {};
+        // Apply the category filter if provided
+        if (categoryFilter?.length > 0) {
+            // Use $in operator to match any of the categories
+            query = { 'level': { $in: categoryFilter } };
+        }
+
+        // Retrieve and sort administrations from the database based on the query
+        const student = await db?.collection(STUDENT_COLLECTION_NAME)
+            .find(query)
+            .sort({ 'createdAt': -1 }) // Sort by 'createdAt' in descending order
+            .toArray();
 
         return student?.length
             ? generateResponseData(student, true, STATUS_OK, `${student?.length} student found`)

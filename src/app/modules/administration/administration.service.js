@@ -152,6 +152,7 @@ const getAdministrationListService = async (db, categoryFilter) => {
     } catch (error) {
         // Log and return any errors encountered
         logger.error(error);
+
         return error;
     }
 };
