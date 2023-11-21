@@ -1,5 +1,5 @@
 /**
- * @fileoverview Routes for the Dashboard Module.
+ * @fileoverview Routes for the Dashboard Details Module.
  *
  * This module sets up the Express router for the dashboard-related routes in the application.
  * It includes endpoints for fetching system summaries and other dashboard-related data.
@@ -23,11 +23,11 @@ const router = express.Router();
  * @swagger
  * /summary:
  *   get:
- *     summary: Get the summary.
- *     description: Endpoint to get the summary of the system.
+ *     summary: Get the dashboard details.
+ *     description: Endpoint to get the details of the system.
  *     responses:
  *       200:
- *         description: Summary fetched successfully.
+ *         description: Details fetched successfully.
  *       500:
  *         description: Internal server error.
  */
