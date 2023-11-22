@@ -2080,6 +2080,55 @@
 							"name": "website",
 							"item": [
 								{
+									"name": "banner",
+									"item": [
+										{
+											"name": "banner",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": {
+														"token": "{{JWT_TOKEN}}"
+													}
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "websiteBannerImage",
+															"type": "file",
+															"src": "/E:/OTHERS/DOWNLOADS/1660209479445.jpeg"
+														}
+													]
+												},
+												"url": "{{SERVER_URL}}/api/{{API_VERSION}}/website/banner"
+											},
+											"response": []
+										},
+										{
+											"name": "banner",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": "{{SERVER_URL}}/api/{{API_VERSION}}/website/banner"
+											},
+											"response": []
+										},
+										{
+											"name": "banner",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": "{{SERVER_URL}}/api/{{API_VERSION}}/website/banner"
+											},
+											"response": []
+										}
+									],
+									"description": "This module defines the routes for website banner-related operations in the Express application. It includes endpoints for creating, retrieving, and deleting website banner posts."
+								},
+								{
 									"name": "configuration",
 									"item": [
 										{
