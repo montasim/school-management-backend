@@ -12,13 +12,14 @@
  * @requires express - Express framework to define routes.
  * @requires authTokenMiddleware - Middleware for authenticating tokens in requests.
  * @requires fileUploadMiddleware - Middleware for handling file uploads.
- * @requires AdministrationValidationService - Validators for administration post request data.
- * @requires AdministrationController - Controllers for handling administration post operations.
+ * @requires AdministrationValidationService - Validators for administration request data.
+ * @requires AdministrationController - Controllers for handling administration operations.
  * @module administrationRouter - Express router with defined routes for administration operations.
  */
 
 import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { AdministrationValidationService } from "./administration.validator.js";
 import { AdministrationController } from "./administration.controller.js";
@@ -64,6 +65,7 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
     AdministrationValidationService.validateNewAdministrationDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     AdministrationController.createAdministrationController
 ]);
 
@@ -84,7 +86,7 @@ router.post("/", [
  * @description Handles GET request for retrieving a list of all administrations.
  * @route GET /
  */
-router.get("/", [
+router.get("/", CacheMiddleware.createCacheMiddleware, [
     AdministrationController.getAdministrationListController
 ]);
 
@@ -110,7 +112,7 @@ router.get("/", [
  * @description Handles GET request for retrieving details of a specific administration.
  * @route GET /{administrationId}
  */
-router.get("/:administrationId", [
+router.get("/:administrationId", CacheMiddleware.createCacheMiddleware, [
     AdministrationValidationService.validateAdministrationParams,
     AdministrationController.getAAdministrationController
 ]);
@@ -155,6 +157,7 @@ router.put("/:administrationId", [
     fileUploadMiddleware.single('image'),
     AdministrationValidationService.validateAdministrationParams,
     AdministrationValidationService.validateUpdatedAdministrationDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     AdministrationController.updateAAdministrationController
 ]);
 
@@ -186,6 +189,7 @@ router.put("/:administrationId", [
 router.delete("/:administrationId", [
     authTokenMiddleware,
     AdministrationValidationService.validateAdministrationParams,
+    CacheMiddleware.deleteCacheMiddleware,
     AdministrationController.deleteAAdministrationController
 ]);
 
