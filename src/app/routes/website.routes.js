@@ -7,6 +7,7 @@
  * organizing the website functionalities into a structured and manageable format.
  *
  * @requires express - Express framework to define and manage routes for the web application.
+ * @requires websiteBannerRoutes - Routes for website banner management.
  * @requires websiteConfigurationRoutes - Routes for website configuration management.
  * @requires websiteContactRoutes - Routes for managing website contact information.
  * @requires websiteImportantInformationLinkRoutes - Routes for managing important information links.
@@ -16,6 +17,7 @@
  */
 
 import express from "express";
+import websiteBannerRoutes from "../modules/website/websiteBanner/websiteBanner.routes.js";
 import websiteConfigurationRoutes from "../modules/website/websiteConfiguration/websiteConfiguration.routes.js";
 import websiteContactRoutes from "../modules/website/websiteContact/websiteContact.routes.js";
 import websiteImportantInformationLinkRoutes from "../modules/website/websiteImportantInformationLink/websiteImportantInformationLink.routes.js";
@@ -23,6 +25,15 @@ import websiteOfficialLinkRoutes from "../modules/website/websiteOfficialLink/we
 import websiteSocialMediaRoutes from "../modules/website/websiteSocialMedia/websiteSocialMediaLink.routes.js";
 
 const websiteRouter = express.Router();
+
+/**
+ * Sets up versioned routing for the banner module.
+ * @name /banner
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+websiteRouter.use("/banner", websiteBannerRoutes);
 
 /**
  * Sets up versioned routing for the configuration module.
