@@ -80,23 +80,24 @@ const createCacheMiddleware = (req, res, next) => {
  */
 const deleteCacheMiddleware = (req, res, next) => {
     try {
-        const paths = ["/", req.originalUrl];
-        const keysToDelete = paths?.map(path => {
-            const match = path?.match(/^\/[^\/]+\/[^\/]+\/[^\/]+/);
-            return match ? match[0] : null;
-        })?.filter(key => key !== null); // Filter out null values
+        const basePath = req.originalUrl.match(/^\/[^\/]+\/[^\/]+\/[^\/]+/)?.[0];
+        const keysToDelete = basePath ? [basePath, req.originalUrl] : [req.originalUrl];
 
-        keysToDelete?.forEach(key => {
-            if (cache?.del(key)) {
-                logger?.info(`Cache cleared for ${key}`);
+        keysToDelete.forEach(key => {
+            if (cache.del(key)) {
+                logger.info(`Cache cleared for ${key}`);
             } else {
-                logger?.warn(`No cache found for ${key} to clear`);
+                logger.warn(`No cache found for ${key} to clear`);
+                // Additional check to delete req.originalUrl if generalized key is not found
+                if (key !== req.originalUrl && cache.del(req.originalUrl)) {
+                    logger.info(`Cache cleared for specific path ${req.originalUrl}`);
+                }
             }
         });
 
         next();
     } catch (error) {
-        logger?.error(`Cache clearing error: ${error?.message}`);
+        logger.error(`Cache clearing error: ${error.message}`);
         next();
     }
 };

@@ -15,7 +15,7 @@
  * @module WebsiteBannerService - Exported services for websiteBanner operations.
  */
 
-import { WEBSITE_BANNER_COLLECTION_NAME } from "../../../../config/config.js";
+import {WEBSITE_BANNER_COLLECTION_NAME, WEBSITE_CONFIGURATION_COLLECTION_NAME} from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -78,6 +78,66 @@ const createWebsiteBannerService = async (db, adminId, file) => {
             ? generateResponseData(latestData, true, STATUS_OK, "Website banner created successfully")
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
+};
+
+/**
+ * Updates a websiteBanner entry in the database.
+ *
+ * @async
+ * @param {Object} db - Database connection object.
+ * @param {Object} adminId - Admin ID.
+ * @param {Object} file - The file object for the websiteBanner's associated image or content.
+ * @returns {Promise<Object>} A promise that resolves to the response object after creating the websiteBanner.
+ */
+const updateWebsiteBannerService = async (db, adminId, file) => {
+    try {
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+
+        const oldDetails = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOne({});
+
+        if (!oldDetails?.id) {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website banner not found. Please add a new banner");
+        }
+
+        // Initialize the object to store updated details
+        const updatedDetails = { ...oldDetails };
+
+        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+
+        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+
+        if (!uploadGoogleDriveFileResponse?.shareableLink)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+
+        updatedDetails.googleDriveFileId = uploadGoogleDriveFileResponse?.fileId;
+        updatedDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse?.shareableLink;
+        updatedDetails.downloadLink = uploadGoogleDriveFileResponse?.downloadLink;
+        updatedDetails.modifiedBy = adminId;
+        updatedDetails.modifiedAt = new Date();
+
+        const result = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOneAndUpdate(
+            {}, // Assuming you are updating a single document without a filter.
+            { $set: updatedDetails },
+            { returnDocument: 'after' } // Returns the updated document
+        );
+
+        if (!result) {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Website banner not updated`);
+        }
+
+        delete result._id;
+        delete result.id;
+        delete result.createdBy;
+        delete result.modifiedBy;
+        delete result.googleDriveFileId;
+
+        return generateResponseData(result, true, STATUS_OK, "Website banner created successfully");
     } catch (error) {
         logger.error(error);
 
@@ -152,5 +212,6 @@ const deleteAWebsiteBannerService = async (db, adminId) => {
 export const WebsiteBannerService = {
     createWebsiteBannerService,
     getAWebsiteBannerService,
+    updateWebsiteBannerService,
     deleteAWebsiteBannerService
 };
