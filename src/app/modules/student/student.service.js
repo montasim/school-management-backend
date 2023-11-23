@@ -15,9 +15,9 @@
  * @module StudentService - Exported services for student operations.
  */
 
-import { STUDENT_COLLECTION_NAME } from "../../../config/config.js";
+import { LEVEL_COLLECTION_NAME, STUDENT_COLLECTION_NAME } from "../../../config/config.js";
 import {
-    FORBIDDEN_MESSAGE,
+    FORBIDDEN_MESSAGE, STATUS_BAD_REQUEST,
     STATUS_FORBIDDEN,
     STATUS_INTERNAL_SERVER_ERROR,
     STATUS_NOT_FOUND,
@@ -50,6 +50,12 @@ const createStudentService = async (db, newStudentDetails, file) => {
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+
+        const levelExists = await findByField(db, LEVEL_COLLECTION_NAME, 'name', level);
+
+        if (!levelExists) {
+            return generateResponseData({}, false, STATUS_BAD_REQUEST, `Level '${level}' does not exist`);
+        }
 
         const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
@@ -176,7 +182,16 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
 
         // Update name and level if provided
         if (name) updatedStudentDetails.name = name;
-        if (level) updatedStudentDetails.level = level;
+
+        if (level) {
+            const levelExists = await findByField(db, LEVEL_COLLECTION_NAME, 'name', level);
+
+            if (!levelExists) {
+                return generateResponseData({}, false, STATUS_BAD_REQUEST, `Level '${level}' does not exist`);
+            } else {
+                updatedStudentDetails.level = level;
+            }
+        }
 
         // Update file if provided
         if (file) {

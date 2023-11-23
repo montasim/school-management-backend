@@ -68,8 +68,9 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
         // Check if each category exists in the database
         for (const category of processedCategories) {
             const categoryExists = await findByField(db, CATEGORY_COLLECTION_NAME, 'name', category);
+
             if (!categoryExists) {
-                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Category '${category}' does not exist.`);
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Category '${category}' does not exist`);
             }
         }
 
