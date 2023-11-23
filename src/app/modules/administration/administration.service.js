@@ -17,7 +17,7 @@
 
 import {ADMINISTRATION_COLLECTION_NAME, CATEGORY_COLLECTION_NAME} from "../../../config/config.js";
 import {
-    FORBIDDEN_MESSAGE,
+    FORBIDDEN_MESSAGE, STATUS_BAD_REQUEST,
     STATUS_FORBIDDEN,
     STATUS_INTERNAL_SERVER_ERROR,
     STATUS_NOT_FOUND,
@@ -204,19 +204,6 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        // Process and prepare categories from the provided string
-        const processedCategories = typeof category === 'string'
-            ? category.split(',').map(cat => cat.trim())
-            : Array.isArray(category) ? category : [category];
-
-        // Check if each category exists in the database
-        for (const category of processedCategories) {
-            const categoryExists = await findByField(db, CATEGORY_COLLECTION_NAME, 'name', category);
-            if (!categoryExists) {
-                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Category '${category}' does not exist.`);
-            }
-        }
-
         // Retrieve the current details of the administration
         const oldDetails = await findByField(db, ADMINISTRATION_COLLECTION_NAME, 'id', administrationId);
 
@@ -243,7 +230,21 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         if (name) updatedAdministrationDetails.name = name;
         // Process and update category
         if (typeof category === 'string') {
+            // Process and prepare categories from the provided string
+            const processedCategories = typeof category === 'string'
+                ? category.split(',').map(cat => cat.trim())
+                : Array.isArray(category) ? category : [category];
+
+            // Check if each category exists in the database
+            for (const category of processedCategories) {
+                const categoryExists = await findByField(db, CATEGORY_COLLECTION_NAME, 'name', category);
+                if (!categoryExists) {
+                    return generateResponseData({}, false, STATUS_BAD_REQUEST, `Category '${category}' does not exist.`);
+                }
+            }
+
             const newCategories = category.split(',').map(cat => cat.trim());
+
             updatedAdministrationDetails.category = Array.from(new Set([...(updatedAdministrationDetails.category || []), ...newCategories]));
         }
         if (designation) updatedAdministrationDetails.designation = designation;
