@@ -36,7 +36,7 @@ import requestLoggingMiddleware from "./app/middlewares/requestLoggingMiddleware
 import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
 import rateLimiterMiddleware from "./app/middlewares/rateLimiterMiddleware.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
-import appRoutes from "./app/routes/index.js";
+import appRoutes from "./app/routes/appRoutes.js";
 import { SECRET_KEY } from "./config/config.js";
 import {
     JSON_PAYLOAD_LIMIT,
