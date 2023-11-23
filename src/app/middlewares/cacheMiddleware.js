@@ -33,23 +33,23 @@ const cache = new NodeCache();
  */
 const createCacheMiddleware = (req, res, next) => {
     try {
-        const key = req.originalUrl;
-        const cachedResponse = cache.get(key);
+        const key = req?.originalUrl;
+        const cachedResponse = cache?.get(key);
 
         if (cachedResponse) {
-            logger.info(`Cache hit for ${key}`);
+            logger?.info(`Cache hit for ${key}`);
 
-            return res.send(cachedResponse);
+            return res?.send(cachedResponse);
         } else {
-            res.sendResponse = res.send;
+            res.sendResponse = res?.send;
             res.send = (body) => {
                 try {
-                    const clonedBody = JSON.parse(JSON.stringify(body)); // Cloning the response
+                    const clonedBody = JSON?.parse(JSON?.stringify(body)); // Cloning the response
 
-                    if (cache.set(key, clonedBody, STANDARD_CACHE_TTL)) {
-                        logger.info(`Response cached for ${key} with TTL of ${STANDARD_CACHE_TTL} seconds`);
+                    if (cache?.set(key, clonedBody, STANDARD_CACHE_TTL)) {
+                        logger?.info(`Response cached for ${key} with TTL of ${STANDARD_CACHE_TTL} seconds`);
                     } else {
-                        logger.warn(`Failed to cache response for ${key}`);
+                        logger?.warn(`Failed to cache response for ${key}`);
                     }
                 } catch (error) {
                     logger.error(`Error caching response for ${key}: ${error.message}`);
@@ -80,20 +80,23 @@ const createCacheMiddleware = (req, res, next) => {
  */
 const deleteCacheMiddleware = (req, res, next) => {
     try {
-        const keysToDelete = ["/", req.originalUrl];
+        const paths = ["/", req.originalUrl];
+        const keysToDelete = paths?.map(path => {
+            const match = path?.match(/^\/[^\/]+\/[^\/]+\/[^\/]+/);
+            return match ? match[0] : null;
+        })?.filter(key => key !== null); // Filter out null values
 
-        keysToDelete.forEach(key => {
-            if (cache.del(key)) {
-                logger.info(`Cache cleared for ${key}`);
+        keysToDelete?.forEach(key => {
+            if (cache?.del(key)) {
+                logger?.info(`Cache cleared for ${key}`);
             } else {
-                logger.warn(`No cache found for ${key} to clear`);
+                logger?.warn(`No cache found for ${key} to clear`);
             }
         });
 
         next();
     } catch (error) {
-        logger.error(`Cache clearing error: ${error.message}`);
-
+        logger?.error(`Cache clearing error: ${error?.message}`);
         next();
     }
 };
