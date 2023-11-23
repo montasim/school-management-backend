@@ -34,7 +34,7 @@ import cors from "cors";
 import session from 'express-session';
 import requestLoggingMiddleware from "./app/middlewares/requestLoggingMiddleware.js";
 import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
-import userRateLimiter from "./app/middlewares/userRateLimiter.js";
+import rateLimiterMiddleware from "./app/middlewares/rateLimiterMiddleware.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import appRoutes from "./app/routes/index.js";
 import { SECRET_KEY } from "./config/config.js";
@@ -128,7 +128,7 @@ app.use(cors(corsConfigurationMiddleware));
 /**
  * Applies rate limiting to all incoming requests.
  */
-app.use(userRateLimiter);
+app.use(rateLimiterMiddleware);
 
 /**
  * Establishes a database connection for each request.

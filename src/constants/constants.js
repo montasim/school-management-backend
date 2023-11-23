@@ -20,6 +20,12 @@ const ALLOWED_ORIGIN = [
 ];
 const ALLOWED_METHODS = "GET,PUT,POST,DELETE";
 
+// Rate limit settings
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // Defines the time window to be 15 minutes
+const RATE_LIMIT_MAX = 500; // Limits each user to 500 requests per windowMs
+const RATE_LIMIT_MESSAGE = "You have exceeded the 100 requests in 15 minutes limit! Please try again later.";
+const RATE_LIMIT_HEADERS = true; // Adds rate limit headers to responses
+
 // Cache related methods
 const STANDARD_CACHE_TTL = 24 * 60 * 60; // 86,400 seconds
 
@@ -88,6 +94,10 @@ const BLOG_PROPERTY_DESCRIPTION_MAX_LENGTH = 5000;
 export {
     ALLOWED_ORIGIN,
     ALLOWED_METHODS,
+    RATE_LIMIT_WINDOW_MS,
+    RATE_LIMIT_MAX,
+    RATE_LIMIT_MESSAGE,
+    RATE_LIMIT_HEADERS,
     STANDARD_CACHE_TTL,
     FILE_EXTENSION_TYPE_PDF,
     FILE_EXTENSION_TYPE_JPG,

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Rate Limiter Middleware Using MongoDB for Express.js Applications.
  *
- * This module provides a rate limiting middleware designed for Express.js applications, utilizing MongoDB as the backend store.
+ * This module provides a rate-limiting middleware designed for Express.js applications, utilizing MongoDB as the backend store.
  * The middleware is configured to limit the number of requests a user can make within a specified time window, helping to prevent
  * abuse and excessive use of resources. It is particularly useful for API endpoints where controlling the request rate is critical
  * for maintaining server performance and avoiding overloading. The configuration includes defining the time window, maximum number
@@ -18,12 +18,18 @@
 import rateLimit from "express-rate-limit";
 import MongoStore from "rate-limit-mongo";
 import { MONGODB_URI } from "../../config/config.js";
+import {
+    RATE_LIMIT_HEADERS,
+    RATE_LIMIT_MAX,
+    RATE_LIMIT_MESSAGE,
+    RATE_LIMIT_WINDOW_MS
+} from "../../constants/constants.js";
 
 /**
  * Initializes a rate limiting middleware using MongoDB as the store.
  * This middleware is crucial for controlling the rate of requests to the application, ensuring that users do not exceed
  * a specified number of requests within a given time frame. The configuration involves setting up a MongoDB store for
- * tracking request counts, defining the duration of the rate limiting window, and specifying the maximum number of
+ * tracking request counts, defining the duration of the rate-limiting window, and specifying the maximum number of
  * allowed requests. The middleware also includes a custom message for users who exceed the limit and supports adding
  * rate limit headers to responses. This setup is vital for maintaining the application's stability and preventing
  * overuse of resources, making it a key component in the application's request handling pipeline.
@@ -31,19 +37,19 @@ import { MONGODB_URI } from "../../config/config.js";
  * @type {import("express").RequestHandler} - The rate limiter middleware to be used with Express.js routes.
  * @throws Error - Captures and logs any errors during the initialization of the rate limiter.
  */
-let userRateLimiter;
+let rateLimiterMiddleware;
 
 try {
-    userRateLimiter = rateLimit({
+    rateLimiterMiddleware = rateLimit({
         store: new MongoStore({
             uri: MONGODB_URI, // Connection string for MongoDB
             // Optional options for rate-limit-mongo
             // See: https://github.com/2do2go/rate-limit-mongo#options
         }),
-        windowMs: 15 * 60 * 1000, // Defines the time window to be 15 minutes
-        max: 100, // Limits each user to 100 requests per windowMs
-        message: "You have exceeded the 100 requests in 15 minutes limit! Please try again later.", // Message to be displayed on exceeding the limit
-        headers: true, // Adds rate limit headers to responses
+        windowMs: RATE_LIMIT_WINDOW_MS,
+        max: RATE_LIMIT_MAX,
+        message: RATE_LIMIT_MESSAGE,
+        headers: RATE_LIMIT_HEADERS,
     });
 } catch (error) {
     /**
@@ -57,4 +63,4 @@ try {
 /**
  * Export the configured rate limiter middleware.
  */
-export default userRateLimiter;
+export default rateLimiterMiddleware;
