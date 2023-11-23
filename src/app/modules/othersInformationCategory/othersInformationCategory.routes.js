@@ -19,6 +19,7 @@ import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { OthersInformationCategoryValidators } from "./othersInformationCategory.validator.js";
 import { OthersInformationCategoryController } from "./othersInformationCategory.controller.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -47,6 +48,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     OthersInformationCategoryValidators.othersInformationCategoryBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     OthersInformationCategoryController.createOthersInformationCategory
 ]);
 
@@ -65,6 +67,7 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     OthersInformationCategoryController.getOthersInformationCategoryList
 ]);
 
@@ -91,6 +94,7 @@ router.get("/", [
  */
 router.get("/:othersInformationCategoryId", [
     OthersInformationCategoryValidators.othersInformationCategoryParamsValidator,
+    CacheMiddleware.createCacheMiddleware,
     OthersInformationCategoryController.getAOthersInformationCategory
 ]);
 
@@ -126,6 +130,7 @@ router.put("/:othersInformationCategoryId", [
     authTokenMiddleware,
     OthersInformationCategoryValidators.othersInformationCategoryParamsValidator,
     OthersInformationCategoryValidators.othersInformationCategoryBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     OthersInformationCategoryController.updateAOthersInformationCategory
 ]);
 
@@ -155,6 +160,7 @@ router.put("/:othersInformationCategoryId", [
 router.delete("/:othersInformationCategoryId", [
     authTokenMiddleware,
     OthersInformationCategoryValidators.othersInformationCategoryParamsValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     OthersInformationCategoryController.deleteAOthersInformationCategory
 ]);
 

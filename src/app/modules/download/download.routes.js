@@ -19,6 +19,7 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { DownloadValidationService } from "./download.validator.js";
 import { DownloadController } from "./download.controller.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -57,6 +58,7 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware?.single('file'),
     DownloadValidationService?.validateNewDownloadDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     DownloadController?.createDownloadController
 ]);
 
@@ -78,6 +80,7 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     DownloadController.getDownloadListController
 ]);
 
@@ -105,6 +108,7 @@ router.get("/", [
  */
 router.get("/:fileName", [
     DownloadValidationService.validateDownloadParams,
+    CacheMiddleware.createCacheMiddleware,
     DownloadController.getADownloadController
 ]);
 
@@ -136,6 +140,7 @@ router.get("/:fileName", [
 router.delete("/:fileName", [
     authTokenMiddleware,
     DownloadValidationService.validateDownloadParams,
+    CacheMiddleware.deleteCacheMiddleware,
     DownloadController.deleteADownloadController
 ]);
 

@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { VideoGalleryValidationService } from "./videoGallery.validator.js";
 import { VideoGalleryController } from "./videoGallery.controller.js";
+import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -59,6 +60,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('galleryVideo'),
+    CacheMiddleware.deleteCacheMiddleware,
     VideoGalleryController.createVideoGalleryController
 ]);
 
@@ -80,6 +82,7 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     VideoGalleryController.getVideoGalleryListController
 ]);
 
@@ -107,6 +110,7 @@ router.get("/", [
  */
 router.get("/:videoGalleryId", [
     VideoGalleryValidationService.validateVideoGalleryParams,
+    CacheMiddleware.createCacheMiddleware,
     VideoGalleryController.getAVideoGalleryController
 ]);
 
@@ -138,6 +142,7 @@ router.get("/:videoGalleryId", [
 router.delete("/:videoGalleryId", [
     authTokenMiddleware,
     VideoGalleryValidationService.validateVideoGalleryParams,
+    CacheMiddleware.deleteCacheMiddleware,
     VideoGalleryController.deleteAVideoGalleryController
 ]);
 

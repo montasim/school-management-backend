@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { BlogValidationService } from "./blog.validator.js";
 import { BlogController } from "./blog.controller.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -68,6 +69,7 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('blogImage'),
     BlogValidationService.validateNewBlogDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     BlogController.createBlogController
 ]);
 
@@ -89,6 +91,7 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     BlogController.getBlogListController
 ]);
 
@@ -116,6 +119,7 @@ router.get("/", [
  */
 router.get("/:blogId", [
     BlogValidationService.validateBlogParams,
+    CacheMiddleware.createCacheMiddleware,
     BlogController.getABlogController
 ]);
 
@@ -167,6 +171,7 @@ router.put("/:blogId", [
     fileUploadMiddleware.single('blogImage'),
     BlogValidationService.validateBlogParams,
     BlogValidationService.validateUpdateBlogDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     BlogController.updateABlogController
 ]);
 
@@ -198,6 +203,7 @@ router.put("/:blogId", [
 router.delete("/:blogId", [
     authTokenMiddleware,
     BlogValidationService.validateBlogParams,
+    CacheMiddleware.deleteCacheMiddleware,
     BlogController.deleteABlogController
 ]);
 

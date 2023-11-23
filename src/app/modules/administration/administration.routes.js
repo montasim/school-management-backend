@@ -86,7 +86,8 @@ router.post("/", [
  * @description Handles GET request for retrieving a list of all administrations.
  * @route GET /
  */
-router.get("/", CacheMiddleware.createCacheMiddleware, [
+router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     AdministrationController.getAdministrationListController
 ]);
 
@@ -112,8 +113,9 @@ router.get("/", CacheMiddleware.createCacheMiddleware, [
  * @description Handles GET request for retrieving details of a specific administration.
  * @route GET /{administrationId}
  */
-router.get("/:administrationId", CacheMiddleware.createCacheMiddleware, [
+router.get("/:administrationId", [
     AdministrationValidationService.validateAdministrationParams,
+    CacheMiddleware.createCacheMiddleware,
     AdministrationController.getAAdministrationController
 ]);
 

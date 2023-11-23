@@ -19,6 +19,7 @@ import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteSocialMediaLinkValidators } from "./websiteSocialMediaLink.validator.js";
 import { WebsiteSocialMediaLinkController } from "./websiteSocialMediaLink.controller.js";
+import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -56,6 +57,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     WebsiteSocialMediaLinkController.createWebsiteSocialMediaLinkController
 ]);
 
@@ -74,6 +76,7 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     WebsiteSocialMediaLinkController.getWebsiteSocialMediaLinkListController
 ]);
 
@@ -93,6 +96,7 @@ router.get("/", [
  */
 router.get("/:websiteSocialMediaLinkId", [
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkParamsValidator,
+    CacheMiddleware.createCacheMiddleware,
     WebsiteSocialMediaLinkController.getAWebsiteSocialMediaLinkController
 ]);
 
@@ -131,6 +135,7 @@ router.put("/:websiteSocialMediaLinkId", [
     authTokenMiddleware,
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkParamsValidator,
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     WebsiteSocialMediaLinkController.updateAWebsiteSocialMediaLinkController
 ]);
 
@@ -153,6 +158,7 @@ router.put("/:websiteSocialMediaLinkId", [
 router.delete("/:websiteSocialMediaLinkId", [
     authTokenMiddleware,
     WebsiteSocialMediaLinkValidators.websiteSocialMediaLinkParamsValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     WebsiteSocialMediaLinkController.deleteAWebsiteSocialMediaLinkController
 ]);
 

@@ -20,6 +20,7 @@ import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { OthersInformationValidationService } from "./othersInformation.validator.js";
 import { OthersInformationController } from "./othersInformation.controller.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -55,6 +56,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     OthersInformationValidationService.validateNewOthersInformationDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     OthersInformationController.createOthersInformationController
 ]);
 
@@ -73,6 +75,7 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     OthersInformationController.getOthersInformationListController
 ]);
 
@@ -109,6 +112,7 @@ router.get("/", [
  */
 router.get("/:othersInformationId", [
     OthersInformationValidationService.validateOthersInformationParams,
+    CacheMiddleware.createCacheMiddleware,
     OthersInformationController.getAOthersInformationController
 ]);
 
@@ -143,6 +147,7 @@ router.get("/:othersInformationId", [
 router.put("/:othersInformationId", [
     authTokenMiddleware,
     OthersInformationValidationService.validateOthersInformationParams,
+    CacheMiddleware.deleteCacheMiddleware,
     OthersInformationController.updateAOthersInformationController
 ]);
 
@@ -172,6 +177,7 @@ router.put("/:othersInformationId", [
 router.delete("/:othersInformationId", [
     authTokenMiddleware,
     OthersInformationValidationService.validateOthersInformationParams,
+    CacheMiddleware.deleteCacheMiddleware,
     OthersInformationController.deleteAOthersInformationController
 ]);
 

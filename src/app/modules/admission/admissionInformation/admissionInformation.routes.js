@@ -20,6 +20,7 @@ import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { AdmissionInformationValidationService } from "./admissionInformation.validator.js";
 import { AdmissionInformationController } from "./admissionInformation.controller.js";
+import {CacheMiddleware} from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -67,6 +68,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     AdmissionInformationValidationService.validateNewAdmissionInformationDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     AdmissionInformationController.createAdmissionInformationController
 ]);
 
@@ -88,6 +90,7 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     AdmissionInformationController.getAdmissionInformationListController
 ]);
 
@@ -115,6 +118,7 @@ router.get("/", [
  */
 router.get("/:admissionInformationId", [
     AdmissionInformationValidationService.validateAdmissionInformationParams,
+    CacheMiddleware.createCacheMiddleware,
     AdmissionInformationController.getAAdmissionInformationController
 ]);
 
@@ -169,6 +173,7 @@ router.put("/:admissionInformationId", [
     authTokenMiddleware,
     AdmissionInformationValidationService.validateAdmissionInformationParams,
     AdmissionInformationValidationService.validateUpdateAdmissionInformationDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     AdmissionInformationController.updateAAdmissionInformationController
 ]);
 
@@ -200,6 +205,7 @@ router.put("/:admissionInformationId", [
 router.delete("/:admissionInformationId", [
     authTokenMiddleware,
     AdmissionInformationValidationService.validateAdmissionInformationParams,
+    CacheMiddleware.deleteCacheMiddleware,
     AdmissionInformationController.deleteAAdmissionInformationController
 ]);
 

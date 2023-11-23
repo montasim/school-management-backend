@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { StudentValidationService } from "./student.validator.js";
 import { StudentController } from "./student.controller.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -68,6 +69,7 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     StudentValidationService.validateNewStudentDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     StudentController.createStudentController
 ]);
 
@@ -89,6 +91,7 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     StudentController.getStudentListController
 ]);
 
@@ -116,6 +119,7 @@ router.get("/", [
  */
 router.get("/:studentId", [
     StudentValidationService.validateStudentParams,
+    CacheMiddleware.createCacheMiddleware,
     StudentController.getAStudentController
 ]);
 
@@ -167,6 +171,7 @@ router.put("/:studentId", [
     fileUploadMiddleware.single('file'),
     StudentValidationService.validateStudentParams,
     StudentValidationService.validateUpdateStudentDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     StudentController.updateAStudentController
 ]);
 
@@ -198,6 +203,7 @@ router.put("/:studentId", [
 router.delete("/:studentId", [
     authTokenMiddleware,
     StudentValidationService.validateStudentParams,
+    CacheMiddleware.deleteCacheMiddleware,
     StudentController.deleteAStudentController
 ]);
 

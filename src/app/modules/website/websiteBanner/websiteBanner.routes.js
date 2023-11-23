@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { WebsiteBannerValidationService } from "./websiteBanner.validator.js";
 import { WebsiteBannerController } from "./websiteBanner.controller.js";
+import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -60,6 +61,7 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteBannerImage'),
     WebsiteBannerValidationService.validateNewWebsiteBannerDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     WebsiteBannerController.createWebsiteBannerController
 ]);
 
@@ -86,6 +88,7 @@ router.post("/", [
  * @route GET /{websiteBannerId}
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     WebsiteBannerController.getAWebsiteBannerController
 ]);
 
@@ -116,6 +119,7 @@ router.get("/", [
  */
 router.delete("/", [
     authTokenMiddleware,
+    CacheMiddleware.deleteCacheMiddleware,
     WebsiteBannerController.deleteAWebsiteBannerController
 ]);
 

@@ -20,6 +20,7 @@ import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { DesignationValidators } from "./designation.validator.js";
 import { DesignationController } from "./designation.controller.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -48,6 +49,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     DesignationValidators.designationBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     DesignationController.createDesignationController
 ]);
 
@@ -66,6 +68,7 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     DesignationController.getDesignationListController
 ]);
 
@@ -92,6 +95,7 @@ router.get("/", [
  */
 router.get("/:designationId", [
     DesignationValidators.designationParamsValidator,
+    CacheMiddleware.createCacheMiddleware,
     DesignationController.getADesignationController
 ]);
 
@@ -127,6 +131,7 @@ router.put("/:designationId", [
     authTokenMiddleware,
     DesignationValidators.designationParamsValidator,
     DesignationValidators.designationBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     DesignationController.updateADesignationController
 ]);
 
@@ -156,6 +161,7 @@ router.put("/:designationId", [
 router.delete("/:designationId", [
     authTokenMiddleware,
     DesignationValidators.designationParamsValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     DesignationController.deleteADesignationController
 ]);
 
