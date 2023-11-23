@@ -38,7 +38,13 @@ import rateLimiterMiddleware from "./app/middlewares/rateLimiterMiddleware.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import appRoutes from "./app/routes/index.js";
 import { SECRET_KEY } from "./config/config.js";
-import {STATUS_INTERNAL_SERVER_ERROR, STATUS_NOT_FOUND} from "./constants/constants.js";
+import {
+    JSON_PAYLOAD_LIMIT,
+    TIMEOUT_IN_SECONDS,
+    STANDARD_CACHE_TTL_IN_MILLISECOND,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND
+} from "./constants/constants.js";
 import logger from "./shared/logger.js";
 import generateResponseData from "./shared/generateResponseData.js";
 
@@ -64,13 +70,12 @@ app.use(hpp());
 /**
  * Timeout after 60 seconds
  */
-app.use(timeout('60s'));
+app.use(timeout(TIMEOUT_IN_SECONDS));
 
 /**
  * Serves static files with caching.
  */
-const oneDay = 24 * 60 * 60 * 1000; // Cache duration in milliseconds
-app.use(express.static('./', { maxAge: oneDay }));
+app?.use(express?.static('./', { maxAge: STANDARD_CACHE_TTL_IN_MILLISECOND })); // Cache duration in milliseconds
 
 /**
  * Logs incoming HTTP requests.
@@ -80,12 +85,12 @@ app.use(requestLoggingMiddleware);
 /**
  * Parses incoming requests with JSON payloads.
  */
-app.use(express.json({ limit: '10kb' })); // Limit set for payload size
+app.use(express.json({ limit:  JSON_PAYLOAD_LIMIT})); // Limit set for payload size
 
 /**
  * Parses incoming requests with urlencoded payloads.
  */
-app.use(express.urlencoded({ limit: '10kb', extended: true }));
+app.use(express.urlencoded({ limit: JSON_PAYLOAD_LIMIT, extended: true }));
 
 /**
  * Applies CORS configuration to handle cross-origin requests.

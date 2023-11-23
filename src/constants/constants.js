@@ -26,8 +26,15 @@ const RATE_LIMIT_MAX = 500; // Limits each user to 500 requests per windowMs
 const RATE_LIMIT_MESSAGE = "You have exceeded the 100 requests in 15 minutes limit! Please try again later.";
 const RATE_LIMIT_HEADERS = true; // Adds rate limit headers to responses
 
+// Timeout related methods
+const TIMEOUT_IN_SECONDS = '60s';
+
+// Payload related methods
+const JSON_PAYLOAD_LIMIT = '10kb';
+
 // Cache related methods
 const STANDARD_CACHE_TTL = 24 * 60 * 60; // 86,400 seconds
+const STANDARD_CACHE_TTL_IN_MILLISECOND = 24 * 60 * 60 * 1000;
 
 // File extension related
 const FILE_EXTENSION_TYPE_PDF = "pdf";
@@ -98,7 +105,10 @@ export {
     RATE_LIMIT_MAX,
     RATE_LIMIT_MESSAGE,
     RATE_LIMIT_HEADERS,
+    TIMEOUT_IN_SECONDS,
+    JSON_PAYLOAD_LIMIT,
     STANDARD_CACHE_TTL,
+    STANDARD_CACHE_TTL_IN_MILLISECOND,
     FILE_EXTENSION_TYPE_PDF,
     FILE_EXTENSION_TYPE_JPG,
     FILE_EXTENSION_TYPE_PNG,
