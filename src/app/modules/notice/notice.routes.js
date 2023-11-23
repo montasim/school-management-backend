@@ -19,6 +19,7 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { NoticeValidationService } from "./notice.validator.js";
 import { NoticeController } from "./notice.controller.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -57,6 +58,7 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     NoticeValidationService.validateNewNoticeDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     NoticeController.createNoticeController
 ]);
 
@@ -78,6 +80,7 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     NoticeController.getNoticeListController
 ]);
 
@@ -105,6 +108,7 @@ router.get("/", [
  */
 router.get("/:fileName", [
     NoticeValidationService.validateNoticeParams,
+    CacheMiddleware.createCacheMiddleware,
     NoticeController.getANoticeController
 ]);
 
@@ -136,6 +140,7 @@ router.get("/:fileName", [
 router.delete("/:fileName", [
     authTokenMiddleware,
     NoticeValidationService.validateNoticeParams,
+    CacheMiddleware.deleteCacheMiddleware,
     NoticeController.deleteANoticeController
 ]);
 

@@ -11,6 +11,7 @@ import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { AnnouncementValidators } from "./announcement.validator.js";
 import { AnnouncementController } from "./announcement.controller.js";
+import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -39,6 +40,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     AnnouncementValidators.announcementBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     AnnouncementController.createAnnouncementController
 ]);
 
@@ -57,6 +59,7 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     AnnouncementController.getAnnouncementListController
 ]);
 
@@ -83,6 +86,7 @@ router.get("/", [
  */
 router.get("/:announcementId", [
     AnnouncementValidators.announcementParamsValidator,
+    CacheMiddleware.createCacheMiddleware,
     AnnouncementController.getAAnnouncementController
 ]);
 
@@ -118,6 +122,7 @@ router.put("/:announcementId", [
     authTokenMiddleware,
     AnnouncementValidators.announcementParamsValidator,
     AnnouncementValidators.announcementBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     AnnouncementController.updateAAnnouncementController
 ]);
 
@@ -147,6 +152,7 @@ router.put("/:announcementId", [
 router.delete("/:announcementId", [
     authTokenMiddleware,
     AnnouncementValidators.announcementParamsValidator,
+    CacheMiddleware.deleteCacheMiddleware,
     AnnouncementController.deleteAAnnouncementController
 ]);
 

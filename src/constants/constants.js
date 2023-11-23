@@ -21,7 +21,7 @@ const ALLOWED_ORIGIN = [
 const ALLOWED_METHODS = "GET,PUT,POST,DELETE";
 
 // Cache related methods
-const STANDARD_CACHE_TTL = 60;
+const STANDARD_CACHE_TTL = 24 * 60 * 60; // 86,400 seconds
 
 // File extension related
 const FILE_EXTENSION_TYPE_PDF = "pdf";

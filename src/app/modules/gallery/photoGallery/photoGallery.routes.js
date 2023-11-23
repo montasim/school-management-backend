@@ -22,6 +22,7 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
 import { PhotoGalleryValidationService } from "./photoGallery.validator.js";
 import { PhotoGalleryController } from "./photoGallery.controller.js";
+import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -60,6 +61,7 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware?.single('galleryImage'),
     PhotoGalleryValidationService?.validateNewPhotoGalleryDetails,
+    CacheMiddleware.deleteCacheMiddleware,
     PhotoGalleryController?.createPhotoGalleryController
 ]);
 
@@ -81,6 +83,7 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
+    CacheMiddleware.createCacheMiddleware,
     PhotoGalleryController.getPhotoGalleryListController
 ]);
 
@@ -108,6 +111,7 @@ router.get("/", [
  */
 router.get("/:photoGalleryId", [
     PhotoGalleryValidationService.validatePhotoGalleryParams,
+    CacheMiddleware.createCacheMiddleware,
     PhotoGalleryController.getAPhotoGalleryController
 ]);
 
@@ -139,6 +143,7 @@ router.get("/:photoGalleryId", [
 router.delete("/:photoGalleryId", [
     authTokenMiddleware,
     PhotoGalleryValidationService.validatePhotoGalleryParams,
+    CacheMiddleware.deleteCacheMiddleware,
     PhotoGalleryController.deleteAPhotoGalleryController
 ]);
 
