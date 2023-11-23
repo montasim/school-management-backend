@@ -32,7 +32,7 @@ import {
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const validateNewWebsiteBannerDetails = validateDataWithSchema(
+const validateWebsiteBannerDetails = validateDataWithSchema(
     JoiSchemaGenerators.fileValidationSchema(
     "websiteBannerImage",
     [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
@@ -44,5 +44,5 @@ const validateNewWebsiteBannerDetails = validateDataWithSchema(
  * @description Provides validation services for websiteBanner-related data in routes. This includes validation for websiteBanner details, websiteBanner files, and websiteBanner parameters.
  */
 export const WebsiteBannerValidationService = {
-    validateNewWebsiteBannerDetails,
+    validateWebsiteBannerDetails,
 };

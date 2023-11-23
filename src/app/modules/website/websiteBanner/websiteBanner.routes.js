@@ -36,10 +36,6 @@ const router = express.Router();
  *       - multipart/form-data
  *     parameters:
  *       - in: formData
- *         name: title
- *         type: string
- *         description: Title of the websiteBanner.
- *       - in: formData
  *         name: carouselImage
  *         type: file
  *         description: The websiteBanner image file to upload.
@@ -60,7 +56,7 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteBannerImage'),
-    WebsiteBannerValidationService.validateNewWebsiteBannerDetails,
+    WebsiteBannerValidationService.validateWebsiteBannerDetails,
     CacheMiddleware.deleteCacheMiddleware,
     WebsiteBannerController.createWebsiteBannerController
 ]);
@@ -90,6 +86,40 @@ router.post("/", [
 router.get("/", [
     CacheMiddleware.createCacheMiddleware,
     WebsiteBannerController.getAWebsiteBannerController
+]);
+
+/**
+ * @swagger
+ * /:
+ *   put:
+ *     summary: Update a websiteBanner.
+ *     description: Endpoint to update a websiteBanner to the system.
+ *     consumes:
+ *       - multipart/form-data
+ *       - in: formData
+ *         name: carouselImage
+ *         type: file
+ *         description: The websiteBanner image file to upload.
+ *     responses:
+ *       200:
+ *         description: WebsiteBanner successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       500:
+ *         description: Internal server error.
+ *
+ * @description Handles POST request for creating a new websiteBanner.
+ * Applies authentication and file upload middleware.
+ * @route POST /
+ */
+router.put("/", [
+    authTokenMiddleware,
+    fileUploadMiddleware.single('websiteBannerImage'),
+    WebsiteBannerValidationService.validateWebsiteBannerDetails,
+    CacheMiddleware.deleteCacheMiddleware,
+    WebsiteBannerController.updateWebsiteBannerController
 ]);
 
 /**

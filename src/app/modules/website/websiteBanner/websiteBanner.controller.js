@@ -59,6 +59,25 @@ const getAWebsiteBannerController = async (req, res) => {
 
 /**
  * @async
+ * @function updateWebsiteBannerController
+ * @description Controller for updating a websiteBanner.
+ * @param {express.Request} req - Express request object containing websiteBanner details.
+ * @param {express.Response} res - Express response object to send data back to the client.
+ */
+const updateWebsiteBannerController = async (req, res) => {
+    try {
+        const { adminId, db } = extractFromRequest(req, [], []);
+
+        await handleServiceResponse(res, WebsiteBannerService.updateWebsiteBannerService, db, adminId, req?.file);
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
+};
+
+/**
+ * @async
  * @function deleteAWebsiteBannerController
  * @description Controller for deleting a websiteBanner.
  *
@@ -84,5 +103,6 @@ const deleteAWebsiteBannerController = async (req, res) => {
 export const WebsiteBannerController = {
     createWebsiteBannerController,
     getAWebsiteBannerController,
+    updateWebsiteBannerController,
     deleteAWebsiteBannerController
 };
