@@ -44,7 +44,7 @@ import checkIfAccountIsLocked from "../../../helpers/checkIfAccountIsLocked.js";
 import addCurrentlyLoggedInDevice from "../../../shared/addCurrentlyLoggedInDevice.js";
 import removeTokenId from "../../../helpers/removeTokenId.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
-import {ADMIN_CONSTANTS} from "./authentication.constants.js";
+import { ADMIN_CONSTANTS } from "./authentication.constants.js";
 
 /**
  * Handles the login process for an admin user.
@@ -81,14 +81,18 @@ const loginService = async (db, loginDetails) => {
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
 
         /**
-         * Limit the number of concurrent login
+         * Limit the number of concurrent logins
          *
          * Here, parseInt is used with a radix of 10 to ensure it's parsed as a base-10 number.
          * This is especially important in cases where the value might start with 0
          * (which could be incorrectly interpreted as an octal number) or include non-numeric characters.
          */
         if (foundAdminDetails?.currentlyLoggedInDevice >= parseInt(MAX_CONCURRENT_LOGINS, 10))
-            return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Can not log in more that 'MAX_CONCURRENT_LOGINS' devices at a time. Please log out from any of the login device and try again");
+            return generateResponseData(
+                {},
+                false,
+                STATUS_UNAUTHORIZED,
+                `Can not log in more that ${MAX_CONCURRENT_LOGINS} devices at a time. Please log out from any of the login device and try again`);
 
         // Check if the account is locked
         const accountLockResponse = checkIfAccountIsLocked(foundAdminDetails);
@@ -211,7 +215,7 @@ const signupService = async (db, signupDetails) => {
                     userName: userName,
                     password: hashedPassword,
                     currentlyLoggedInDevice: 0,
-                    tokenId: [],
+                    tokenDetails: [],
                     lastLoginAt: null,
                     allowedFailedAttempts: MAX_FAILED_ATTEMPTS,
                     lastFailedAttempts: null,
@@ -226,7 +230,7 @@ const signupService = async (db, signupDetails) => {
                 delete latestData?.allowedFailedAttempts;
                 delete latestData?.lastFailedAttempts;
                 delete latestData?.currentlyLoggedInDevice;
-                delete latestData?.tokenId;
+                delete latestData?.tokenDetails;
                 delete latestData?.lastLoginAt;
                 delete latestData?.createdAt;
                 delete latestData?.modifiedAt;
@@ -257,7 +261,7 @@ const signupService = async (db, signupDetails) => {
  * @function resetPasswordService
  * @param {Object} db - Database connection object.
  * @param {Object} resetPasswordDetails - Details for password reset including adminId, oldPassword, newPassword, confirmNewPassword.
- * @returns {Promise<Object>} - Promise object representing the outcome of the password reset operation.
+ * @returns {Promise<Object>} - Promise an object representing the outcome of the password reset operation.
  */
 const resetPasswordService = async (db, resetPasswordDetails) => {
     try {
@@ -282,16 +286,27 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
 
         const salt = await bcrypt.genSalt(10);
         const hashedNewPassword = await bcrypt.hash(newPassword, salt);
-        const updatedAdminDetails = {
-            password: hashedNewPassword,
-            modifiedAt: new Date(),
-        };
-        const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, updatedAdminDetails);
+        const newDetails = { ...foundAdminDetails };
+
+        newDetails.password = hashedNewPassword;
+        newDetails.modifiedAt = new Date();
+
+        const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, newDetails);
 
         if (result?.modifiedCount) {
-            await removeTokenId(db, foundAdminDetails, tokenId);
+            newDetails.currentlyLoggedInDevice = 0;
+            newDetails.lastLoginAt = '';
+            newDetails.allowedFailedAttempts = MAX_FAILED_ATTEMPTS;
+            newDetails.lastFailedAttempts = 0;
+            newDetails.tokenDetails = [];
 
-            return generateResponseData({}, true, STATUS_OK, "Password updated successfully")
+            const result = await updateById(db, ADMIN_COLLECTION_NAME, adminId, newDetails);
+
+            if (result?.modifiedCount) {
+                return generateResponseData({}, true, STATUS_OK, "Password updated successfully");
+            } else {
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update password");
+            }
         } else {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Failed to update password");
         }
@@ -305,7 +320,7 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
 /**
  * Service to handle the log-out functionality.
  *
- * This service facilitates the process of log our an admin. It ensures
+ * This service facilitates the process of logout admin. It ensures
  * that the request is valid, and updates the currently logged in device number
  *
  * @async
@@ -313,7 +328,7 @@ const resetPasswordService = async (db, resetPasswordDetails) => {
  * @param {Object} db - Database connection object.
  * @param {Object} adminId - Admin id.
  * @param tokenId
- * @returns {Promise<Object>} - Promise object representing the outcome of the log-out operation.
+ * @returns {Promise<Object>} - Promise an object representing the outcome of the log-out operation.
  */
 const logoutService = async (db, adminId, tokenId) => {
     try {
@@ -362,7 +377,7 @@ const logoutService = async (db, adminId, tokenId) => {
  */
 const deleteUserService = async (db, adminDetails) => {
     try {
-        const { adminId } = adminDetails;
+        const { adminId, name } = adminDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -370,8 +385,8 @@ const deleteUserService = async (db, adminDetails) => {
         const result = await deleteByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);
 
         return result
-            ? generateResponseData({}, true, STATUS_OK, `${adminId} deleted successfully`)
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${adminId} could not be deleted`);
+            ? generateResponseData({}, true, STATUS_OK, `${name} deleted successfully`)
+            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} could not be deleted`);
 
     } catch (error) {
         logger.error(error);
