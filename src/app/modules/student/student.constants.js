@@ -34,7 +34,7 @@ const PROPERTY_LEVEL_MIN_LENGTH = 3;
 const PROPERTY_LEVEL_MAX_LENGTH = 90;
 
 /**
- * Exported object containing all the constants for the student module.
+ * Exported an object containing all the constants for the student module.
  * These constants are used throughout the application for generating and validating student-related data.
  */
 export const STUDENT_CONSTANTS = {
