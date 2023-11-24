@@ -1,26 +1,23 @@
 /**
- * @fileoverview VideoGallery Routes for Express Application.
+ * @fileoverview Website Important Information Link Router.
  *
- * This module defines the routes for videoGallery-related operations in the Express application.
- * It includes endpoints for creating, retrieving, updating, and deleting videoGallery posts.
- * The routes are configured with necessary middleware for authentication, file uploading,
- * and validation. Swagger documentation annotations are also included to describe each
- * endpoint, its expected parameters, and responses. This setup facilitates clear and
- * organized handling of videoGallery-related requests, ensuring proper authentication, data validation,
- * and response structuring.
+ * This file defines the routes for managing video gallery links.
+ * It includes routes for creating, retrieving, updating, and deleting important
+ * information links. These routes are integrated with middleware for authentication,
+ * validation, and other necessary functionalities. The router handles different HTTP
+ * methods (POST, GET, PUT, DELETE) to support CRUD operations for video gallery
+ * links. Each route is mapped to a specific controller function to process the requests.
  *
- * @requires express - Express framework to define routes.
- * @requires authTokenMiddleware - Middleware for authenticating tokens in requests.
- * @requires fileUploadMiddleware - Middleware for handling file uploads.
- * @requires VideoGalleryValidationService - Validators for videoGallery post request data.
- * @requires VideoGalleryController - Controllers for handling videoGallery post operations.
- * @module videoGalleryRouter - Express router with defined routes for videoGallery operations.
+ * @requires express - Express framework to define routing logic.
+ * @requires authTokenMiddleware - Middleware for authenticating users.
+ * @requires VideoGalleryValidators - Validators for input data.
+ * @requires VideoGalleryController - Controllers for route handling.
+ * @module videoGalleryRouter - Exports the configured Express router.
  */
 
 import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
-import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
-import { VideoGalleryValidationService } from "./videoGallery.validator.js";
+import { VideoGalleryValidators } from "./videoGallery.validator.js";
 import { VideoGalleryController } from "./videoGallery.controller.js";
 import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
@@ -30,22 +27,20 @@ const router = express.Router();
  * @swagger
  * /:
  *   post:
- *     summary: Create a videoGallery.
- *     description: Endpoint to add a new videoGallery to the system.
- *     consumes:
- *       - multipart/form-data
+ *     summary: Create a website contact.
+ *     description: Endpoint to add a new video gallery link to the system.
  *     parameters:
- *       - in: formData
- *         name: title
+ *       - in: body
+ *         name: videoGalleryTitle
  *         type: string
- *         description: Title of the videoGallery.
- *       - in: formData
- *         name: galleryVideo
- *         type: file
- *         description: The videoGallery post video file to upload.
+ *         description: Video title of the website.
+ *       - in: body
+ *         name: videoLink
+ *         type: object
+ *         description: Video link of the website.
  *     responses:
  *       200:
- *         description: VideoGallery successfully created.
+ *         description: Website contact successfully created.
  *       400:
  *         description: Bad request due to invalid parameters.
  *       401:
@@ -53,13 +48,13 @@ const router = express.Router();
  *       500:
  *         description: Internal server error.
  *
- * @description Handles POST request for creating a new videoGallery.
+ * @description Handles POST request for creating a new website contact.
  * Applies authentication and file upload middleware.
  * @route POST /
  */
 router.post("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('galleryVideo'),
+    VideoGalleryValidators.videoGalleryBodyValidator,
     CacheMiddleware.deleteCacheMiddleware,
     VideoGalleryController.createVideoGalleryController
 ]);
@@ -68,18 +63,15 @@ router.post("/", [
  * @swagger
  * /:
  *   get:
- *     summary: Retrieve all videoGallery.
- *     description: Endpoint to retrieve a list of all videoGallery.
+ *     summary: Retrieve a video gallery link.
+ *     description: Endpoint to get details of a website.
  *     responses:
  *       200:
- *         description: A list of videoGallery.
+ *         description: Website video gallery link.
  *       404:
- *         description: VideoGallery not found.
+ *         description: Website video gallery link not found.
  *       500:
  *         description: Internal server error.
- *
- * @description Handles GET request for retrieving a list of all videoGallery.
- * @route GET /
  */
 router.get("/", [
     CacheMiddleware.createCacheMiddleware,
@@ -90,26 +82,18 @@ router.get("/", [
  * @swagger
  * /{videoGalleryId}:
  *   get:
- *     summary: Retrieve a specific videoGallery by ID.
- *     description: Endpoint to get details of a videoGallery by their ID.
- *     parameters:
- *       - in: path
- *         name: videoGalleryId
- *         required: true
- *         description: ID of the videoGallery to retrieve.
+ *     summary: Retrieve a video gallery link by videoGalleryId.
+ *     description: Endpoint to get details of a website.
  *     responses:
  *       200:
- *         description: VideoGallery details.
+ *         description: Website video gallery link.
  *       404:
- *         description: VideoGallery not found with the provided ID.
+ *         description: Website video gallery link not found.
  *       500:
  *         description: Internal server error.
- *
- * @description Handles GET request for retrieving details of a specific videoGallery.
- * @route GET /{videoGalleryId}
  */
 router.get("/:videoGalleryId", [
-    VideoGalleryValidationService.validateVideoGalleryParams,
+    VideoGalleryValidators.videoGalleryParamsValidator,
     CacheMiddleware.createCacheMiddleware,
     VideoGalleryController.getAVideoGalleryController
 ]);
@@ -117,31 +101,58 @@ router.get("/:videoGalleryId", [
 /**
  * @swagger
  * /{videoGalleryId}:
- *   delete:
- *     summary: Delete a videoGallery by ID.
- *     description: Endpoint to delete a videoGallery by their ID.
- *     parameters:
- *       - in: path
- *         name: videoGalleryId
- *         required: true
- *         description: ID of the videoGallery to delete.
+ *   put:
+ *     summary: Update a website contact.
+ *     description: Endpoint to update an existing video gallery link to the system.
+ *     - in: body
+ *         name: videoGalleryTitle
+ *         type: string
+ *         description: Video title of the website.
+ *       - in: body
+ *         name: videoLink
+ *         type: object
+ *         description: Video link of the website.
  *     responses:
  *       200:
- *         description: VideoGallery successfully deleted.
+ *         description: Website contact successfully created.
+ *       400:
+ *         description: Bad request due to invalid parameters.
  *       401:
  *         description: Unauthorized request due to missing or invalid token.
- *       404:
- *         description: VideoGallery not found with the provided ID.
  *       500:
  *         description: Internal server error.
  *
- * @description Handles DELETE request for deleting a specific videoGallery.
- * Requires authentication.
- * @route DELETE /{videoGalleryId}
+ * @description Handles POST request for creating a new website contact.
+ * Applies authentication and file upload middleware.
+ * @route POST /
+ */
+router.put("/:videoGalleryId", [
+    authTokenMiddleware,
+    VideoGalleryValidators.videoGalleryParamsValidator,
+    VideoGalleryValidators.videoGalleryBodyValidator,
+    CacheMiddleware.deleteCacheMiddleware,
+    VideoGalleryController.updateAVideoGalleryController
+]);
+
+/**
+ * @swagger
+ * /{videoGalleryId}:
+ *   delete:
+ *     summary: Delete a video gallery link.
+ *     description: Endpoint to delete a video gallery link.
+ *     responses:
+ *       200:
+ *         description: A Website video gallery link successfully deleted.
+ *       401:
+ *         description: Unauthorized request due to missing or invalid token.
+ *       404:
+ *         description: Website video gallery link not found.
+ *       500:
+ *         description: Internal server error.
  */
 router.delete("/:videoGalleryId", [
     authTokenMiddleware,
-    VideoGalleryValidationService.validateVideoGalleryParams,
+    VideoGalleryValidators.videoGalleryParamsValidator,
     CacheMiddleware.deleteCacheMiddleware,
     VideoGalleryController.deleteAVideoGalleryController
 ]);

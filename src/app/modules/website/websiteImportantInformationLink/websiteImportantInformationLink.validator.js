@@ -5,7 +5,7 @@
  * It includes validators for both the body and parameters of incoming requests related to important
  * information links. The validators ensure that the data provided in requests meets the expected
  * format and criteria as defined in the corresponding schemas. These validators are used as middleware
- * in the website important information link routes to validate request data before processing.
+ * in the website important information links routes to validate request data before processing.
  *
  * @requires validateDataWithSchema - Function to validate data against a given Joi schema.
  * @requires WebsiteImportantInformationLinkSchema - Schemas for website important information link validation.
@@ -19,7 +19,7 @@ import { WebsiteImportantInformationLinkSchema } from "./websiteImportantInforma
  * Validator for Website Important Information Link Body Data.
  *
  * Validates the request body data for operations related to website important information links.
- * Utilizes the Joi schema defined in WebsiteImportantInformationLinkSchema to ensure the provided
+ * Utilize the Joi schema defined in WebsiteImportantInformationLinkSchema to ensure the provided
  * data in the request body adheres to the specified structure and rules. This validator is used as
  * middleware in routes to check the integrity and format of incoming data for important information links.
  */

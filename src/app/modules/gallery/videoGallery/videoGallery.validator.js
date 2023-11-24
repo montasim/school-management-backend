@@ -1,65 +1,46 @@
 /**
- * @fileoverview Middleware Validators for VideoGallery Post Data.
+ * @fileoverview Video Gallery Validators.
  *
- * This module contains middleware functions for validating videoGallery post data in Express routes.
- * It leverages Joi schemas defined in the VideoGallerySchema module to validate the format and content
- * of videoGallery post-related data, such as videoGallery post IDs in request parameters. These validators ensure
- * that incoming data for videoGallery posts adheres to the expected structure and types before further processing.
- * Each validator function is designed to be used as Express middleware, checking the validity of the
- * data and passing control to the next middleware if validation succeeds, or sending an error response
- * if it fails.
+ * This file contains the validator functions for the video gallery data.
+ * It includes validators for both the body and parameters of incoming requests related to important
+ * information links. The validators ensure that the data provided in requests meets the expected
+ * format and criteria as defined in the corresponding schemas. These validators are used as middleware
+ * in the video gallery routes to validate request data before processing.
  *
- * @requires validateDataWithSchema - Generic utility to validate data with a Joi schema.
- * @requires VideoGalleryValidationSchemas - Schemas for validating videoGallery post data.
- * @module VideoGalleryValidationService - Exported validators for videoGallery post route handling.
+ * @requires validateDataWithSchema - Function to validate data against a given Joi schema.
+ * @requires VideoGallerySchema - Schemas for website important information link validation.
+ * @module VideoGalleryValidators - Exports validators for use in route handling.
  */
 
 import validateDataWithSchema from "../../../../helpers/validateDataWithSchema.js";
-import { VideoGalleryValidationSchemas } from "./videoGallery.schema.js";
-import { JoiSchemaGenerators}  from "../../../../shared/joiSchemaGenerators.js";
-import { FILE_EXTENSION_TYPE_MP4, MIME_TYPE_MP4 } from "../../../../constants/constants.js";
-import validateDataWithFileSchema from "../../../../helpers/validateDataWithFileSchema.js";
+import { VideoGallerySchema } from "./videoGallery.schema.js";
 
 /**
- * Validates the details of an PhotoGallery against a predefined schema.
+ * Validator for Video Gallery Body Data.
  *
- * @async
- * @function validateNewPhotoGalleryDetails
- * @description Middleware to validate the PhotoGallery body data using Joi schemas.
- * @param {Object} req - Express request object containing the PhotoGallery details.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
+ * Validates the request body data for operations related to a video gallery.
+ * Utilize the Joi schema defined in VideoGallerySchema to ensure the provided
+ * data in the request body adheres to the specified structure and rules. This validator is used as
+ * middleware in routes to check the integrity and format of incoming data for important information links.
  */
-const validateNewVideoGalleryDetails = await validateDataWithFileSchema(
-    VideoGalleryValidationSchemas?.newVideoGalleryValidationSchema,
-    JoiSchemaGenerators?.fileValidationSchema(
-        "galleryVideo",
-        [FILE_EXTENSION_TYPE_MP4],
-        [MIME_TYPE_MP4],
-    ),
-    true
-);
+
+const videoGalleryBodyValidator = validateDataWithSchema(VideoGallerySchema.videoGalleryBodySchema, 'body');
 
 /**
- * Validates the videoGallery post ID in request parameters.
+ * Validator for Video Gallery Parameters.
  *
- * @async
- * @function validateVideoGalleryParams
- * @description Middleware to validate the videoGallery post's ID in the request parameters.
- * @param {Object} req - Express request object containing the videoGallery post ID.
- * @param {Object} res - Express response object.
- * @param {Function} next - Express next middleware function.
+ * Validates the request parameters, particularly the ID of the important information link,
+ * for operations that require specifying a specific link. It checks the ID against the Joi schema
+ * defined in VideoGallerySchema to ensure it meets the required format.
+ * This validator is crucial in routes that handle operations on individual important information links.
  */
-const validateVideoGalleryParams = await validateDataWithSchema(
-    VideoGalleryValidationSchemas.videoGalleryParamsValidationSchema,
-    'params'
-);
+const videoGalleryParamsValidator = validateDataWithSchema(VideoGallerySchema.videoGalleryParamsSchema, 'params');
 
 /**
- * @namespace VideoGalleryValidationService
- * @description Provides validation services for videoGallery-related data in routes. This includes validation for videoGallery details, videoGallery files, and videoGallery parameters.
+ * @namespace WebsiteValidators
+ * @description Exported website important information link validators to be used in routes.
  */
-export const VideoGalleryValidationService = {
-    validateNewVideoGalleryDetails,
-    validateVideoGalleryParams,
+export const VideoGalleryValidators = {
+    videoGalleryBodyValidator,
+    videoGalleryParamsValidator,
 };
