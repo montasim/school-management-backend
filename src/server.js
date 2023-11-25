@@ -22,10 +22,12 @@ import fs from "fs";
 import https from 'https';
 import app from './app.js';
 import { PORT } from "./config/config.js";
-import { SERVER_LOG_MESSAGE } from "./constants/constants.js";
+import { EMAIL_RECIPIENTS, SERVER_LOG_MESSAGE } from "./constants/constants.js";
 import logger from "./shared/logger.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import handleCriticalError from "./helpers/handleCriticalError.js";
+import sendEmailToProvidedEmailAddress from "./helpers/sendEmailToProvidedEmailAddress.js";
+import errorEmailBody from "./shared/errorEmailBody.js";
 
 let server;
 
@@ -69,7 +71,7 @@ try {
 
     /**
      * Initializes and starts the Express server.
-     * Listens on the specified port and logs the server start-up message.
+     * Listens on the specified port and log the server a start-up message.
      *
      * @function server.listen
      * @param {number} PORT - The port number from the configuration.
@@ -81,6 +83,20 @@ try {
         // console.log(`${SERVER_LOG_MESSAGE} ${PORT}`); // Alternative console logging
     });
 } catch (error) {
+    // Prepare the email content
+    const emailSubject = `School Management System: Critical Error`;
+    // List of email addresses to notify
+    const emailRecipients = [...EMAIL_RECIPIENTS];
+
+    // Send an email notification about the exception
+    try {
+        for (const address of emailRecipients) {
+            await sendEmailToProvidedEmailAddress(address, emailSubject, errorEmailBody(error));
+        }
+    } catch (error) {
+        console.error('Failed to send error notification email:', error);
+    }
+
     handleCriticalError(error);
 }
 
