@@ -56,8 +56,8 @@ router.post("/", [
  * @swagger
  * /:
  *   get:
- *     summary: Retrieve all category.
- *     description: Endpoint to retrieve a list of all category.
+ *     summary: Retrieve all categories.
+ *     description: Endpoint to retrieve a list of all categories.
  *     responses:
  *       200:
  *         description: A list of category.

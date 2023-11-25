@@ -87,18 +87,30 @@ const deleteCacheMiddleware = (req, res, next) => {
             if (cache.del(key)) {
                 logger.info(`Cache cleared for ${key}`);
             } else {
-                logger.warn(`No cache found for ${key} to clear`);
-                // Additional check to delete req.originalUrl if generalized key is not found
-                if (key !== req.originalUrl && cache.del(req.originalUrl)) {
-                    logger.info(`Cache cleared for specific path ${req.originalUrl}`);
+                if (key === "/api/v1/category") {
+                    cache.del("/api/v1/administration");
+
+                    logger.info(`Cache cleared for /api/v1/administration`);
+                } else if (key === "/api/v1/level"){
+                    cache.del("/api/v1/student");
+
+                    logger.info(`Cache cleared for /api/v1/student`);
+                } else {
+                    logger.warn(`No cache found for ${key} to clear`);
+
+                    // Additional check to delete req.originalUrl if generalized key is not found
+                    if (key !== req.originalUrl && cache.del(req.originalUrl)) {
+                        logger.info(`Cache cleared for specific path ${req.originalUrl}`);
+                    }
                 }
             }
         });
 
         next();
     } catch (error) {
-        logger.error(`Cache clearing error: ${error.message}`);
-        next();
+        logger.error(error);
+
+        return null;
     }
 };
 
