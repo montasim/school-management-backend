@@ -18,10 +18,8 @@
 import logger from "../../../shared/logger.js";
 import sendEmailToProvidedEmailAddress from "../../../helpers/sendEmailToProvidedEmailAddress.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import { EMAIL_SERVICE_DESTINATION_EMAIL } from "../../../config/config.js";
 import { EMAIL_RECIPIENTS, STATUS_OK } from "../../../constants/constants.js";
 import contactEmailBody from "../../../shared/contactEmailBody.js";
-import errorEmailBody from "../../../shared/errorEmailBody.js";
 
 /**
  * Asynchronously sends emails based on provided details.
