@@ -20,7 +20,7 @@
  * @module CategoryService - Exported services for category operations in the application.
  */
 
-import { CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
+import {ADMINISTRATION_COLLECTION_NAME, CATEGORY_COLLECTION_NAME} from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -39,6 +39,7 @@ import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import findManyByField from "../../../shared/findManyByField.js";
 
 /**
  * Creates a new category entry in the database.
@@ -84,7 +85,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
 };
 
 /**
- * Retrieves a list of all category from the database.
+ * Retrieves a list of all categories from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
@@ -145,8 +146,19 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
     try {
         const { name, adminId } = newCategoryDetails;
 
+        if (await findByField(db, CATEGORY_COLLECTION_NAME, 'name', name))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
+
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+
+        const oldCategory = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId);
+
+        if (!oldCategory)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `Category ${categoryId} not found`);
+
+        if (name && oldCategory?.name === name)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Old category name and new category name can not be the same`);
 
         const updatedCategoryDetails = {
             ...(name && { name }),
@@ -158,6 +170,15 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
+
+        // If the category name is updated, then update it in ADMINISTRATION_COLLECTION_NAME
+        const administrationsToUpdate = await findManyByField(db, ADMINISTRATION_COLLECTION_NAME, 'category', oldCategory?.name);
+
+        for (const administration of administrationsToUpdate) {
+            const updatedCategories = administration?.category?.map(category => category === oldCategory?.name ? name : category);
+
+            await updateById(db, ADMINISTRATION_COLLECTION_NAME, administration?.id, { category: updatedCategories });
+        }
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${categoryId} updated successfully`)
@@ -185,10 +206,21 @@ const deleteACategoryService = async (db, adminId, categoryId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId))
-            return generateResponseData({}, false, STATUS_NOT_FOUND, `${categoryId} not found`);
+        const oldCategory = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId);
+
+        if (!oldCategory)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `Category ${categoryId} not found`);
 
         const result = await deleteByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId);
+
+        // If the category name is updated, then update it in ADMINISTRATION_COLLECTION_NAME
+        const administrationsToUpdate = await findManyByField(db, ADMINISTRATION_COLLECTION_NAME, 'category', oldCategory?.name);
+
+        for (const administration of administrationsToUpdate) {
+            const updatedCategories = administration?.category?.map(category => category === oldCategory?.name ? "Category name deleted" : category);
+
+            await updateById(db, ADMINISTRATION_COLLECTION_NAME, administration?.id, { category: updatedCategories });
+        }
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${categoryId} deleted successfully`)
