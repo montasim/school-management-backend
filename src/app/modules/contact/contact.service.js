@@ -18,8 +18,10 @@
 import logger from "../../../shared/logger.js";
 import sendEmailToProvidedEmailAddress from "../../../helpers/sendEmailToProvidedEmailAddress.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import { EMAIL_SERVICE_DESTINATION_OWNER_NAME, EMAIL_SERVICE_DESTINATION_EMAIL } from "../../../config/config.js";
-import { STATUS_OK } from "../../../constants/constants.js";
+import { EMAIL_SERVICE_DESTINATION_EMAIL } from "../../../config/config.js";
+import { EMAIL_RECIPIENTS, STATUS_OK } from "../../../constants/constants.js";
+import contactEmailBody from "../../../shared/contactEmailBody.js";
+import errorEmailBody from "../../../shared/errorEmailBody.js";
 
 /**
  * Asynchronously sends emails based on provided details.
@@ -33,31 +35,8 @@ import { STATUS_OK } from "../../../constants/constants.js";
  */
 const sendEmailService = async ( emailDetails ) => {
     try {
-        const { firstName, lastName, phone, email, subject, message } = emailDetails;
+        const { firstName, lastName, phone, email, subject } = emailDetails;
         const emailSubject = `School Management: ${subject}`
-        const html = `
-            <h3>Dear ${EMAIL_SERVICE_DESTINATION_OWNER_NAME},</h3>
-
-            <p>We hope this message finds you well. We are reaching out to share some updates from the School Management System.</p>
-            
-            <h4>🌟 New Message</h4>
-            <p>We have received a new message from <strong><u>${firstName} ${lastName}</u></strong>:</p>
-            <blockquote>
-                <p>${message}</p>
-            </blockquote>
-            
-            <h4>📬 Contact Details:</h4>
-            <p>If you'd like to get in touch directly, here are ${firstName}'s contact details:</p>
-            <ul>
-                <li><strong>Phone:</strong> ${phone}</li>
-                <li><strong>Email:</strong> ${email}</li>
-            </ul>
-            
-            <p>Thank you for your attention and have a wonderful day!</p>
-
-            <p>Warm regards,</p>
-            <p>Your School Management Team</p>
-        `;
         const receiverEmailSubject = `Thank you for reaching out to us!`
         const receiverHtml = `
             <h3>Dear ${firstName} ${lastName},</h3>
@@ -75,7 +54,13 @@ const sendEmailService = async ( emailDetails ) => {
             <p>School Management Team</p>
         `;
 
-        await sendEmailToProvidedEmailAddress(EMAIL_SERVICE_DESTINATION_EMAIL, emailSubject, html);
+        const emailRecipients = [...EMAIL_RECIPIENTS];
+
+        // Send an email notification about the exception
+        for (const address of emailRecipients) {
+            await sendEmailToProvidedEmailAddress(address, emailSubject, contactEmailBody(emailDetails));
+        }
+
         await sendEmailToProvidedEmailAddress(email, receiverEmailSubject, receiverHtml);
 
         return generateResponseData({}, true, STATUS_OK, `Email sent successfully`);
