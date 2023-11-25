@@ -20,7 +20,7 @@
  * @module CategoryService - Exported services for category operations in the application.
  */
 
-import {ADMINISTRATION_COLLECTION_NAME, CATEGORY_COLLECTION_NAME} from "../../../config/config.js";
+import { ADMINISTRATION_COLLECTION_NAME, CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -40,6 +40,7 @@ import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
 import findManyByField from "../../../shared/findManyByField.js";
+import updateFieldForMultipleDocuments from "../../../shared/updateFieldForMultipleDocuments.js";
 
 /**
  * Creates a new category entry in the database.
@@ -174,11 +175,13 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
         // If the category name is updated, then update it in ADMINISTRATION_COLLECTION_NAME
         const administrationsToUpdate = await findManyByField(db, ADMINISTRATION_COLLECTION_NAME, 'category', oldCategory?.name);
 
-        for (const administration of administrationsToUpdate) {
-            const updatedCategories = administration?.category?.map(category => category === oldCategory?.name ? name : category);
-
-            await updateById(db, ADMINISTRATION_COLLECTION_NAME, administration?.id, { category: updatedCategories });
-        }
+        await updateFieldForMultipleDocuments(
+            db,
+            ADMINISTRATION_COLLECTION_NAME,
+            administrationsToUpdate,
+            'category',
+            category => category === oldCategory?.name ? name : category
+        );
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${categoryId} updated successfully`)
@@ -214,13 +217,15 @@ const deleteACategoryService = async (db, adminId, categoryId) => {
         const result = await deleteByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryId);
 
         // If the category name is updated, then update it in ADMINISTRATION_COLLECTION_NAME
-        const administrationsToUpdate = await findManyByField(db, ADMINISTRATION_COLLECTION_NAME, 'category', oldCategory?.name);
+        const administrationsToDelete = await findManyByField(db, ADMINISTRATION_COLLECTION_NAME, 'category', oldCategory?.name);
 
-        for (const administration of administrationsToUpdate) {
-            const updatedCategories = administration?.category?.map(category => category === oldCategory?.name ? "Category name deleted" : category);
-
-            await updateById(db, ADMINISTRATION_COLLECTION_NAME, administration?.id, { category: updatedCategories });
-        }
+        await updateFieldForMultipleDocuments(
+            db,
+            ADMINISTRATION_COLLECTION_NAME,
+            administrationsToDelete,
+            'category',
+            category => category === oldCategory.name ? "Category name deleted" : category
+        );
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${categoryId} deleted successfully`)

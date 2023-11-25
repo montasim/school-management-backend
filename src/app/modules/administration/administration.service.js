@@ -15,7 +15,7 @@
  * @module AdministrationService - Exported services for administration operations.
  */
 
-import {ADMINISTRATION_COLLECTION_NAME, CATEGORY_COLLECTION_NAME} from "../../../config/config.js";
+import { ADMINISTRATION_COLLECTION_NAME, CATEGORY_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE, STATUS_BAD_REQUEST,
     STATUS_FORBIDDEN,

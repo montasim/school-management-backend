@@ -88,13 +88,13 @@ const deleteCacheMiddleware = (req, res, next) => {
                 logger.info(`Cache cleared for ${key}`);
             } else {
                 if (key === "/api/v1/category") {
-                    cache.del("/api/v1/category/administration");
+                    cache.del("/api/v1/administration");
 
-                    logger.info(`Cache cleared for /api/v1/category/administration`);
+                    logger.info(`Cache cleared for /api/v1/administration`);
                 } else if (key === "/api/v1/level"){
-                    cache.del("/api/v1/category/student");
+                    cache.del("/api/v1/student");
 
-                    logger.info(`Cache cleared for /api/v1/category/student`);
+                    logger.info(`Cache cleared for /api/v1/student`);
                 } else {
                     logger.warn(`No cache found for ${key} to clear`);
 

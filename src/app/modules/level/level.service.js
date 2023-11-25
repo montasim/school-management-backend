@@ -3,7 +3,7 @@
  *
  * This file provides a set of services related to the 'level' entity in the application.
  * It includes operations such as creating, retrieving, updating, and deleting levels.
- * Each service interacts with the database, performs necessary logic, and handles
+ * Each service interacts with the database, performs the necessary logic, and handles
  * exceptions. These services are designed to be used by controllers to abstract
  * complex business logic away from the request-handling layer.
  *
@@ -12,7 +12,10 @@
  * re-usability across different parts of the application.
  */
 
-import { LEVEL_COLLECTION_NAME } from "../../../config/config.js";
+import {
+    STUDENT_COLLECTION_NAME,
+    LEVEL_COLLECTION_NAME,
+} from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -31,6 +34,8 @@ import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import findManyByField from "../../../shared/findManyByField.js";
+import updateFieldForMultipleDocuments from "../../../shared/updateFieldForMultipleDocuments.js";
 
 /**
  * Creates a new level entry in the database.
@@ -75,9 +80,8 @@ const createLevelService = async (db, newLevelDetails) => {
     }
 };
 
-
 /**
- * Retrieves a list of all level from the database.
+ * Retrieves a list of all levels from the database.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
@@ -138,8 +142,19 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
     try {
         const { name, adminId } = newLevelDetails;
 
+        if (await findByField(db, LEVEL_COLLECTION_NAME, 'name', name))
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
+
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+
+        const oldLevel = await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId);
+
+        if (!oldLevel)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `Level ${levelId} not found`);
+
+        if (name && oldLevel?.name === name)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Old level name and new level name can not be the same`);
 
         const updatedLevelDetails = {
             ...(name && { name }),
@@ -151,6 +166,17 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
+
+        // If the level name is updated, then update it in ADMINISTRATION_COLLECTION_NAME
+        const studentsToUpdate = await findManyByField(db, STUDENT_COLLECTION_NAME, 'level', oldLevel?.name);
+
+        await updateFieldForMultipleDocuments(
+            db,
+            STUDENT_COLLECTION_NAME,
+            studentsToUpdate,
+            'level',
+            level => level === oldLevel?.name ? name : level
+        );
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${levelId} updated successfully`)
@@ -178,10 +204,23 @@ const deleteALevelService = async (db, adminId, levelId) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        if (!await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId))
-            return generateResponseData({}, false, STATUS_NOT_FOUND, `${levelId} not found`);
+        const oldLevel = await findByField(db, LEVEL_COLLECTION_NAME, 'id', levelId);
+
+        if (!oldLevel)
+            return generateResponseData({}, false, STATUS_NOT_FOUND, `Level ${levelId} not found`);
 
         const result = await deleteByField(db, LEVEL_COLLECTION_NAME, 'id', levelId);
+
+        // If the level name is updated, then update it in ADMINISTRATION_COLLECTION_NAME
+        const studentsToDelete = await findManyByField(db, STUDENT_COLLECTION_NAME, 'level', oldLevel?.name);
+
+        await updateFieldForMultipleDocuments(
+            db,
+            STUDENT_COLLECTION_NAME,
+            studentsToDelete,
+            'level',
+            level => level === oldLevel?.name ? "Level name deleted" : level
+        );
 
         return result
             ? generateResponseData({}, true, STATUS_OK, `${levelId} deleted successfully`)

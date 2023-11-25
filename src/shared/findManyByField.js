@@ -41,7 +41,7 @@ const findManyByField = async (db, collectionName, field, fieldValue) => {
         query[field] = fieldValue;
 
         // Execute the query and return the result, excluding certain fields
-        return await db.collection(collectionName).find(query, {
+        return await db?.collection(collectionName)?.find(query, {
             projection: {
                 _id: 0,
                 createdBy: 0,
