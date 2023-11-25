@@ -37,7 +37,7 @@ import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMidd
 import rateLimiterMiddleware from "./app/middlewares/rateLimiterMiddleware.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import appRoutes from "./app/routes/app.routes.js";
-import { SECRET_KEY } from "./config/config.js";
+import {EMAIL_SERVICE_USER, SECRET_KEY} from "./config/config.js";
 import {
     JSON_PAYLOAD_LIMIT,
     TIMEOUT_IN_SECONDS,
@@ -47,6 +47,7 @@ import {
 } from "./constants/constants.js";
 import logger from "./shared/logger.js";
 import generateResponseData from "./shared/generateResponseData.js";
+import sendEmailToProvidedEmailAddress from "./helpers/sendEmailToProvidedEmailAddress.js";
 
 const app = express();
 
@@ -148,7 +149,7 @@ app.use(`/`, appRoutes);
 /**
  * Global error handler for catching unhandled exceptions and errors.
  */
-app.use((error, req, res, next) => {
+app.use(async (error, req, res, next) => {
     logger.error(error);
 
     console.error(error?.stack);
@@ -158,6 +159,40 @@ app.use((error, req, res, next) => {
      * Uncomment the line below to enable this behavior.
      */
     app.use(DatabaseMiddleware.disconnect);
+
+    // Prepare the email content
+    const emailSubject = `School Management System: Uncaught Server Exception`;
+    const emailBody = `
+        <h3>Dear Admin,</h3>
+    
+        <p>We regret to inform you that an uncaught exception occurred in the School Management System.</p>
+        
+        <h4>🚨 Error Details</h4>
+        <p>An error has occurred on the server:</p>
+        <blockquote>
+            <p>${error?.message}</p>
+            <pre>${error?.stack}</pre>
+        </blockquote>
+        
+        <h4>🛠️ Immediate Action Required</h4>
+        <p>Please review the error and take the necessary steps to resolve the issue at the earliest convenience.</p>
+        
+        <p>Thank you for your attention to this matter.</p>
+    
+        <p>Warm regards,</p>
+        <p>School Management System IT Team</p>
+    `;
+    // List of email addresses to notify
+    const emailRecipients = ['montasimmamun@gmail.com', 'meghpiash@gmail.com']; // Add your email addresses here
+
+    // Send an email notification about the exception
+    try {
+        for (const address of emailRecipients) {
+            await sendEmailToProvidedEmailAddress(address, emailSubject, emailBody);
+        }
+    } catch (emailError) {
+        console.error('Failed to send error notification email:', emailError);
+    }
 
     return res?.status(STATUS_INTERNAL_SERVER_ERROR).json(
         generateResponseData(

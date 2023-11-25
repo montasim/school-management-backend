@@ -6,7 +6,7 @@
  * They play a crucial role in standardizing the format of Level IDs across the application,
  * ensuring consistency in ID structure and facilitating easier validation and management of these identifiers.
  *
- * The constants defined here are used in various parts of the application, particularly in validation schemas
+ * The constants defined here are used in various parts of the application, particularly in validation schemas,
  * and wherever Level IDs are generated or processed. This centralized definition of ID-related constants
  * helps maintain uniformity and reduces the likelihood of errors in ID handling.
  *
@@ -14,8 +14,8 @@
  */
 
 const LEVEL_ID_PREFIX = 'level';
-const LEVEL_ID_MIN_LENGTH = 18;
-const LEVEL_ID_MAX_LENGTH = 18;
+const LEVEL_ID_MIN_LENGTH = 12;
+const LEVEL_ID_MAX_LENGTH = 12;
 
 const PROPERTY_NAME_MIN_LENGTH = 3;
 const PROPERTY_NAME_MAX_LENGTH = 40;

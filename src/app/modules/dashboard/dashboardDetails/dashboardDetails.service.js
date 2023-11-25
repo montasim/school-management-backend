@@ -16,7 +16,6 @@
 
 import {
     ANNOUNCEMENT_COLLECTION_NAME,
-    ADMINISTRATION_COLLECTION_NAME,
     CATEGORY_COLLECTION_NAME,
     LEVEL_COLLECTION_NAME,
     DOWNLOAD_COLLECTION_NAME,
@@ -69,7 +68,7 @@ const getDashboardDetailsService = async (db, adminId, collectionQuery) => {
 
         // List of all potential collections
         const allCollections = {
-            'administration': ADMINISTRATION_COLLECTION_NAME,
+            'administration': STUDENT_COLLECTION_NAME,
             'admissionForm': ADMISSION_FORM_COLLECTION_NAME,
             'admissionInfo': ADMISSION_INFORMATION_COLLECTION_NAME,
             'announcement': ANNOUNCEMENT_COLLECTION_NAME,

@@ -16,7 +16,6 @@
 
 import {
     ANNOUNCEMENT_COLLECTION_NAME,
-    ADMINISTRATION_COLLECTION_NAME,
     CATEGORY_COLLECTION_NAME,
     LEVEL_COLLECTION_NAME,
     DOWNLOAD_COLLECTION_NAME,
@@ -70,7 +69,7 @@ const getDashboardSummaryService = async (db, adminId, filterBy) => {
 
         const collectionNames = [
             ANNOUNCEMENT_COLLECTION_NAME,
-            ADMINISTRATION_COLLECTION_NAME,
+            STUDENT_COLLECTION_NAME,
             CATEGORY_COLLECTION_NAME,
             LEVEL_COLLECTION_NAME,
             DOWNLOAD_COLLECTION_NAME,
@@ -117,7 +116,7 @@ const getDashboardSummaryService = async (db, adminId, filterBy) => {
         };
 
         const administrationCategoryCounts = await db
-            .collection(ADMINISTRATION_COLLECTION_NAME)
+            .collection(STUDENT_COLLECTION_NAME)
             .aggregate([
                 {
                     $group: {
@@ -162,7 +161,7 @@ const getDashboardSummaryService = async (db, adminId, filterBy) => {
         }
 
         // Separate administration counts by category
-        returnData[ADMINISTRATION_COLLECTION_NAME] = {
+        returnData[STUDENT_COLLECTION_NAME] = {
             total: administrationCategoryCounts.reduce((acc, item) => acc + item.count, 0),
             details: administrationCategoryCounts,
         };
