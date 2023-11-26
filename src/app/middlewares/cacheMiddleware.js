@@ -83,6 +83,8 @@ const deleteCacheMiddleware = (req, res, next) => {
     try {
         // Regular expression to match the ID pattern at the end of the route
         const idPattern = /\/[a-zA-Z]+-[0-9a-f]{6}$/;
+        // Regular expression to match file extensions
+        const fileExtensionPattern = /\/[^\/]+\.\w+$/;
 
         let routeToDeleteCache;
 
@@ -93,14 +95,17 @@ const deleteCacheMiddleware = (req, res, next) => {
             // Add more special cases if needed
         };
 
-        if (idPattern?.test(req?.originalUrl)) {
-            // Extract the immediate parent route
+        if (fileExtensionPattern.test(req?.originalUrl)) {
+            // Clear cache for the parent route if a filename is detected
+            routeToDeleteCache = req?.originalUrl?.replace(/\/[^\/]+$/, '');
+        } else if (idPattern.test(req?.originalUrl)) {
+            // Extract the immediate parent route for ID-based URLs
             routeToDeleteCache = req?.originalUrl?.replace(idPattern, '');
         } else if (specialCases[req?.originalUrl]) {
             // Use special case route if it exists
             routeToDeleteCache = specialCases[req?.originalUrl];
         } else {
-            // Use the original URL if no ID pattern or special case is detected
+            // Use the original URL if no file extension, ID pattern, or special case is detected
             routeToDeleteCache = req?.originalUrl;
         }
 
@@ -114,7 +119,6 @@ const deleteCacheMiddleware = (req, res, next) => {
         next();
     } catch (error) {
         logger?.error(`Cache clearing failed: ${error?.message}`);
-
         res?.status(STATUS_INTERNAL_SERVER_ERROR)?.json({}, true, STATUS_INTERNAL_SERVER_ERROR, "Cache clearing failed");
     }
 };
