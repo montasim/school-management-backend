@@ -15,7 +15,7 @@
  * @module WebsiteBannerService - Exported services for websiteBanner operations.
  */
 
-import {WEBSITE_BANNER_COLLECTION_NAME, WEBSITE_CONFIGURATION_COLLECTION_NAME} from "../../../../config/config.js";
+import { WEBSITE_BANNER_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
