@@ -157,13 +157,15 @@ const getAWebsiteBannerService = async (db) => {
     try {
         const websiteBanner = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOne({});
 
-        delete websiteBanner?.createdBy;
-        delete websiteBanner?.modifiedBy;
-        delete websiteBanner.googleDriveFileId;
+        if (websiteBanner) {
+            delete websiteBanner?.createdBy;
+            delete websiteBanner?.modifiedBy;
+            delete websiteBanner.googleDriveFileId;
 
-        return websiteBanner
-            ? generateResponseData(websiteBanner, true, STATUS_OK, "Website banner found successfully")
-            : generateResponseData({}, false, STATUS_NOT_FOUND, "Website banner not found");
+            return generateResponseData(websiteBanner, true, STATUS_OK, "Website banner found successfully")
+        } else {
+            return generateResponseData({}, false, STATUS_NOT_FOUND, "Website banner not found");
+        }
     } catch (error) {
         logger.error(error);
 
