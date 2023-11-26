@@ -34,7 +34,11 @@ const videoGalleryBodySchema = Joi.object({
         VIDEO_GALLERY_CONSTANTS?.PROPERTY_TITLE_MIN_LENGTH,
         VIDEO_GALLERY_CONSTANTS?.PROPERTY_TITLE_MAX_LENGTH
     ),
-    videoLink: Joi.website().required()
+    videoLink: Joi.string().pattern(
+        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i
+    ).required().messages({
+        'string.pattern.base': 'videoLink must be a valid YouTube video URL.'
+    })
 });
 
 /**
