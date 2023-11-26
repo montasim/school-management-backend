@@ -57,7 +57,6 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteBannerImage'),
     WebsiteBannerValidationService.validateWebsiteBannerDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteBannerController.createWebsiteBannerController
 ]);
 
@@ -84,7 +83,6 @@ router.post("/", [
  * @route GET /{websiteBannerId}
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     WebsiteBannerController.getAWebsiteBannerController
 ]);
 
@@ -118,7 +116,6 @@ router.put("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('websiteBannerImage'),
     WebsiteBannerValidationService.validateWebsiteBannerDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteBannerController.updateWebsiteBannerController
 ]);
 
@@ -149,7 +146,6 @@ router.put("/", [
  */
 router.delete("/", [
     authTokenMiddleware,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteBannerController.deleteAWebsiteBannerController
 ]);
 
