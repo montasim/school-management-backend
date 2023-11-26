@@ -217,6 +217,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         // Update file if provided
         if (file) {
             await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+
             const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
             if (!uploadGoogleDriveFileResponse?.shareableLink)
@@ -229,25 +230,40 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
 
         // Update name, category, and designation if provided
         if (name) updatedAdministrationDetails.name = name;
-        // Process and update category
-        if (typeof category === 'string') {
-            // Process and prepare categories from the provided string
-            const processedCategories = typeof category === 'string'
-                ? category.split(',').map(cat => cat.trim())
-                : Array.isArray(category) ? category : [category];
 
-            // Check if each category exists in the database
-            for (const category of processedCategories) {
-                const categoryExists = await findByField(db, CATEGORY_COLLECTION_NAME, 'name', category);
-                if (!categoryExists) {
-                    return generateResponseData({}, false, STATUS_BAD_REQUEST, `Category '${category}' does not exist.`);
+        // Process and update category
+        if (category) {
+            let newCategoriesArray;
+
+            // Check if category is a string or an array and process accordingly
+            if (typeof category === 'string') {
+                newCategoriesArray = category.split(',').map(cat => cat.trim());
+            } else if (Array.isArray(category)) {
+                newCategoriesArray = category.map(cat => cat.toString().trim());
+            } else {
+                newCategoriesArray = [category.toString().trim()];
+            }
+
+            // Filter out 'category-name-deleted' and validate each category
+            const validCategories = [];
+
+            for (const categoryItem of newCategoriesArray) {
+                if (categoryItem !== 'category-name-deleted') {
+                    const categoryExists = await findByField(db, CATEGORY_COLLECTION_NAME, 'name', categoryItem);
+                    if (categoryExists) {
+                        validCategories.push(categoryItem);
+                    } else {
+                        return generateResponseData({}, false, STATUS_BAD_REQUEST, `Category '${categoryItem}' does not exist.`);
+                    }
                 }
             }
 
-            const newCategories = category.split(',').map(cat => cat.trim());
-
-            updatedAdministrationDetails.category = Array.from(new Set([...(updatedAdministrationDetails.category || []), ...newCategories]));
+            // Update the categories, removing 'category-name-deleted' and adding new valid categories
+            updatedAdministrationDetails.category = (updatedAdministrationDetails.category || [])
+                .filter(cat => !newCategoriesArray.includes(cat))
+                .concat(validCategories);
         }
+
         if (designation) updatedAdministrationDetails.designation = designation;
 
         // Update modifiedBy and modifiedAt
