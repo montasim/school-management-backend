@@ -219,7 +219,7 @@ const deleteALevelService = async (db, adminId, levelId) => {
             STUDENT_COLLECTION_NAME,
             studentsToDelete,
             'level',
-            level => level === oldLevel?.name ? "Level name deleted" : level
+            level => level === oldLevel?.name ? "level-name-deleted" : level
         );
 
         return result
