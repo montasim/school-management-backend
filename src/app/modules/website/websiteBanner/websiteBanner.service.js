@@ -70,6 +70,8 @@ const createWebsiteBannerService = async (db, adminId, file) => {
         const result = await createByDetails(db, WEBSITE_BANNER_COLLECTION_NAME, websiteBannerDetails);
         const latestData = await findByField(db, WEBSITE_BANNER_COLLECTION_NAME, 'id', websiteBannerDetails?.id);
 
+        delete latestData?._id;
+        delete latestData?.id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
         delete latestData?.googleDriveFileId;
@@ -78,6 +80,36 @@ const createWebsiteBannerService = async (db, adminId, file) => {
             ? generateResponseData(latestData, true, STATUS_OK, "Website banner created successfully")
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
 
+    } catch (error) {
+        logger.error(error);
+
+        return error;
+    }
+};
+
+/**
+ * Retrieves a specific websiteBanner by ID from the database.
+ *
+ * @async
+ * @param {Object} db - DatabaseMiddleware connection object.
+ * @returns {Object} - The websiteBanner details or an error message.
+ * @throws {Error} Throws an error if any.
+ */
+const getAWebsiteBannerService = async (db) => {
+    try {
+        const websiteBanner = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOne({});
+
+        if (websiteBanner) {
+            delete websiteBanner?._id;
+            delete websiteBanner?.id;
+            delete websiteBanner?.createdBy;
+            delete websiteBanner?.modifiedBy;
+            delete websiteBanner.googleDriveFileId;
+
+            return generateResponseData(websiteBanner, true, STATUS_OK, "Website banner found successfully")
+        } else {
+            return generateResponseData({}, false, STATUS_NOT_FOUND, "Website banner not found");
+        }
     } catch (error) {
         logger.error(error);
 
@@ -138,34 +170,6 @@ const updateWebsiteBannerService = async (db, adminId, file) => {
         delete result.googleDriveFileId;
 
         return generateResponseData(result, true, STATUS_OK, "Website banner created successfully");
-    } catch (error) {
-        logger.error(error);
-
-        return error;
-    }
-};
-
-/**
- * Retrieves a specific websiteBanner by ID from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The websiteBanner details or an error message.
- * @throws {Error} Throws an error if any.
- */
-const getAWebsiteBannerService = async (db) => {
-    try {
-        const websiteBanner = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOne({});
-
-        if (websiteBanner) {
-            delete websiteBanner?.createdBy;
-            delete websiteBanner?.modifiedBy;
-            delete websiteBanner.googleDriveFileId;
-
-            return generateResponseData(websiteBanner, true, STATUS_OK, "Website banner found successfully")
-        } else {
-            return generateResponseData({}, false, STATUS_NOT_FOUND, "Website banner not found");
-        }
     } catch (error) {
         logger.error(error);
 
