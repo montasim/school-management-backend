@@ -18,7 +18,7 @@ const ALLOWED_ORIGIN = [
     "https://school-abid.vercel.app",
     "http://localhost:3000",
 ];
-const ALLOWED_METHODS = "GET,PUT,POST,DELETE";
+const ALLOWED_METHODS = "OPTIONS,GET,PUT,POST,DELETE";
 
 // Rate limit settings
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // Defines the time window to be 15 minutes
