@@ -15,8 +15,7 @@
 
 import NodeCache from 'node-cache';
 import logger from "../../shared/logger.js";
-import {STANDARD_CACHE_TTL, STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../../constants/constants.js";
-import generateResponseData from "../../shared/generateResponseData.js";
+import { STANDARD_CACHE_TTL, STATUS_INTERNAL_SERVER_ERROR } from "../../constants/constants.js";
 
 const cache = new NodeCache();
 
@@ -53,10 +52,10 @@ const createCacheMiddleware = (req, res, next) => {
                         logger?.warn(`Failed to cache response for ${key}`);
                     }
                 } catch (error) {
-                    logger.error(`Error caching response for ${key}: ${error.message}`);
+                    logger.error(`Error caching response for ${key}: ${error?.message}`);
                 }
 
-                res.sendResponse(body);
+                res?.sendResponse(body);
             };
 
             next();
@@ -95,7 +94,7 @@ const deleteCacheMiddleware = (req, res, next) => {
             // Add more special cases if needed
         };
 
-        if (fileExtensionPattern.test(req?.originalUrl)) {
+        if (fileExtensionPattern?.test(req?.originalUrl)) {
             // Clear cache for the parent route if a filename is detected
             routeToDeleteCache = req?.originalUrl?.replace(/\/[^\/]+$/, '');
         } else if (idPattern.test(req?.originalUrl)) {
@@ -110,7 +109,7 @@ const deleteCacheMiddleware = (req, res, next) => {
         }
 
         // Delete the cache for the determined route
-        if (cache.del(routeToDeleteCache)) {
+        if (cache?.del(routeToDeleteCache)) {
             logger?.info(`Cache cleared for ${routeToDeleteCache}`);
         } else {
             logger?.warn(`No cache found for ${routeToDeleteCache} to clear`);
