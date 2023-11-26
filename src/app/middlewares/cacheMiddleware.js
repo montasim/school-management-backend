@@ -15,7 +15,8 @@
 
 import NodeCache from 'node-cache';
 import logger from "../../shared/logger.js";
-import { STANDARD_CACHE_TTL } from "../../constants/constants.js";
+import {STANDARD_CACHE_TTL, STATUS_INTERNAL_SERVER_ERROR, STATUS_OK} from "../../constants/constants.js";
+import generateResponseData from "../../shared/generateResponseData.js";
 
 const cache = new NodeCache();
 
@@ -80,37 +81,41 @@ const createCacheMiddleware = (req, res, next) => {
  */
 const deleteCacheMiddleware = (req, res, next) => {
     try {
-        const basePath = req.originalUrl.match(/^\/[^\/]+\/[^\/]+\/[^\/]+/)?.[0];
-        const keysToDelete = basePath ? [basePath, req.originalUrl] : [req.originalUrl];
+        // Regular expression to match the ID pattern at the end of the route
+        const idPattern = /\/[a-zA-Z]+-[0-9a-f]{6}$/;
 
-        keysToDelete.forEach(key => {
-            if (cache.del(key)) {
-                logger.info(`Cache cleared for ${key}`);
-            } else {
-                if (key === "/api/v1/category") {
-                    cache.del("/api/v1/administration");
+        let routeToDeleteCache;
 
-                    logger.info(`Cache cleared for /api/v1/administration`);
-                } else if (key === "/api/v1/level"){
-                    cache.del("/api/v1/student");
+        // Special cases handling
+        const specialCases = {
+            "/api/v1/category": "/api/v1/administration",
+            "/api/v1/level": "/api/v1/student"
+            // Add more special cases if needed
+        };
 
-                    logger.info(`Cache cleared for /api/v1/student`);
-                } else {
-                    logger.warn(`No cache found for ${key} to clear`);
+        if (idPattern?.test(req?.originalUrl)) {
+            // Extract the immediate parent route
+            routeToDeleteCache = req?.originalUrl?.replace(idPattern, '');
+        } else if (specialCases[req?.originalUrl]) {
+            // Use special case route if it exists
+            routeToDeleteCache = specialCases[req?.originalUrl];
+        } else {
+            // Use the original URL if no ID pattern or special case is detected
+            routeToDeleteCache = req?.originalUrl;
+        }
 
-                    // Additional check to delete req.originalUrl if generalized key is not found
-                    if (key !== req.originalUrl && cache.del(req.originalUrl)) {
-                        logger.info(`Cache cleared for specific path ${req.originalUrl}`);
-                    }
-                }
-            }
-        });
+        // Delete the cache for the determined route
+        if (cache.del(routeToDeleteCache)) {
+            logger?.info(`Cache cleared for ${routeToDeleteCache}`);
+        } else {
+            logger?.warn(`No cache found for ${routeToDeleteCache} to clear`);
+        }
 
         next();
     } catch (error) {
-        logger.error(error);
+        logger?.error(`Cache clearing failed: ${error?.message}`);
 
-        return null;
+        res?.status(STATUS_INTERNAL_SERVER_ERROR)?.json({}, true, STATUS_INTERNAL_SERVER_ERROR, "Cache clearing failed");
     }
 };
 

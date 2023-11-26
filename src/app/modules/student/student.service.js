@@ -180,22 +180,30 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
         // Initialize the object to store updated details
         const updatedStudentDetails = { ...oldDetails };
 
-        // Update name and level if provided
+        // Update name if provided
         if (name) updatedStudentDetails.name = name;
 
+        // Update level if provided
         if (level) {
-            const levelExists = await findByField(db, LEVEL_COLLECTION_NAME, 'name', level);
-
-            if (!levelExists) {
-                return generateResponseData({}, false, STATUS_BAD_REQUEST, `Level '${level}' does not exist`);
+            if (level === 'level name deleted') {
+                if (oldDetails.level !== 'level name deleted') {
+                    return generateResponseData({}, false, STATUS_BAD_REQUEST, `'level name deleted' cannot be set if another level is present`);
+                }
             } else {
-                updatedStudentDetails.level = level;
+                const levelExists = await findByField(db, LEVEL_COLLECTION_NAME, 'name', level);
+
+                if (!levelExists) {
+                    return generateResponseData({}, false, STATUS_BAD_REQUEST, `Level '${level}' does not exist`);
+                }
             }
+
+            updatedStudentDetails.level = level;
         }
 
         // Update file if provided
         if (file) {
             await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+
             const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
 
             if (!uploadGoogleDriveFileResponse?.shareableLink)
@@ -227,7 +235,6 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
             : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${studentId} not updated`);
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };

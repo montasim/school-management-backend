@@ -224,7 +224,7 @@ const deleteACategoryService = async (db, adminId, categoryId) => {
             ADMINISTRATION_COLLECTION_NAME,
             administrationsToDelete,
             'category',
-            category => category === oldCategory.name ? "Category name deleted" : category
+            category => category === oldCategory.name ? "category-name-deleted" : category
         );
 
         return result

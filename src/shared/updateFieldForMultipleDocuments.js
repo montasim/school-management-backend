@@ -26,6 +26,7 @@ const updateFieldForMultipleDocuments = async (db, collectionName, documentsToUp
         // Validate the input parameters
         if (!collectionName || !documentsToUpdate || !fieldName || !updateLogic) {
             logger.error(`Invalid parameters for findManyByField: collectionName=${collectionName}, documentsToUpdate=${documentsToUpdate}, fieldName=${fieldName}, updateLogic=${updateLogic}`);
+
             return null;
         }
 
@@ -40,6 +41,7 @@ const updateFieldForMultipleDocuments = async (db, collectionName, documentsToUp
             } else {
                 // Log a warning for fields that are neither array nor string
                 logger.warn(`Field ${fieldName} in document with id ${document.id} is neither an array nor a string`);
+
                 continue; // Skip to the next document
             }
 
