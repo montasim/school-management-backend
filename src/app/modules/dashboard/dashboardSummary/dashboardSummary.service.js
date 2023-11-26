@@ -15,24 +15,26 @@
  */
 
 import {
-    ANNOUNCEMENT_COLLECTION_NAME,
-    CATEGORY_COLLECTION_NAME,
-    LEVEL_COLLECTION_NAME,
-    DOWNLOAD_COLLECTION_NAME,
-    NOTICE_COLLECTION_NAME,
-    RESULT_COLLECTION_NAME,
-    ROUTINE_COLLECTION_NAME,
-    STUDENT_COLLECTION_NAME,
+    ADMINISTRATION_COLLECTION_NAME,
     ADMISSION_FORM_COLLECTION_NAME,
     ADMISSION_INFORMATION_COLLECTION_NAME,
+    ANNOUNCEMENT_COLLECTION_NAME,
     BLOG_COLLECTION_NAME,
+    CATEGORY_COLLECTION_NAME,
     DESIGNATION_COLLECTION_NAME,
+    DOWNLOAD_COLLECTION_NAME,
     HOME_PAGE_CAROUSEL_COLLECTION_NAME,
     HOME_PAGE_POST_COLLECTION_NAME,
+    LEVEL_COLLECTION_NAME,
+    NOTICE_COLLECTION_NAME,
     OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME,
     OTHERS_INFORMATION_COLLECTION_NAME,
     PHOTO_GALLERY_COLLECTION_NAME,
+    RESULT_COLLECTION_NAME,
+    ROUTINE_COLLECTION_NAME,
+    STUDENT_COLLECTION_NAME,
     VIDEO_GALLERY_COLLECTION_NAME,
+    WEBSITE_BANNER_COLLECTION_NAME,
     WEBSITE_CONFIGURATION_COLLECTION_NAME,
     WEBSITE_CONTACT_COLLECTION_NAME,
     WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME,
@@ -67,120 +69,37 @@ const getDashboardSummaryService = async (db, adminId, filterBy) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
-        const collectionNames = [
-            ANNOUNCEMENT_COLLECTION_NAME,
-            STUDENT_COLLECTION_NAME,
-            CATEGORY_COLLECTION_NAME,
-            LEVEL_COLLECTION_NAME,
-            DOWNLOAD_COLLECTION_NAME,
-            NOTICE_COLLECTION_NAME,
-            RESULT_COLLECTION_NAME,
-            ROUTINE_COLLECTION_NAME,
-            STUDENT_COLLECTION_NAME,
-            ADMISSION_FORM_COLLECTION_NAME,
-            ADMISSION_INFORMATION_COLLECTION_NAME,
-            BLOG_COLLECTION_NAME,
-            DESIGNATION_COLLECTION_NAME,
-            HOME_PAGE_CAROUSEL_COLLECTION_NAME,
-            HOME_PAGE_POST_COLLECTION_NAME,
-            OTHERS_INFORMATION_CATEGORY_COLLECTION_NAME,
-            OTHERS_INFORMATION_COLLECTION_NAME,
-            PHOTO_GALLERY_COLLECTION_NAME,
-            VIDEO_GALLERY_COLLECTION_NAME,
-            WEBSITE_CONFIGURATION_COLLECTION_NAME,
-            WEBSITE_CONTACT_COLLECTION_NAME,
-            WEBSITE_IMPORTANT_INFORMATION_LINK_COLLECTION_NAME,
-            WEBSITE_OFFICIAL_LINK_COLLECTION_NAME,
-            WEBSITE_SOCIAL_MEDIA_LINK_COLLECTION_NAME,
-        ];
+        let counts = {};
 
-        const getCounts = async (collectionName) => {
-            const pipeline = [
-                {
-                    $group: {
-                        _id: null,
-                        count: { $sum: 1 },
-                    },
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        count: 1,
-                    },
-                },
-            ];
-
-            const result = await db.collection(collectionName).aggregate(pipeline).toArray();
-
-            return result.length > 0 ? result[0].count : 0;
-        };
-
-        const administrationCategoryCounts = await db
-            .collection(STUDENT_COLLECTION_NAME)
-            .aggregate([
-                {
-                    $group: {
-                        _id: "$category",
-                        count: { $sum: 1 },
-                    },
-                },
-                {
-                    $project: {
-                        category: "$_id",
-                        count: 1,
-                        _id: 0,
-                    },
-                },
-            ])
-            .toArray();
-
-        const studentLevelCounts = await db
-            .collection(STUDENT_COLLECTION_NAME)
-            .aggregate([
-                {
-                    $group: {
-                        _id: "$level",
-                        count: { $sum: 1 },
-                    },
-                },
-                {
-                    $project: {
-                        level: "$_id",
-                        count: 1,
-                        _id: 0,
-                    },
-                },
-            ])
-            .toArray();
-
-        const returnData = {};
-        for (const collectionName of collectionNames) {
-            returnData[collectionName] = {
-                total: await getCounts(collectionName),
-            };
-        }
-
-        // Separate administration counts by category
-        returnData[STUDENT_COLLECTION_NAME] = {
-            total: administrationCategoryCounts.reduce((acc, item) => acc + item.count, 0),
-            details: administrationCategoryCounts,
-        };
-
-        // Separate student counts by level
-        returnData[STUDENT_COLLECTION_NAME] = {
-            total: studentLevelCounts.reduce((acc, item) => acc + item.count, 0),
-            details: studentLevelCounts,
-        };
-
+        // Handling dynamic filterBy value
         if (filterBy) {
-            // If 'filterBy' is provided, return data for that filter
-            return generateResponseData(returnData[filterBy] || {}, true, STATUS_OK, "Summary fetched successfully");
+            if (filterBy === 'student') {
+                // Count students only
+                counts[filterBy] = await db.collection(STUDENT_COLLECTION_NAME).find().count();
+            } else {
+                // Count for a specific category in the administration collection
+                counts[filterBy] = await db.collection(ADMINISTRATION_COLLECTION_NAME)
+                    .find({ category: filterBy })
+                    .count();
+            }
         } else {
-            // If no 'filterBy' is provided, return all data
-            return generateResponseData(returnData, true, STATUS_OK, "Summary fetched successfully");
+            // If no filterBy is provided, return counts for all categories and students
+            const allCategories = await db.collection(ADMINISTRATION_COLLECTION_NAME)
+                .distinct('category');
+
+            for (const category of allCategories) {
+                counts[category] = await db.collection(ADMINISTRATION_COLLECTION_NAME)
+                    .find({ category })
+                    .count();
+            }
+
+            counts['student'] = await db.collection(STUDENT_COLLECTION_NAME).find().count();
         }
+
+        return generateResponseData(counts, true, STATUS_OK, 'Dashboard summary retrieved successfully');
     } catch (error) {
         logger.error(error);
+
         return error;
     }
 };
