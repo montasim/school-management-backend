@@ -22,6 +22,7 @@
 import { VIDEO_GALLERY_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
+    STATUS_BAD_REQUEST,
     STATUS_FORBIDDEN,
     STATUS_INTERNAL_SERVER_ERROR,
     STATUS_NOT_FOUND,
@@ -38,6 +39,7 @@ import getAllData from "../../../../shared/getAllData.js";
 import updateById from "../../../../shared/updateById.js";
 import deleteByField from "../../../../shared/deleteByField.js";
 import generateUniqueID from "../../../../helpers/generateUniqueID.js";
+import extractYoutubeVideoID from "../../../../helpers/extractYoutubeVideoID.js";
 
 /**
  * Creates a new entry for a video gallery in the database.
@@ -52,6 +54,10 @@ import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 const createVideoGalleryService = async (db, newVideoGalleryDetails) => {
     try {
         const { videoGalleryTitle, videoLink, adminId } = newVideoGalleryDetails;
+        const videoID = extractYoutubeVideoID(videoLink);
+
+        if (!videoID)
+            return generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid YouTube URL');
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
@@ -60,6 +66,7 @@ const createVideoGalleryService = async (db, newVideoGalleryDetails) => {
             id: generateUniqueID(VIDEO_GALLERY_CONSTANTS?.VIDEO_GALLERY_ID_PREFIX),
             videoGalleryTitle: videoGalleryTitle,
             videoLink: videoLink,
+            videoID: videoID, // Include the extracted video ID
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -143,9 +150,13 @@ const updateAVideoGalleryService = async (db, videoGalleryId, updateVideoGallery
         if (!await findByField(db, VIDEO_GALLERY_COLLECTION_NAME, 'id', videoGalleryId))
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${videoGalleryId} not found`);
 
+        // Extract the video ID if a new video link is provided
+        const videoID = videoLink ? extractYoutubeVideoID(videoLink) : null;
+
         const updatedVideoGallery = {
             ...(videoGalleryTitle && { videoGalleryTitle }),
             ...(videoLink && { videoLink }),
+            ...(videoID && { videoID }), // Include the video ID in the update if it's available
             modifiedBy: adminId,
             modifiedAt: new Date(),
         };

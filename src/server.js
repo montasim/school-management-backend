@@ -27,7 +27,7 @@ import logger from "./shared/logger.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import handleCriticalError from "./helpers/handleCriticalError.js";
 import sendEmailToProvidedEmailAddress from "./helpers/sendEmailToProvidedEmailAddress.js";
-import errorEmailBody from "./shared/errorEmailBody.js";
+import errorEmailBody from "../../projify-backend/src/shared/errorEmailBody.js";
 
 let server;
 

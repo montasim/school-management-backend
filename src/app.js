@@ -49,7 +49,7 @@ import {
 import logger from "./shared/logger.js";
 import generateResponseData from "./shared/generateResponseData.js";
 import sendEmailToProvidedEmailAddress from "./helpers/sendEmailToProvidedEmailAddress.js";
-import errorEmailBody from "./shared/errorEmailBody.js";
+import errorEmailBody from "../../projify-backend/src/shared/errorEmailBody.js";
 
 const app = express();
 
