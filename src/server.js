@@ -27,14 +27,14 @@ import logger from "./shared/logger.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import handleCriticalError from "./helpers/handleCriticalError.js";
 import sendEmailToProvidedEmailAddress from "./helpers/sendEmailToProvidedEmailAddress.js";
-import errorEmailBody from "../../projify-backend/src/shared/errorEmailBody.js";
+import errorEmailBody from "./shared/errorEmailBody.js";
 
 let server;
 
 /**
  * Initializes and starts the Express server.
  *
- * The server listens on the port specified in the configuration and logs a message
+ * The server listens to the port specified in the configuration and logs a message
  * indicating successful launch and the listening port. The `app.listen` method is
  * used to bind and listen for connections on the specified host and port. This file
  * serves as the starting point for the server, bringing together various configurations
