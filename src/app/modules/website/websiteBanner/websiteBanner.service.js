@@ -169,7 +169,7 @@ const updateWebsiteBannerService = async (db, adminId, file) => {
         delete result.modifiedBy;
         delete result.googleDriveFileId;
 
-        return generateResponseData(result, true, STATUS_OK, "Website banner created successfully");
+        return generateResponseData(result, true, STATUS_OK, "Website banner updated successfully");
     } catch (error) {
         logger.error(error);
 
