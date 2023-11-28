@@ -70,7 +70,7 @@ const authTokenMiddleware = async (req, res, next) => {
         const verified = verifyToken(token);
 
         if (!verified)
-            return res?.status(STATUS_BAD_REQUEST).json(generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid token'));
+            return res?.status(STATUS_BAD_REQUEST).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
 
         if (await isTokenRevoked(req?.db, verified?.id, verified?.tokenId))
             return res?.status(STATUS_UNAUTHORIZED).json(generateResponseData({}, false, STATUS_UNAUTHORIZED, 'Unauthorized'));
