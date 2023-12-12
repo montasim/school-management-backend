@@ -16,6 +16,7 @@
 // CORS related
 const ALLOWED_ORIGIN = [
     "https://school-abid.vercel.app",
+    "https://ullasacademy.com",
     "http://localhost:3000",
 ];
 const ALLOWED_METHODS = "OPTIONS,GET,PUT,POST,DELETE";
