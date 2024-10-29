@@ -30,7 +30,7 @@ const createPhotoGalleryController = async (req, res) => {
         const { title, adminId, db } = extractFromRequest(req, ['title']);
         const newPhotoGalleryDetails = { title, adminId };
 
-        await handleServiceResponse(res, PhotoGalleryService.createPhotoGalleryService, db, newPhotoGalleryDetails, req?.file);
+        await handleServiceResponse(res, PhotoGalleryService.createPhotoGalleryService, req, newPhotoGalleryDetails);
     } catch (error) {
         logger.error(error);
 

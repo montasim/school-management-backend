@@ -120,3 +120,7 @@ export const {
     GOOGLE_DRIVE_PRIVATE_KEY,
     GOOGLE_DRIVE_SCOPE,
 } = process.env;
+
+export const {
+    STORAGE_BACKEND
+} = process.env;

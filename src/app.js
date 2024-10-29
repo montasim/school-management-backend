@@ -32,6 +32,7 @@ import cookieParser from "cookie-parser";
 import csurf from 'csurf';
 import cors from "cors";
 import session from 'express-session';
+import path from 'path';
 import requestLoggingMiddleware from "./app/middlewares/requestLoggingMiddleware.js";
 import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
 import rateLimiterMiddleware from "./app/middlewares/rateLimiterMiddleware.js";
@@ -142,6 +143,9 @@ app.use(rateLimiterMiddleware);
  * Establishes a database connection for each request.
  */
 app.use(DatabaseMiddleware.connect);
+
+// Serve static files from the "files" directory, accessible at "/files"
+app.use('/files', cors(corsConfigurationMiddleware), express.static(path.join(process.cwd(), 'files')));
 
 /**
  * Includes the application routes.

@@ -3,14 +3,14 @@
  *
  * This module provides services for managing photoGallery-related operations in the application.
  * It includes functions for creating, retrieving, updating, and deleting photoGallery posts,
- * along with interactions with the Google Drive API for file management.
+ * along with interactions with the centralized file management system (fileManager) for file handling.
  * These services abstract the database and file system interactions, providing a
  * clean interface for the controller layer to perform CRUD operations on photoGallery data.
  *
  * @requires config - Configuration file for application settings.
  * @requires constants - Application constants for status messages and codes.
  * @requires isValidRequest - Utility function to validate requests.
- * @requires GoogleDriveFileOperations - Helper module for Google Drive file operations.
+ * @requires fileManager - Centralized file management module to manage files.
  * @requires logger - Shared logging utility for error handling.
  * @module PhotoGalleryService - Exported services for photoGallery operations.
  */
@@ -26,7 +26,7 @@ import {
 } from "../../../../constants/constants.js";
 import { PHOTO_GALLERY_CONSTANTS } from "./photoGallery.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
-import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
+import fileManager from "../../../../helpers/fileManager.js";
 import logger from "../../../../shared/logger.js";
 import deleteByField from "../../../../shared/deleteByField.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
@@ -34,9 +34,10 @@ import findByField from "../../../../shared/findByField.js";
 import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
 import generateUniqueID from "../../../../helpers/generateUniqueID.js";
+import generateFileLink from "../../../../helpers/generateFileLink.js";
 
 /**
- * Creates a new photoGallery entry in the database.
+ * Creates a new photoGallery entry in the database and uploads the associated file.
  *
  * @async
  * @param {Object} db - Database connection object.
@@ -44,24 +45,26 @@ import generateUniqueID from "../../../../helpers/generateUniqueID.js";
  * @param {Object} file - The file object for the photoGallery's associated image or content.
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the photoGallery.
  */
-const createPhotoGalleryService = async (db, newPhotoGalleryDetails, file) => {
+const createPhotoGalleryService = async (req, newPhotoGalleryDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, adminId } = newPhotoGalleryDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        const uploadFileResponse = await fileManager.uploadFile(file);
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
+        
+        const fileLink = generateFileLink(req, uploadFileResponse)
         const photoGalleryDetails = {
             id: generateUniqueID(PHOTO_GALLERY_CONSTANTS?.PHOTO_GALLERY_ID_PREFIX),
             title: title,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            downloadLink: fileLink,
+            shareableLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -71,15 +74,13 @@ const createPhotoGalleryService = async (db, newPhotoGalleryDetails, file) => {
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
             : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
-
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
@@ -121,7 +122,7 @@ const getAPhotoGalleryService = async (db, photoGalleryId) => {
 
         delete photoGallery?.createdBy;
         delete photoGallery?.modifiedBy;
-        delete photoGallery.googleDriveFileId;
+        delete photoGallery.fileId;
 
         return photoGallery
             ? generateResponseData(photoGallery, true, STATUS_OK, `${photoGalleryId} found successfully`)
@@ -134,14 +135,13 @@ const getAPhotoGalleryService = async (db, photoGalleryId) => {
 };
 
 /**
- * Deletes a specific homePagePhotoGallery by ID from the database.
+ * Deletes a specific photoGallery entry by ID from the database and deletes the associated file.
  *
  * @async
  * @param {Object} db - DatabaseMiddleware connection object.
  * @param {string} adminId - The user ID making the request.
- * @param {string} photoGalleryId - The ID of the homePagePhotoGallery to delete.
+ * @param {string} photoGalleryId - The ID of the photoGallery entry to delete.
  * @returns {Object} - A confirmation message or an error message.
- * @throws {Error} Throws an error if any.
  */
 const deleteAPhotoGalleryService = async (db, adminId, photoGalleryId) => {
     try {
@@ -150,10 +150,12 @@ const deleteAPhotoGalleryService = async (db, adminId, photoGalleryId) => {
 
         const oldDetails = await findByField(db, PHOTO_GALLERY_COLLECTION_NAME, 'id', photoGalleryId);
 
+        console.log(oldDetails)
+
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${photoGalleryId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        await fileManager.deleteFile(oldDetails.fileId);
 
         const result = await deleteByField(db, PHOTO_GALLERY_COLLECTION_NAME, 'id', photoGalleryId);
 
@@ -162,14 +164,13 @@ const deleteAPhotoGalleryService = async (db, adminId, photoGalleryId) => {
             : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${photoGalleryId} could not be deleted`);
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
 /**
- * @namespace HomePagePhotoGalleryService
- * @description Group of services related to homePagePhotoGallery operations.
+ * @namespace PhotoGalleryService
+ * @description Group of services related to photoGallery operations.
  */
 export const PhotoGalleryService = {
     createPhotoGalleryService,

@@ -18,6 +18,7 @@ const ALLOWED_ORIGIN = [
     "https://school-abid.vercel.app",
     "https://ullasacademy.com",
     "http://localhost:3000",
+    "http://localhost:5000",
 ];
 const ALLOWED_METHODS = "OPTIONS,GET,PUT,POST,DELETE";
 
