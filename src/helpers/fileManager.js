@@ -6,15 +6,15 @@ import { STORAGE_BACKEND } from '../config/config.js';
 class FileManager {
     constructor() {
         switch (STORAGE_BACKEND) {
-            case 'googleDrive':
-                this.fileService = googleDriveFileOperations;
+            case 'local':
+                this.fileService = localFileOperations;
                 break;
             case 's3':
                 this.fileService = s3FileOperations;
                 break;
-            case 'local':
+            case 'googleDrive':
             default:
-                this.fileService = localFileOperations;
+                this.fileService = googleDriveFileOperations;
                 break;
         }
     }
