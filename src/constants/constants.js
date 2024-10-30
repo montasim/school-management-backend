@@ -20,7 +20,7 @@ const ALLOWED_ORIGIN = [
     "http://localhost:3000",
     "http://localhost:5000",
 ];
-const ALLOWED_METHODS = "OPTIONS,GET,PUT,POST,DELETE";
+const ALLOWED_METHODS = ["OPTIONS", "POST", "GET", "PUT", "DELETE"];
 
 // Rate limit settings
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // Defines the time window to be 15 minutes

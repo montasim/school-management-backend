@@ -19,8 +19,20 @@ import { ALLOWED_ORIGIN, ALLOWED_METHODS } from "../../constants/constants.js";
  * @property {boolean} credentials - Indicates whether user credentials are supported.
  */
 const corsConfigurationMiddleware = {
-    origin: '*',
-    methods: '*',
+    origin: (origin, callback) => {
+        // Allow requests with no origin, like mobile apps or curl requests
+        if (!origin) return callback(null, true);
+
+        // Check if the origin is in the ALLOWED_ORIGIN array
+        if (ALLOWED_ORIGIN.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: ALLOWED_METHODS,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
 };
 
 export default corsConfigurationMiddleware;

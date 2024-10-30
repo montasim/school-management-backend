@@ -3,12 +3,14 @@ import helmet from "helmet";
 import path from "path";
 import cors from "cors";
 import requestLoggingMiddleware from "./app/middlewares/requestLoggingMiddleware.js";
+import corsConfigurationMiddleware from "./app/middlewares/corsConfigurationMiddleware.js";
 import { DatabaseMiddleware } from "./app/middlewares/databaseMiddleware.js";
 import appRoutes from "./app/routes/app.routes.js";
 import {
     JSON_PAYLOAD_LIMIT,
     STATUS_INTERNAL_SERVER_ERROR,
-    EMAIL_RECIPIENTS
+    EMAIL_RECIPIENTS,
+    ALLOWED_ORIGIN,
 } from "./constants/constants.js";
 import logger from "./shared/logger.js";
 import generateResponseData from "./shared/generateResponseData.js";
@@ -24,7 +26,8 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            imgSrc: ["'self'", "http://localhost:5000"], // Allow image requests from localhost:5000
+            imgSrc: [
+                "'self'", ...ALLOWED_ORIGIN], // Allow image requests from localhost:5000
         },
     },
 }));
@@ -47,13 +50,7 @@ app.use(express.urlencoded({ limit: JSON_PAYLOAD_LIMIT, extended: true }));
 /**
  * CORS configuration to handle cross-origin requests.
  */
-const corsOptions = {
-    origin: "http://localhost:3000", // Allow requests only from Next.js app
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-};
-app.use(cors(corsOptions));
+app.use(cors(corsConfigurationMiddleware));
 
 /**
  * Middleware to explicitly set Cross-Origin Resource Policy.
