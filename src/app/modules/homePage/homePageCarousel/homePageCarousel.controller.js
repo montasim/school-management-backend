@@ -30,7 +30,7 @@ const createHomePageCarouselController = async (req, res) => {
         const { title, adminId, db } = extractFromRequest(req, ['title']);
         const newHomePageCarouselDetails = { title, adminId };
 
-        await handleServiceResponse(res, HomePageCarouselService.createHomePageCarouselService, db, newHomePageCarouselDetails, req?.file);
+        await handleServiceResponse(res, HomePageCarouselService.createHomePageCarouselService, req, newHomePageCarouselDetails);
     } catch (error) {
         logger.error(error);
 

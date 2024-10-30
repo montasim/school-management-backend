@@ -34,6 +34,8 @@ import findByField from "../../../../shared/findByField.js";
 import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
 import generateUniqueID from "../../../../helpers/generateUniqueID.js";
+import fileManager from "../../../../helpers/fileManager.js";
+import generateFileLink from "../../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new homePageCarousel entry in the database.
@@ -44,24 +46,26 @@ import generateUniqueID from "../../../../helpers/generateUniqueID.js";
  * @param {Object} file - The file object for the homePageCarousel's associated image or content.
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the homePageCarousel.
  */
-const createHomePageCarouselService = async (db, newHomePageCarouselDetails, file) => {
+const createHomePageCarouselService = async (req, newHomePageCarouselDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, adminId } = newHomePageCarouselDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        }
 
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const homePageCarouselDetails = {
             id: generateUniqueID(HOME_PAGE_CAROUSEL_CONSTANTS?.HOME_PAGE_CAROUSEL_ID_PREFIX),
             title: title,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -71,7 +75,7 @@ const createHomePageCarouselService = async (db, newHomePageCarouselDetails, fil
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
@@ -121,7 +125,7 @@ const getAHomePageCarouselService = async (db, homePageCarouselId) => {
 
         delete homePageCarousel?.createdBy;
         delete homePageCarousel?.modifiedBy;
-        delete homePageCarousel.googleDriveFileId;
+        delete homePageCarousel.fileId;
 
         return homePageCarousel
             ? generateResponseData(homePageCarousel, true, STATUS_OK, `${homePageCarouselId} found successfully`)
@@ -152,9 +156,9 @@ const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) =
 
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePageCarouselId} not found`);
-
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
-
+        
+        await fileManager.deleteFile(oldDetails.fileId);
+        
         const result = await deleteByField(db, HOME_PAGE_CAROUSEL_COLLECTION_NAME, 'id', homePageCarouselId);
 
         return result

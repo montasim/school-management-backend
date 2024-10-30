@@ -77,7 +77,6 @@ const createAdministrationService = async (req, newAdministrationDetails) => {
         }
 
         const uploadFileResponse = await fileManager.uploadFile(file);
-
         if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
         }
