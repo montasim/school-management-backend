@@ -30,7 +30,7 @@ const createHomePagePostController = async (req, res) => {
         const { title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description']);
         const newHomePagePostDetails = { title, category, description, adminId };
 
-        await handleServiceResponse(res, HomePagePostService.createHomePagePostService, db, newHomePagePostDetails, req?.file);
+        await handleServiceResponse(res, HomePagePostService.createHomePagePostService, req, newHomePagePostDetails);
     } catch (error) {
         logger.error(error);
 
@@ -89,7 +89,7 @@ const updateAHomePagePostController = async (req, res) => {
         const { homePagePostId, title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description'], ['homePagePostId']);
         const updatedHomePagePostDetails = { homePagePostId, title, category, description, adminId };
 
-        await handleServiceResponse(res, HomePagePostService.updateAHomePagePostService, db, updatedHomePagePostDetails, req?.file);
+        await handleServiceResponse(res, HomePagePostService.updateAHomePagePostService, req, updatedHomePagePostDetails);
     } catch (error) {
         logger.error(error);
 

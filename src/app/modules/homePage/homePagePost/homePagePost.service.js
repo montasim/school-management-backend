@@ -35,6 +35,8 @@ import createByDetails from "../../../../shared/createByDetails.js";
 import updateById from "../../../../shared/updateById.js";
 import getAllData from "../../../../shared/getAllData.js";
 import generateUniqueID from "../../../../helpers/generateUniqueID.js";
+import fileManager from "../../../../helpers/fileManager.js";
+import generateFileLink from "../../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new HomePagePost entry in the database.
@@ -48,8 +50,9 @@ import generateUniqueID from "../../../../helpers/generateUniqueID.js";
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the HomePagePost.
  * @throws {Error} Throws an error if the database operation or file upload fails.
  */
-const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
+const createHomePagePostService = async (req, newHomePagePostDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, category, description, adminId } = newHomePagePostDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -60,18 +63,19 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
         if (homePagePost?.length >= 3)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Can not add more that 3 post');
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
+        }
+        
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const homePagePostDetails = {
             id: generateUniqueID(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX),
             title: title,
             category: category,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            downloadLink: fileLink,
             description: description,
             createdBy: adminId,
             createdAt: new Date(),
@@ -82,7 +86,7 @@ const createHomePagePostService = async (db, newHomePagePostDetails, file) => {
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
@@ -134,7 +138,7 @@ const getAHomePagePostService = async (db, homePagePostId) => {
 
         delete homePagePost?.createdBy;
         delete homePagePost?.modifiedBy;
-        delete homePagePost.googleDriveFileId;
+        delete homePagePost.fileId;
 
         return homePagePost
             ? generateResponseData(homePagePost, true, STATUS_OK, `${homePagePostId} found successfully`)
@@ -167,8 +171,9 @@ const getAHomePagePostService = async (db, homePagePostId) => {
  * @returns {Promise<Object>} A promise that resolves to the response object containing the updated details or an error message.
  * @throws {Error} If an error occurs during the database operation or file upload.
  */
-const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage) => {
+const updateAHomePagePostService = async (req, newHomePagePostDetails) => {
     try {
+        const { db, file: postImage, protocol } = req;
         const { homePagePostId, title, category, description, adminId } = newHomePagePostDetails;
 
         if (!title && !category && !description && !postImage)
@@ -188,15 +193,17 @@ const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage)
 
         // Update file if provided
         if (postImage) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
-            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(postImage);
-
-            if (!uploadGoogleDriveFileResponse?.shareableLink)
+            await fileManager.deleteFile(oldDetails.fileId);
+  
+            const uploadFileResponse = await fileManager.uploadFile(file);
+            if (!uploadFileResponse?.shareableLink)
                 return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
 
-            updatedHomePagePostDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
-            updatedHomePagePostDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
-            updatedHomePagePostDetails.downloadLink = uploadGoogleDriveFileResponse.downloadLink;
+            const fileLink = generateFileLink(req, uploadFileResponse);
+
+            updatedHomePagePostDetails.fileId = uploadFileResponse.fileId;
+            updatedHomePagePostDetails.shareableLink = fileLink;
+            updatedHomePagePostDetails.downloadLink = fileLink;
         }
 
         // Update title, category, and description if provided
@@ -218,7 +225,7 @@ const updateAHomePagePostService = async (db, newHomePagePostDetails, postImage)
         delete latestData._id;
         delete latestData.createdBy;
         delete latestData.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData.fileId;
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${homePagePostId} updated successfully`)
@@ -252,7 +259,7 @@ const deleteAHomePagePostService = async (db, adminId, homePagePostId) => {
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${homePagePostId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        await fileManager.deleteFile(oldDetails.fileId);
 
         const result = await deleteByField(db, HOME_PAGE_POST_COLLECTION_NAME, 'id', homePagePostId);
 
