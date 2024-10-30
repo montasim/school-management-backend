@@ -30,7 +30,7 @@ const createStudentController = async (req, res) => {
         const { name, level, adminId, db } = extractFromRequest(req, ['name', 'level']);
         const newStudentDetails = { name, level, adminId };
 
-        await handleServiceResponse(res, StudentService.createStudentService, db, newStudentDetails, req?.file);
+        await handleServiceResponse(res, StudentService.createStudentService, req, newStudentDetails);
     } catch (error) {
         logger.error(error);
 
@@ -92,7 +92,7 @@ const updateAStudentController = async (req, res) => {
         const { studentId, name, level, adminId, db } = extractFromRequest(req, ['name', 'level'], ['studentId']);
         const updatedStudentDetails = { name, level, adminId };
 
-        await handleServiceResponse(res, StudentService.updateAStudentService, db, studentId, updatedStudentDetails, req?.file);
+        await handleServiceResponse(res, StudentService.updateAStudentService, req, studentId, updatedStudentDetails);
     } catch (error) {
         logger.error(error);
 

@@ -34,6 +34,8 @@ import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import fileManager from "../../../helpers/fileManager.js";
+import generateFileLink from "../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new student entry in the database.
@@ -44,8 +46,9 @@ import generateUniqueID from "../../../helpers/generateUniqueID.js";
  * @param {Object} file - The file object for the student's associated image or content.
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the student.
  */
-const createStudentService = async (db, newStudentDetails, file) => {
+const createStudentService = async (req, newStudentDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { name, level, adminId } = newStudentDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -57,18 +60,19 @@ const createStudentService = async (db, newStudentDetails, file) => {
             return generateResponseData({}, false, STATUS_BAD_REQUEST, `Level '${level}' does not exist`);
         }
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        }
 
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const studentDetails = {
             id: generateUniqueID(STUDENT_CONSTANTS?.STUDENT_ID_PREFIX),
             name: name,
             level: level,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -79,7 +83,7 @@ const createStudentService = async (db, newStudentDetails, file) => {
         delete latestData?._id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${name} created successfully`)
@@ -141,7 +145,7 @@ const getAStudentService = async (db, studentId) => {
         delete student?._id;
         delete student?.createdBy;
         delete student?.modifiedBy;
-        delete student.googleDriveFileId;
+        delete student.fileId;
 
         return student
             ? generateResponseData(student, true, STATUS_OK, `${studentId} found successfully`)
@@ -164,8 +168,9 @@ const getAStudentService = async (db, studentId) => {
  * @returns {Object} - The homePageStudent details or an error message.
  * @throws {Error} Throws an error if any.
  */
-const updateAStudentService = async (db, studentId, newStudentDetails, file) => {
+const updateAStudentService = async (req, studentId, newStudentDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { name, level, adminId } = newStudentDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -202,16 +207,17 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
 
         // Update file if provided
         if (file) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+            await fileManager.deleteFile(oldDetails.fileId);
 
-            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+            const uploadFileResponse = await fileManager.uploadFile(file);
+            if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
+            
+            const fileLink = generateFileLink(req, uploadFileResponse);
 
-            if (!uploadGoogleDriveFileResponse?.shareableLink)
-                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
-            updatedStudentDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
-            updatedStudentDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
-            updatedStudentDetails.downloadLink = uploadGoogleDriveFileResponse.downloadLink;
+            updatedStudentDetails.fileId = uploadFileResponse.fileId;
+            updatedStudentDetails.shareableLink = fileLink;
+            updatedStudentDetails.downloadLink = fileLink;
         }
 
         // Update modifiedBy and modifiedAt
@@ -228,7 +234,7 @@ const updateAStudentService = async (db, studentId, newStudentDetails, file) => 
         delete latestData._id;
         delete latestData.createdBy;
         delete latestData.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData.fileId;
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${studentId} updated successfully`)
@@ -259,7 +265,7 @@ const deleteAStudentService = async (db, adminId, studentId) => {
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${studentId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        await fileManager.deleteFile(oldDetails.fileId);
 
         const result = await deleteByField(db, STUDENT_COLLECTION_NAME, 'id', studentId);
 
