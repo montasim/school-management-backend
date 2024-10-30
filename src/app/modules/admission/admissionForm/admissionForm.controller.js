@@ -45,7 +45,7 @@ const createAdmissionFormController = async (req, res) => {
         validateStringField(res, 'title', title, 3, 1000);
         validateUploadedFile(res, req.file, MAX_PDF_FILE_SIZE, [MIME_TYPE_PDF]);
 
-        await handleServiceResponse(res, AdmissionFormService.createAdmissionFormService, db, newAdmissionFormDetails, req?.file);
+        await handleServiceResponse(res, AdmissionFormService.createAdmissionFormService, req, newAdmissionFormDetails);
     } catch (error) {
         logger.error(error);
 

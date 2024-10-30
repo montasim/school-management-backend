@@ -82,7 +82,7 @@ const createAdministrationService = async (req, newAdministrationDetails) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
         }
 
-        const fileLink = generateFileLink(req, uploadFileResponse)
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const administrationDetails = {
             id: generateUniqueID(ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX),
             name,

@@ -38,8 +38,9 @@ import createByDetails from "../../../../shared/createByDetails.js";
 import findByField from "../../../../shared/findByField.js";
 import getAllData from "../../../../shared/getAllData.js";
 import deleteByField from "../../../../shared/deleteByField.js";
-import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js";
 import generateUniqueID from "../../../../helpers/generateUniqueID.js";
+import fileManager from "../../../../helpers/fileManager.js";
+import generateFileLink from "../../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new admissionForm entry in the database.
@@ -51,8 +52,9 @@ import generateUniqueID from "../../../../helpers/generateUniqueID.js";
  * @returns {Object} - The response after attempting admissionForm creation.
  * @throws {Error} Throws an error if any.
  */
-const createAdmissionFormService = async (db, newAdmissionFormDetails, file) => {
+const createAdmissionFormService = async (req, newAdmissionFormDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, adminId } = newAdmissionFormDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -61,18 +63,20 @@ const createAdmissionFormService = async (db, newAdmissionFormDetails, file) => 
         if (await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'fileName', file?.originalname))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        const uploadFileResponse = await fileManager.uploadFile(file);
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
+        }
+        
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const admissionFormDetails = {
             id: generateUniqueID(ADMISSION_FORM_CONSTANTS?.ADMISSION_FORM_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -81,7 +85,7 @@ const createAdmissionFormService = async (db, newAdmissionFormDetails, file) => 
         const latestData = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'id', admissionFormDetails?.id);
 
         delete latestData?.createdBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
@@ -128,7 +132,7 @@ const getAAdmissionFormService = async (db, fileName) => {
     try {
         const admissionForm = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'fileName', fileName);
 
-        delete admissionForm?.googleDriveFileId;
+        delete admissionForm?.fileId;
 
         return admissionForm
             ? generateResponseData(admissionForm, true, STATUS_OK, `${fileName} found successfully`)
@@ -158,7 +162,7 @@ const deleteAAdmissionFormService = async (db, adminId, fileName) => {
         const fileDetails = await findByField(db, ADMISSION_FORM_COLLECTION_NAME, 'fileName', fileName);
 
         if (fileDetails) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
+            await fileManager.deleteFile(fileDetails.fileId);
 
             const result = await deleteByField(db, ADMISSION_FORM_COLLECTION_NAME, 'fileName', fileName);
 
