@@ -40,6 +40,8 @@ import getAllData from "../../../shared/getAllData.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import fileManager from "../../../helpers/fileManager.js";
+import generateFileLink from "../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new routine entry in the database.
@@ -61,18 +63,19 @@ const createRoutineService = async (db, newRoutineDetails, file) => {
         if (await findByField(db, ROUTINE_COLLECTION_NAME, 'fileName', file?.originalname))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        }
 
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const routineDetails = {
             id: generateUniqueID(ROUTINE_CONSTANTS?.ROUTINE_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            routineLink: uploadGoogleDriveFileResponse?.routineLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            routineLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -81,7 +84,7 @@ const createRoutineService = async (db, newRoutineDetails, file) => {
         const latestData = await findByField(db, ROUTINE_COLLECTION_NAME, 'id', routineDetails?.id);
 
         delete latestData?.createdBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
@@ -128,7 +131,7 @@ const getARoutineService = async (db, fileName) => {
     try {
         const routine = await findByField(db, ROUTINE_COLLECTION_NAME, 'fileName', fileName);
 
-        delete routine?.googleDriveFileId;
+        delete routine?.fileId;
 
         return routine
             ? generateResponseData(routine, true, STATUS_OK, `${fileName} found successfully`)
@@ -158,7 +161,7 @@ const deleteARoutineService = async (db, adminId, fileName) => {
         const fileDetails = await findByField(db, ROUTINE_COLLECTION_NAME, 'fileName', fileName);
 
         if (fileDetails) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
+            await fileManager.deleteFile(fileDetails.fileId);
 
             const result = await deleteByField(db, ROUTINE_COLLECTION_NAME, 'fileName', fileName);
 

@@ -45,7 +45,7 @@ const createRoutineController = async (req, res) => {
         validateStringField(res, 'title', title, 3, 1000);
         validateUploadedFile(res, req.file, MAX_PDF_FILE_SIZE, [MIME_TYPE_PDF]);
 
-        await handleServiceResponse(res, RoutineService.createRoutineService, db, newRoutineDetails, req?.file);
+        await handleServiceResponse(res, RoutineService.createRoutineService, req, newRoutineDetails);
     } catch (error) {
         logger.error(error);
 
