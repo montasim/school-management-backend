@@ -45,7 +45,7 @@ const createResultController = async (req, res) => {
         validateStringField(res, 'title', title, 3, 1000);
         validateUploadedFile(res, req.file, MAX_PDF_FILE_SIZE, [MIME_TYPE_PDF]);
 
-        await handleServiceResponse(res, ResultService.createResultService, db, newResultDetails, req?.file);
+        await handleServiceResponse(res, ResultService.createResultService, req, newResultDetails);
     } catch (error) {
         logger.error(error);
 

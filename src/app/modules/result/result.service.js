@@ -38,8 +38,9 @@ import createByDetails from "../../../shared/createByDetails.js";
 import findByField from "../../../shared/findByField.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByField from "../../../shared/deleteByField.js";
-import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import fileManager from "../../../helpers/fileManager.js";
+import generateFileLink from "../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new result entry in the database.
@@ -51,8 +52,9 @@ import generateUniqueID from "../../../helpers/generateUniqueID.js";
  * @returns {Object} - The response after attempting result creation.
  * @throws {Error} Throws an error if any.
  */
-const createResultService = async (db, newResultDetails, file) => {
+const createResultService = async (req, newResultDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, adminId } = newResultDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -61,18 +63,19 @@ const createResultService = async (db, newResultDetails, file) => {
         if (await findByField(db, RESULT_COLLECTION_NAME, 'fileName', file?.originalname))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        }
 
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const resultDetails = {
             id: generateUniqueID(RESULT_CONSTANTS?.RESULT_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            resultLink: uploadGoogleDriveFileResponse?.resultLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            resultLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -81,7 +84,7 @@ const createResultService = async (db, newResultDetails, file) => {
         const latestData = await findByField(db, RESULT_COLLECTION_NAME, 'id', resultDetails?.id);
 
         delete latestData?.createdBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
@@ -128,7 +131,7 @@ const getAResultService = async (db, fileName) => {
     try {
         const result = await findByField(db, RESULT_COLLECTION_NAME, 'fileName', fileName);
 
-        delete result?.googleDriveFileId;
+        delete result?.shareableLink;
 
         return result
             ? generateResponseData(result, true, STATUS_OK, `${fileName} found successfully`)
@@ -158,7 +161,7 @@ const deleteAResultService = async (db, adminId, fileName) => {
         const fileDetails = await findByField(db, RESULT_COLLECTION_NAME, 'fileName', fileName);
 
         if (fileDetails) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
+            await fileManager.deleteFile(fileDetails.fileId);
 
             const result = await deleteByField(db, RESULT_COLLECTION_NAME, 'fileName', fileName);
 
