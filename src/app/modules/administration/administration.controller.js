@@ -30,7 +30,7 @@ const createAdministrationController = async (req, res) => {
         const { name, category, designation, adminId, db } = extractFromRequest(req, ['name', 'category', 'designation']);
         const newAdministrationDetails = { name, category, designation, adminId };
 
-        await handleServiceResponse(res, AdministrationService.createAdministrationService, db, newAdministrationDetails, req?.file);
+        await handleServiceResponse(res, AdministrationService.createAdministrationService, req, newAdministrationDetails);
     } catch (error) {
         logger.error(error);
 
@@ -97,7 +97,7 @@ const updateAAdministrationController = async (req, res) => {
         const { administrationId, name, category, designation, adminId, db } = extractFromRequest(req, ['name', 'category', 'designation'], ['administrationId']);
         const updatedAdministrationDetails = { name, category, designation, adminId };
 
-        await handleServiceResponse(res, AdministrationService.updateAAdministrationService, db, administrationId, updatedAdministrationDetails, req?.file);
+        await handleServiceResponse(res, AdministrationService.updateAAdministrationService, req, administrationId, updatedAdministrationDetails);
     } catch (error) {
         logger.error(error);
 

@@ -26,7 +26,6 @@ import {
 } from "../../../constants/constants.js";
 import { ADMINISTRATION_CONSTANTS } from "./administration.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -34,6 +33,8 @@ import findByField from "../../../shared/findByField.js";
 import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import fileManager from "../../../helpers/fileManager.js";
+import generateFileLink from "../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new administration entry in the database.
@@ -51,8 +52,9 @@ import generateUniqueID from "../../../helpers/generateUniqueID.js";
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the administration.
  * @throws {Error} If an error occurs during the database operation or file upload.
  */
-const createAdministrationService = async (db, newAdministrationDetails, file) => {
+const createAdministrationService = async (req, newAdministrationDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { name, category, designation, adminId } = newAdministrationDetails;
 
         // Validate the requesting user's authorization
@@ -74,22 +76,21 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
             }
         }
 
-        // Upload the file to Google Drive and handle the response
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        const uploadFileResponse = await fileManager.uploadFile(file);
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink) {
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
         }
 
-        // Prepare administration details for database insertion
+        const fileLink = generateFileLink(req, uploadFileResponse)
         const administrationDetails = {
             id: generateUniqueID(ADMINISTRATION_CONSTANTS?.ADMINISTRATION_ID_PREFIX),
             name,
             category: processedCategories,
             designation,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            downloadLink: fileLink,
+            shareableLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -104,7 +105,7 @@ const createAdministrationService = async (db, newAdministrationDetails, file) =
         delete latestData?._id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         // Return the appropriate response
         return result?.acknowledged
@@ -177,7 +178,7 @@ const getAAdministrationService = async (db, administrationId) => {
         delete administration?._id;
         delete administration?.createdBy;
         delete administration?.modifiedBy;
-        delete administration.googleDriveFileId;
+        delete administration.fileId;
 
         return generateResponseData(administration, true, STATUS_OK, `${administrationId} found successfully`);
     } catch (error) {
@@ -198,8 +199,9 @@ const getAAdministrationService = async (db, administrationId) => {
  * @returns {Object} - The homePageAdministration details or an error message.
  * @throws {Error} Throws an error if any.
  */
-const updateAAdministrationService = async (db, administrationId, newAdministrationDetails, file) => {
+const updateAAdministrationService = async (req, administrationId, newAdministrationDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { name, category, designation, adminId } = newAdministrationDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -216,16 +218,18 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
 
         // Update file if provided
         if (file) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+            await fileManager.deleteFile(oldDetails.fileId);
 
-            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+            const uploadFileResponse = await fileManager.uploadFile(file);
 
-            if (!uploadGoogleDriveFileResponse?.shareableLink)
-                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
+            
+            const fileLink = generateFileLink(req, uploadFileResponse)
 
-            updatedAdministrationDetails.googleDriveFileId = uploadGoogleDriveFileResponse?.fileId;
-            updatedAdministrationDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse?.shareableLink;
-            updatedAdministrationDetails.downloadLink = uploadGoogleDriveFileResponse?.downloadLink;
+            updatedAdministrationDetails.fileId = uploadFileResponse?.fileId;
+            updatedAdministrationDetails.shareableLink = fileLink;
+            updatedAdministrationDetails.downloadLink = fileLink;
         }
 
         // Update name, category, and designation if provided
@@ -277,7 +281,7 @@ const updateAAdministrationService = async (db, administrationId, newAdministrat
         delete updatedAdministrationDetails._id;
         delete updatedAdministrationDetails.createdBy;
         delete updatedAdministrationDetails.modifiedBy;
-        delete updatedAdministrationDetails.googleDriveFileId;
+        delete updatedAdministrationDetails.fileId;
 
         return result?.modifiedCount
             ? generateResponseData(updatedAdministrationDetails, true, STATUS_OK, `${administrationId} updated successfully`)
@@ -310,7 +314,7 @@ const deleteAAdministrationService = async (db, adminId, administrationId) => {
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        await fileManager.deleteFile(oldDetails.fileId);
 
         const result = await deleteByField(db, ADMINISTRATION_COLLECTION_NAME, 'id', administrationId);
 

@@ -150,8 +150,6 @@ const deleteAPhotoGalleryService = async (db, adminId, photoGalleryId) => {
 
         const oldDetails = await findByField(db, PHOTO_GALLERY_COLLECTION_NAME, 'id', photoGalleryId);
 
-        console.log(oldDetails)
-
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${photoGalleryId} not found`);
 
