@@ -32,6 +32,8 @@ import findByField from "../../../../shared/findByField.js";
 import createByDetails from "../../../../shared/createByDetails.js";
 import getAllData from "../../../../shared/getAllData.js";
 import generateUniqueID from "../../../../helpers/generateUniqueID.js";
+import fileManager from "../../../../helpers/fileManager.js";
+import generateFileLink from "../../../../helpers/generateFileLink.js";
 
 /**
  * Service function to create a new website configuration.
@@ -47,8 +49,9 @@ import generateUniqueID from "../../../../helpers/generateUniqueID.js";
  * @param {Object} file - The file object representing the website logo.
  * @returns {Object} - The response data including success status and message.
  */
-const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
+const createWebsiteConfigurationService = async (req, websiteDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { name, slogan, adminId } = websiteDetails;
         const existingDetails = await getAllData(db, WEBSITE_CONFIGURATION_COLLECTION_NAME);
 
@@ -58,18 +61,19 @@ const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        }
 
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const prepareWebsiteDetails = {
             id: generateUniqueID(WEBSITE_CONFIGURATION_CONSTANTS?.WEBSITE_CONFIGURATION_ID_PREFIX),
             name: name,
             slogan: slogan,
-            googleDriveWebsiteLogoFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveWebsiteLogoShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -81,7 +85,7 @@ const createWebsiteConfigurationService = async (db, websiteDetails, file) => {
         delete latestData.id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveWebsiteLogoFileId;
+        delete latestData.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, "Website configuration added successfully")
@@ -112,7 +116,7 @@ const getWebsiteConfigurationService = async (db) => {
         delete website?._id;
         delete website?.createdBy;
         delete website?.modifiedBy;
-        delete website.googleDriveWebsiteLogoFileId;
+        delete website.fileId;
 
         return website
             ? generateResponseData(website, true, STATUS_OK, "Website configuration found successfully")
@@ -137,8 +141,9 @@ const getWebsiteConfigurationService = async (db) => {
  * @param {Object} file - The new file object for the website logo.
  * @returns {Object} - The response data including success status and updated configuration.
  */
-const updateWebsiteConfigurationService = async (db, websiteDetails, file) => {
+const updateWebsiteConfigurationService = async (req, websiteDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { adminId, name, slogan} = websiteDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -158,15 +163,16 @@ const updateWebsiteConfigurationService = async (db, websiteDetails, file) => {
 
         // Update the website logo if a new file is provided
         if (file) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(oldWebsiteDetails.googleDriveWebsiteLogoFileId);
-            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+            await fileManager.deleteFile(oldDetails.fileId);
 
-            if (!uploadGoogleDriveFileResponse?.shareableLink)
-                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
-            updatedWebsiteDetails.googleDriveWebsiteLogoFileId = uploadGoogleDriveFileResponse.fileId;
-            updatedWebsiteDetails.googleDriveWebsiteLogoShareableLink = uploadGoogleDriveFileResponse.shareableLink;
-            updatedWebsiteDetails.downloadLink = uploadGoogleDriveFileResponse.downloadLink;
+            const uploadFileResponse = await fileManager.uploadFile(file);
+            if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
+            
+            const fileLink = generateFileLink(req, uploadFileResponse);
+            updatedWebsiteDetails.fileId = uploadFileResponse.fileId;
+            updatedWebsiteDetails.shareableLink = fileLink;
+            updatedWebsiteDetails.downloadLink = fileLink;
         }
 
         // Update modifiedBy and modifiedAt
@@ -187,7 +193,7 @@ const updateWebsiteConfigurationService = async (db, websiteDetails, file) => {
         delete result.id;
         delete result.createdBy;
         delete result.modifiedBy;
-        delete result.googleDriveWebsiteLogoFileId;
+        delete result.fileId;
 
         return generateResponseData(result, true, STATUS_OK, `Website configuration updated successfully`);
     } catch (error) {
@@ -219,7 +225,7 @@ const deleteWebsiteConfigurationService = async (db, adminId) => {
         if (!oldDetails?.id)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `Website configuration not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveWebsiteLogoFileId);
+        await fileManager.deleteFile(oldDetails.fileId);
 
         // Deletes all documents in the collection without deleting the collection itself
         const result = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).deleteMany({});

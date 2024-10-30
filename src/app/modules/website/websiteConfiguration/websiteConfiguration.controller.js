@@ -32,7 +32,7 @@ const createWebsiteConfigurationController = async (req, res) => {
         const { name, slogan, adminId, db } = extractFromRequest(req, ['name', 'slogan']);
         const newWebsiteConfigurationDetails = { name, slogan, adminId };
 
-        await handleServiceResponse(res, WebsiteConfigurationService.createWebsiteConfigurationService, db, newWebsiteConfigurationDetails, req?.file);
+        await handleServiceResponse(res, WebsiteConfigurationService.createWebsiteConfigurationService, req, newWebsiteConfigurationDetails);
     } catch (error) {
         logger.error(error);
 
