@@ -29,7 +29,7 @@ const createWebsiteBannerController = async (req, res) => {
     try {
         const { adminId, db } = extractFromRequest(req, [], []);
 
-        await handleServiceResponse(res, WebsiteBannerService.createWebsiteBannerService, db, adminId, req?.file);
+        await handleServiceResponse(res, WebsiteBannerService.createWebsiteBannerService, req, adminId);
     } catch (error) {
         logger.error(error);
 
@@ -68,7 +68,7 @@ const updateWebsiteBannerController = async (req, res) => {
     try {
         const { adminId, db } = extractFromRequest(req, [], []);
 
-        await handleServiceResponse(res, WebsiteBannerService.updateWebsiteBannerService, db, adminId, req?.file);
+        await handleServiceResponse(res, WebsiteBannerService.updateWebsiteBannerService, req, adminId);
     } catch (error) {
         logger.error(error);
 

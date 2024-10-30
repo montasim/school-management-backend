@@ -26,13 +26,14 @@ import {
 } from "../../../../constants/constants.js";
 import { WEBSITE_BANNER_CONSTANTS } from "./websiteBanner.constants.js";
 import isValidRequest from "../../../../shared/isValidRequest.js";
-import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";
 import findByField from "../../../../shared/findByField.js";
 import createByDetails from "../../../../shared/createByDetails.js";
 import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 import getAllData from "../../../../shared/getAllData.js";
+import fileManager from "../../../../helpers/fileManager.js";
+import generateFileLink from "../../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new websiteBanner entry in the database.
@@ -43,8 +44,9 @@ import getAllData from "../../../../shared/getAllData.js";
  * @param {Object} file - The file object for the websiteBanner's associated image or content.
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the websiteBanner.
  */
-const createWebsiteBannerService = async (db, adminId, file) => {
+const createWebsiteBannerService = async (req, adminId) => {
     try {
+        const { db, file, protocol } = req;
         const existingDetails = await getAllData(db, WEBSITE_BANNER_COLLECTION_NAME);
 
         if (existingDetails?.length > 0)
@@ -53,16 +55,17 @@ const createWebsiteBannerService = async (db, adminId, file) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        }
 
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const websiteBannerDetails = {
             id: generateUniqueID(WEBSITE_BANNER_CONSTANTS?.WEBSITE_BANNER_ID_PREFIX),
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -74,7 +77,7 @@ const createWebsiteBannerService = async (db, adminId, file) => {
         delete latestData?.id;
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, "Website banner created successfully")
@@ -104,7 +107,7 @@ const getAWebsiteBannerService = async (db) => {
             delete websiteBanner?.id;
             delete websiteBanner?.createdBy;
             delete websiteBanner?.modifiedBy;
-            delete websiteBanner.googleDriveFileId;
+            delete websiteBanner.fileId;
 
             return generateResponseData(websiteBanner, true, STATUS_OK, "Website banner found successfully")
         } else {
@@ -126,8 +129,10 @@ const getAWebsiteBannerService = async (db) => {
  * @param {Object} file - The file object for the websiteBanner's associated image or content.
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the websiteBanner.
  */
-const updateWebsiteBannerService = async (db, adminId, file) => {
+const updateWebsiteBannerService = async (req, adminId) => {
     try {
+        const { db, file, protocol } = req;
+
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
@@ -140,16 +145,17 @@ const updateWebsiteBannerService = async (db, adminId, file) => {
         // Initialize the object to store updated details
         const updatedDetails = { ...oldDetails };
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
+        await fileManager.deleteFile(oldDetails.fileId);
+       
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
+        
+        const fileLink = generateFileLink(req, uploadFileResponse);
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
-        updatedDetails.googleDriveFileId = uploadGoogleDriveFileResponse?.fileId;
-        updatedDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse?.shareableLink;
-        updatedDetails.downloadLink = uploadGoogleDriveFileResponse?.downloadLink;
+        updatedDetails.fileId = uploadFileResponse?.fileId;
+        updatedDetails.shareableLink = fileLink;
+        updatedDetails.downloadLink = fileLink;
         updatedDetails.modifiedBy = adminId;
         updatedDetails.modifiedAt = new Date();
 
@@ -196,8 +202,9 @@ const deleteAWebsiteBannerService = async (db, adminId) => {
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, "Website banner not found");
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
-
+        
+        await fileManager.deleteFile(oldDetails.fileId);
+       
         // Deletes all documents in the collection without deleting the collection itself
         const result = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).deleteMany({});
 
