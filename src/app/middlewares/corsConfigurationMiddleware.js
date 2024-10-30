@@ -19,9 +19,8 @@ import { ALLOWED_ORIGIN, ALLOWED_METHODS } from "../../constants/constants.js";
  * @property {boolean} credentials - Indicates whether user credentials are supported.
  */
 const corsConfigurationMiddleware = {
-    origin: ALLOWED_ORIGIN,
-    methods: ALLOWED_METHODS,
-    credentials: true, // If you need to support cookies or authentication
+    origin: '*',
+    methods: '*',
 };
 
 export default corsConfigurationMiddleware;
