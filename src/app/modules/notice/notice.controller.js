@@ -47,7 +47,7 @@ const createNoticeController = async (req, res) => {
 
         await validateTitle(res, title);
         await validateUploadedFile(res, req.file, MAX_PDF_FILE_SIZE, [MIME_TYPE_PDF]);
-        await handleServiceResponse(res, NoticeService.createNoticeService, db, newNoticeDetails, req?.file);
+        await handleServiceResponse(res, NoticeService.createNoticeService, req, newNoticeDetails);
     } catch (error) {
         logger.error(error);
 

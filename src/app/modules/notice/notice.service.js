@@ -38,8 +38,9 @@ import createByDetails from "../../../shared/createByDetails.js";
 import findByField from "../../../shared/findByField.js";
 import getAllData from "../../../shared/getAllData.js";
 import deleteByField from "../../../shared/deleteByField.js";
-import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import fileManager from "../../../helpers/fileManager.js";
+import generateFileLink from "../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new notice entry in the database.
@@ -51,8 +52,9 @@ import generateUniqueID from "../../../helpers/generateUniqueID.js";
  * @returns {Object} - The response after attempting notice creation.
  * @throws {Error} Throws an error if any.
  */
-const createNoticeService = async (db, newNoticeDetails, file) => {
+const createNoticeService = async (req, newNoticeDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, adminId } = newNoticeDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -61,18 +63,19 @@ const createNoticeService = async (db, newNoticeDetails, file) => {
         if (await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', file?.originalname))
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
-
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        const uploadFileResponse = await fileManager.uploadFile(file);
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
+        }
+        
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const noticeDetails = {
             id: generateUniqueID(NOTICE_CONSTANTS?.NOTICE_ID_PREFIX),
             title: title,
             fileName: file?.originalname,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            googleDriveShareableLink: fileLink,
+            downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
@@ -81,7 +84,7 @@ const createNoticeService = async (db, newNoticeDetails, file) => {
         const latestData = await findByField(db, NOTICE_COLLECTION_NAME, 'id', noticeDetails?.id);
 
         delete latestData?.createdBy;
-        delete latestData?.googleDriveFileId;
+        delete latestData?.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
@@ -128,7 +131,7 @@ const getANoticeService = async (db, fileName) => {
     try {
         const notice = await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', fileName);
 
-        delete notice?.googleDriveFileId;
+        delete notice?.fileId;
 
         return notice
             ? generateResponseData(notice, true, STATUS_OK, `${fileName} found successfully`)
@@ -158,7 +161,7 @@ const deleteANoticeService = async (db, adminId, fileName) => {
         const fileDetails = await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', fileName);
 
         if (fileDetails) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(fileDetails?.googleDriveFileId);
+            await fileManager.deleteFile(fileDetails.fileId);
 
             const result = await deleteByField(db, NOTICE_COLLECTION_NAME, 'fileName', fileName);
 
