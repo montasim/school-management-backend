@@ -225,7 +225,7 @@ const updateAAdministrationService = async (req, administrationId, newAdministra
             if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
                 return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
             
-            const fileLink = generateFileLink(req, uploadFileResponse)
+            const fileLink = generateFileLink(req, uploadFileResponse);
 
             updatedAdministrationDetails.fileId = uploadFileResponse?.fileId;
             updatedAdministrationDetails.shareableLink = fileLink;

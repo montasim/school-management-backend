@@ -30,7 +30,7 @@ const createBlogController = async (req, res) => {
         const { title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description']);
         const newBlogDetails = { title, category, description, adminId };
 
-        await handleServiceResponse(res, BlogService.createBlogService, db, newBlogDetails, req?.file);
+        await handleServiceResponse(res, BlogService.createBlogService, req, newBlogDetails);
     } catch (error) {
         logger.error(error);
 
@@ -89,7 +89,7 @@ const updateABlogController = async (req, res) => {
         const { blogId, title, category, description, adminId, db } = extractFromRequest(req, ['title', 'category', 'description'], ['blogId']);
         const updatedBlogDetails = { title, category, description, adminId };
 
-        await handleServiceResponse(res, BlogService.updateABlogService, db, blogId, updatedBlogDetails, req?.file);
+        await handleServiceResponse(res, BlogService.updateABlogService, req, blogId, updatedBlogDetails);
     } catch (error) {
         logger.error(error);
 

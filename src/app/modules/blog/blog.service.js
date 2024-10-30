@@ -26,7 +26,6 @@ import {
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./blog.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
-import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../shared/logger.js";
 import deleteByField from "../../../shared/deleteByField.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -35,6 +34,8 @@ import createByDetails from "../../../shared/createByDetails.js";
 import updateById from "../../../shared/updateById.js";
 import getAllData from "../../../shared/getAllData.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import fileManager from "../../../helpers/fileManager.js";
+import generateFileLink from "../../../helpers/generateFileLink.js";
 
 /**
  * Creates a new blog entry in the database.
@@ -45,25 +46,28 @@ import generateUniqueID from "../../../helpers/generateUniqueID.js";
  * @param {Object} file - The file object for the blog's associated image or content.
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the blog.
  */
-const createBlogService = async (db, newBlogDetails, file) => {
+const createBlogService = async (req, newBlogDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, category, description, adminId } = newBlogDetails;
 
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+        const uploadFileResponse = await fileManager.uploadFile(file);
 
-        if (!uploadGoogleDriveFileResponse?.shareableLink)
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
+        }
+        
+        const fileLink = generateFileLink(req, uploadFileResponse);
         const blogDetails = {
             id: generateUniqueID(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX),
             title: title,
             category: category,
-            googleDriveFileId: uploadGoogleDriveFileResponse?.fileId,
-            googleDriveShareableLink: uploadGoogleDriveFileResponse?.shareableLink,
-            downloadLink: uploadGoogleDriveFileResponse?.downloadLink,
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            downloadLink: fileLink,
             description: description,
             createdBy: adminId,
             createdAt: new Date(),
@@ -74,7 +78,7 @@ const createBlogService = async (db, newBlogDetails, file) => {
 
         delete latestData?.createdBy;
         delete latestData?.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData.fileId;
 
         return result?.acknowledged
             ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
@@ -124,7 +128,7 @@ const getABlogService = async (db, blogId) => {
 
         delete blog?.createdBy;
         delete blog?.modifiedBy;
-        delete blog.googleDriveFileId;
+        delete blog.fileId;
 
         return blog
             ? generateResponseData(blog, true, STATUS_OK, `${blogId} found successfully`)
@@ -147,8 +151,9 @@ const getABlogService = async (db, blogId) => {
  * @returns {Object} - The blog details or an error message.
  * @throws {Error} Throws an error if any.
  */
-const updateABlogService = async (db, blogId, newBlogDetails, file) => {
+const updateABlogService = async (req, blogId, newBlogDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, category, description, adminId } = newBlogDetails;
 
         if (!await isValidRequest(db, adminId))
@@ -165,15 +170,17 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
 
         // Update file if provided
         if (file) {
-            await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails.googleDriveFileId);
-            const uploadGoogleDriveFileResponse = await GoogleDriveFileOperations.uploadFileToDrive(file);
+            await fileManager.deleteFile(oldDetails.fileId);
 
-            if (!uploadGoogleDriveFileResponse?.shareableLink)
-                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
-
-            updatedBlogDetails.googleDriveFileId = uploadGoogleDriveFileResponse.fileId;
-            updatedBlogDetails.googleDriveShareableLink = uploadGoogleDriveFileResponse.shareableLink;
-            updatedBlogDetails.downloadLink = uploadGoogleDriveFileResponse.downloadLink;
+            const uploadFileResponse = await fileManager.uploadFile(file);
+            if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
+                return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
+            
+            const fileLink = generateFileLink(req, uploadFileResponse);
+            
+            updatedBlogDetails.fileId = uploadFileResponse.fileId;
+            updatedBlogDetails.shareableLink = fileLink;
+            updatedBlogDetails.downloadLink = fileLink;
         }
 
         // Update title, category, and description if provided
@@ -195,7 +202,7 @@ const updateABlogService = async (db, blogId, newBlogDetails, file) => {
         delete latestData._id;
         delete latestData.createdBy;
         delete latestData.modifiedBy;
-        delete latestData.googleDriveFileId;
+        delete latestData.fileId;
 
         return result?.modifiedCount
             ? generateResponseData(latestData, true, STATUS_OK, `${blogId} updated successfully`)
@@ -228,7 +235,7 @@ const deleteABlogService = async (db, adminId, blogId) => {
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);
 
-        await GoogleDriveFileOperations.deleteFileFromDrive(oldDetails?.googleDriveFileId);
+        await fileManager.deleteFile(oldDetails.fileId);
 
         const result = await deleteByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
 
