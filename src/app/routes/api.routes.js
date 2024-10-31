@@ -29,6 +29,7 @@
  */
 
 import express from "express";
+
 import administrationRoutes from "../modules/administration/administration.routes.js";
 import announcementRoutes from "../modules/announcement/announcement.routes.js";
 import authenticationRoutes from "../modules/authentication/authentication.routes.js";
@@ -49,6 +50,7 @@ import studentRoutes from "../modules/student/student.routes.js";
 import websiteRoutes from "../routes/website.routes.js";
 import galleryRoutes from "./gallery.routes.js";
 import admissionRoutes from "./admission.routes.js";
+import flushCacheRoutes from "../modules/flushCache/flushCache.routes.js";
 
 /**
  * Sets up the main router for the application. This router is responsible for aggregating all the individual
@@ -153,6 +155,15 @@ router.use(`/designation`, designationRoutes);
  * @memberof module:routes
  */
 router.use("/download", downloadRoutes);
+
+/**
+ * Sets up versioned routing for the flushCache module.
+ * @name /flush-cache
+ * @function
+ * @inner
+ * @memberof module:routes
+ */
+router.use("/flush-cache", flushCacheRoutes);
 
 /**
  * Sets up versioned routing for the gallery module.
