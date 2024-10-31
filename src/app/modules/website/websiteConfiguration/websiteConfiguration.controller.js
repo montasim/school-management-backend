@@ -78,7 +78,7 @@ const updateWebsiteConfigurationController = async (req, res) => {
         const { name, slogan, adminId, db } = extractFromRequest(req, ['name', 'slogan'], []);
         const websiteDetails = { name, slogan, adminId };
 
-        await handleServiceResponse(res, WebsiteConfigurationService.updateWebsiteConfigurationService, db, websiteDetails, req?.file);
+        await handleServiceResponse(res, WebsiteConfigurationService.updateWebsiteConfigurationService, req, websiteDetails);
     } catch (error) {
         logger.error(error);
 

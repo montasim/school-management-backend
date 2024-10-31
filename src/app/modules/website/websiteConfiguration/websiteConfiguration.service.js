@@ -112,15 +112,19 @@ const getWebsiteConfigurationService = async (db) => {
     try {
         const website = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
 
-        delete website?._id;
-        delete website?._id;
-        delete website?.createdBy;
-        delete website?.modifiedBy;
-        delete website.fileId;
+        console.log(website)
 
-        return website
-            ? generateResponseData(website, true, STATUS_OK, "Website configuration found successfully")
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found');
+        if (website) {
+            delete website?._id;
+            delete website?._id;
+            delete website?.createdBy;
+            delete website?.modifiedBy;
+            delete website.fileId;
+
+            return generateResponseData(website, true, STATUS_OK, "Website configuration found successfully");
+        } else {
+            return generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found');
+        }
     } catch (error) {
         logger.error(error);
 
@@ -163,12 +167,12 @@ const updateWebsiteConfigurationService = async (req, websiteDetails) => {
 
         // Update the website logo if a new file is provided
         if (file) {
-            await fileManager.deleteFile(oldDetails.fileId);
+            await fileManager.deleteFile(oldWebsiteDetails.fileId);
 
             const uploadFileResponse = await fileManager.uploadFile(file);
             if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
                 return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
-            
+
             const fileLink = generateFileLink(req, uploadFileResponse);
             updatedWebsiteDetails.fileId = uploadFileResponse.fileId;
             updatedWebsiteDetails.shareableLink = fileLink;
@@ -219,7 +223,7 @@ const deleteWebsiteConfigurationService = async (db, adminId) => {
     try {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
-        
+
         const oldDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
 
         if (!oldDetails?.id)

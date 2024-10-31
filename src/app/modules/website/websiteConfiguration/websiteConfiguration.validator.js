@@ -35,7 +35,7 @@ import validateDataWithFileSchema from "../../../../helpers/validateDataWithFile
 const validateNewWebsiteConfigurationDetails = await validateDataWithFileSchema(
     WebsiteConfigurationValidationSchemas.newWebsiteConfigurationValidationSchema,
     JoiSchemaGenerators.fileValidationSchema(
-        "websiteLogo",
+        "image",
         [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
         [MIME_TYPE_PNG, MIME_TYPE_JPG]
     ),
@@ -55,7 +55,7 @@ const validateNewWebsiteConfigurationDetails = await validateDataWithFileSchema(
 const validateUpdateWebsiteConfigurationDetails = await validateDataWithFileSchema(
     WebsiteConfigurationValidationSchemas.updateWebsiteConfigurationValidationSchema,
     JoiSchemaGenerators.fileValidationSchema(
-        "websiteLogo",
+        "image",
         [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
         [MIME_TYPE_PNG, MIME_TYPE_JPG]
     ),

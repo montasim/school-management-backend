@@ -59,7 +59,7 @@ const router = express.Router();
  */
 router.post("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('websiteLogo'),
+    fileUploadMiddleware.single('image'),
     WebsiteConfigurationValidationService.validateNewWebsiteConfigurationDetails,
     CacheMiddleware.deleteCacheMiddleware,
     WebsiteConfigurationController.createWebsiteConfigurationController
@@ -121,7 +121,7 @@ router.get("/", [
  */
 router.put("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('websiteLogo'),
+    fileUploadMiddleware.single('image'),
     WebsiteConfigurationValidationService.validateUpdateWebsiteConfigurationDetails,
     CacheMiddleware.deleteCacheMiddleware,
     WebsiteConfigurationController.updateWebsiteConfigurationController
