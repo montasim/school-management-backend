@@ -146,11 +146,11 @@ const updateWebsiteBannerService = async (req, adminId) => {
         const updatedDetails = { ...oldDetails };
 
         await fileManager.deleteFile(oldDetails.fileId);
-       
+
         const uploadFileResponse = await fileManager.uploadFile(file);
         if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
-        
+
         const fileLink = generateFileLink(req, uploadFileResponse);
 
         updatedDetails.fileId = uploadFileResponse?.fileId;
@@ -202,9 +202,9 @@ const deleteAWebsiteBannerService = async (db, adminId) => {
         if (!oldDetails)
             return generateResponseData({}, false, STATUS_NOT_FOUND, "Website banner not found");
 
-        
+
         await fileManager.deleteFile(oldDetails.fileId);
-       
+
         // Deletes all documents in the collection without deleting the collection itself
         const result = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).deleteMany({});
 

@@ -55,7 +55,7 @@ const router = express.Router();
  */
 router.post("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('websiteBannerImage'),
+    fileUploadMiddleware.single('image'),
     WebsiteBannerValidationService.validateWebsiteBannerDetails,
     CacheMiddleware.deleteCacheMiddleware,
     WebsiteBannerController.createWebsiteBannerController
@@ -116,7 +116,7 @@ router.get("/", [
  */
 router.put("/", [
     authTokenMiddleware,
-    fileUploadMiddleware.single('websiteBannerImage'),
+    fileUploadMiddleware.single('image'),
     WebsiteBannerValidationService.validateWebsiteBannerDetails,
     CacheMiddleware.deleteCacheMiddleware,
     WebsiteBannerController.updateWebsiteBannerController

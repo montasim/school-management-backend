@@ -34,7 +34,7 @@ import {
  */
 const validateWebsiteBannerDetails = validateDataWithSchema(
     JoiSchemaGenerators.fileValidationSchema(
-    "websiteBannerImage",
+    "image",
     [FILE_EXTENSION_TYPE_PNG, FILE_EXTENSION_TYPE_JPG],
     [MIME_TYPE_PNG, MIME_TYPE_JPG],
 ), 'file');
