@@ -14,8 +14,16 @@
  */
 
 import NodeCache from 'node-cache';
+
 import logger from "../../shared/logger.js";
-import { STANDARD_CACHE_TTL, STATUS_INTERNAL_SERVER_ERROR } from "../../constants/constants.js";
+import {
+    FORBIDDEN_MESSAGE,
+    STANDARD_CACHE_TTL,
+    STATUS_FORBIDDEN,
+    STATUS_INTERNAL_SERVER_ERROR
+} from "../../constants/constants.js";
+import isValidRequest from "../../shared/isValidRequest.js";
+import generateResponseData from "../../shared/generateResponseData.js";
 
 const cache = new NodeCache();
 
@@ -122,7 +130,46 @@ const deleteCacheMiddleware = (req, res, next) => {
     }
 };
 
+/**
+ * Middleware to flush all existing cache entries.
+ *
+ * This middleware will delete all cache entries by calling
+ * the FlushCacheService. Useful for completely clearing the
+ * cache when required.
+ *
+ * @param {Request} req - The Express request object.
+ * @param {Response} res - The Express response object.
+ */
+const flushAllCacheMiddleware = async (req, res) => {
+    try {
+        const { adminId, db } = req; // Ensure db and adminId are available in the request context
+        if (!await isValidRequest(db, adminId))
+            return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+
+        logger.info('Cache before clearing:', cache.keys()); // Log current cache keys
+
+        const keys = cache.keys(); // Get all keys currently in the cache
+        keys.forEach((key) => {
+            cache.del(key); // Delete each key individually
+        });
+
+        logger.info('Cache after clearing:', cache.keys()); // Should log an empty array if all keys are deleted
+
+        return res.status(200).json({
+            success: true,
+            message: "All cache cleared",
+        });
+    } catch (error) {
+        logger.error(`Failed to flush all cache: ${error.message}`);
+        res.status(STATUS_INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Failed to flush all cache",
+        });
+    }
+};
+
 export const CacheMiddleware = {
     createCacheMiddleware,
-    deleteCacheMiddleware
+    deleteCacheMiddleware,
+    flushAllCacheMiddleware
 };
