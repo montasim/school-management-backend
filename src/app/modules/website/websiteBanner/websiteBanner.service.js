@@ -39,9 +39,8 @@ import generateFileLink from "../../../../helpers/generateFileLink.js";
  * Creates a new websiteBanner entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
- * @param {Object} adminId - Admin ID.
- * @param {Object} file - The file object for the websiteBanner's associated image or content.
+ * @param req
+ * @param adminId
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the websiteBanner.
  */
 const createWebsiteBannerService = async (req, adminId) => {
@@ -124,9 +123,6 @@ const getAWebsiteBannerService = async (db) => {
  * Updates a websiteBanner entry in the database.
  *
  * @async
- * @param {Object} db - Database connection object.
- * @param {Object} adminId - Admin ID.
- * @param {Object} file - The file object for the websiteBanner's associated image or content.
  * @returns {Promise<Object>} A promise that resolves to the response object after creating the websiteBanner.
  */
 const updateWebsiteBannerService = async (req, adminId) => {

@@ -53,8 +53,9 @@ import generateFileLink from "../../../helpers/generateFileLink.js";
  * @returns {Object} - The response after attempting routine creation.
  * @throws {Error} Throws an error if any.
  */
-const createRoutineService = async (db, newRoutineDetails, file) => {
+const createRoutineService = async (req, newRoutineDetails) => {
     try {
+        const { db, file, protocol } = req;
         const { title, adminId } = newRoutineDetails;
 
         if (!await isValidRequest(db, adminId))
