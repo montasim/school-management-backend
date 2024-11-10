@@ -12,6 +12,7 @@
  */
 
 import logger from "./logger.js";
+import prisma from "./prisma.js";
 
 /**
  * Finds and returns a document from a specified collection based on a given field and its value.
@@ -27,25 +28,25 @@ import logger from "./logger.js";
  *              The search is performed efficiently and excludes certain fields from the result for privacy.
  *              Errors are logged using the logger utility.
  */
-const findByField = async (db, collectionName , field, fieldValue ) => {
+const findByField = async (db, collectionName, field, fieldValue) => {
     try {
         if (!collectionName || !field || !fieldValue) {
-            logger.error(`Invalid parameters for findByField: collectionName=${collectionName}, field=${field}, fieldValue=${fieldValue}`);
-
+            logger.error(`Invalid parameters for findByField: modelName=${collectionName}, fieldName=${field}, fieldValue=${fieldValue}`);
             return null;
         }
 
-        // Construct the query based on the field and its value
-        let query = {};
-        query[field] = fieldValue;
+        // Construct the dynamic query based on the field and its value
+        let whereCondition = {};
+        whereCondition[field] = fieldValue;
 
         // Execute the query and return the result, excluding certain fields
-        return await db
-            .collection(collectionName)
-            .findOne(query, { projection: { _id: 0, createdBy: 0, modifiedBy: 0 } });
+        const result = await prisma[collectionName].findUnique({
+            where: whereCondition
+        });
+
+        return result;
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };

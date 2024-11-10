@@ -51,13 +51,13 @@ const loginService = async (db, loginDetails) => {
             return generateResponseData({}, false, STATUS_UNAUTHORIZED, "Unauthorized");
         }
 
-        const token = await createAuthenticationToken(userAgent, foundAdminDetails);
+        const token = await createAuthenticationToken(db, userAgent, foundAdminDetails);
         await prisma?.admin.update({
             where: { id: foundAdminDetails.id },
             data: {
                 lastLoginAt: new Date(),
                 currentlyLoggedInDevice: { increment: 1 },
-                tokenDetails: { push: token }
+                tokenDetails: { ...token }
             }
         });
 

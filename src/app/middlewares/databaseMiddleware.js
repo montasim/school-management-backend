@@ -57,9 +57,8 @@ const getClient = async () => {
  */
 const connect = async (req, res, next) => {
   try {
-    const client = await getClient();
-    req.dbClient = client;
-    req.db = client.db(DATABASE_NAME);
+    req.dbClient = 'client';
+    req.db = DATABASE_NAME;
     next();
   } catch (error) {
     console.error(`Error connecting to database: ${error}`);

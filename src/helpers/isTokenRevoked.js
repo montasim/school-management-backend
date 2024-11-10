@@ -36,36 +36,12 @@ import updateById from "../shared/updateById.js";
  */
 const isTokenRevoked = async (db, adminId, jti) => {
     try {
-        const foundAdminDetails = await findByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);
+        const foundAdminDetails = await findByField(db, 'admin', 'id', adminId);
 
+        let tokenRevoked = false;
         if (!foundAdminDetails?.tokenDetails) {
-            return true; // If there's no tokenDetails array, consider the token revoked.
+            tokenRevoked = true; // If there's no tokenDetails array, consider the token revoked.
         }
-
-        let tokenRevoked = true; // Assume the token is revoked by default.
-        let validTokenCount = 0; // Counter for valid tokens
-
-        for (let tokenDetails of foundAdminDetails.tokenDetails) {
-            const tokenTimestamp = new Date(tokenDetails?.tokenTimestamp);
-            const tokenId = tokenDetails?.tokenId;
-            const currentTime = new Date();
-            const hoursDifference = (currentTime - tokenTimestamp) / (1000 * 60 * 60); // Convert milliseconds to hours
-
-            if (hoursDifference <= 12) {
-                if (tokenId === jti) {
-                    tokenRevoked = false; // Valid and non-expired token found.
-                }
-                validTokenCount++; // Increment valid token count
-            } else {
-                // Remove expired tokens
-                await removeTokenDetails(db, foundAdminDetails, tokenId, validTokenCount);
-            }
-        }
-
-        // Update the currentlyLoggedInDevice count
-        foundAdminDetails.currentlyLoggedInDevice = validTokenCount;
-
-        await updateById(db, ADMIN_COLLECTION_NAME, adminId, foundAdminDetails);
 
         return tokenRevoked;
     } catch (error) {

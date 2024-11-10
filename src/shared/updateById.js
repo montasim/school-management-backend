@@ -13,6 +13,7 @@
  */
 
 import logger from "./logger.js";
+import prisma from "./prisma.js";
 
 /**
  * Updates a specific record in a database collection based on an ID.
@@ -30,19 +31,22 @@ import logger from "./logger.js";
 const updateById = async (db, collectionName, id, details) => {
     try {
         if (!collectionName) {
-            logger.error("COLLECTION_NAME is not defined");
-
+            logger.error("Model name is not defined");
             return false;
         }
 
-        return await db
-            .collection(collectionName)
-            .updateOne({ id: id }, { $set: details });
+        // Execute the update operation
+        const updatedRecord = await prisma[collectionName].update({
+            where: { id: id },
+            data: details,
+        });
+
+        return updatedRecord;
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
+
 
 export default updateById;

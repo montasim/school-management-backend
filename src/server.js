@@ -116,7 +116,7 @@ process.on('uncaughtException', async (error) => {
     logger.error(error);
 
     try {
-        app.use(DatabaseMiddleware.disconnect);
+        // app.use(DatabaseMiddleware.disconnect);
     } catch (dbError) {
         console.error('Error closing the database connection:', dbError);
 
@@ -149,7 +149,7 @@ process.on('SIGTERM', () => {
         console.log('SIGTERM: HTTP server closed');
 
         // Close other resources like database connections here
-        app.use(DatabaseMiddleware.disconnect);
+        // app.use(DatabaseMiddleware.disconnect);
     });
 });
 

@@ -51,7 +51,7 @@ const createAuthenticationToken = async (db, userAgent, adminDetails = {}) => {
         }
 
         // Append new token ID
-        adminDetails?.tokenDetails?.push(newTokenDetails);
+        // adminDetails.tokenDetails = adminDetails?.tokenDetails?.push(newTokenDetails);
 
         /**
          * Limit the number of stored token IDs
@@ -64,7 +64,7 @@ const createAuthenticationToken = async (db, userAgent, adminDetails = {}) => {
             adminDetails?.tokenDetails?.shift(); // Remove the oldest token ID
         }
 
-        await updateById(db, ADMIN_COLLECTION_NAME, id, adminDetails);
+        await updateById(db, 'admin', id, adminDetails);
 
         // Sign and return the JWT token with user details and secret
         return jwt.sign(
