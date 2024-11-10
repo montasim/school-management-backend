@@ -309,3 +309,15 @@ model WebsiteContact {
 
   @@map("website_contact") // Optional: Maps to "website_contact" table in the database
 }
+
+model WebsiteImportantInformationLink {
+  id                          String   @id @default(uuid()) // Unique identifier
+  importantInformationLinkTitle String   // Title of the important information link
+  importantInformationLink      String   // URL or link of the important information
+  createdBy                    String   // ID of the user who created this entry
+  createdAt                    DateTime @default(now()) // Timestamp of creation
+  modifiedBy                   String?  // ID of the user who last modified this entry
+  modifiedAt                   DateTime? // Timestamp of last modification
+
+  @@map("website_important_information_link") // Maps to "website_important_information_link" table in the database
+}
