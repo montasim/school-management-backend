@@ -168,3 +168,17 @@ model VideoGallery {
 
   @@map("video_gallery") // Optional: maps to "video_gallery" table in the database
 }
+
+model HomePageCarousel {
+  id             String    @id @default(uuid()) // Unique identifier
+  title          String
+  fileId         String?                         // File ID for storage (nullable)
+  shareableLink  String?                         // Link to share the file (nullable)
+  downloadLink   String?                         // Link to download the file (nullable)
+  createdBy      String                          // ID of the user who created this entry
+  createdAt      DateTime  @default(now())       // Timestamp of creation
+  modifiedBy     String?                         // ID of the user who last modified this entry (nullable)
+  modifiedAt     DateTime?                       // Timestamp of last modification (nullable)
+
+  @@map("home_page_carousel") // Optional: maps to "home_page_carousel" table in the database
+}
