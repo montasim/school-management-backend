@@ -59,7 +59,7 @@ model AdministrationOnCategories {
 }
 
 model AdmissionForm {
-  id             String   @id @default(uuid()) // Unique identifier
+  id            String                  @id // unique identifier without default
   title          String
   fileName       String   @unique               // File name, should be unique
   fileId         String?                        // ID for the file in storage (nullable)
@@ -72,4 +72,21 @@ model AdmissionForm {
 
   @@map("admission_form") // Optional: Maps to "admission_form" table in the database
 }
+
+model AdmissionInformation {
+  id                   String                  @id // unique identifier without default
+  title                String
+  description          String?    @db.Text // Allows longer text for description
+  formPrice            String?
+  admissionFee         String?
+  lastFormSubmissionData DateTime?
+  contact              String?
+  createdBy            String    // ID of the user who created this entry
+  createdAt            DateTime  @default(now()) // Timestamp of creation
+  modifiedBy           String?   // ID of the user who last modified this entry
+  modifiedAt           DateTime? // Timestamp of last modification
+
+  @@map("admission_information") // Optional: Maps to "admission_information" table in the database
+}
+
 
