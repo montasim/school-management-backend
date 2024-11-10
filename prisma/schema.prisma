@@ -213,3 +213,16 @@ model Notice {
 
   @@map("notice") // Optional: Maps to "notice" table in the database
 }
+
+model OthersInformation {
+  id           String    @id @default(uuid()) // Unique identifier
+  title        String
+  category     String
+  description  String?    @db.Text            // Allows longer text for description
+  createdBy    String    // ID of the user who created this entry
+  createdAt    DateTime  @default(now()) // Timestamp of creation
+  modifiedBy   String?   // ID of the user who last modified this entry
+  modifiedAt   DateTime? // Timestamp of last modification
+
+  @@map("others_information") // Optional: Maps to "others_information" table in the database
+}
