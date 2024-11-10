@@ -226,3 +226,14 @@ model OthersInformation {
 
   @@map("others_information") // Optional: Maps to "others_information" table in the database
 }
+
+model OthersInformationCategory {
+  id          String    @id @default(uuid()) // Unique identifier
+  name        String    @unique
+  createdBy   String    // ID of the user who created this entry
+  createdAt   DateTime  @default(now()) // Timestamp of creation
+  modifiedBy  String?   // ID of the user who last modified this entry
+  modifiedAt  DateTime? // Timestamp of last modification
+
+  @@map("others_information_category") // Optional: Maps to "others_information_category" table in the database
+}
