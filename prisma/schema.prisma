@@ -291,3 +291,21 @@ model WebsiteConfiguration {
 
   @@map("website_configuration") // Optional: Maps to "website_configuration" table in the database
 }
+
+model WebsiteContact {
+  id               String   @id @default(uuid()) // Unique identifier
+  address          String?  // Address for contact information
+  googleMapLocation String? // For backward compatibility if necessary
+  latitude         String?  // Latitude as a separate field
+  longitude        String?  // Longitude as a separate field
+  mobile           String?  // Mobile number
+  phone            String?  // Phone number
+  email            String?  // Email address
+  website          String?  // Website URL
+  createdBy        String   // ID of the user who created this entry
+  createdAt        DateTime @default(now()) // Timestamp of creation
+  modifiedBy       String?  // ID of the user who last modified this entry
+  modifiedAt       DateTime? // Timestamp of last modification
+
+  @@map("website_contact") // Optional: Maps to "website_contact" table in the database
+}
