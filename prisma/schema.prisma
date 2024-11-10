@@ -24,38 +24,23 @@ model Category {
   modifiedBy String? // ID or username of the admin who last modified the level
   modifiedAt DateTime? // Timestamp of the last modification
 
-  // Relation to Administration through the join table
-  administration AdministrationOnCategories[]
-
   @@map("category") // Optional: maps to the "category" table in the database
 }
 
 model Administration {
-  id            String    @id // unique identifier without default
+  id            String    @id // Unique identifier without default
   name          String
   designation   String
-  fileId        String? // File ID for uploaded file (nullable)
-  downloadLink  String? // Link to download the file (nullable)
-  shareableLink String? // Shareable link for the file (nullable)
-  createdBy     String // ID of the user who created this entry
+  fileId        String?   // File ID for uploaded file (nullable)
+  downloadLink  String?   // Link to download the file (nullable)
+  shareableLink String?   // Shareable link for the file (nullable)
+  category    String?   // Delimited string of category names
+  createdBy     String    // ID of the user who created this entry
   createdAt     DateTime  @default(now())
-  modifiedBy    String? // ID of the user who last modified this entry (nullable)
+  modifiedBy    String?   // ID of the user who last modified this entry (nullable)
   modifiedAt    DateTime? // Timestamp of the last modification (nullable)
 
-  // Relation to Category through the join table
-  category AdministrationOnCategories[]
-
-  @@map("administration") // Optional: maps to the "administration" table in the database
-}
-
-// Join table for many-to-many relationship between Administration and Category
-model AdministrationOnCategories {
-  administrationId String
-  categoryId       String
-  administration   Administration @relation(fields: [administrationId], references: [id])
-  category         Category       @relation(fields: [categoryId], references: [id])
-
-  @@id([administrationId, categoryId]) // Composite primary key
+  @@map("administration") // Maps to the "administration" table in the database
 }
 
 model AdmissionForm {

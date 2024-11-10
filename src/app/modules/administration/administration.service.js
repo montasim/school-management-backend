@@ -10,6 +10,7 @@ import {
 import logger from "../../../shared/logger.js";
 import prisma from "../../../shared/prisma.js";
 import fileManager from "../../../helpers/fileManager.js";
+import {ADMINISTRATION_CONSTANTS} from "./administration.constants.js";
 
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
@@ -18,35 +19,34 @@ import generateFileLink from "../../../helpers/generateFileLink.js";
 
 const createAdministrationService = async (req, newAdministrationDetails) => {
     try {
-        const { db, file, protocol } = req;
+        const { file, protocol } = req;  // Assuming these are used for file uploads and other protocols
         const { name, category, designation, adminId } = newAdministrationDetails;
 
+        // Validate the admin ID
         if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
-        // Process and prepare categories from the provided string or array
-        const processedCategories = typeof category === 'string'
+        // Ensure categoryNames is always an array
+        const categoryNames = category.includes(',')
             ? category.split(',').map(cat => cat.trim())
-            : Array.isArray(category) ? category : [category];
+            : [category.trim()]; // Wrap single category in an array
 
-        // Map each category name to its corresponding ID for connecting
-        const categoryConnections = await Promise.all(
-            processedCategories.map(async (catName) => {
-                const categoryRecord = await prisma.category.findUnique({
-                    where: { name: catName },
-                });
+        // Validate each category by checking its existence in the database
+        const categoriesExist = await Promise.all(categoryNames.map(async categoryName => {
+            return await prisma.category.findUnique({
+                where: { name: categoryName },
+                select: { name: true }  // Only selecting the name to validate existence
+            });
+        }));
 
-                if (!categoryRecord) {
-                    throw new Error(`Category '${catName}' does not exist`);
-                }
+        // Check if any of the categories were not found
+        const missingCategories = categoriesExist.some(cat => cat === null);
+        if (missingCategories) {
+            return generateResponseData({}, false, STATUS_BAD_REQUEST, "One or more categories do not exist");
+        }
 
-                // Directly use categoryRecord.id without adding a prefix
-                return { id: categoryRecord.id };
-            })
-        );
-
-        // Upload the file
+        // Upload the file if included
         const uploadFileResponse = await fileManager.uploadFile(file);
         if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload file');
@@ -54,20 +54,18 @@ const createAdministrationService = async (req, newAdministrationDetails) => {
 
         const fileLink = generateFileLink(req, uploadFileResponse);
 
-        // Create new administration entry with associated categories
+        // Create new administration entry with validated categories
         const newAdministration = await prisma.administration.create({
             data: {
-                id: generateUniqueID('administrator'),
+                id: generateUniqueID(ADMINISTRATION_CONSTANTS.ADMINISTRATION_ID_PREFIX),
                 name,
                 designation,
+                category,
                 fileId: uploadFileResponse.fileId,
                 downloadLink: fileLink,
                 shareableLink: fileLink,
                 createdBy: adminId,
                 createdAt: new Date(),
-                category: {
-                    connect: categoryConnections, // Connects each existing category to the new administration entry
-                },
             }
         });
 
@@ -78,11 +76,15 @@ const createAdministrationService = async (req, newAdministrationDetails) => {
     }
 };
 
-const getAdministrationListService = async (categoryFilter) => {
+const getAdministrationListService = async (db, categoryFilter) => {
     try {
+        let whereCondition = {};
+        if (categoryFilter?.length > 0) {
+            whereCondition.category = { in: categoryFilter };
+        }
+
         const administrations = await prisma.administration.findMany({
-            where: categoryFilter?.length ? { category: { hasSome: categoryFilter } } : {},
-            orderBy: { createdAt: 'desc' }
+            where: whereCondition
         });
 
         return administrations.length
@@ -94,7 +96,7 @@ const getAdministrationListService = async (categoryFilter) => {
     }
 };
 
-const getAAdministrationService = async (administrationId) => {
+const getAAdministrationService = async (db, administrationId) => {
     try {
         const administration = await prisma.administration.findUnique({
             where: { id: administrationId }
@@ -113,7 +115,7 @@ const getAAdministrationService = async (administrationId) => {
 
 const updateAAdministrationService = async (req, administrationId, newAdministrationDetails) => {
     try {
-        const { db, file } = req;
+        const { file, protocol } = req;
         const { name, category, designation, adminId } = newAdministrationDetails;
 
         if (!await isValidRequest(adminId)) {
@@ -128,42 +130,27 @@ const updateAAdministrationService = async (req, administrationId, newAdministra
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${administrationId} not found`);
         }
 
-        let updatedData = { modifiedBy: adminId, modifiedAt: new Date() };
+        // Validate and process categories
+        let processedCategories = category;
+        if (category) {
+            processedCategories = category.includes(',')
+                ? category.split(',').map(cat => cat.trim()).join(', ') // Normalize multiple categories
+                : category.trim();
+        }
+
+        let updatedData = { name, designation, category: processedCategories, modifiedBy: adminId, modifiedAt: new Date() };
 
         if (file) {
             await fileManager.deleteFile(oldDetails.fileId);
-
             const uploadFileResponse = await fileManager.uploadFile(file);
             if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
                 return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
             }
+
             const fileLink = generateFileLink(req, uploadFileResponse);
-
-            updatedData = {
-                ...updatedData,
-                fileId: uploadFileResponse.fileId,
-                downloadLink: fileLink,
-                shareableLink: fileLink
-            };
-        }
-
-        if (name) updatedData.name = name;
-        if (designation) updatedData.designation = designation;
-
-        if (category) {
-            const processedCategories = Array.isArray(category)
-                ? category
-                : category.split(',').map(cat => cat.trim());
-
-            for (const cat of processedCategories) {
-                const categoryExists = await prisma.category.findUnique({
-                    where: { name: cat }
-                });
-                if (!categoryExists) {
-                    return generateResponseData({}, false, STATUS_BAD_REQUEST, `Category '${cat}' does not exist`);
-                }
-            }
-            updatedData.category = processedCategories;
+            updatedData.fileId = uploadFileResponse.fileId;
+            updatedData.downloadLink = fileLink;
+            updatedData.shareableLink = fileLink;
         }
 
         const updatedAdministration = await prisma.administration.update({
@@ -178,7 +165,7 @@ const updateAAdministrationService = async (req, administrationId, newAdministra
     }
 };
 
-const deleteAAdministrationService = async (adminId, administrationId) => {
+const deleteAAdministrationService = async (db, adminId, administrationId) => {
     try {
         if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
