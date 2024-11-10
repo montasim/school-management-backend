@@ -100,4 +100,18 @@ model Announcement {
   @@map("announcement") // Optional: maps to "announcement" table in the database
 }
 
+model Blog {
+  id             String    @id @default(uuid()) // Unique identifier
+  title          String
+  category       String
+  fileId         String?                        // File ID for uploaded file (nullable)
+  shareableLink  String?                        // Link to share the file (nullable)
+  downloadLink   String?                        // Link to download the file (nullable)
+  description    String?    @db.Text            // Allows longer text for description
+  createdBy      String                         // ID of the user who created this entry
+  createdAt      DateTime   @default(now())     // Timestamp of creation
+  modifiedBy     String?                        // ID of the user who last modified this entry (nullable)
+  modifiedAt     DateTime?                      // Timestamp of last modification (nullable)
 
+  @@map("blog") // Optional: maps to "blog" table in the database
+}

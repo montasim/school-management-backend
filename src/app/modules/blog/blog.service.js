@@ -1,21 +1,3 @@
-/**
- * @fileoverview Blog Service for Handling Blog Data Operations.
- *
- * This module provides services for managing blog-related operations in the application.
- * It includes functions for creating, retrieving, updating, and deleting blog posts,
- * along with interactions with the Google Drive API for file management.
- * These services abstract the database and file system interactions, providing a
- * clean interface for the controller layer to perform CRUD operations on blog data.
- *
- * @requires config - Configuration file for application settings.
- * @requires constants - Application constants for status messages and codes.
- * @requires isValidRequest - Utility function to validate requests.
- * @requires GoogleDriveFileOperations - Helper module for Google Drive file operations.
- * @requires logger - Shared logging utility for error handling.
- * @module BlogService - Exported services for blog operations.
- */
-
-import { BLOG_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -25,27 +7,15 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { ID_CONSTANTS } from "./blog.constants.js";
-import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
-import deleteByField from "../../../shared/deleteByField.js";
-import generateResponseData from "../../../shared/generateResponseData.js";
-import findByField from "../../../shared/findByField.js";
-import createByDetails from "../../../shared/createByDetails.js";
-import updateById from "../../../shared/updateById.js";
-import getAllData from "../../../shared/getAllData.js";
-import generateUniqueID from "../../../helpers/generateUniqueID.js";
+import prisma from "../../../shared/prisma?.js";
 import fileManager from "../../../helpers/fileManager.js";
+
+import generateResponseData from "../../../shared/generateResponseData.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 import generateFileLink from "../../../helpers/generateFileLink.js";
 
-/**
- * Creates a new blog entry in the database.
- *
- * @async
- * @param {Object} db - Database connection object.
- * @param {Object} newBlogDetails - Object containing details of the new blog.
- * @param {Object} file - The file object for the blog's associated image or content.
- * @returns {Promise<Object>} A promise that resolves to the response object after creating the blog.
- */
 const createBlogService = async (req, newBlogDetails) => {
     try {
         const { db, file, protocol } = req;
@@ -57,100 +27,74 @@ const createBlogService = async (req, newBlogDetails) => {
         const uploadFileResponse = await fileManager.uploadFile(file);
 
         if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload to Google Drive. Please try again');
         }
-        
+
         const fileLink = generateFileLink(req, uploadFileResponse);
         const blogDetails = {
             id: generateUniqueID(ID_CONSTANTS?.HOME_PAGE_POST_PREFIX),
-            title: title,
-            category: category,
-            fileId: uploadFileResponse?.fileId,
+            title,
+            category,
+            fileId: uploadFileResponse.fileId,
             shareableLink: fileLink,
             downloadLink: fileLink,
-            description: description,
+            description,
             createdBy: adminId,
             createdAt: new Date(),
         };
 
-        const result = await createByDetails(db, BLOG_COLLECTION_NAME, blogDetails);
-        const latestData = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogDetails?.id);
+        const newBlog = await prisma?.blog.create({
+            data: blogDetails
+        });
 
-        delete latestData?.createdBy;
-        delete latestData?.modifiedBy;
-        delete latestData.fileId;
-
-        return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${title} created successfully`)
-            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
-
+        return generateResponseData({
+            id: newBlog.id,
+            title: newBlog.title,
+            category: newBlog.category,
+            shareableLink: newBlog.shareableLink,
+            downloadLink: newBlog.downloadLink,
+            description: newBlog.description
+        }, true, STATUS_OK, `${title} created successfully`);
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
     }
 };
 
-/**
- * Retrieves a list of all blog from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of blog or an error message.
- * @throws {Error} Throws an error if any.
- */
 const getBlogListService = async (db) => {
     try {
-        const blog = await getAllData(db, BLOG_COLLECTION_NAME);
+        const blogs = await prisma?.blog.findMany();
 
-        return blog?.length
-            ? generateResponseData(blog, true, STATUS_OK, `${blog?.length} blog found`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No blog found');
+        return blogs.length
+            ? generateResponseData(blogs, true, STATUS_OK, `${blogs.length} blogs found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No blogs found');
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Retrieves a specific blog by ID from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} blogId - The ID of the blog to retrieve.
- * @returns {Object} - The blog details or an error message.
- * @throws {Error} Throws an error if any.
- */
 const getABlogService = async (db, blogId) => {
     try {
-        const blog = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
+        const blog = await prisma?.blog.findUnique({
+            where: { id: blogId }
+        });
 
-        delete blog?.createdBy;
-        delete blog?.modifiedBy;
-        delete blog.fileId;
+        if (blog) {
+            delete blog.createdBy;
+            delete blog.modifiedBy;
+            delete blog.fileId;
+        }
 
         return blog
             ? generateResponseData(blog, true, STATUS_OK, `${blogId} found successfully`)
             : generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Retrieves a specific blog by ID from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} blogId - The ID of the blog to retrieve.
- * @param newBlogDetails
- * @param {Object} file - The file object for the blog's associated image or content.
- * @returns {Object} - The blog details or an error message.
- * @throws {Error} Throws an error if any.
- */
 const updateABlogService = async (req, blogId, newBlogDetails) => {
     try {
         const { db, file, protocol } = req;
@@ -159,100 +103,73 @@ const updateABlogService = async (req, blogId, newBlogDetails) => {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        // Retrieve the current details of the blog
-        const oldDetails = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
+        const existingBlog = await prisma?.blog.findUnique({
+            where: { id: blogId }
+        });
 
-        if (!oldDetails)
+        if (!existingBlog)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);
 
-        // Initialize the object to store updated details
-        const updatedBlogDetails = { ...oldDetails };
+        const updatedBlogDetails = {
+            ...existingBlog,
+            ...(title && { title }),
+            ...(category && { category }),
+            ...(description && { description }),
+            modifiedBy: adminId,
+            modifiedAt: new Date()
+        };
 
-        // Update file if provided
         if (file) {
-            await fileManager.deleteFile(oldDetails.fileId);
-
+            await fileManager.deleteFile(existingBlog.fileId);
             const uploadFileResponse = await fileManager.uploadFile(file);
+
             if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
                 return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
-            
+
             const fileLink = generateFileLink(req, uploadFileResponse);
-            
+
             updatedBlogDetails.fileId = uploadFileResponse.fileId;
             updatedBlogDetails.shareableLink = fileLink;
             updatedBlogDetails.downloadLink = fileLink;
         }
 
-        // Update title, category, and description if provided
-        if (title) updatedBlogDetails.title = title;
-        if (category) updatedBlogDetails.category = category;
-        if (description) updatedBlogDetails.description = description;
+        const updatedBlog = await prisma?.blog.update({
+            where: { id: blogId },
+            data: updatedBlogDetails
+        });
 
-        // Update modifiedBy and modifiedAt
-        updatedBlogDetails.modifiedBy = adminId;
-        updatedBlogDetails.modifiedAt = new Date();
-
-        // Update the blog
-        const result = await updateById(db, BLOG_COLLECTION_NAME, blogId, updatedBlogDetails);
-
-        // Retrieve the updated data
-        const latestData = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
-
-        // Remove unnecessary data before sending response
-        delete latestData._id;
-        delete latestData.createdBy;
-        delete latestData.modifiedBy;
-        delete latestData.fileId;
-
-        return result?.modifiedCount
-            ? generateResponseData(latestData, true, STATUS_OK, `${blogId} updated successfully`)
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${blogId} not updated`);
-
+        return generateResponseData(updatedBlog, true, STATUS_OK, `${blogId} updated successfully`);
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Deletes a specific blog by ID from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} adminId - The user ID making the request.
- * @param {string} blogId - The ID of the blog to delete.
- * @returns {Object} - A confirmation message or an error message.
- * @throws {Error} Throws an error if any.
- */
 const deleteABlogService = async (db, adminId, blogId) => {
     try {
         if (!await isValidRequest(db, adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
-        const oldDetails = await findByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
+        const existingBlog = await prisma?.blog.findUnique({
+            where: { id: blogId }
+        });
 
-        if (!oldDetails)
+        if (!existingBlog)
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${blogId} not found`);
 
-        await fileManager.deleteFile(oldDetails.fileId);
+        await fileManager.deleteFile(existingBlog.fileId);
 
-        const result = await deleteByField(db, BLOG_COLLECTION_NAME, 'id', blogId);
+        await prisma?.blog.delete({
+            where: { id: blogId }
+        });
 
-        return result
-            ? generateResponseData({}, true, STATUS_OK, `${blogId} deleted successfully`)
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${blogId} could not be deleted`);
+        return generateResponseData({}, true, STATUS_OK, `${blogId} deleted successfully`);
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * @namespace BlogService
- * @description Group of services related to blog operations.
- */
 export const BlogService = {
     createBlogService,
     getBlogListService,
