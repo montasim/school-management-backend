@@ -321,3 +321,15 @@ model WebsiteImportantInformationLink {
 
   @@map("website_important_information_link") // Maps to "website_important_information_link" table in the database
 }
+
+model WebsiteOfficialLink {
+  id                 String   @id @default(uuid()) // Unique identifier
+  officialLinkTitle  String   // Title of the official link
+  officialLink       String   // URL of the official link
+  createdBy          String   // ID of the user who created this entry
+  createdAt          DateTime @default(now()) // Timestamp of creation
+  modifiedBy         String?  // ID of the user who last modified this entry
+  modifiedAt         DateTime? // Timestamp of last modification
+
+  @@map("website_official_link") // Maps to "website_official_link" table in the database
+}
