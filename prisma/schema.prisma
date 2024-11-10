@@ -264,3 +264,15 @@ model Routine {
   @@map("routine") // Optional: Maps to "routine" table in the database
 }
 
+model WebsiteBanner {
+  id            String   @id @default(uuid()) // Unique identifier
+  fileId        String?  // File ID for the uploaded file (nullable)
+  shareableLink String?  // Shareable link for the file (nullable)
+  downloadLink  String?  // Download link for the file
+  createdBy     String   // ID of the user who created this entry
+  createdAt     DateTime @default(now()) // Timestamp of creation
+  modifiedBy    String?  // ID of the user who last modified this entry
+  modifiedAt    DateTime? // Timestamp of last modification
+
+  @@map("website_banner") // Optional: Maps to "website_banner" table in the database
+}

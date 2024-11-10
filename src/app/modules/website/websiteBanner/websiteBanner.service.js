@@ -1,21 +1,3 @@
-/**
- * @fileoverview WebsiteBanner Service for Handling WebsiteBanner Data Operations.
- *
- * This module provides services for managing websiteBanner-related operations in the application.
- * It includes functions for creating, retrieving, updating, and deleting websiteBanner posts,
- * along with interactions with the Google Drive API for file management.
- * These services abstract the database and file system interactions, providing a
- * clean interface for the controller layer to perform CRUD operations on websiteBanner data.
- *
- * @requires config - Configuration file for application settings.
- * @requires constants - Application constants for status messages and codes.
- * @requires isValidRequest - Utility function to validate requests.
- * @requires GoogleDriveFileOperations - Helper module for Google Drive file operations.
- * @requires logger - Shared logging utility for error handling.
- * @module WebsiteBannerService - Exported services for websiteBanner operations.
- */
-
-import { WEBSITE_BANNER_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -25,38 +7,31 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
 import { WEBSITE_BANNER_CONSTANTS } from "./websiteBanner.constants.js";
-import isValidRequest from "../../../../shared/isValidRequest.js";
 import logger from "../../../../shared/logger.js";
-import generateResponseData from "../../../../shared/generateResponseData.js";
-import findByField from "../../../../shared/findByField.js";
-import createByDetails from "../../../../shared/createByDetails.js";
-import generateUniqueID from "../../../../helpers/generateUniqueID.js";
-import getAllData from "../../../../shared/getAllData.js";
+import prisma from "../../../../shared/prisma?.js";
 import fileManager from "../../../../helpers/fileManager.js";
+
+import isValidRequest from "../../../../shared/isValidRequest.js";
+import generateResponseData from "../../../../shared/generateResponseData.js";
+import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 import generateFileLink from "../../../../helpers/generateFileLink.js";
 
-/**
- * Creates a new websiteBanner entry in the database.
- *
- * @async
- * @param req
- * @param adminId
- * @returns {Promise<Object>} A promise that resolves to the response object after creating the websiteBanner.
- */
 const createWebsiteBannerService = async (req, adminId) => {
     try {
         const { db, file, protocol } = req;
-        const existingDetails = await getAllData(db, WEBSITE_BANNER_COLLECTION_NAME);
 
-        if (existingDetails?.length > 0)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website banner already exists. Please delete website banner, then add a new banner");
+        const existingDetails = await prisma?.websiteBanner.findMany();
+        if (existingDetails?.length > 0) {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website banner already exists. Please delete the current banner before adding a new one.");
+        }
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
         const uploadFileResponse = await fileManager.uploadFile(file);
         if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload to Google Drive. Please try again.');
         }
 
         const fileLink = generateFileLink(req, uploadFileResponse);
@@ -69,155 +44,97 @@ const createWebsiteBannerService = async (req, adminId) => {
             createdAt: new Date(),
         };
 
-        const result = await createByDetails(db, WEBSITE_BANNER_COLLECTION_NAME, websiteBannerDetails);
-        const latestData = await findByField(db, WEBSITE_BANNER_COLLECTION_NAME, 'id', websiteBannerDetails?.id);
+        const newBanner = await prisma?.websiteBanner.create({
+            data: websiteBannerDetails
+        });
 
-        delete latestData?._id;
-        delete latestData?.id;
-        delete latestData?.createdBy;
-        delete latestData?.modifiedBy;
-        delete latestData?.fileId;
-
-        return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, "Website banner created successfully")
-            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
-
+        return generateResponseData(newBanner, true, STATUS_OK, "Website banner created successfully");
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again.');
     }
 };
 
-/**
- * Retrieves a specific websiteBanner by ID from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The websiteBanner details or an error message.
- * @throws {Error} Throws an error if any.
- */
 const getAWebsiteBannerService = async (db) => {
     try {
-        const websiteBanner = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOne({});
+        const websiteBanner = await prisma?.websiteBanner.findFirst();
 
         if (websiteBanner) {
-            delete websiteBanner?._id;
-            delete websiteBanner?.id;
-            delete websiteBanner?.createdBy;
-            delete websiteBanner?.modifiedBy;
-            delete websiteBanner.fileId;
-
-            return generateResponseData(websiteBanner, true, STATUS_OK, "Website banner found successfully")
+            return generateResponseData(websiteBanner, true, STATUS_OK, "Website banner found successfully");
         } else {
             return generateResponseData({}, false, STATUS_NOT_FOUND, "Website banner not found");
         }
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Updates a websiteBanner entry in the database.
- *
- * @async
- * @returns {Promise<Object>} A promise that resolves to the response object after creating the websiteBanner.
- */
 const updateWebsiteBannerService = async (req, adminId) => {
     try {
         const { db, file, protocol } = req;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
-
-        const oldDetails = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOne({});
-
-        if (!oldDetails?.id) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website banner not found. Please add a new banner");
         }
 
-        // Initialize the object to store updated details
-        const updatedDetails = { ...oldDetails };
+        const oldDetails = await prisma?.websiteBanner.findFirst();
+        if (!oldDetails) {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website banner not found. Please add a new banner.");
+        }
 
         await fileManager.deleteFile(oldDetails.fileId);
 
         const uploadFileResponse = await fileManager.uploadFile(file);
-        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
-
-        const fileLink = generateFileLink(req, uploadFileResponse);
-
-        updatedDetails.fileId = uploadFileResponse?.fileId;
-        updatedDetails.shareableLink = fileLink;
-        updatedDetails.downloadLink = fileLink;
-        updatedDetails.modifiedBy = adminId;
-        updatedDetails.modifiedAt = new Date();
-
-        const result = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOneAndUpdate(
-            {}, // Assuming you are updating a single document without a filter.
-            { $set: updatedDetails },
-            { returnDocument: 'after' } // Returns the updated document
-        );
-
-        if (!result) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Website banner not updated`);
         }
 
-        delete result._id;
-        delete result.id;
-        delete result.createdBy;
-        delete result.modifiedBy;
-        delete result.googleDriveFileId;
+        const fileLink = generateFileLink(req, uploadFileResponse);
+        const updatedDetails = {
+            fileId: uploadFileResponse?.fileId,
+            shareableLink: fileLink,
+            downloadLink: fileLink,
+            modifiedBy: adminId,
+            modifiedAt: new Date(),
+        };
+
+        const result = await prisma?.websiteBanner.update({
+            where: { id: oldDetails.id },
+            data: updatedDetails,
+        });
 
         return generateResponseData(result, true, STATUS_OK, "Website banner updated successfully");
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Deletes a specific websiteBanner by ID from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} adminId - The user ID making the request.
- * @returns {Object} - A confirmation message or an error message.
- * @throws {Error} Throws an error if any.
- */
 const deleteAWebsiteBannerService = async (db, adminId) => {
     try {
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
-        const oldDetails = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).findOne({});
-
-        if (!oldDetails)
+        const oldDetails = await prisma?.websiteBanner.findFirst();
+        if (!oldDetails) {
             return generateResponseData({}, false, STATUS_NOT_FOUND, "Website banner not found");
-
+        }
 
         await fileManager.deleteFile(oldDetails.fileId);
 
-        // Deletes all documents in the collection without deleting the collection itself
-        const result = await db.collection(WEBSITE_BANNER_COLLECTION_NAME).deleteMany({});
+        await prisma?.websiteBanner.delete({
+            where: { id: oldDetails.id },
+        });
 
-        return result
-            ? generateResponseData({}, true, STATUS_OK, "Website banner deleted successfully")
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website banner could not be deleted");
+        return generateResponseData({}, true, STATUS_OK, "Website banner deleted successfully");
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * @namespace WebsiteBannerService
- * @description Group of services related to websiteBanner operations.
- */
 export const WebsiteBannerService = {
     createWebsiteBannerService,
     getAWebsiteBannerService,

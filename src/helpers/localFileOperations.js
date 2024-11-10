@@ -32,9 +32,19 @@ const uploadFile = async (file) => {
 };
 
 const deleteFile = async (fileId) => {
-    console.log(fileId)
     const filePath = path.join(process.cwd(), 'files', fileId);
-    await fs.promises.unlink(filePath);
+
+    try {
+        // Check if the file exists before trying to delete it
+        await fs.promises.access(filePath, fs.constants.F_OK);
+        await fs.promises.unlink(filePath);
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+        } else {
+            // Re-throw the error if it's not a 'file not found' error
+            throw error;
+        }
+    }
 };
 
 const localFileOperations = {
