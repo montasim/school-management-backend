@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "bcrypt": "^5.1.1",
     "connect-timeout": "^1.9.0",
     "cookie-parser": "^1.4.6",
@@ -45,5 +46,8 @@
     "user-agent-parser": "^0.6.0",
     "uuid": "^9.0.1",
     "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
   }
 }

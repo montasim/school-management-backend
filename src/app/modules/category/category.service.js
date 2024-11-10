@@ -41,6 +41,7 @@ import getAllData from "../../../shared/getAllData.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
 import findManyByField from "../../../shared/findManyByField.js";
 import updateFieldForMultipleDocuments from "../../../shared/updateFieldForMultipleDocuments.js";
+import prisma from "../../../shared/prisma.js";
 
 /**
  * Creates a new category entry in the database.
@@ -51,37 +52,42 @@ import updateFieldForMultipleDocuments from "../../../shared/updateFieldForMulti
  * @returns {Object} - The response after attempting category creation.
  * @throws {Error} Throws an error if any.
  */
-const createCategoryService = async (db, newCategoryDetails) => {
+const createCategoryService = async (newCategoryDetails) => {
     try {
         const { name, adminId } = newCategoryDetails;
 
-        if (await findByField(db, CATEGORY_COLLECTION_NAME, 'name', name))
+        // Check if category with the same name already exists
+        const existingCategory = await prisma.category.findUnique({
+            where: { name },
+        });
+        if (existingCategory) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
+        }
 
-        if (!await isValidRequest(db, adminId))
+        // Validate adminId (assumes `isValidRequest` supports Prisma and MySQL)
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
-        const categoryDetails = {
-            id: generateUniqueID(CATEGORY_CONSTANTS?.CATEGORY_ID_PREFIX),
-            name,
-            createdBy: adminId,
-            createdAt: new Date(),
-        };
+        // Create new category
+        const newCategory = await prisma.category.create({
+            data: {
+                name,
+                createdBy: adminId,
+                createdAt: new Date(),
+            },
+        });
 
-        const result = await createByDetails(db, CATEGORY_COLLECTION_NAME, categoryDetails);
-        const latestData = await findByField(db, CATEGORY_COLLECTION_NAME, 'id', categoryDetails?.id);
-
-        delete latestData?.createdBy;
-        delete latestData?.modifiedBy;
-
-        return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${categoryDetails?.name} created successfully`)
-            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
+        return generateResponseData(
+            { id: newCategory.id, name: newCategory.name, createdAt: newCategory.createdAt },
+            true,
+            STATUS_OK,
+            `${newCategory.name} created successfully`
+        );
 
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
     }
 };
 
