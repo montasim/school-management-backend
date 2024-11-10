@@ -8,21 +8,21 @@ datasource db {
 }
 
 model Level {
-  id          String   @id // unique identifier without default
-  name        String   @unique
-  createdBy   String   // ID or username of the admin who created the level
-  createdAt   DateTime @default(now())
-  modifiedBy  String?  // ID or username of the admin who last modified the level
-  modifiedAt  DateTime? // Timestamp of the last modification
+  id         String    @id // unique identifier without default
+  name       String    @unique
+  createdBy  String // ID or username of the admin who created the level
+  createdAt  DateTime  @default(now())
+  modifiedBy String? // ID or username of the admin who last modified the level
+  modifiedAt DateTime? // Timestamp of the last modification
 }
 
 model Category {
-  id            String      @id // unique identifier without default
-  name          String      @unique
-  createdBy     String      // ID or username of the admin who created the level
-  createdAt     DateTime    @default(now())
-  modifiedBy    String?     // ID or username of the admin who last modified the level
-  modifiedAt    DateTime?   // Timestamp of the last modification
+  id         String    @id // unique identifier without default
+  name       String    @unique
+  createdBy  String // ID or username of the admin who created the level
+  createdAt  DateTime  @default(now())
+  modifiedBy String? // ID or username of the admin who last modified the level
+  modifiedAt DateTime? // Timestamp of the last modification
 
   // Relation to Administration through the join table
   administration AdministrationOnCategories[]
@@ -31,19 +31,19 @@ model Category {
 }
 
 model Administration {
-  id            String                  @id // unique identifier without default
+  id            String    @id // unique identifier without default
   name          String
   designation   String
-  fileId        String?                  // File ID for uploaded file (nullable)
-  downloadLink  String?                  // Link to download the file (nullable)
-  shareableLink String?                  // Shareable link for the file (nullable)
-  createdBy     String                   // ID of the user who created this entry
-  createdAt     DateTime                 @default(now())
-  modifiedBy    String?                  // ID of the user who last modified this entry (nullable)
-  modifiedAt    DateTime?                // Timestamp of the last modification (nullable)
+  fileId        String? // File ID for uploaded file (nullable)
+  downloadLink  String? // Link to download the file (nullable)
+  shareableLink String? // Shareable link for the file (nullable)
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now())
+  modifiedBy    String? // ID of the user who last modified this entry (nullable)
+  modifiedAt    DateTime? // Timestamp of the last modification (nullable)
 
   // Relation to Category through the join table
-  category      AdministrationOnCategories[]
+  category AdministrationOnCategories[]
 
   @@map("administration") // Optional: maps to the "administration" table in the database
 }
@@ -59,308 +59,322 @@ model AdministrationOnCategories {
 }
 
 model AdmissionForm {
-  id            String                  @id // unique identifier without default
-  title          String
-  fileName       String   @unique               // File name, should be unique
-  fileId         String?                        // ID for the file in storage (nullable)
-  shareableLink  String?                        // Link to share the file (nullable)
-  downloadLink   String?                        // Link to download the file (nullable)
-  createdBy      String                         // ID of the user who created this entry
-  createdAt      DateTime @default(now())       // Timestamp of creation
-  modifiedBy     String?                        // ID of the user who last modified this entry (nullable)
-  modifiedAt     DateTime?                      // Timestamp of last modification (nullable)
+  id            String    @id // unique identifier without default
+  title         String
+  fileName      String    @unique // File name, should be unique
+  fileId        String? // ID for the file in storage (nullable)
+  shareableLink String? // Link to share the file (nullable)
+  downloadLink  String? // Link to download the file (nullable)
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry (nullable)
+  modifiedAt    DateTime? // Timestamp of last modification (nullable)
 
   @@map("admission_form") // Optional: Maps to "admission_form" table in the database
 }
 
 model AdmissionInformation {
-  id                   String                  @id // unique identifier without default
-  title                String
-  description          String?    @db.Text // Allows longer text for description
-  formPrice            String?
-  admissionFee         String?
+  id                     String    @id // unique identifier without default
+  title                  String
+  description            String?   @db.Text // Allows longer text for description
+  formPrice              String?
+  admissionFee           String?
   lastFormSubmissionData DateTime?
-  contact              String?
-  createdBy            String    // ID of the user who created this entry
-  createdAt            DateTime  @default(now()) // Timestamp of creation
-  modifiedBy           String?   // ID of the user who last modified this entry
-  modifiedAt           DateTime? // Timestamp of last modification
+  contact                String?
+  createdBy              String // ID of the user who created this entry
+  createdAt              DateTime  @default(now()) // Timestamp of creation
+  modifiedBy             String? // ID of the user who last modified this entry
+  modifiedAt             DateTime? // Timestamp of last modification
 
   @@map("admission_information") // Optional: Maps to "admission_information" table in the database
 }
 
 model Announcement {
-  id          String    @id @default(uuid()) // Unique identifier
-  name        String?    @db.Text // Allows longer text for description
-  createdBy   String    // ID of the user who created this announcement
-  createdAt   DateTime  @default(now()) // Timestamp of creation
-  modifiedBy  String?   // ID of the user who last modified this entry (nullable)
-  modifiedAt  DateTime? // Timestamp of last modification (nullable)
+  id         String    @id @default(uuid()) // Unique identifier
+  name       String?   @db.Text // Allows longer text for description
+  createdBy  String // ID of the user who created this announcement
+  createdAt  DateTime  @default(now()) // Timestamp of creation
+  modifiedBy String? // ID of the user who last modified this entry (nullable)
+  modifiedAt DateTime? // Timestamp of last modification (nullable)
 
   @@map("announcement") // Optional: maps to "announcement" table in the database
 }
 
 model Blog {
-  id             String    @id @default(uuid()) // Unique identifier
-  title          String
-  category       String
-  fileId         String?                        // File ID for uploaded file (nullable)
-  shareableLink  String?                        // Link to share the file (nullable)
-  downloadLink   String?                        // Link to download the file (nullable)
-  description    String?    @db.Text            // Allows longer text for description
-  createdBy      String                         // ID of the user who created this entry
-  createdAt      DateTime   @default(now())     // Timestamp of creation
-  modifiedBy     String?                        // ID of the user who last modified this entry (nullable)
-  modifiedAt     DateTime?                      // Timestamp of last modification (nullable)
+  id            String    @id @default(uuid()) // Unique identifier
+  title         String
+  category      String
+  fileId        String? // File ID for uploaded file (nullable)
+  shareableLink String? // Link to share the file (nullable)
+  downloadLink  String? // Link to download the file (nullable)
+  description   String?   @db.Text // Allows longer text for description
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry (nullable)
+  modifiedAt    DateTime? // Timestamp of last modification (nullable)
 
   @@map("blog") // Optional: maps to "blog" table in the database
 }
 
 model Designation {
-  id          String    @id @default(uuid()) // Unique identifier
-  name        String    @unique              // Unique name for the designation
-  createdBy   String                          // ID of the user who created this designation
-  createdAt   DateTime  @default(now())       // Timestamp of creation
-  modifiedBy  String?                         // ID of the user who last modified this entry (nullable)
-  modifiedAt  DateTime?                       // Timestamp of last modification (nullable)
+  id         String    @id @default(uuid()) // Unique identifier
+  name       String    @unique // Unique name for the designation
+  createdBy  String // ID of the user who created this designation
+  createdAt  DateTime  @default(now()) // Timestamp of creation
+  modifiedBy String? // ID of the user who last modified this entry (nullable)
+  modifiedAt DateTime? // Timestamp of last modification (nullable)
 
   @@map("designation") // Optional: Maps to "designation" table in the database
 }
 
 model Download {
-  id             String    @id @default(uuid()) // Unique identifier
-  title          String
-  fileName       String    @unique              // Unique file name to prevent duplicates
-  fileId         String?                         // File ID for storage (nullable)
-  shareableLink  String?                         // Link to share the file (nullable)
-  downloadLink   String?                         // Link to download the file (nullable)
-  createdBy      String                          // ID of the user who created this entry
-  createdAt      DateTime  @default(now())       // Timestamp of creation
-  modifiedBy     String?                         // ID of the user who last modified this entry (nullable)
-  modifiedAt     DateTime?                       // Timestamp of last modification (nullable)
+  id            String    @id @default(uuid()) // Unique identifier
+  title         String
+  fileName      String    @unique // Unique file name to prevent duplicates
+  fileId        String? // File ID for storage (nullable)
+  shareableLink String? // Link to share the file (nullable)
+  downloadLink  String? // Link to download the file (nullable)
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry (nullable)
+  modifiedAt    DateTime? // Timestamp of last modification (nullable)
 
   @@map("download") // Optional: maps to "download" table in the database
 }
 
 model PhotoGallery {
-  id             String    @id @default(uuid()) // Unique identifier
-  title          String
-  fileId         String?                         // File ID for storage (nullable)
-  shareableLink  String?                         // Link to share the file (nullable)
-  downloadLink   String?                         // Link to download the file (nullable)
-  createdBy      String                          // ID of the user who created this entry
-  createdAt      DateTime  @default(now())       // Timestamp of creation
-  modifiedBy     String?                         // ID of the user who last modified this entry (nullable)
-  modifiedAt     DateTime?                       // Timestamp of last modification (nullable)
+  id            String    @id @default(uuid()) // Unique identifier
+  title         String
+  fileId        String? // File ID for storage (nullable)
+  shareableLink String? // Link to share the file (nullable)
+  downloadLink  String? // Link to download the file (nullable)
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry (nullable)
+  modifiedAt    DateTime? // Timestamp of last modification (nullable)
 
   @@map("photo_gallery") // Optional: maps to "photo_gallery" table in the database
 }
 
 model VideoGallery {
-  id               String    @id @default(uuid()) // Unique identifier
+  id                String    @id @default(uuid()) // Unique identifier
   videoGalleryTitle String
-  videoLink        String
-  videoID          String?                         // Extracted YouTube video ID (nullable)
-  createdBy        String                          // ID of the user who created this entry
-  createdAt        DateTime  @default(now())       // Timestamp of creation
-  modifiedBy       String?                         // ID of the user who last modified this entry (nullable)
-  modifiedAt       DateTime?                       // Timestamp of last modification (nullable)
+  videoLink         String
+  videoID           String? // Extracted YouTube video ID (nullable)
+  createdBy         String // ID of the user who created this entry
+  createdAt         DateTime  @default(now()) // Timestamp of creation
+  modifiedBy        String? // ID of the user who last modified this entry (nullable)
+  modifiedAt        DateTime? // Timestamp of last modification (nullable)
 
   @@map("video_gallery") // Optional: maps to "video_gallery" table in the database
 }
 
 model HomePageCarousel {
-  id             String    @id @default(uuid()) // Unique identifier
-  title          String
-  fileId         String?                         // File ID for storage (nullable)
-  shareableLink  String?                         // Link to share the file (nullable)
-  downloadLink   String?                         // Link to download the file (nullable)
-  createdBy      String                          // ID of the user who created this entry
-  createdAt      DateTime  @default(now())       // Timestamp of creation
-  modifiedBy     String?                         // ID of the user who last modified this entry (nullable)
-  modifiedAt     DateTime?                       // Timestamp of last modification (nullable)
+  id            String    @id @default(uuid()) // Unique identifier
+  title         String
+  fileId        String? // File ID for storage (nullable)
+  shareableLink String? // Link to share the file (nullable)
+  downloadLink  String? // Link to download the file (nullable)
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry (nullable)
+  modifiedAt    DateTime? // Timestamp of last modification (nullable)
 
   @@map("home_page_carousel") // Optional: maps to "home_page_carousel" table in the database
 }
 
 model HomePagePost {
-  id           String   @id @default(uuid()) // Unique identifier
-  title        String
-  category     String
-  description  String?    @db.Text            // Allows longer text for description
-  fileId       String?                      // File ID for storage (nullable)
-  shareableLink String?                     // Link to share the file (nullable)
-  downloadLink  String?                     // Link to download the file (nullable)
-  createdBy    String                       // ID of the user who created this entry
-  createdAt    DateTime @default(now())     // Timestamp of creation
-  modifiedBy   String?                      // ID of the user who last modified this entry (nullable)
-  modifiedAt   DateTime?                    // Timestamp of last modification (nullable)
+  id            String    @id @default(uuid()) // Unique identifier
+  title         String
+  category      String
+  description   String?   @db.Text // Allows longer text for description
+  fileId        String? // File ID for storage (nullable)
+  shareableLink String? // Link to share the file (nullable)
+  downloadLink  String? // Link to download the file (nullable)
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry (nullable)
+  modifiedAt    DateTime? // Timestamp of last modification (nullable)
 
   @@map("home_page_post") // Optional: maps to "home_page_post" table in the database
 }
 
 model Notice {
-  id                       String   @id @default(uuid()) // Unique identifier
+  id                       String    @id @default(uuid()) // Unique identifier
   title                    String
-  fileName                 String   @unique               // Original file name, must be unique
-  fileId                   String?                        // File ID for storage
-  googleDriveShareableLink String?                        // Link to share the file on Google Drive
-  downloadLink             String?                        // Direct download link
-  createdBy                String                         // ID of the user who created this entry
-  createdAt                DateTime @default(now())       // Timestamp of creation
-  modifiedBy               String?                        // ID of the user who last modified this entry
-  modifiedAt               DateTime?                      // Timestamp of last modification
+  fileName                 String    @unique // Original file name, must be unique
+  fileId                   String? // File ID for storage
+  googleDriveShareableLink String? // Link to share the file on Google Drive
+  downloadLink             String? // Direct download link
+  createdBy                String // ID of the user who created this entry
+  createdAt                DateTime  @default(now()) // Timestamp of creation
+  modifiedBy               String? // ID of the user who last modified this entry
+  modifiedAt               DateTime? // Timestamp of last modification
 
   @@map("notice") // Optional: Maps to "notice" table in the database
 }
 
 model OthersInformation {
-  id           String    @id @default(uuid()) // Unique identifier
-  title        String
-  category     String
-  description  String?    @db.Text            // Allows longer text for description
-  createdBy    String    // ID of the user who created this entry
-  createdAt    DateTime  @default(now()) // Timestamp of creation
-  modifiedBy   String?   // ID of the user who last modified this entry
-  modifiedAt   DateTime? // Timestamp of last modification
+  id          String    @id @default(uuid()) // Unique identifier
+  title       String
+  category    String
+  description String?   @db.Text // Allows longer text for description
+  createdBy   String // ID of the user who created this entry
+  createdAt   DateTime  @default(now()) // Timestamp of creation
+  modifiedBy  String? // ID of the user who last modified this entry
+  modifiedAt  DateTime? // Timestamp of last modification
 
   @@map("others_information") // Optional: Maps to "others_information" table in the database
 }
 
 model OthersInformationCategory {
-  id          String    @id @default(uuid()) // Unique identifier
-  name        String    @unique
-  createdBy   String    // ID of the user who created this entry
-  createdAt   DateTime  @default(now()) // Timestamp of creation
-  modifiedBy  String?   // ID of the user who last modified this entry
-  modifiedAt  DateTime? // Timestamp of last modification
+  id         String    @id @default(uuid()) // Unique identifier
+  name       String    @unique
+  createdBy  String // ID of the user who created this entry
+  createdAt  DateTime  @default(now()) // Timestamp of creation
+  modifiedBy String? // ID of the user who last modified this entry
+  modifiedAt DateTime? // Timestamp of last modification
 
   @@map("others_information_category") // Optional: Maps to "others_information_category" table in the database
 }
 
 model Result {
-  id              String    @id @default(uuid()) // Unique identifier
-  title           String
-  fileName        String    @unique // Unique file name
-  fileId          String?   // File ID for uploaded file (nullable)
-  shareableLink   String?   // Shareable link for the file (nullable)
-  resultLink      String?   // Link to view or download the result file
-  createdBy       String    // ID of the user who created this entry
-  createdAt       DateTime  @default(now()) // Timestamp of creation
+  id            String   @id @default(uuid()) // Unique identifier
+  title         String
+  fileName      String   @unique // Unique file name
+  fileId        String? // File ID for uploaded file (nullable)
+  shareableLink String? // Shareable link for the file (nullable)
+  resultLink    String? // Link to view or download the result file
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime @default(now()) // Timestamp of creation
 
   @@map("result") // Optional: Maps to "result" table in the database
 }
 
 model Routine {
-  id              String   @id @default(uuid()) // Unique identifier
-  title           String   // Title of the routine
-  fileName        String   // Name of the uploaded file
-  fileId          String?  // File ID from Google Drive or another storage provider
-  shareableLink   String   // Link to access the file
-  routineLink     String   // Link to download the file
-  createdBy       String   // ID of the user who created this routine
-  createdAt       DateTime @default(now()) // Timestamp of creation
-  modifiedBy      String?  // ID of the user who last modified this routine
-  modifiedAt      DateTime? // Timestamp of last modification
+  id            String    @id @default(uuid()) // Unique identifier
+  title         String // Title of the routine
+  fileName      String // Name of the uploaded file
+  fileId        String? // File ID from Google Drive or another storage provider
+  shareableLink String // Link to access the file
+  routineLink   String // Link to download the file
+  createdBy     String // ID of the user who created this routine
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this routine
+  modifiedAt    DateTime? // Timestamp of last modification
 
   @@map("routine") // Optional: Maps to "routine" table in the database
 }
 
 model WebsiteBanner {
-  id            String   @id @default(uuid()) // Unique identifier
-  fileId        String?  // File ID for the uploaded file (nullable)
-  shareableLink String?  // Shareable link for the file (nullable)
-  downloadLink  String?  // Download link for the file
-  createdBy     String   // ID of the user who created this entry
-  createdAt     DateTime @default(now()) // Timestamp of creation
-  modifiedBy    String?  // ID of the user who last modified this entry
+  id            String    @id @default(uuid()) // Unique identifier
+  fileId        String? // File ID for the uploaded file (nullable)
+  shareableLink String? // Shareable link for the file (nullable)
+  downloadLink  String? // Download link for the file
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry
   modifiedAt    DateTime? // Timestamp of last modification
 
   @@map("website_banner") // Optional: Maps to "website_banner" table in the database
 }
 
 model WebsiteConfiguration {
-  id            String   @id @default(uuid()) // Unique identifier
-  name          String   // Website name
-  slogan        String?  // Website slogan
-  fileId        String?  // File ID for the uploaded logo (nullable)
-  shareableLink String?  // Shareable link for the logo file (nullable)
-  downloadLink  String?  // Download link for the logo file
-  createdBy     String   // ID of the user who created this entry
-  createdAt     DateTime @default(now()) // Timestamp of creation
-  modifiedBy    String?  // ID of the user who last modified this entry
+  id            String    @id @default(uuid()) // Unique identifier
+  name          String // Website name
+  slogan        String? // Website slogan
+  fileId        String? // File ID for the uploaded logo (nullable)
+  shareableLink String? // Shareable link for the logo file (nullable)
+  downloadLink  String? // Download link for the logo file
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry
   modifiedAt    DateTime? // Timestamp of last modification
 
   @@map("website_configuration") // Optional: Maps to "website_configuration" table in the database
 }
 
 model WebsiteContact {
-  id               String   @id @default(uuid()) // Unique identifier
-  address          String?  // Address for contact information
+  id                String    @id @default(uuid()) // Unique identifier
+  address           String? // Address for contact information
   googleMapLocation String? // For backward compatibility if necessary
-  latitude         String?  // Latitude as a separate field
-  longitude        String?  // Longitude as a separate field
-  mobile           String?  // Mobile number
-  phone            String?  // Phone number
-  email            String?  // Email address
-  website          String?  // Website URL
-  createdBy        String   // ID of the user who created this entry
-  createdAt        DateTime @default(now()) // Timestamp of creation
-  modifiedBy       String?  // ID of the user who last modified this entry
-  modifiedAt       DateTime? // Timestamp of last modification
+  latitude          String? // Latitude as a separate field
+  longitude         String? // Longitude as a separate field
+  mobile            String? // Mobile number
+  phone             String? // Phone number
+  email             String? // Email address
+  website           String? // Website URL
+  createdBy         String // ID of the user who created this entry
+  createdAt         DateTime  @default(now()) // Timestamp of creation
+  modifiedBy        String? // ID of the user who last modified this entry
+  modifiedAt        DateTime? // Timestamp of last modification
 
   @@map("website_contact") // Optional: Maps to "website_contact" table in the database
 }
 
 model WebsiteImportantInformationLink {
-  id                          String   @id @default(uuid()) // Unique identifier
-  importantInformationLinkTitle String   // Title of the important information link
-  importantInformationLink      String   // URL or link of the important information
-  createdBy                    String   // ID of the user who created this entry
-  createdAt                    DateTime @default(now()) // Timestamp of creation
-  modifiedBy                   String?  // ID of the user who last modified this entry
-  modifiedAt                   DateTime? // Timestamp of last modification
+  id                            String    @id @default(uuid()) // Unique identifier
+  importantInformationLinkTitle String // Title of the important information link
+  importantInformationLink      String // URL or link of the important information
+  createdBy                     String // ID of the user who created this entry
+  createdAt                     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy                    String? // ID of the user who last modified this entry
+  modifiedAt                    DateTime? // Timestamp of last modification
 
   @@map("website_important_information_link") // Maps to "website_important_information_link" table in the database
 }
 
 model WebsiteOfficialLink {
-  id                 String   @id @default(uuid()) // Unique identifier
-  officialLinkTitle  String   // Title of the official link
-  officialLink       String   // URL of the official link
-  createdBy          String   // ID of the user who created this entry
-  createdAt          DateTime @default(now()) // Timestamp of creation
-  modifiedBy         String?  // ID of the user who last modified this entry
-  modifiedAt         DateTime? // Timestamp of last modification
+  id                String    @id @default(uuid()) // Unique identifier
+  officialLinkTitle String // Title of the official link
+  officialLink      String // URL of the official link
+  createdBy         String // ID of the user who created this entry
+  createdAt         DateTime  @default(now()) // Timestamp of creation
+  modifiedBy        String? // ID of the user who last modified this entry
+  modifiedAt        DateTime? // Timestamp of last modification
 
   @@map("website_official_link") // Maps to "website_official_link" table in the database
 }
 
 model WebsiteSocialMediaLink {
-  id                  String   @id @default(uuid()) // Unique identifier
-  socialMediaLinkTitle String  // Title of the social media link
-  socialMediaLink     String   // URL of the social media link
-  createdBy           String   // ID of the user who created this entry
-  createdAt           DateTime @default(now()) // Timestamp of creation
-  modifiedBy          String?  // ID of the user who last modified this entry
-  modifiedAt          DateTime? // Timestamp of last modification
+  id                   String    @id @default(uuid()) // Unique identifier
+  socialMediaLinkTitle String // Title of the social media link
+  socialMediaLink      String // URL of the social media link
+  createdBy            String // ID of the user who created this entry
+  createdAt            DateTime  @default(now()) // Timestamp of creation
+  modifiedBy           String? // ID of the user who last modified this entry
+  modifiedAt           DateTime? // Timestamp of last modification
 
   @@map("website_social_media_link") // Maps to "website_social_media_link" table in the database
 }
 
 model Admin {
-  id                     String    @id @default(uuid())
-  name                   String
-  userName               String    @unique
-  password               String
-  currentlyLoggedInDevice Int      @default(0) // Tracks concurrent logins
-  tokenDetails           Json      // Stores active tokens and session info
-  lastLoginAt            DateTime? // Timestamp of the last login
-  allowedFailedAttempts  Int       @default(5)
-  lastFailedAttempts     Int?
-  createdAt              DateTime  @default(now())
-  modifiedAt             DateTime?
+  id                      String    @id @default(uuid())
+  name                    String
+  userName                String    @unique
+  password                String
+  currentlyLoggedInDevice Int       @default(0) // Tracks concurrent logins
+  tokenDetails            Json // Stores active tokens and session info
+  lastLoginAt             DateTime? // Timestamp of the last login
+  allowedFailedAttempts   Int       @default(5)
+  lastFailedAttempts      Int?
+  createdAt               DateTime  @default(now())
+  modifiedAt              DateTime?
 
   @@map("admin")
 }
 
+model Student {
+    id            String    @id @default(uuid()) // Unique identifier with a default UUID
+    name          String
+    level         String // Storing the level name directly
+    fileId        String? // File ID from file storage (Google Drive, etc.)
+    shareableLink String? // Publicly shareable link to the student's file
+    downloadLink  String? // Direct download link to the student's file
+    createdBy     String // ID or username of the admin who created the student
+    createdAt     DateTime  @default(now()) // Timestamp when the student was created
+    modifiedBy    String? // ID or username of the admin who last modified the student
+    modifiedAt    DateTime? // Timestamp of the last modification
+
+  @@map("student") // Maps to "website_social_media_link" table in the database
+}
