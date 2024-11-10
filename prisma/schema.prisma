@@ -237,3 +237,17 @@ model OthersInformationCategory {
 
   @@map("others_information_category") // Optional: Maps to "others_information_category" table in the database
 }
+
+model Result {
+  id              String    @id @default(uuid()) // Unique identifier
+  title           String
+  fileName        String    @unique // Unique file name
+  fileId          String?   // File ID for uploaded file (nullable)
+  shareableLink   String?   // Shareable link for the file (nullable)
+  resultLink      String?   // Link to view or download the result file
+  createdBy       String    // ID of the user who created this entry
+  createdAt       DateTime  @default(now()) // Timestamp of creation
+
+  @@map("result") // Optional: Maps to "result" table in the database
+}
+
