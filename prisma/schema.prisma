@@ -115,3 +115,14 @@ model Blog {
 
   @@map("blog") // Optional: maps to "blog" table in the database
 }
+
+model Designation {
+  id          String    @id @default(uuid()) // Unique identifier
+  name        String    @unique              // Unique name for the designation
+  createdBy   String                          // ID of the user who created this designation
+  createdAt   DateTime  @default(now())       // Timestamp of creation
+  modifiedBy  String?                         // ID of the user who last modified this entry (nullable)
+  modifiedAt  DateTime?                       // Timestamp of last modification (nullable)
+
+  @@map("designation") // Optional: Maps to "designation" table in the database
+}
