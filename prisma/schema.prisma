@@ -347,3 +347,20 @@ model WebsiteSocialMediaLink {
 
   @@map("website_social_media_link") // Maps to "website_social_media_link" table in the database
 }
+
+model Admin {
+  id                     String    @id @default(uuid())
+  name                   String
+  userName               String    @unique
+  password               String
+  currentlyLoggedInDevice Int      @default(0) // Tracks concurrent logins
+  tokenDetails           Json      // Stores active tokens and session info
+  lastLoginAt            DateTime? // Timestamp of the last login
+  allowedFailedAttempts  Int       @default(5)
+  lastFailedAttempts     Int?
+  createdAt              DateTime  @default(now())
+  modifiedAt             DateTime?
+
+  @@map("admin")
+}
+
