@@ -155,3 +155,16 @@ model PhotoGallery {
 
   @@map("photo_gallery") // Optional: maps to "photo_gallery" table in the database
 }
+
+model VideoGallery {
+  id               String    @id @default(uuid()) // Unique identifier
+  videoGalleryTitle String
+  videoLink        String
+  videoID          String?                         // Extracted YouTube video ID (nullable)
+  createdBy        String                          // ID of the user who created this entry
+  createdAt        DateTime  @default(now())       // Timestamp of creation
+  modifiedBy       String?                         // ID of the user who last modified this entry (nullable)
+  modifiedAt       DateTime?                       // Timestamp of last modification (nullable)
+
+  @@map("video_gallery") // Optional: maps to "video_gallery" table in the database
+}
