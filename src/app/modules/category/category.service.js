@@ -18,30 +18,30 @@ const createCategoryService = async (db, newCategoryDetails) => {
         const { name, adminId } = newCategoryDetails;
 
         // Check if category with the same name already exists
-        const existingCategory = await prisma?.category.findUnique({
+        const existingCategory = await prisma.category.findUnique({
             where: { name },
         });
         if (existingCategory) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
         }
 
-        // Validate adminId (assumes `isValidRequest` supports Prisma and MySQL)
+        // Validate adminId
         if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
         // Create new category
-        const newCategory = await prisma?.category.create({
+        const newCategory = await prisma.category.create({
             data: {
-                uniqueId: String(generateUniqueID('category')), // Store unique ID in `uniqueId` field
-                name: String(name),
-                createdBy: String(adminId), // Ensure this is a string
+                id: generateUniqueID('category'), // Use custom generated ID
+                name,
+                createdBy: adminId,
                 createdAt: new Date(),
             },
         });
 
         return generateResponseData(
-            { uniqueId: newCategory.uniqueId, name: newCategory.name, createdAt: newCategory.createdAt },
+            { id: newCategory.id, name: newCategory.name, createdAt: newCategory.createdAt },
             true,
             STATUS_OK,
             `${newCategory.name} created successfully`
@@ -55,10 +55,10 @@ const createCategoryService = async (db, newCategoryDetails) => {
 
 const getCategoryListService = async (db) => {
     try {
-        const categories = await prisma?.category.findMany();
+        const categories = await prisma.category.findMany();
 
-        return categories?.length
-            ? generateResponseData(categories, true, STATUS_OK, `${categories?.length} categories found`)
+        return categories.length
+            ? generateResponseData(categories, true, STATUS_OK, `${categories.length} categories found`)
             : generateResponseData({}, false, STATUS_NOT_FOUND, 'No categories found');
     } catch (error) {
         logger.error(error);
@@ -68,8 +68,8 @@ const getCategoryListService = async (db) => {
 
 const getACategoryService = async (db, categoryId) => {
     try {
-        const category = await prisma?.category.findUnique({
-            where: { uniqueId: categoryId },
+        const category = await prisma.category.findUnique({
+            where: { id: categoryId },
         });
 
         if (category) {
@@ -90,42 +90,32 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
     try {
         const { name, adminId } = newCategoryDetails;
 
-        // Check if the name already exists
-        const existingCategory = await prisma?.category.findUnique({
+        const existingCategory = await prisma.category.findUnique({
             where: { name },
         });
-        if (existingCategory && existingCategory.uniqueId !== categoryId) {
+        if (existingCategory && existingCategory.id !== categoryId) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
         }
 
-        // Validate adminId
         if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
-        // Find the old category
-        const oldCategory = await prisma?.category.findUnique({
-            where: { uniqueId: categoryId },
+        const oldCategory = await prisma.category.findUnique({
+            where: { id: categoryId },
         });
         if (!oldCategory) {
             return generateResponseData({}, false, STATUS_NOT_FOUND, `Category ${categoryId} not found`);
         }
 
-        // Update the category
-        const updatedCategory = await prisma?.category.update({
-            where: { uniqueId: categoryId },
+        const updatedCategory = await prisma.category.update({
+            where: { id: categoryId },
             data: {
                 ...(name && { name }),
-                modifiedBy: String(adminId),
+                modifiedBy: adminId,
                 modifiedAt: new Date(),
             },
         });
-
-        // Update related fields in `Administration` table
-        // await prisma?.administration.updateMany({
-        //     where: { category: oldCategory.name },
-        //     data: { category: name },
-        // });
 
         return updatedCategory
             ? generateResponseData(updatedCategory, true, STATUS_OK, `${categoryId} updated successfully`)
@@ -142,23 +132,16 @@ const deleteACategoryService = async (db, adminId, categoryId) => {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
-        const oldCategory = await prisma?.category.findUnique({
-            where: { uniqueId: categoryId },
+        const oldCategory = await prisma.category.findUnique({
+            where: { id: categoryId },
         });
         if (!oldCategory) {
             return generateResponseData({}, false, STATUS_NOT_FOUND, `Category ${categoryId} not found`);
         }
 
-        // Delete the category
-        await prisma?.category.delete({
-            where: { uniqueId: categoryId },
+        await prisma.category.delete({
+            where: { id: categoryId },
         });
-
-        // Update related records in the `Administration` table
-        // await prisma?.administration.updateMany({
-        //     where: { category: oldCategory.name },
-        //     data: { category: "category-name-deleted" },
-        // });
 
         return generateResponseData({}, true, STATUS_OK, `${categoryId} deleted successfully`);
     } catch (error) {
