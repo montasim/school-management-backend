@@ -276,3 +276,18 @@ model WebsiteBanner {
 
   @@map("website_banner") // Optional: Maps to "website_banner" table in the database
 }
+
+model WebsiteConfiguration {
+  id            String   @id @default(uuid()) // Unique identifier
+  name          String   // Website name
+  slogan        String?  // Website slogan
+  fileId        String?  // File ID for the uploaded logo (nullable)
+  shareableLink String?  // Shareable link for the logo file (nullable)
+  downloadLink  String?  // Download link for the logo file
+  createdBy     String   // ID of the user who created this entry
+  createdAt     DateTime @default(now()) // Timestamp of creation
+  modifiedBy    String?  // ID of the user who last modified this entry
+  modifiedAt    DateTime? // Timestamp of last modification
+
+  @@map("website_configuration") // Optional: Maps to "website_configuration" table in the database
+}

@@ -1,20 +1,3 @@
-/**
- * @fileoverview Service Functions for Website Configuration Management.
- *
- * This module provides a set of functions that interact with the database to perform
- * create, read, update, and delete (CRUD) operations on website configuration data.
- * It includes services for adding new configurations, retrieving existing configurations,
- * updating configurations, and deleting configurations. These functions are used by the
- * controllers to handle requests related to website configurations.
- *
- * @requires config - Application configuration settings.
- * @requires constants - Application-wide constants.
- * @requires GoogleDriveFileOperations - Helper functions for interacting with Google Drive.
- * @requires shared - Shared helper functions like isValidRequest and generateResponseData.
- * @module WebsiteConfigurationService - Exports service functions for website configurations.
- */
-
-import { WEBSITE_CONFIGURATION_COLLECTION_NAME } from "../../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -24,53 +7,39 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
 import { WEBSITE_CONFIGURATION_CONSTANTS } from "./websiteConfiguration.constants.js";
-import isValidRequest from "../../../../shared/isValidRequest.js";
-import { GoogleDriveFileOperations } from "../../../../helpers/GoogleDriveFileOperations.js"
 import logger from "../../../../shared/logger.js";
-import generateResponseData from "../../../../shared/generateResponseData.js";
-import findByField from "../../../../shared/findByField.js";
-import createByDetails from "../../../../shared/createByDetails.js";
-import getAllData from "../../../../shared/getAllData.js";
-import generateUniqueID from "../../../../helpers/generateUniqueID.js";
+import prisma from "../../../../shared/prisma?.js";
 import fileManager from "../../../../helpers/fileManager.js";
+
+import isValidRequest from "../../../../shared/isValidRequest.js";
+import generateResponseData from "../../../../shared/generateResponseData.js";
+import generateUniqueID from "../../../../helpers/generateUniqueID.js";
 import generateFileLink from "../../../../helpers/generateFileLink.js";
 
-/**
- * Service function to create a new website configuration.
- *
- * Handles the logic of adding a new website configuration to the database.
- * If a configuration already exists, it denies the creation process.
- * It also involves uploading the website logo to Google Drive and storing the
- * shareable link in the database.
- *
- * @async
- * @param {Object} db - Database connection object.
- * @param {Object} websiteDetails - The details of the website to be added.
- * @param {Object} file - The file object representing the website logo.
- * @returns {Object} - The response data including success status and message.
- */
 const createWebsiteConfigurationService = async (req, websiteDetails) => {
     try {
         const { db, file, protocol } = req;
         const { name, slogan, adminId } = websiteDetails;
-        const existingDetails = await getAllData(db, WEBSITE_CONFIGURATION_COLLECTION_NAME);
 
-        if (existingDetails?.length > 0)
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website configuration already exists. Please update website configuration");
-
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
+
+        const existingConfig = await prisma?.websiteConfiguration.findMany();
+        if (existingConfig?.length > 0) {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website configuration already exists. Please update the configuration.");
+        }
 
         const uploadFileResponse = await fileManager.uploadFile(file);
         if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload to Google Drive. Please try again.');
         }
 
         const fileLink = generateFileLink(req, uploadFileResponse);
-        const prepareWebsiteDetails = {
+        const websiteConfig = {
             id: generateUniqueID(WEBSITE_CONFIGURATION_CONSTANTS?.WEBSITE_CONFIGURATION_ID_PREFIX),
-            name: name,
-            slogan: slogan,
+            name,
+            slogan,
             fileId: uploadFileResponse?.fileId,
             shareableLink: fileLink,
             downloadLink: fileLink,
@@ -78,176 +47,102 @@ const createWebsiteConfigurationService = async (req, websiteDetails) => {
             createdAt: new Date(),
         };
 
-        const result = await createByDetails(db, WEBSITE_CONFIGURATION_COLLECTION_NAME, prepareWebsiteDetails);
-        const latestData = await findByField(db, WEBSITE_CONFIGURATION_COLLECTION_NAME, 'id', prepareWebsiteDetails?.id);
+        const newConfig = await prisma?.websiteConfiguration.create({
+            data: websiteConfig,
+        });
 
-        delete latestData._id;
-        delete latestData.id;
-        delete latestData?.createdBy;
-        delete latestData?.modifiedBy;
-        delete latestData.fileId;
-
-        return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, "Website configuration added successfully")
-            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again');
-
+        return generateResponseData(newConfig, true, STATUS_OK, "Website configuration added successfully");
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to create. Please try again.');
     }
 };
 
-/**
- * Service function to retrieve the current website configuration.
- *
- * Fetches the website configuration details from the database. If no configuration
- * is found, it returns a not found response.
- *
- * @async
- * @param {Object} db - Database connection object.
- * @returns {Object} - The retrieved website configuration or an error message.
- */
 const getWebsiteConfigurationService = async (db) => {
     try {
-        const website = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
+        const websiteConfig = await prisma?.websiteConfiguration.findFirst();
 
-        console.log(website)
-
-        if (website) {
-            delete website?._id;
-            delete website?._id;
-            delete website?.createdBy;
-            delete website?.modifiedBy;
-            delete website.fileId;
-
-            return generateResponseData(website, true, STATUS_OK, "Website configuration found successfully");
+        if (websiteConfig) {
+            return generateResponseData(websiteConfig, true, STATUS_OK, "Website configuration found successfully");
         } else {
             return generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found');
         }
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Service function to update an existing website configuration.
- *
- * Updates the website configuration details in the database, including uploading a new
- * website logo to Google Drive if provided. It ensures that the request is made by an
- * authorized admin and that the configuration to be updated exists.
- *
- * @async
- * @param {Object} db - Database connection object.
- * @param {Object} websiteDetails - New details for updating the website configuration.
- * @param {Object} file - The new file object for the website logo.
- * @returns {Object} - The response data including success status and updated configuration.
- */
 const updateWebsiteConfigurationService = async (req, websiteDetails) => {
     try {
         const { db, file, protocol } = req;
-        const { adminId, name, slogan} = websiteDetails;
+        const { adminId, name, slogan } = websiteDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
-        const oldWebsiteDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
+        const oldConfig = await prisma?.websiteConfiguration.findFirst();
+        if (!oldConfig) {
+            return generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found. Please add a configuration to update.');
+        }
 
-        if (!oldWebsiteDetails?.id)
-            return generateResponseData({}, false, STATUS_NOT_FOUND, 'Website configuration not found. Please add website configuration to update');
+        const updatedConfig = { ...oldConfig };
+        if (name) updatedConfig.name = name;
+        if (slogan) updatedConfig.slogan = slogan;
 
-        // Initialize the object to store updated details
-        const updatedWebsiteDetails = { ...oldWebsiteDetails };
-
-        // Update name and slogan if provided
-        if (name) updatedWebsiteDetails.name = name;
-        if (slogan) updatedWebsiteDetails.slogan = slogan;
-
-        // Update the website logo if a new file is provided
         if (file) {
-            await fileManager.deleteFile(oldWebsiteDetails.fileId);
+            await fileManager.deleteFile(oldConfig.fileId);
 
             const uploadFileResponse = await fileManager.uploadFile(file);
-            if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath)
+            if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
                 return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'File upload failed. Please try again.');
+            }
 
             const fileLink = generateFileLink(req, uploadFileResponse);
-            updatedWebsiteDetails.fileId = uploadFileResponse.fileId;
-            updatedWebsiteDetails.shareableLink = fileLink;
-            updatedWebsiteDetails.downloadLink = fileLink;
+            updatedConfig.fileId = uploadFileResponse.fileId;
+            updatedConfig.shareableLink = fileLink;
+            updatedConfig.downloadLink = fileLink;
         }
 
-        // Update modifiedBy and modifiedAt
-        updatedWebsiteDetails.modifiedBy = adminId;
-        updatedWebsiteDetails.modifiedAt = new Date();
+        updatedConfig.modifiedBy = adminId;
+        updatedConfig.modifiedAt = new Date();
 
-        const result = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOneAndUpdate(
-            {}, // Assuming you are updating a single document without a filter.
-            { $set: updatedWebsiteDetails },
-            { returnDocument: 'after' } // Returns the updated document
-        );
+        const result = await prisma?.websiteConfiguration.update({
+            where: { id: oldConfig.id },
+            data: updatedConfig,
+        });
 
-        if (!result) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `Website configuration not updated`);
-        }
-
-        delete result._id;
-        delete result.id;
-        delete result.createdBy;
-        delete result.modifiedBy;
-        delete result.fileId;
-
-        return generateResponseData(result, true, STATUS_OK, `Website configuration updated successfully`);
+        return generateResponseData(result, true, STATUS_OK, "Website configuration updated successfully");
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Service function to delete the existing website configuration.
- *
- * Removes the website configuration from the database. It also ensures the deletion
- * of the associated Google Drive file for the website logo. The function checks for
- * valid admin authorization and confirms the existence of the configuration before deletion.
- *
- * @async
- * @param {Object} db - Database connection object.
- * @param {string} adminId - The identifier of the admin requesting the deletion.
- * @returns {Object} - The response data including success status and deletion confirmation.
- */
 const deleteWebsiteConfigurationService = async (db, adminId) => {
     try {
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
-        const oldDetails = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).findOne({});
+        const oldConfig = await prisma?.websiteConfiguration.findFirst();
+        if (!oldConfig) {
+            return generateResponseData({}, false, STATUS_NOT_FOUND, "Website configuration not found");
+        }
 
-        if (!oldDetails?.id)
-            return generateResponseData({}, false, STATUS_NOT_FOUND, `Website configuration not found`);
+        await fileManager.deleteFile(oldConfig.fileId);
+        await prisma?.websiteConfiguration.delete({
+            where: { id: oldConfig.id },
+        });
 
-        await fileManager.deleteFile(oldDetails.fileId);
-
-        // Deletes all documents in the collection without deleting the collection itself
-        const result = await db.collection(WEBSITE_CONFIGURATION_COLLECTION_NAME).deleteMany({});
-
-        return result.deletedCount > 0
-            ? generateResponseData({}, true, STATUS_OK, `Website configuration deleted successfully`)
-            : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `No website configuration were found to delete`);
+        return generateResponseData({}, true, STATUS_OK, "Website configuration deleted successfully");
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * @namespace WebsiteService
- * @description Group of services related to website operations.
- */
 export const WebsiteConfigurationService = {
     createWebsiteConfigurationService,
     getWebsiteConfigurationService,
