@@ -33,7 +33,7 @@ const createLevelService = async (db, newLevelDetails) => {
         // Create new level
         const newLevel = await prisma.level.create({
             data: {
-                uniqueId: String(generateUniqueID('level')), // Adjust ID prefix as needed
+                id: generateUniqueID('level'), // Use custom generated ID
                 name: String(name),
                 createdBy: String(adminId),
                 createdAt: new Date(),
@@ -63,7 +63,7 @@ const getLevelListService = async () => {
 const getALevelService = async (db, levelId) => {
     try {
         const level = await prisma.level.findUnique({
-            where: { uniqueId: levelId },
+            where: { id: levelId },
         });
 
         if (level) {
@@ -87,7 +87,7 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
         const existingLevel = await prisma.level.findUnique({
             where: { name },
         });
-        if (existingLevel && existingLevel.uniqueId !== levelId) {
+        if (existingLevel && existingLevel.id !== levelId) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
         }
 
@@ -96,14 +96,14 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
         }
 
         const oldLevel = await prisma.level.findUnique({
-            where: { uniqueId: levelId },
+            where: { id: levelId },
         });
         if (!oldLevel) {
             return generateResponseData({}, false, STATUS_NOT_FOUND, `Level ${levelId} not found`);
         }
 
         const updatedLevel = await prisma.level.update({
-            where: { uniqueId: levelId },
+            where: { id: levelId },
             data: {
                 ...(name && { name }),
                 modifiedBy: String(adminId),
@@ -127,14 +127,14 @@ const deleteALevelService = async (db, adminId, levelId) => {
         }
 
         const oldLevel = await prisma.level.findUnique({
-            where: { uniqueId: levelId },
+            where: { id: levelId },
         });
         if (!oldLevel) {
             return generateResponseData({}, false, STATUS_NOT_FOUND, `Level ${levelId} not found`);
         }
 
         await prisma.level.delete({
-            where: { uniqueId: levelId },
+            where: { id: levelId },
         });
 
         return generateResponseData({}, true, STATUS_OK, `${levelId} deleted successfully`);
