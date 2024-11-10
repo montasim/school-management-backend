@@ -9,7 +9,7 @@ import {
     STATUS_UNPROCESSABLE_ENTITY,
 } from "../../../constants/constants.js";
 import {MAX_CONCURRENT_LOGINS, MAX_FAILED_ATTEMPTS} from "../../../config/config.js";
-import prisma from "../../../shared/prisma?.js";
+import prisma from "../../../shared/prisma.js";
 import logger from "../../../shared/logger.js";
 
 import generateResponseData from "../../../shared/generateResponseData.js";

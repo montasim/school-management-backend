@@ -10,7 +10,7 @@ import { DESIGNATION_CONSTANTS } from "./designation.constants.js";
 import isValidRequest from "../../../shared/isValidRequest.js";
 import logger from "../../../shared/logger.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import prisma from "../../../shared/prisma?.js";
+import prisma from "../../../shared/prisma.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
 const createDesignationService = async (db, newDesignationDetails) => {

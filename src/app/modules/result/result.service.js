@@ -8,7 +8,7 @@ import {
 } from "../../../constants/constants.js";
 import { RESULT_CONSTANTS } from "./result.constants.js";
 import logger from "../../../shared/logger.js";
-import prisma from "../../../shared/prisma?.js";
+import prisma from "../../../shared/prisma.js";
 import fileManager from "../../../helpers/fileManager.js";
 
 import isValidRequest from "../../../shared/isValidRequest.js";

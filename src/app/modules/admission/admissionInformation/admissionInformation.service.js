@@ -7,7 +7,7 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../../constants/constants.js";
 import { ADMISSION_INFORMATION_CONSTANTS } from "./admissionInformation.constants.js";
-import prisma from "../../../../shared/prisma?.js";
+import prisma from "../../../../shared/prisma.js";
 import logger from "../../../../shared/logger.js";
 
 import isValidRequest from "../../../../shared/isValidRequest.js";

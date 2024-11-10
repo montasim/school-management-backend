@@ -9,7 +9,7 @@ import {
 import logger from "../../../../shared/logger.js";
 import { ADMISSION_FORM_CONSTANTS } from "./admissionForm.constants.js";
 import fileManager from "../../../../helpers/fileManager.js";
-import prisma from "../../../../shared/prisma?.js";
+import prisma from "../../../../shared/prisma.js";
 
 import isValidRequest from "../../../../shared/isValidRequest.js";
 import generateResponseData from "../../../../shared/generateResponseData.js";

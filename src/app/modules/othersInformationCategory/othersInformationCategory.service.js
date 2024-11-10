@@ -8,7 +8,7 @@ import {
 } from "../../../constants/constants.js";
 import { OTHERS_INFORMATION_CATEGORY_CONSTANTS } from "./othersInformationCategory.constants.js";
 import logger from "../../../shared/logger.js";
-import prisma from "../../../shared/prisma?.js";
+import prisma from "../../../shared/prisma.js";
 
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";

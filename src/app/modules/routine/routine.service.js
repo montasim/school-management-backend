@@ -1,4 +1,4 @@
-import prisma from "../../../shared/prisma?.js";
+import prisma from "../../../shared/prisma.js";
 import logger from "../../../shared/logger.js";
 import fileManager from "../../../helpers/fileManager.js";
 import {
