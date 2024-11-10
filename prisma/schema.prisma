@@ -333,3 +333,15 @@ model WebsiteOfficialLink {
 
   @@map("website_official_link") // Maps to "website_official_link" table in the database
 }
+
+model WebsiteSocialMediaLink {
+  id                  String   @id @default(uuid()) // Unique identifier
+  socialMediaLinkTitle String  // Title of the social media link
+  socialMediaLink     String   // URL of the social media link
+  createdBy           String   // ID of the user who created this entry
+  createdAt           DateTime @default(now()) // Timestamp of creation
+  modifiedBy          String?  // ID of the user who last modified this entry
+  modifiedAt          DateTime? // Timestamp of last modification
+
+  @@map("website_social_media_link") // Maps to "website_social_media_link" table in the database
+}
