@@ -89,4 +89,15 @@ model AdmissionInformation {
   @@map("admission_information") // Optional: Maps to "admission_information" table in the database
 }
 
+model Announcement {
+  id          String    @id @default(uuid()) // Unique identifier
+  name        String?    @db.Text // Allows longer text for description
+  createdBy   String    // ID of the user who created this announcement
+  createdAt   DateTime  @default(now()) // Timestamp of creation
+  modifiedBy  String?   // ID of the user who last modified this entry (nullable)
+  modifiedAt  DateTime? // Timestamp of last modification (nullable)
+
+  @@map("announcement") // Optional: maps to "announcement" table in the database
+}
+
 
