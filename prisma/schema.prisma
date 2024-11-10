@@ -251,3 +251,16 @@ model Result {
   @@map("result") // Optional: Maps to "result" table in the database
 }
 
+model Routine {
+  id            String   @id @default(uuid()) // Unique identifier
+  title         String
+  fileName      String   @unique // Unique file name
+  fileId        String?  // File ID for uploaded file (nullable)
+  shareableLink String?  // Shareable link for the file (nullable)
+  routineLink   String?  // Link to view or download the routine file
+  createdBy     String   // ID of the user who created this entry
+  createdAt     DateTime @default(now()) // Timestamp of creation
+
+  @@map("routine") // Optional: Maps to "routine" table in the database
+}
+
