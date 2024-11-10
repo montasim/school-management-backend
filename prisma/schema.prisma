@@ -14,9 +14,22 @@ datasource db {
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdBy Int
-  createdAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  uniqueId    String?  @unique
+  name        String   @unique
+  createdBy   String
+  createdAt   DateTime @default(now())
+  modifiedBy  String?  // Make it optional if it can be null
+  modifiedAt  DateTime @default(now())
+}
+
+model Level {
+  id          String   @id @default(uuid()) // unique identifier
+  uniqueId    String?  @unique
+  name        String   @unique
+  createdBy   String   // ID or username of the admin who created the level
+  createdAt   DateTime @default(now())
+  modifiedBy  String?  // ID or username of the admin who last modified the level
+  modifiedAt  DateTime? // Timestamp of the last modification
 }
 
