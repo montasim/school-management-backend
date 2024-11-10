@@ -57,3 +57,19 @@ model AdministrationOnCategories {
 
   @@id([administrationId, categoryId]) // Composite primary key
 }
+
+model AdmissionForm {
+  id             String   @id @default(uuid()) // Unique identifier
+  title          String
+  fileName       String   @unique               // File name, should be unique
+  fileId         String?                        // ID for the file in storage (nullable)
+  shareableLink  String?                        // Link to share the file (nullable)
+  downloadLink   String?                        // Link to download the file (nullable)
+  createdBy      String                         // ID of the user who created this entry
+  createdAt      DateTime @default(now())       // Timestamp of creation
+  modifiedBy     String?                        // ID of the user who last modified this entry (nullable)
+  modifiedAt     DateTime?                      // Timestamp of last modification (nullable)
+
+  @@map("admission_form") // Optional: Maps to "admission_form" table in the database
+}
+
