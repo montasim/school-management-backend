@@ -1,4 +1,6 @@
-import { ROUTINE_COLLECTION_NAME } from "../../../config/config.js";
+import prisma from "../../../shared/prisma?.js";
+import logger from "../../../shared/logger.js";
+import fileManager from "../../../helpers/fileManager.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -7,115 +9,105 @@ import {
     STATUS_OK,
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
-import { ROUTINE_CONSTANTS } from "./routine.constants.js";
-import isValidRequest from "../../../shared/isValidRequest.js";
+import {ROUTINE_CONSTANTS} from "./routine.constants.js";
+
 import generateResponseData from "../../../shared/generateResponseData.js";
-import logger from "../../../shared/logger.js";
-import createByDetails from "../../../shared/createByDetails.js";
-import findByField from "../../../shared/findByField.js";
-import getAllData from "../../../shared/getAllData.js";
-import deleteByField from "../../../shared/deleteByField.js";
-import { GoogleDriveFileOperations } from "../../../helpers/GoogleDriveFileOperations.js";
 import generateUniqueID from "../../../helpers/generateUniqueID.js";
-import fileManager from "../../../helpers/fileManager.js";
 import generateFileLink from "../../../helpers/generateFileLink.js";
+import isValidRequest from "../../../shared/isValidRequest.js";
 
 const createRoutineService = async (req, newRoutineDetails) => {
     try {
         const { db, file, protocol } = req;
         const { title, adminId } = newRoutineDetails;
 
-        if (!await isValidRequest(adminId))
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
-        if (await findByField(db, ROUTINE_COLLECTION_NAME, 'fileName', file?.originalname))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
+        const existingRoutine = await prisma?.routine.findUnique({
+            where: { fileName: file?.originalname }
+        });
+        if (existingRoutine) {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`);
+        }
 
         const uploadFileResponse = await fileManager.uploadFile(file);
-        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+        if (!uploadFileResponse?.shareableLink) {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the Google Drive. Please try again');
         }
 
         const fileLink = generateFileLink(req, uploadFileResponse);
-        const routineDetails = {
+        const routineData = {
             id: generateUniqueID(ROUTINE_CONSTANTS?.ROUTINE_ID_PREFIX),
-            title: title,
+            title,
             fileName: file?.originalname,
-            fileId: uploadFileResponse?.fileId,
+            fileId: uploadFileResponse.fileId,
             shareableLink: fileLink,
             routineLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
 
-        const result = await createByDetails(db, ROUTINE_COLLECTION_NAME, routineDetails);
-        const latestData = await findByField(db, ROUTINE_COLLECTION_NAME, 'id', routineDetails?.id);
-
-        delete latestData?.createdBy;
-        delete latestData?.fileId;
-
-        return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
-            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
+        const newRoutine = await prisma?.routine.create({ data: routineData });
+        return generateResponseData(newRoutine, true, STATUS_OK, `${file?.originalname} uploaded successfully`);
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
     }
 };
 
 const getRoutineListService = async (db) => {
     try {
-        const routines = await getAllData(db, ROUTINE_COLLECTION_NAME);
-
-        return routines?.length
-            ? generateResponseData(routines, true, STATUS_OK, `${routines?.length} routine found`)
+        const routines = await prisma?.routine.findMany();
+        return routines.length
+            ? generateResponseData(routines, true, STATUS_OK, `${routines.length} routines found`)
             : generateResponseData({}, false, STATUS_NOT_FOUND, 'No routine found');
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Error retrieving routines');
     }
 };
 
 const getARoutineService = async (db, fileName) => {
     try {
-        const routine = await findByField(db, ROUTINE_COLLECTION_NAME, 'fileName', fileName);
-
-        delete routine?.fileId;
+        const routine = await prisma?.routine.findUnique({
+            where: { fileName }
+        });
 
         return routine
             ? generateResponseData(routine, true, STATUS_OK, `${fileName} found successfully`)
             : generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Error retrieving routine');
     }
 };
 
 const deleteARoutineService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(adminId))
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
-        const fileDetails = await findByField(db, ROUTINE_COLLECTION_NAME, 'fileName', fileName);
+        const routine = await prisma?.routine.findUnique({
+            where: { fileName }
+        });
 
-        if (fileDetails) {
-            await fileManager.deleteFile(fileDetails.fileId);
-
-            const result = await deleteByField(db, ROUTINE_COLLECTION_NAME, 'fileName', fileName);
-
-            return result
-                ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)
-                : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${fileName} could not be deleted`);
-        } else {
+        if (!routine) {
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
         }
+
+        await fileManager.deleteFile(routine.fileId);
+
+        await prisma?.routine.delete({
+            where: { fileName }
+        });
+
+        return generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`);
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Error deleting routine');
     }
 };
 

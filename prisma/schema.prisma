@@ -252,14 +252,16 @@ model Result {
 }
 
 model Routine {
-  id            String   @id @default(uuid()) // Unique identifier
-  title         String
-  fileName      String   @unique // Unique file name
-  fileId        String?  // File ID for uploaded file (nullable)
-  shareableLink String?  // Shareable link for the file (nullable)
-  routineLink   String?  // Link to view or download the routine file
-  createdBy     String   // ID of the user who created this entry
-  createdAt     DateTime @default(now()) // Timestamp of creation
+  id              String   @id @default(uuid()) // Unique identifier
+  title           String   // Title of the routine
+  fileName        String   // Name of the uploaded file
+  fileId          String?  // File ID from Google Drive or another storage provider
+  shareableLink   String   // Link to access the file
+  routineLink     String   // Link to download the file
+  createdBy       String   // ID of the user who created this routine
+  createdAt       DateTime @default(now()) // Timestamp of creation
+  modifiedBy      String?  // ID of the user who last modified this routine
+  modifiedAt      DateTime? // Timestamp of last modification
 
   @@map("routine") // Optional: Maps to "routine" table in the database
 }
