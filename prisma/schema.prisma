@@ -198,3 +198,18 @@ model HomePagePost {
 
   @@map("home_page_post") // Optional: maps to "home_page_post" table in the database
 }
+
+model Notice {
+  id                       String   @id @default(uuid()) // Unique identifier
+  title                    String
+  fileName                 String   @unique               // Original file name, must be unique
+  fileId                   String?                        // File ID for storage
+  googleDriveShareableLink String?                        // Link to share the file on Google Drive
+  downloadLink             String?                        // Direct download link
+  createdBy                String                         // ID of the user who created this entry
+  createdAt                DateTime @default(now())       // Timestamp of creation
+  modifiedBy               String?                        // ID of the user who last modified this entry
+  modifiedAt               DateTime?                      // Timestamp of last modification
+
+  @@map("notice") // Optional: Maps to "notice" table in the database
+}

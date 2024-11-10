@@ -1,27 +1,3 @@
-/**
- * @fileoverview Services for managing notice operations.
- *
- * This module contains services related to notice operations within the application. It includes functions for
- * creating new notice records, fetching a list of all notices, retrieving specific notices by filename, and
- * deleting notices. Each service function interfaces with the application's database and performs specific
- * business logic operations, ensuring proper management and retrieval of notice data. Additionally, these services
- * handle interactions with external storage services, like Google Drive, for file uploads and deletions.
- *
- * @requires NOTICE_COLLECTION_NAME - Configured collection name for notices in the database.
- * @requires constants - Application constants for various status codes and messages.
- * @requires ID_CONSTANTS - Constants for prefixing identifiers in the notice module.
- * @requires isValidRequest - Utility function to validate request authenticity.
- * @requires generateResponseData - Utility function for generating standardized response data.
- * @requires logger - Shared logging utility for error handling.
- * @requires createByDetails - Utility for adding new entries to the database.
- * @requires findByField - Utility for finding a record by its identifier.
- * @requires getAllData - Utility for retrieving all records from a database collection.
- * @requires deleteByField - Utility for deleting records by filename.
- * @requires GoogleDriveFileOperations - Helper for interacting with the Google Drive API.
- * @module NoticeService - Exported object containing notice-related service functions.
- */
-
-import { NOTICE_COLLECTION_NAME } from "../../../config/config.js";
 import {
     FORBIDDEN_MESSAGE,
     STATUS_FORBIDDEN,
@@ -31,157 +7,118 @@ import {
     STATUS_UNPROCESSABLE_ENTITY
 } from "../../../constants/constants.js";
 import { NOTICE_CONSTANTS } from "./notice.constants.js";
+import logger from "../../../shared/logger.js";
+import prisma from "../../../shared/prisma.js";
+import fileManager from "../../../helpers/fileManager.js";
+
 import isValidRequest from "../../../shared/isValidRequest.js";
 import generateResponseData from "../../../shared/generateResponseData.js";
-import logger from "../../../shared/logger.js";
-import createByDetails from "../../../shared/createByDetails.js";
-import findByField from "../../../shared/findByField.js";
-import getAllData from "../../../shared/getAllData.js";
-import deleteByField from "../../../shared/deleteByField.js";
-import generateUniqueID from "../../../helpers/generateUniqueID.js";
-import fileManager from "../../../helpers/fileManager.js";
 import generateFileLink from "../../../helpers/generateFileLink.js";
+import generateUniqueID from "../../../helpers/generateUniqueID.js";
 
-/**
- * Creates a new notice entry in the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {Object} newNoticeDetails - New notice's details.
- * @param file
- * @returns {Object} - The response after attempting notice creation.
- * @throws {Error} Throws an error if any.
- */
 const createNoticeService = async (req, newNoticeDetails) => {
     try {
         const { db, file, protocol } = req;
         const { title, adminId } = newNoticeDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
-        if (await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', file?.originalname))
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`)
+        const existingFile = await prisma.notice.findUnique({
+            where: { fileName: file?.originalname }
+        });
+        if (existingFile) {
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`);
+        }
 
         const uploadFileResponse = await fileManager.uploadFile(file);
         if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the google drive. Please try again');
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload. Please try again');
         }
-        
+
         const fileLink = generateFileLink(req, uploadFileResponse);
         const noticeDetails = {
             id: generateUniqueID(NOTICE_CONSTANTS?.NOTICE_ID_PREFIX),
-            title: title,
+            title,
             fileName: file?.originalname,
-            fileId: uploadFileResponse?.fileId,
+            fileId: uploadFileResponse.fileId,
             googleDriveShareableLink: fileLink,
             downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
 
-        const result = await createByDetails(db, NOTICE_COLLECTION_NAME, noticeDetails);
-        const latestData = await findByField(db, NOTICE_COLLECTION_NAME, 'id', noticeDetails?.id);
+        const newNotice = await prisma.notice.create({
+            data: noticeDetails
+        });
 
-        delete latestData?.createdBy;
-        delete latestData?.fileId;
-
-        return result?.acknowledged
-            ? generateResponseData(latestData, true, STATUS_OK, `${file?.originalname} uploaded successfully`)
-            : generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
+        return generateResponseData(newNotice, true, STATUS_OK, `${file?.originalname} uploaded successfully`);
     } catch (error) {
         logger.error(error);
-
-        return error;
+        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');
     }
 };
 
-/**
- * Retrieves a list of all notices from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @returns {Object} - The list of notices or an error message.
- * @throws {Error} Throws an error if any.
- */
 const getNoticeListService = async (db) => {
     try {
-        const notices = await getAllData(db, NOTICE_COLLECTION_NAME);
+        const notices = await prisma.notice.findMany();
 
-        return notices?.length
-            ? generateResponseData(notices, true, STATUS_OK, `${notices?.length} notice found`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No notice found');
+        return notices.length
+            ? generateResponseData(notices, true, STATUS_OK, `${notices.length} notice(s) found`)
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No notices found');
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Retrieves a specific notice by fileName from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} fileName - The fileName of the notice to retrieve.
- * @returns {Object} - The notice details or an error message.
- * @throws {Error} Throws an error if any.
- */
 const getANoticeService = async (db, fileName) => {
     try {
-        const notice = await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', fileName);
+        const notice = await prisma.notice.findUnique({
+            where: { fileName }
+        });
 
-        delete notice?.fileId;
+        if (notice) {
+            delete notice.fileId;
+        }
 
         return notice
             ? generateResponseData(notice, true, STATUS_OK, `${fileName} found successfully`)
             : generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * Deletes a specific notice by fileName from the database.
- *
- * @async
- * @param {Object} db - DatabaseMiddleware connection object.
- * @param {string} adminId - The user fileName making the request.
- * @param {string} fileName - The fileName of the notice to delete.
- * @returns {Object} - A confirmation message or an error message.
- * @throws {Error} Throws an error if any.
- */
 const deleteANoticeService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(db, adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
+        }
 
-        const fileDetails = await findByField(db, NOTICE_COLLECTION_NAME, 'fileName', fileName);
+        const fileDetails = await prisma.notice.findUnique({
+            where: { fileName }
+        });
 
         if (fileDetails) {
             await fileManager.deleteFile(fileDetails.fileId);
 
-            const result = await deleteByField(db, NOTICE_COLLECTION_NAME, 'fileName', fileName);
+            await prisma.notice.delete({
+                where: { fileName }
+            });
 
-            return result
-                ? generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`)
-                : generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${fileName} could not be deleted`);
+            return generateResponseData({}, true, STATUS_OK, `${fileName} deleted successfully`);
         } else {
             return generateResponseData({}, false, STATUS_NOT_FOUND, `${fileName} not found`);
         }
     } catch (error) {
         logger.error(error);
-
         return error;
     }
 };
 
-/**
- * @namespace NoticeService
- * @description Group of services related to notice operations.
- */
 export const NoticeService = {
     createNoticeService,
     getNoticeListService,
