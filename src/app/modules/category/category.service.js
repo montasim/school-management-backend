@@ -26,7 +26,7 @@ const createCategoryService = async (db, newCategoryDetails) => {
         }
 
         // Validate adminId
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -97,7 +97,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
         }
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -128,7 +128,7 @@ const updateACategoryService = async (db, categoryId, newCategoryDetails) => {
 
 const deleteACategoryService = async (db, adminId, categoryId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

@@ -21,7 +21,7 @@ const createNoticeService = async (req, newNoticeDetails) => {
         const { db, file, protocol } = req;
         const { title, adminId } = newNoticeDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -94,7 +94,7 @@ const getANoticeService = async (db, fileName) => {
 
 const deleteANoticeService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

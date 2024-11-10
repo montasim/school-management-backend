@@ -18,7 +18,7 @@ const createWebsiteContactService = async (db, websiteContactDetails) => {
     try {
         const { address, googleMapLocation, mobile, phone, email, website, adminId } = websiteContactDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -82,7 +82,7 @@ const updateWebsiteContactService = async (db, websiteContactDetails) => {
     try {
         const { address, googleMapLocation, mobile, phone, email, website, latitude, longitude, adminId } = websiteContactDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return {
                 data: {},
                 success: false,
@@ -133,7 +133,7 @@ const updateWebsiteContactService = async (db, websiteContactDetails) => {
 
 const deleteWebsiteContactService = async (db, adminId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

@@ -18,7 +18,7 @@ const createWebsiteImportantInformationLinkService = async (db, newWebsiteImport
     try {
         const { importantInformationLinkTitle, importantInformationLink, adminId } = newWebsiteImportantInformationLinkDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

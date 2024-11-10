@@ -51,7 +51,7 @@ const createStudentService = async (req, newStudentDetails) => {
         const { db, file, protocol } = req;
         const { name, level, adminId } = newStudentDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const levelExists = await findByField(db, LEVEL_COLLECTION_NAME, 'name', level);
@@ -173,7 +173,7 @@ const updateAStudentService = async (req, studentId, newStudentDetails) => {
         const { db, file, protocol } = req;
         const { name, level, adminId } = newStudentDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         // Retrieve the current details of the student
@@ -257,7 +257,7 @@ const updateAStudentService = async (req, studentId, newStudentDetails) => {
  */
 const deleteAStudentService = async (db, adminId, studentId) => {
     try {
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const oldDetails = await findByField(db, STUDENT_COLLECTION_NAME, 'id', studentId);

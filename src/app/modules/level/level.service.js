@@ -26,7 +26,7 @@ const createLevelService = async (db, newLevelDetails) => {
         }
 
         // Validate adminId
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -91,7 +91,7 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `${name} already exists`);
         }
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -122,7 +122,7 @@ const updateALevelService = async (db, levelId, newLevelDetails) => {
 
 const deleteALevelService = async (db, adminId, levelId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

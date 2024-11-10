@@ -18,7 +18,7 @@ const createAdmissionInformationService = async (db, newAdmissionInformationDeta
     try {
         const { title, description, formPrice, admissionFee, lastFormSubmissionData, contact, adminId } = newAdmissionInformationDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -82,7 +82,7 @@ const updateAAdmissionInformationService = async (db, admissionInformationId, ne
     try {
         const { title, description, formPrice, admissionFee, lastFormSubmissionData, contact, adminId } = newAdmissionInformationDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -119,7 +119,7 @@ const updateAAdmissionInformationService = async (db, admissionInformationId, ne
 
 const deleteAAdmissionInformationService = async (db, adminId, admissionInformationId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

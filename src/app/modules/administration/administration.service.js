@@ -21,7 +21,7 @@ const createAdministrationService = async (req, newAdministrationDetails) => {
         const { db, file, protocol } = req;
         const { name, category, designation, adminId } = newAdministrationDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -116,7 +116,7 @@ const updateAAdministrationService = async (req, administrationId, newAdministra
         const { db, file } = req;
         const { name, category, designation, adminId } = newAdministrationDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

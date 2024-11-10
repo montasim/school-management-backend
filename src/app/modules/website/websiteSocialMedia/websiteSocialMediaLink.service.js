@@ -18,7 +18,7 @@ const createWebsiteSocialMediaLinkService = async (db, newWebsiteSocialMediaLink
     try {
         const { socialMediaLinkTitle, socialMediaLink, adminId } = newWebsiteSocialMediaLinkDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -73,7 +73,7 @@ const updateAWebsiteSocialMediaLinkService = async (db, websiteSocialMediaLinkId
     try {
         const { socialMediaLinkTitle, socialMediaLink, adminId } = updateWebsiteSocialMediaLinkDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -98,7 +98,7 @@ const updateAWebsiteSocialMediaLinkService = async (db, websiteSocialMediaLinkId
 
 const deleteAWebsiteSocialMediaLinkService = async (db, adminId, websiteSocialMediaLinkId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

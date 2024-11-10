@@ -25,7 +25,7 @@ const createWebsiteBannerService = async (req, adminId) => {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, "Website banner already exists. Please delete the current banner before adding a new one.");
         }
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -74,7 +74,7 @@ const updateWebsiteBannerService = async (req, adminId) => {
     try {
         const { db, file, protocol } = req;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -113,7 +113,7 @@ const updateWebsiteBannerService = async (req, adminId) => {
 
 const deleteAWebsiteBannerService = async (db, adminId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

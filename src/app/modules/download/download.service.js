@@ -21,7 +21,7 @@ const createDownloadService = async (req, newDownloadDetails) => {
         const { db, file, protocol } = req;
         const { title, adminId } = newDownloadDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -101,7 +101,7 @@ const getADownloadService = async (db, fileName) => {
 
 const deleteADownloadService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

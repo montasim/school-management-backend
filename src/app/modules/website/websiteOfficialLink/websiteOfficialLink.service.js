@@ -18,7 +18,7 @@ const createWebsiteOfficialLinkService = async (db, newWebsiteOfficialLinkDetail
     try {
         const { officialLinkTitle, officialLink, adminId } = newWebsiteOfficialLinkDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -73,7 +73,7 @@ const updateAWebsiteOfficialLinkService = async (db, websiteOfficialLinkId, upda
     try {
         const { officialLinkTitle, officialLink, adminId } = updateWebsiteOfficialLinkDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -98,7 +98,7 @@ const updateAWebsiteOfficialLinkService = async (db, websiteOfficialLinkId, upda
 
 const deleteAWebsiteOfficialLinkService = async (db, adminId, websiteOfficialLinkId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

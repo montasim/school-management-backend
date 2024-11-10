@@ -24,7 +24,7 @@ const createVideoGalleryService = async (db, newVideoGalleryDetails) => {
             return generateResponseData({}, false, STATUS_BAD_REQUEST, 'Invalid YouTube URL');
         }
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -80,7 +80,7 @@ const updateAVideoGalleryService = async (db, videoGalleryId, updateVideoGallery
     try {
         const { videoGalleryTitle, videoLink, adminId } = updateVideoGalleryDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -114,7 +114,7 @@ const updateAVideoGalleryService = async (db, videoGalleryId, updateVideoGallery
 
 const deleteAVideoGalleryService = async (db, adminId, videoGalleryId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

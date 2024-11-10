@@ -21,7 +21,7 @@ const createWebsiteConfigurationService = async (req, websiteDetails) => {
         const { db, file, protocol } = req;
         const { name, slogan, adminId } = websiteDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -78,7 +78,7 @@ const updateWebsiteConfigurationService = async (req, websiteDetails) => {
         const { db, file, protocol } = req;
         const { adminId, name, slogan } = websiteDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -122,7 +122,7 @@ const updateWebsiteConfigurationService = async (req, websiteDetails) => {
 
 const deleteWebsiteConfigurationService = async (db, adminId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

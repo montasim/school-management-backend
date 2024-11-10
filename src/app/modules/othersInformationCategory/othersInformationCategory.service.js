@@ -18,7 +18,7 @@ const createOthersInformationCategory = async (db, newOthersInformationCategoryD
     try {
         const { name, adminId } = newOthersInformationCategoryDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -77,7 +77,7 @@ const updateAOthersInformationCategory = async (db, othersInformationCategoryId,
     try {
         const { name, adminId } = newCategoryDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -101,7 +101,7 @@ const updateAOthersInformationCategory = async (db, othersInformationCategoryId,
 
 const deleteAOthersInformationCategory = async (db, adminId, othersInformationCategoryId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

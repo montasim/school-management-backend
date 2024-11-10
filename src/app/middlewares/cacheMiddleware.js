@@ -143,7 +143,7 @@ const deleteCacheMiddleware = (req, res, next) => {
 const flushAllCacheMiddleware = async (req, res) => {
     try {
         const { adminId, db } = req; // Ensure db and adminId are available in the request context
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         logger.info('Cache before clearing:', cache.keys()); // Log current cache keys

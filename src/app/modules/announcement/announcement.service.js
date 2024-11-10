@@ -18,7 +18,7 @@ const createAnnouncementService = async (db, newAnnouncementDetails) => {
     try {
         const { name, adminId } = newAnnouncementDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -82,7 +82,7 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
     try {
         const { name, adminId } = newAnnouncementDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -114,7 +114,7 @@ const updateAAnnouncementService = async (db, announcementId, newAnnouncementDet
 
 const deleteAAnnouncementService = async (db, adminId, announcementId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

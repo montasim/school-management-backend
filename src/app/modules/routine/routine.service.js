@@ -25,7 +25,7 @@ const createRoutineService = async (req, newRoutineDetails) => {
         const { db, file, protocol } = req;
         const { title, adminId } = newRoutineDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         if (await findByField(db, ROUTINE_COLLECTION_NAME, 'fileName', file?.originalname))
@@ -96,7 +96,7 @@ const getARoutineService = async (db, fileName) => {
 
 const deleteARoutineService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const fileDetails = await findByField(db, ROUTINE_COLLECTION_NAME, 'fileName', fileName);

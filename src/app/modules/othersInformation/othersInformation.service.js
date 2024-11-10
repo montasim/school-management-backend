@@ -18,7 +18,7 @@ const createOthersInformationService = async (db, newOthersInformationDetails) =
     try {
         const { title, category, description, adminId } = newOthersInformationDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -74,7 +74,7 @@ const updateAOthersInformationService = async (db, othersInformationId, newOther
     try {
         const { title, category, description, adminId } = newOthersInformationDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -100,7 +100,7 @@ const updateAOthersInformationService = async (db, othersInformationId, newOther
 
 const deleteAOthersInformationService = async (db, adminId, othersInformationId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

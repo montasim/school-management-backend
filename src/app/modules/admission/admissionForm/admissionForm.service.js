@@ -21,7 +21,7 @@ const createAdmissionFormService = async (req, newAdmissionFormDetails) => {
         const { db, file, protocol } = req;
         const { title, adminId } = newAdmissionFormDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const existingForm = await prisma?.admissionForm.findUnique({
@@ -102,7 +102,7 @@ const getAAdmissionFormService = async (db, fileName) => {
 
 const deleteAAdmissionFormService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

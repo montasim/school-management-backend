@@ -20,7 +20,7 @@ const createPhotoGalleryService = async (req, newPhotoGalleryDetails) => {
         const { db, file, protocol } = req;
         const { title, adminId } = newPhotoGalleryDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -93,7 +93,7 @@ const getAPhotoGalleryService = async (db, photoGalleryId) => {
 
 const deleteAPhotoGalleryService = async (db, adminId, photoGalleryId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

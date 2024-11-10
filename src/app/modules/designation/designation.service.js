@@ -17,7 +17,7 @@ const createDesignationService = async (db, newDesignationDetails) => {
     try {
         const { name, adminId } = newDesignationDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -84,7 +84,7 @@ const updateADesignationService = async (db, designationId, newDesignationDetail
     try {
         const { name, adminId } = newDesignationDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -116,7 +116,7 @@ const updateADesignationService = async (db, designationId, newDesignationDetail
 
 const deleteADesignationService = async (db, adminId, designationId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

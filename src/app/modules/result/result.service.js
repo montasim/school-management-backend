@@ -21,7 +21,7 @@ const createResultService = async (req, newResultDetails) => {
         const { db, file, protocol } = req;
         const { title, adminId } = newResultDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -91,7 +91,7 @@ const getAResultService = async (db, fileName) => {
 
 const deleteAResultService = async (db, adminId, fileName) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

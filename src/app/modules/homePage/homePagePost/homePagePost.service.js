@@ -21,7 +21,7 @@ const createHomePagePostService = async (req, newHomePagePostDetails) => {
         const { db, file, protocol } = req;
         const { title, category, description, adminId } = newHomePagePostDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -96,7 +96,7 @@ const updateAHomePagePostService = async (req, newHomePagePostDetails) => {
             return generateResponseData({}, false, STATUS_BAD_REQUEST, "All fields cannot be empty");
         }
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -140,7 +140,7 @@ const updateAHomePagePostService = async (req, newHomePagePostDetails) => {
 
 const deleteAHomePagePostService = async (db, adminId, homePagePostId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

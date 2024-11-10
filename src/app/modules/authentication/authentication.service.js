@@ -379,7 +379,7 @@ const deleteUserService = async (db, adminDetails) => {
     try {
         const { adminId, name } = adminDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const result = await deleteByField(db, ADMIN_COLLECTION_NAME, 'id', adminId);

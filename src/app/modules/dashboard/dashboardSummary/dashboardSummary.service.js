@@ -65,7 +65,7 @@ import generateResponseData from "../../../../shared/generateResponseData.js";
  */
 const getDashboardSummaryService = async (db, adminId, filterBy) => {
     try {
-        if (!(await isValidRequest(db, adminId))) {
+        if (!(await isValidRequest(adminId))) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 

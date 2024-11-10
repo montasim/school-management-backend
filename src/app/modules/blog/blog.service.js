@@ -21,7 +21,7 @@ const createBlogService = async (req, newBlogDetails) => {
         const { db, file, protocol } = req;
         const { title, category, description, adminId } = newBlogDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const uploadFileResponse = await fileManager.uploadFile(file);
@@ -100,7 +100,7 @@ const updateABlogService = async (req, blogId, newBlogDetails) => {
         const { db, file, protocol } = req;
         const { title, category, description, adminId } = newBlogDetails;
 
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const existingBlog = await prisma?.blog.findUnique({
@@ -147,7 +147,7 @@ const updateABlogService = async (req, blogId, newBlogDetails) => {
 
 const deleteABlogService = async (db, adminId, blogId) => {
     try {
-        if (!await isValidRequest(db, adminId))
+        if (!await isValidRequest(adminId))
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
 
         const existingBlog = await prisma?.blog.findUnique({

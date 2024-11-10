@@ -21,7 +21,7 @@ const createHomePageCarouselService = async (req, newHomePageCarouselDetails) =>
         const { db, file, protocol } = req;
         const { title, adminId } = newHomePageCarouselDetails;
 
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
@@ -93,7 +93,7 @@ const getAHomePageCarouselService = async (db, homePageCarouselId) => {
 
 const deleteAHomePageCarouselService = async (db, adminId, homePageCarouselId) => {
     try {
-        if (!await isValidRequest(db, adminId)) {
+        if (!await isValidRequest(adminId)) {
             return generateResponseData({}, false, STATUS_FORBIDDEN, FORBIDDEN_MESSAGE);
         }
 
