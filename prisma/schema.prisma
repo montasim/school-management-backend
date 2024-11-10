@@ -182,3 +182,19 @@ model HomePageCarousel {
 
   @@map("home_page_carousel") // Optional: maps to "home_page_carousel" table in the database
 }
+
+model HomePagePost {
+  id           String   @id @default(uuid()) // Unique identifier
+  title        String
+  category     String
+  description  String?    @db.Text            // Allows longer text for description
+  fileId       String?                      // File ID for storage (nullable)
+  shareableLink String?                     // Link to share the file (nullable)
+  downloadLink  String?                     // Link to download the file (nullable)
+  createdBy    String                       // ID of the user who created this entry
+  createdAt    DateTime @default(now())     // Timestamp of creation
+  modifiedBy   String?                      // ID of the user who last modified this entry (nullable)
+  modifiedAt   DateTime?                    // Timestamp of last modification (nullable)
+
+  @@map("home_page_post") // Optional: maps to "home_page_post" table in the database
+}
