@@ -126,3 +126,18 @@ model Designation {
 
   @@map("designation") // Optional: Maps to "designation" table in the database
 }
+
+model Download {
+  id             String    @id @default(uuid()) // Unique identifier
+  title          String
+  fileName       String    @unique              // Unique file name to prevent duplicates
+  fileId         String?                         // File ID for storage (nullable)
+  shareableLink  String?                         // Link to share the file (nullable)
+  downloadLink   String?                         // Link to download the file (nullable)
+  createdBy      String                          // ID of the user who created this entry
+  createdAt      DateTime  @default(now())       // Timestamp of creation
+  modifiedBy     String?                         // ID of the user who last modified this entry (nullable)
+  modifiedAt     DateTime?                       // Timestamp of last modification (nullable)
+
+  @@map("download") // Optional: maps to "download" table in the database
+}
