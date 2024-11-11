@@ -33,7 +33,7 @@ const createRoutineService = async (req, newRoutineDetails) => {
         }
 
         const uploadFileResponse = await fileManager.uploadFile(file);
-        if (!uploadFileResponse?.shareableLink) {
+        if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the Google Drive. Please try again');
         }
 
