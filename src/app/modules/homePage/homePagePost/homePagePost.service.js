@@ -89,10 +89,10 @@ const getAHomePagePostService = async (db, homePagePostId) => {
 
 const updateAHomePagePostService = async (req, newHomePagePostDetails) => {
     try {
-        const { db, file: postImage, protocol } = req;
+        const { db, file, protocol } = req;
         const { homePagePostId, title, category, description, adminId } = newHomePagePostDetails;
 
-        if (!title && !category && !description && !postImage) {
+        if (!title && !category && !description && !file) {
             return generateResponseData({}, false, STATUS_BAD_REQUEST, "All fields cannot be empty");
         }
 
@@ -113,11 +113,11 @@ const updateAHomePagePostService = async (req, newHomePagePostDetails) => {
         if (category) updatedData.category = category;
         if (description) updatedData.description = description;
 
-        if (postImage) {
+        if (file) {
             await fileManager.deleteFile(oldDetails.fileId);
 
-            const uploadFileResponse = await fileManager.uploadFile(postImage);
-            if (!uploadFileResponse?.shareableLink) {
+            const uploadFileResponse = await fileManager.uploadFile(file);
+            if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
                 return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload image. Please try again');
             }
 
