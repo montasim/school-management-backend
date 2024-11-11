@@ -50,7 +50,7 @@ const createRoutineService = async (req, newRoutineDetails) => {
             createdAt: new Date(),
         };
 
-        const newResult = await prisma?.result.create({
+        const newResult = await prisma?.routine.create({
             data: routineData
         });
 
@@ -64,12 +64,13 @@ const createRoutineService = async (req, newRoutineDetails) => {
 const getRoutineListService = async (db) => {
     try {
         const routines = await prisma?.routine.findMany();
+
         return routines.length
             ? generateResponseData(routines, true, STATUS_OK, `${routines.length} routines found`)
-            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No routine found');
+            : generateResponseData({}, false, STATUS_NOT_FOUND, 'No routines found');
     } catch (error) {
         logger.error(error);
-        return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Error retrieving routines');
+        return error;
     }
 };
 
