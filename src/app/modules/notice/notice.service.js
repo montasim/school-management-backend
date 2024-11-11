@@ -43,7 +43,7 @@ const createNoticeService = async (req, newNoticeDetails) => {
             title,
             fileName: file?.originalname,
             fileId: uploadFileResponse.fileId,
-            googleDriveShareableLink: fileLink,
+            shareableLink: fileLink,
             downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),

@@ -45,7 +45,7 @@ const createResultService = async (req, newResultDetails) => {
             fileName: file?.originalname,
             fileId: uploadFileResponse?.fileId,
             shareableLink: fileLink,
-            resultLink: fileLink,
+            downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };

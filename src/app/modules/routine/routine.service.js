@@ -28,13 +28,14 @@ const createRoutineService = async (req, newRoutineDetails) => {
         const existingRoutine = await prisma?.routine.findUnique({
             where: { fileName: file?.originalname }
         });
+
         if (existingRoutine) {
             return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, `File name ${file?.originalname} already exists. Please select a different file name`);
         }
 
         const uploadFileResponse = await fileManager.uploadFile(file);
         if (!uploadFileResponse?.shareableLink && !uploadFileResponse?.filePath) {
-            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload in the Google Drive. Please try again');
+            return generateResponseData({}, false, STATUS_UNPROCESSABLE_ENTITY, 'Failed to upload to Google Drive. Please try again');
         }
 
         const fileLink = generateFileLink(req, uploadFileResponse);
@@ -42,15 +43,18 @@ const createRoutineService = async (req, newRoutineDetails) => {
             id: generateUniqueID(ROUTINE_CONSTANTS?.ROUTINE_ID_PREFIX),
             title,
             fileName: file?.originalname,
-            fileId: uploadFileResponse.fileId,
+            fileId: uploadFileResponse?.fileId,
             shareableLink: fileLink,
-            routineLink: fileLink,
+            downloadLink: fileLink,
             createdBy: adminId,
             createdAt: new Date(),
         };
 
-        const newRoutine = await prisma?.routine.create({ data: routineData });
-        return generateResponseData(newRoutine, true, STATUS_OK, `${file?.originalname} uploaded successfully`);
+        const newResult = await prisma?.result.create({
+            data: routineData
+        });
+
+        return generateResponseData(newResult, true, STATUS_OK, `${file?.originalname} uploaded successfully`);
     } catch (error) {
         logger.error(error);
         return generateResponseData({}, false, STATUS_INTERNAL_SERVER_ERROR, 'Failed to upload. Please try again');

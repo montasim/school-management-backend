@@ -31,13 +31,13 @@ model Administration {
   id            String    @id // Unique identifier without default
   name          String
   designation   String
-  fileId        String?   // File ID for uploaded file (nullable)
-  downloadLink  String?   // Link to download the file (nullable)
-  shareableLink String?   // Shareable link for the file (nullable)
-  category    String?   // Delimited string of category names
-  createdBy     String    // ID of the user who created this entry
+  fileId        String? // File ID for uploaded file (nullable)
+  downloadLink  String? // Link to download the file (nullable)
+  shareableLink String? // Shareable link for the file (nullable)
+  category      String? // Delimited string of category names
+  createdBy     String // ID of the user who created this entry
   createdAt     DateTime  @default(now())
-  modifiedBy    String?   // ID of the user who last modified this entry (nullable)
+  modifiedBy    String? // ID of the user who last modified this entry (nullable)
   modifiedAt    DateTime? // Timestamp of the last modification (nullable)
 
   @@map("administration") // Maps to the "administration" table in the database
@@ -185,16 +185,16 @@ model HomePagePost {
 }
 
 model Notice {
-  id                       String    @id @default(uuid()) // Unique identifier
-  title                    String
-  fileName                 String    @unique // Original file name, must be unique
-  fileId                   String? // File ID for storage
-  googleDriveShareableLink String? // Link to share the file on Google Drive
-  downloadLink             String? // Direct download link
-  createdBy                String // ID of the user who created this entry
-  createdAt                DateTime  @default(now()) // Timestamp of creation
-  modifiedBy               String? // ID of the user who last modified this entry
-  modifiedAt               DateTime? // Timestamp of last modification
+  id            String    @id @default(uuid()) // Unique identifier
+  title         String
+  fileName      String    @unique // Original file name, must be unique
+  fileId        String? // File ID for storage
+  shareableLink String? // Link to share the file on Google Drive
+  downloadLink  String? // Direct download link
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime  @default(now()) // Timestamp of creation
+  modifiedBy    String? // ID of the user who last modified this entry
+  modifiedAt    DateTime? // Timestamp of last modification
 
   @@map("notice") // Optional: Maps to "notice" table in the database
 }
@@ -229,7 +229,7 @@ model Result {
   fileName      String   @unique // Unique file name
   fileId        String? // File ID for uploaded file (nullable)
   shareableLink String? // Shareable link for the file (nullable)
-  resultLink    String? // Link to view or download the result file
+  downloadLink  String? // Link to view or download the result file
   createdBy     String // ID of the user who created this entry
   createdAt     DateTime @default(now()) // Timestamp of creation
 
@@ -237,16 +237,14 @@ model Result {
 }
 
 model Routine {
-  id            String    @id @default(uuid()) // Unique identifier
-  title         String // Title of the routine
-  fileName      String // Name of the uploaded file
-  fileId        String? // File ID from Google Drive or another storage provider
-  shareableLink String // Link to access the file
-  routineLink   String // Link to download the file
-  createdBy     String // ID of the user who created this routine
-  createdAt     DateTime  @default(now()) // Timestamp of creation
-  modifiedBy    String? // ID of the user who last modified this routine
-  modifiedAt    DateTime? // Timestamp of last modification
+  id            String   @id @default(uuid()) // Unique identifier
+  title         String
+  fileName      String   @unique // Unique file name
+  fileId        String? // File ID for uploaded file (nullable)
+  shareableLink String? // Shareable link for the file (nullable)
+  downloadLink  String? // Link to view or download the result file
+  createdBy     String // ID of the user who created this entry
+  createdAt     DateTime @default(now()) // Timestamp of creation
 
   @@map("routine") // Optional: Maps to "routine" table in the database
 }
@@ -350,16 +348,16 @@ model Admin {
 }
 
 model Student {
-    id            String    @id @default(uuid()) // Unique identifier with a default UUID
-    name          String
-    level         String // Storing the level name directly
-    fileId        String? // File ID from file storage (Google Drive, etc.)
-    shareableLink String? // Publicly shareable link to the student's file
-    downloadLink  String? // Direct download link to the student's file
-    createdBy     String // ID or username of the admin who created the student
-    createdAt     DateTime  @default(now()) // Timestamp when the student was created
-    modifiedBy    String? // ID or username of the admin who last modified the student
-    modifiedAt    DateTime? // Timestamp of the last modification
+  id            String    @id @default(uuid()) // Unique identifier with a default UUID
+  name          String
+  level         String // Storing the level name directly
+  fileId        String? // File ID from file storage (Google Drive, etc.)
+  shareableLink String? // Publicly shareable link to the student's file
+  downloadLink  String? // Direct download link to the student's file
+  createdBy     String // ID or username of the admin who created the student
+  createdAt     DateTime  @default(now()) // Timestamp when the student was created
+  modifiedBy    String? // ID or username of the admin who last modified the student
+  modifiedAt    DateTime? // Timestamp of the last modification
 
   @@map("student") // Maps to "website_social_media_link" table in the database
 }
