@@ -17,7 +17,6 @@ import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { LevelValidators } from "./level.validator.js";
 import { LevelController } from "./level.controller.js";
-import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -46,7 +45,6 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     LevelValidators.levelBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     LevelController.createLevelController
 ]);
 
@@ -65,7 +63,6 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     LevelController.getLevelListController
 ]);
 
@@ -92,7 +89,6 @@ router.get("/", [
  */
 router.get("/:levelId", [
     LevelValidators.levelParamsValidator,
-    CacheMiddleware.createCacheMiddleware,
     LevelController.getALevelController
 ]);
 
@@ -128,7 +124,6 @@ router.put("/:levelId", [
     authTokenMiddleware,
     LevelValidators.levelParamsValidator,
     LevelValidators.levelBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     LevelController.updateALevelController
 ]);
 
@@ -158,7 +153,6 @@ router.put("/:levelId", [
 router.delete("/:levelId", [
     authTokenMiddleware,
     LevelValidators.levelParamsValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     LevelController.deleteALevelController
 ]);
 

@@ -19,7 +19,6 @@ import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteOfficialLinkValidators } from "./websiteOfficialLink.validator.js";
 import { WebsiteOfficialLinkController } from "./websiteOfficialLink.controller.js";
-import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -57,7 +56,6 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     WebsiteOfficialLinkValidators.websiteOfficialLinkBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteOfficialLinkController.createWebsiteOfficialLinkController
 ]);
 
@@ -76,7 +74,6 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     WebsiteOfficialLinkController.getWebsiteOfficialLinkListController
 ]);
 
@@ -96,7 +93,6 @@ router.get("/", [
  */
 router.get("/:websiteOfficialLinkId", [
     WebsiteOfficialLinkValidators.websiteOfficialLinkParamsValidator,
-    CacheMiddleware.createCacheMiddleware,
     WebsiteOfficialLinkController.getAWebsiteOfficialLinkController
 ]);
 
@@ -135,7 +131,6 @@ router.put("/:websiteOfficialLinkId", [
     authTokenMiddleware,
     WebsiteOfficialLinkValidators.websiteOfficialLinkParamsValidator,
     WebsiteOfficialLinkValidators.websiteOfficialLinkBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteOfficialLinkController.updateAWebsiteOfficialLinkController
 ]);
 
@@ -158,7 +153,6 @@ router.put("/:websiteOfficialLinkId", [
 router.delete("/:websiteOfficialLinkId", [
     authTokenMiddleware,
     WebsiteOfficialLinkValidators.websiteOfficialLinkParamsValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteOfficialLinkController.deleteAWebsiteOfficialLinkController
 ]);
 

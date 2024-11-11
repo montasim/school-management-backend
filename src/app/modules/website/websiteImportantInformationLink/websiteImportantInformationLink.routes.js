@@ -19,7 +19,6 @@ import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteImportantInformationLinkValidators } from "./websiteImportantInformationLink.validator.js";
 import { WebsiteImportantInformationLinkController } from "./websiteImportantInformationLink.controller.js";
-import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -57,7 +56,6 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteImportantInformationLinkController.createWebsiteImportantInformationLinkController
 ]);
 
@@ -76,7 +74,6 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     WebsiteImportantInformationLinkController.getWebsiteImportantInformationLinkListController
 ]);
 
@@ -96,7 +93,6 @@ router.get("/", [
  */
 router.get("/:websiteImportantInformationLinkId", [
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkParamsValidator,
-    CacheMiddleware.createCacheMiddleware,
     WebsiteImportantInformationLinkController.getAWebsiteImportantInformationLinkController
 ]);
 
@@ -135,7 +131,6 @@ router.put("/:websiteImportantInformationLinkId", [
     authTokenMiddleware,
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkParamsValidator,
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteImportantInformationLinkController.updateAWebsiteImportantInformationLinkController
 ]);
 
@@ -158,7 +153,6 @@ router.put("/:websiteImportantInformationLinkId", [
 router.delete("/:websiteImportantInformationLinkId", [
     authTokenMiddleware,
     WebsiteImportantInformationLinkValidators.websiteImportantInformationLinkParamsValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteImportantInformationLinkController.deleteAWebsiteImportantInformationLinkController
 ]);
 

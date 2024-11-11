@@ -19,7 +19,6 @@ import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { VideoGalleryValidators } from "./videoGallery.validator.js";
 import { VideoGalleryController } from "./videoGallery.controller.js";
-import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -55,7 +54,6 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     VideoGalleryValidators.videoGalleryBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     VideoGalleryController.createVideoGalleryController
 ]);
 
@@ -74,7 +72,6 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     VideoGalleryController.getVideoGalleryListController
 ]);
 
@@ -94,7 +91,6 @@ router.get("/", [
  */
 router.get("/:videoGalleryId", [
     VideoGalleryValidators.videoGalleryParamsValidator,
-    CacheMiddleware.createCacheMiddleware,
     VideoGalleryController.getAVideoGalleryController
 ]);
 
@@ -130,7 +126,6 @@ router.put("/:videoGalleryId", [
     authTokenMiddleware,
     VideoGalleryValidators.videoGalleryParamsValidator,
     VideoGalleryValidators.videoGalleryBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     VideoGalleryController.updateAVideoGalleryController
 ]);
 
@@ -153,7 +148,6 @@ router.put("/:videoGalleryId", [
 router.delete("/:videoGalleryId", [
     authTokenMiddleware,
     VideoGalleryValidators.videoGalleryParamsValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     VideoGalleryController.deleteAVideoGalleryController
 ]);
 

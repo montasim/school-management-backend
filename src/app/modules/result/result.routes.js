@@ -19,7 +19,6 @@ import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { ResultValidationService } from "./result.validator.js";
 import { ResultController } from "./result.controller.js";
-import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -58,7 +57,6 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware?.single('file'),
     ResultValidationService?.validateNewResultDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     ResultController?.createResultController
 ]);
 
@@ -80,7 +78,6 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     ResultController.getResultListController
 ]);
 
@@ -108,7 +105,6 @@ router.get("/", [
  */
 router.get("/:fileName", [
     ResultValidationService.validateResultParams,
-    CacheMiddleware.createCacheMiddleware,
     ResultController.getAResultController
 ]);
 
@@ -140,7 +136,6 @@ router.get("/:fileName", [
 router.delete("/:fileName", [
     authTokenMiddleware,
     ResultValidationService.validateResultParams,
-    CacheMiddleware.deleteCacheMiddleware,
     ResultController.deleteAResultController
 ]);
 

@@ -58,7 +58,6 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('file'),
     AdmissionFormValidationService.validateNewAdmissionFormDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     AdmissionFormController.createAdmissionFormController
 ]);
 
@@ -80,7 +79,6 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     AdmissionFormController.getAdmissionFormListController
 ]);
 
@@ -108,7 +106,6 @@ router.get("/", [
  */
 router.get("/:fileName", [
     AdmissionFormValidationService.validateAdmissionFormParams,
-    CacheMiddleware.createCacheMiddleware,
     AdmissionFormController.getAAdmissionFormController
 ]);
 
@@ -140,7 +137,6 @@ router.get("/:fileName", [
 router.delete("/:fileName", [
     authTokenMiddleware,
     AdmissionFormValidationService.validateAdmissionFormParams,
-    CacheMiddleware.deleteCacheMiddleware,
     AdmissionFormController.deleteAAdmissionFormController
 ]);
 

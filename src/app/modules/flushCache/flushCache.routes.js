@@ -26,7 +26,6 @@ const router = express.Router();
  */
 router.delete("/", [
     authTokenMiddleware,
-    CacheMiddleware.flushAllCacheMiddleware
 ]);
 
 export default router;

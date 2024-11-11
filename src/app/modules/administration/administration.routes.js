@@ -19,7 +19,6 @@
 
 import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
-import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 import fileUploadMiddleware from "../../middlewares/fileUploadMiddleware.js";
 import { AdministrationValidationService } from "./administration.validator.js";
 import { AdministrationController } from "./administration.controller.js";
@@ -65,7 +64,6 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
     AdministrationValidationService.validateNewAdministrationDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     AdministrationController.createAdministrationController
 ]);
 
@@ -87,7 +85,6 @@ router.post("/", [
  * @route GET /
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     AdministrationController.getAdministrationListController
 ]);
 
@@ -115,7 +112,6 @@ router.get("/", [
  */
 router.get("/:administrationId", [
     AdministrationValidationService.validateAdministrationParams,
-    CacheMiddleware.createCacheMiddleware,
     AdministrationController.getAAdministrationController
 ]);
 
@@ -159,7 +155,6 @@ router.put("/:administrationId", [
     fileUploadMiddleware.single('image'),
     AdministrationValidationService.validateAdministrationParams,
     AdministrationValidationService.validateUpdatedAdministrationDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     AdministrationController.updateAAdministrationController
 ]);
 
@@ -191,7 +186,6 @@ router.put("/:administrationId", [
 router.delete("/:administrationId", [
     authTokenMiddleware,
     AdministrationValidationService.validateAdministrationParams,
-    CacheMiddleware.deleteCacheMiddleware,
     AdministrationController.deleteAAdministrationController
 ]);
 

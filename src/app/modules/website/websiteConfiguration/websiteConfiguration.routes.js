@@ -18,7 +18,6 @@ import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteConfigurationValidationService } from "./websiteConfiguration.validator.js";
 import { WebsiteConfigurationController } from "./websiteConfiguration.controller.js";
 import fileUploadMiddleware from "../../../middlewares/fileUploadMiddleware.js";
-import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -61,7 +60,6 @@ router.post("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
     WebsiteConfigurationValidationService.validateNewWebsiteConfigurationDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteConfigurationController.createWebsiteConfigurationController
 ]);
 
@@ -80,7 +78,6 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     WebsiteConfigurationController.getWebsiteConfigurationController
 ]);
 
@@ -123,7 +120,6 @@ router.put("/", [
     authTokenMiddleware,
     fileUploadMiddleware.single('image'),
     WebsiteConfigurationValidationService.validateUpdateWebsiteConfigurationDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteConfigurationController.updateWebsiteConfigurationController
 ]);
 
@@ -145,7 +141,6 @@ router.put("/", [
  */
 router.delete("/", [
     authTokenMiddleware,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteConfigurationController.deleteWebsiteConfigurationController
 ]);
 

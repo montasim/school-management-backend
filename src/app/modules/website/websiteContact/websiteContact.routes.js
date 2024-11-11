@@ -18,7 +18,6 @@ import express from "express";
 import authTokenMiddleware from "../../../middlewares/authTokenMiddleware.js";
 import { WebsiteContactValidationService } from "./websiteContact.validator.js";
 import { WebsiteContactController } from "./websiteContact.controller.js";
-import { CacheMiddleware } from "../../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -72,7 +71,6 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     WebsiteContactValidationService.validateNewWebsiteContactDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteContactController.createWebsiteContactController
 ]);
 
@@ -91,7 +89,6 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     WebsiteContactController.getWebsiteContactController
 ]);
 
@@ -145,7 +142,6 @@ router.get("/", [
 router.put("/", [
     authTokenMiddleware,
     WebsiteContactValidationService.validateUpdateWebsiteContactDetails,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteContactController.updateWebsiteContactController
 ]);
 
@@ -167,7 +163,6 @@ router.put("/", [
  */
 router.delete("/", [
     authTokenMiddleware,
-    CacheMiddleware.deleteCacheMiddleware,
     WebsiteContactController.deleteWebsiteContactController
 ]);
 

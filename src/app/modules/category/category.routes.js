@@ -19,7 +19,6 @@ import express from "express";
 import authTokenMiddleware from "../../middlewares/authTokenMiddleware.js";
 import { CategoryValidators } from "./category.validator.js";
 import { CategoryController } from "./category.controller.js";
-import { CacheMiddleware } from "../../middlewares/cacheMiddleware.js";
 
 const router = express.Router();
 
@@ -48,7 +47,6 @@ const router = express.Router();
 router.post("/", [
     authTokenMiddleware,
     CategoryValidators.categoryBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     CategoryController.createCategoryController
 ]);
 
@@ -67,7 +65,6 @@ router.post("/", [
  *         description: Internal server error.
  */
 router.get("/", [
-    CacheMiddleware.createCacheMiddleware,
     CategoryController.getCategoryListController
 ]);
 
@@ -94,7 +91,6 @@ router.get("/", [
  */
 router.get("/:categoryId", [
     CategoryValidators.categoryParamsValidator,
-    CacheMiddleware.createCacheMiddleware,
     CategoryController.getACategoryController
 ]);
 
@@ -130,7 +126,6 @@ router.put("/:categoryId", [
     authTokenMiddleware,
     CategoryValidators.categoryParamsValidator,
     CategoryValidators.categoryBodyValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     CategoryController.updateACategoryController
 ]);
 
@@ -160,7 +155,6 @@ router.put("/:categoryId", [
 router.delete("/:categoryId", [
     authTokenMiddleware,
     CategoryValidators.categoryParamsValidator,
-    CacheMiddleware.deleteCacheMiddleware,
     CategoryController.deleteACategoryController
 ]);
 
