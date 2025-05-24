@@ -1,4 +1,4 @@
-<img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=28&duration=1&pause=1&color=EB008B&center=true&vCenter=true&repeat=false&width=376&height=40&lines=SCHOOL MANAGEMENT API" alt="SCHOOL MANAGEMENT API" />
+<img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=28&duration=1&pause=1&color=EB008B&center=true&vCenter=true&repeat=false&width=376&height=40&lines=SCHOOL+MANAGEMENT+API" alt="SCHOOL MANAGEMENT API" />
 
 [//]: # (# School Management API)
 
